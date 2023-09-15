@@ -1,13 +1,11 @@
-package inu.thebite.tory.screens
+package inu.thebite.tory.screens.DataScreen
 
 import android.annotation.SuppressLint
-import android.content.Context
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 @SuppressLint("MutableCollectionMutableState")
-class STOViewModel: ViewModel() {
+class LTOViewModel: ViewModel() {
     private val _ltoList1 = MutableLiveData<Map<String, Int>>()
 
     private val _ltoList2 = MutableLiveData<Map<String, Int>>()

@@ -6,15 +6,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
+import inu.thebite.tory.screens.DataScreen.LTOViewModel
+//import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 @Composable
 fun HomeScreen(
         homeViewModel: HomeViewModel = viewModel(),
-        ltoViewModel: LTOViewModel = viewModel(),
-        stoViewModel: STOViewModel = viewModel()
 ){
-
-    val gameResults by homeViewModel.games.collectAsState()
+    val ltoViewModel : LTOViewModel = viewModel()
+//    val stoViewModel : STOViewModel = viewModel()
 
     val (dialogOpen, setDialogOpen) = remember {
         mutableStateOf(false)
