@@ -50,7 +50,7 @@ import inu.thebite.tory.screens.GameScreen
 import inu.thebite.tory.screens.HomeScreen
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
-//import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
@@ -69,7 +69,9 @@ fun MainCompose(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
 ) {
     val ltoViewModel : LTOViewModel = viewModel()
-//    val stoViewModel : STOViewModel = viewModel()
+    val stoViewModel : STOViewModel = viewModel()
+    val stoDetailViewModel : STODetailViewModel = viewModel()
+
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
     }
@@ -262,8 +264,8 @@ fun MainCompose(
 
                 composable(AllDestinations.DATA) {
                     DataScreen(ltoViewModel = ltoViewModel,
-//                        stoViewModel = stoViewModel,
-                        stoDetailViewModel = STODetailViewModel())
+                        stoViewModel = stoViewModel,
+                        stoDetailViewModel = stoDetailViewModel)
                 }
 
                 composable(AllDestinations.GAME) {

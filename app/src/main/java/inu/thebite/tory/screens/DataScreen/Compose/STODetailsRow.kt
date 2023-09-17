@@ -46,12 +46,13 @@ fun STODetailsRow(
     selectedLTOIndex: Int,
     stoDetailListIndex: Int,
     setProgressState: (Int) -> Unit,
+    setSTODetailIndex: (Int) -> Unit
 ){
     val cornerRadius = 8.dp
     val detailList = listOf<String>(
         "진행중",
-        "중지",
-        "완료"
+        "준거 도달",
+        "중지"
     )
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -129,7 +130,7 @@ fun STODetailsRow(
                         Text(
                             modifier = Modifier
                                 .fillMaxSize(),
-                            text = "게임시작",
+                            text = "교육시작",
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                             textAlign = TextAlign.Center,
@@ -154,17 +155,12 @@ fun STODetailsRow(
                         detailList.forEachIndexed { index, item ->
                             OutlinedButton(
                                 onClick = {
+                                    setSTODetailIndex(index)
                                     setProgressState(index)
                                     stoViewModel.addOrUpdateSTO(
                                         selectedLTOIndex,
                                         selectedDevIndex,
                                         selectedSTO,
-                                        index
-                                    )
-                                    stoDetailViewModel.addOrUpdateSTODetail(
-                                        selectedLTOIndex,
-                                        selectedDevIndex,
-                                        listOf(selectedSTO,"","","","","",""),
                                         index
                                     )
                                 },

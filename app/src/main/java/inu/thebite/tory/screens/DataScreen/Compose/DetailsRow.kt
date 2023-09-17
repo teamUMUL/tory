@@ -195,10 +195,10 @@ fun DetailsRow(
                                                     Color.Blue
                                                 }
                                                 1 -> {
-                                                    Color.Green
+                                                    Color.Red
                                                 }
                                                 else -> {
-                                                    Color.Red
+                                                    Color.Green
                                                 }
                                             },
                                             contentColor = Color.White
@@ -211,10 +211,10 @@ fun DetailsRow(
                                                     Color.Blue.copy(alpha = 0.2f)
                                                 }
                                                 1 -> {
-                                                    Color.Green.copy(alpha = 0.2f)
+                                                    Color.Red.copy(alpha = 0.2f)
                                                 }
                                                 else -> {
-                                                    Color.Red.copy(alpha = 0.2f)
+                                                    Color.Green.copy(alpha = 0.2f)
                                                 }
                                             },
                                             contentColor = Color.Black

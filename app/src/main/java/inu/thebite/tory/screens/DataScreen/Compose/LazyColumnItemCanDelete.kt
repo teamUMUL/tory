@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun LazyColumnItemCanDelete(item: String, selectedItem: String, progressState:Int, delete: (String) -> Unit, select:(String) -> Unit){
+fun LazyColumnItemCanDelete(item: String, selectedItem: String, progressState:Int, delete: (String) -> Unit, select:(String) -> Unit, colorList:List<Color>){
     var _selectedItem = selectedItem
     val isSelected = _selectedItem == item
     Card(
@@ -45,13 +45,13 @@ fun LazyColumnItemCanDelete(item: String, selectedItem: String, progressState:In
         colors = CardDefaults.cardColors(
             containerColor =
             if(progressState == 0){
-                if(isSelected) Color.Blue.copy(alpha = 0.75f) else Color.Blue.copy(alpha = 0.2f)
+                if(isSelected) colorList[0].copy(alpha = 0.75f) else colorList[0].copy(alpha = 0.2f)
             }
             else if(progressState == 1){
-                if(isSelected) Color.Green.copy(alpha = 0.75f) else Color.Green.copy(alpha = 0.2f)
+                if(isSelected) colorList[1].copy(alpha = 0.75f) else colorList[1].copy(alpha = 0.2f)
             }
             else if(progressState == 2){
-                if(isSelected) Color.Red.copy(alpha = 0.75f) else Color.Red.copy(alpha = 0.2f)
+                if(isSelected) colorList[2].copy(alpha = 0.75f) else colorList[2].copy(alpha = 0.2f)
             }
             else{
                 if(isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.tertiary

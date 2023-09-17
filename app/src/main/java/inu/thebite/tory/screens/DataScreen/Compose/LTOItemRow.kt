@@ -122,7 +122,8 @@ fun LTOItemsRow(
                         setSelectedLTO(it)
                         setSelectedLTOIndex(ltoViewModel.getLTO(selectedDevIndex).first.indexOf(it))
                         setDetailListIndex(progressState.toInt())
-                    }
+                    },
+                    listOf(Color.Blue, Color.Red, Color.Green)
                 )
             }
         }
