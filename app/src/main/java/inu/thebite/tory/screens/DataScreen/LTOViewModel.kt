@@ -33,6 +33,17 @@ class LTOViewModel: ViewModel() {
         updateLiveData(devIndex, currentMap)
     }
 
+    fun updateLTO(devIndex: Int,ltoIndex:Int, oldKey:String, newKey:String){
+        val currentLiveData = getLiveDataForDevIndex(devIndex)
+        val currentMap = getMapForDevIndex(devIndex).toMutableMap()
+        val ltoNameList = currentMap.keys.toMutableList()
+        ltoNameList[ltoIndex] = newKey
+        val value = currentMap.remove(oldKey)
+        currentMap[newKey] = value ?: -1
+
+        currentLiveData.value = currentMap
+    }
+
     // Read
     fun getLTO(devIndex: Int): Pair<List<String>, List<Int>> {
         val map = getMapForDevIndex(devIndex)

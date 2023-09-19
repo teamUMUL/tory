@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.DataScreen.Compose.Dialog.UpdateSTOItemDialog
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
@@ -41,12 +42,12 @@ fun STODetailsRow(
     isSTOGraphSelected: Boolean,
     setIsSTOGraphSelected: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
-    stoDetailViewModel: STODetailViewModel,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
     stoDetailListIndex: Int,
     setProgressState: (Int) -> Unit,
-    setSTODetailIndex: (Int) -> Unit
+    setSTODetailIndex: (Int) -> Unit,
+    setUpdateSTOItem: (Boolean) -> Unit
 ){
     val cornerRadius = 8.dp
     val detailList = listOf<String>(
@@ -77,26 +78,26 @@ fun STODetailsRow(
                         .padding(end = 10.dp)
                 )
                 if(selectedSTO != ""){
-                    OutlinedButton(
-                        modifier = Modifier
-                            .size(40.dp),
-                        border = BorderStroke(2.dp, Color.Black),
-                        shape = RoundedCornerShape(5.dp),
-                        onClick = {
-                            setIsSTOGraphSelected(!isSTOGraphSelected)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if(isSTOGraphSelected) MaterialTheme.colorScheme.secondary else Color.Transparent
-                        ),
-                        contentPadding = PaddingValues(2.dp)
-                    ){
-                        Icon(
-                            modifier = Modifier
-                                .size(35.dp),
-                            painter = painterResource(id = R.drawable.icon_chart_inner),
-                            contentDescription = null,
-                            tint = Color.Black)
-                    }
+//                    OutlinedButton(
+//                        modifier = Modifier
+//                            .size(40.dp),
+//                        border = BorderStroke(2.dp, Color.Black),
+//                        shape = RoundedCornerShape(5.dp),
+//                        onClick = {
+//                            setIsSTOGraphSelected(!isSTOGraphSelected)
+//                        },
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = if(isSTOGraphSelected) MaterialTheme.colorScheme.secondary else Color.Transparent
+//                        ),
+//                        contentPadding = PaddingValues(2.dp)
+//                    ){
+//                        Icon(
+//                            modifier = Modifier
+//                                .size(35.dp),
+//                            painter = painterResource(id = R.drawable.icon_chart_inner),
+//                            contentDescription = null,
+//                            tint = Color.Black)
+//                    }
                     Spacer(modifier = Modifier.width(10.dp))
                     OutlinedButton(
                         modifier = Modifier
@@ -104,7 +105,7 @@ fun STODetailsRow(
                         border = BorderStroke(2.dp, Color.Black),
                         shape = RoundedCornerShape(5.dp),
                         onClick = {
-
+                            setUpdateSTOItem(true)
                         },
                         contentPadding = PaddingValues(2.dp)
                     ){

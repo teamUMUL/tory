@@ -35,15 +35,11 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 @Composable
 fun LTOItemsRow(
     ltoViewModel: LTOViewModel,
-    stoViewModel: STOViewModel,
-    stoDetailViewModel: STODetailViewModel,
     selectedDevIndex: Int,
     selectedLTO: String,
-    setSelectedLTO: (String) -> Unit,
     setAddLTOItem: (Boolean) -> Unit,
-    setSelectedLTOIndex: (Int) -> Unit,
-    setDetailListIndex: (Int) -> Unit,
-    setSelectedSTO: (String) -> Unit
+    selectLTOItem: (it:String,progressState: Int) -> Unit,
+    deleteLTOItem: (String) -> Unit
 ) {
     // LTOItemsRow 내용
     Row(modifier = Modifier
@@ -112,16 +108,11 @@ fun LTOItemsRow(
                     selectedLTO,
                     progressState.toInt(),
                     delete = {
-                        stoViewModel.removeLTOAtIndex(ltoViewModel.getLTO(selectedDevIndex).first.indexOf(it),selectedDevIndex)
-                        stoDetailViewModel.removeLTOAtIndex(ltoViewModel.getLTO(selectedDevIndex).first.indexOf(it),selectedDevIndex)
-                        ltoViewModel.removeLTO(selectedDevIndex, it)
-                        setSelectedLTO("")
-                        setSelectedSTO("")
+                        deleteLTOItem(it)
                     },
                     select = {
-                        setSelectedLTO(it)
-                        setSelectedLTOIndex(ltoViewModel.getLTO(selectedDevIndex).first.indexOf(it))
-                        setDetailListIndex(progressState.toInt())
+                        selectLTOItem(it, progressState.toInt())
+
                     },
                     listOf(Color.Blue, Color.Red, Color.Green)
                 )

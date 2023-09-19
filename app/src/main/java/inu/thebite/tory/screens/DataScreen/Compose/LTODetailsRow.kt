@@ -1,6 +1,5 @@
 package inu.thebite.tory.screens.DataScreen.Compose
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,7 +37,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 
 @Composable
-fun DetailsRow(
+fun LTODetailsRow(
     selectedLTO: String,
     isGraphSelected: Boolean,
     setGraphSelected: (Boolean) -> Unit,
@@ -46,7 +45,8 @@ fun DetailsRow(
     ltoViewModel: LTOViewModel,
     selectedDevIndex: Int,
     setProgressState: (Int) -> Unit,
-    detailListIndex: Int
+    progressState: Int,
+    setLTOUpdateDialog: (Boolean) -> Unit
 ) {
     val cornerRadius = 8.dp
     // DetailsRow 내용
@@ -135,7 +135,7 @@ fun DetailsRow(
                                 border = BorderStroke(2.dp, Color.Black),
                                 shape = RoundedCornerShape(5.dp),
                                 onClick = {
-
+                                    setLTOUpdateDialog(true)
                                 },
                                 contentPadding = PaddingValues(2.dp)
                             ){
@@ -175,19 +175,19 @@ fun DetailsRow(
                                         // middle button
                                         else -> RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
                                     },
-                                    border = BorderStroke(1.dp, if(detailListIndex == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(alpha = 0.75f)),
+                                    border = BorderStroke(1.dp, if(progressState == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(alpha = 0.75f)),
                                     modifier = when (index) {
                                         0 ->
                                             Modifier
                                                 .offset(0.dp, 0.dp)
-                                                .zIndex(if (detailListIndex == index) 1f else 0f)
+                                                .zIndex(if (progressState == index) 1f else 0f)
                                         else ->
                                             Modifier
                                                 .offset((-1 * index).dp, 0.dp)
-                                                .zIndex(if (detailListIndex == index) 1f else 0f)
+                                                .zIndex(if (progressState == index) 1f else 0f)
                                     },
                                     colors =
-                                    if(detailListIndex == index){
+                                    if(progressState == index){
                                         ButtonDefaults.outlinedButtonColors(
                                             containerColor =
                                             when (index) {

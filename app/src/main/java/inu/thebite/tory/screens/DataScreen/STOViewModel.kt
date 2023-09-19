@@ -33,6 +33,18 @@ class STOViewModel: ViewModel() {
             ltoLiveDataLists[devIndex][ltoIndex].value = currentMap
         }
     }
+    fun updateSTO(ltoIndex: Int, devIndex: Int, oldKey: String, newKey: String) {
+        if (ltoIndex >= 0 && ltoIndex < ltoLiveDataLists[devIndex].size) {
+            val currentMap = ltoLiveDataLists[devIndex][ltoIndex].value?.toMutableMap()
+            if (currentMap != null && currentMap.containsKey(oldKey)) {
+                val oldValue : Int? = currentMap[oldKey]
+                currentMap.remove(oldKey)
+                currentMap[newKey] = oldValue!!
+                ltoLiveDataLists[devIndex][ltoIndex].value = currentMap
+            }
+        }
+    }
+
 
     fun getSTO(ltoIndex: Int,devIndex: Int): Pair<List<String>, List<Int>> {
         val map = ltoLiveDataLists[devIndex].getOrNull(ltoIndex)?.value ?: emptyMap()

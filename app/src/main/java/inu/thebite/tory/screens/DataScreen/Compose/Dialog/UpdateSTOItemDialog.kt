@@ -1,10 +1,10 @@
-package inu.thebite.tory.screens.DataScreen.Compose
+package inu.thebite.tory.screens.DataScreen.Compose.Dialog
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,6 +24,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -42,40 +43,67 @@ import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
+@SuppressLint("MutableCollectionMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddSTOItemDialog(
-    setAddSTOItem: (Boolean) -> Unit,
+fun UpdateSTOItemDialog(
     stoViewModel: STOViewModel,
     stoDetailViewModel: STODetailViewModel,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
+    selectedSTOIndex: Int,
+    selectedSTO : String,
+    setUpdateSTOItem : (Boolean) -> Unit,
+    setSelectedSTODetailList: (List<String>) -> Unit
 ) {
     val addSTOScrollState = rememberScrollState()
 
     var stoNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]))
     }
     var stoDetailInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[1]))
     }
     var stoTryNumInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[2]))
     }
     var stoSuccessStandardInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[3]))
     }
     var stoMethodInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[4]))
     }
     var stoScheduleInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[5]))
     }
     var stoMemoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[6]))
     }
+
+    val beforeSTOName by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]))
+    }
+    val beforeSTODetail by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[1]))
+    }
+    val beforeSTOTryNum by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[2]))
+    }
+    val beforeSTOSuccessStandard by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[3]))
+    }
+    val beforeSTOMethod by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[4]))
+    }
+    val beforeSTOSchedule by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[5]))
+    }
+    val beforeSTOMemo by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[6]))
+    }
+
     Dialog(
-        onDismissRequest = {setAddSTOItem(false)},
+        onDismissRequest = {setUpdateSTOItem(false)},
     ){
         Column(
             modifier = Modifier
@@ -92,19 +120,19 @@ fun AddSTOItemDialog(
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f)
                 .verticalScroll(addSTOScrollState)) {
-                stoTextFieldFrame("STO 이름", stoNameInputValue, setInputValue = {stoNameInputValue = it})
+                updateSTOTextFieldFrame(stoNameInputValue, setInputValue = {stoNameInputValue = it})
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("STO 내용", stoDetailInputValue, setInputValue = {stoDetailInputValue = it})
+                updateSTOTextFieldFrame(stoDetailInputValue, setInputValue = {stoDetailInputValue = it})
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("시도 수", stoTryNumInputValue, setInputValue = {stoTryNumInputValue = it})
+                updateSTOTextFieldFrame(stoTryNumInputValue, setInputValue = {stoTryNumInputValue = it})
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("준거도달 기준", stoSuccessStandardInputValue, setInputValue = {stoSuccessStandardInputValue = it})
+                updateSTOTextFieldFrame(stoSuccessStandardInputValue, setInputValue = {stoSuccessStandardInputValue = it})
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("촉구방법", stoMethodInputValue, setInputValue = {stoMethodInputValue = it})
+                updateSTOTextFieldFrame(stoMethodInputValue, setInputValue = {stoMethodInputValue = it})
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("강화스케줄", stoScheduleInputValue, setInputValue = {stoScheduleInputValue = it})
+                updateSTOTextFieldFrame(stoScheduleInputValue, setInputValue = {stoScheduleInputValue = it})
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("메모", stoMemoInputValue, setInputValue = {stoMemoInputValue = it})
+                updateSTOTextFieldFrame(stoMemoInputValue, setInputValue = {stoMemoInputValue = it})
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
@@ -115,17 +143,31 @@ fun AddSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    stoViewModel.addOrUpdateSTO(selectedLTOIndex,selectedDevIndex, stoNameInputValue.text, -1)
-                    stoDetailViewModel.addOrUpdateSTODetail(selectedLTOIndex,selectedDevIndex, listOf(
-                        stoNameInputValue.text,
-                        stoDetailInputValue.text,
-                        stoTryNumInputValue.text,
-                        stoSuccessStandardInputValue.text,
-                        stoMethodInputValue.text,
-                        stoScheduleInputValue.text,
-                        stoMemoInputValue.text
-                    ), listOf("n","n","n","n","n","-","+","P","n","n","n","n","n","n","n"))
-                    setAddSTOItem(false)
+                    stoViewModel.updateSTO(selectedLTOIndex,selectedDevIndex,beforeSTOName.text,stoNameInputValue.text)
+                    stoDetailViewModel.updateSTODetail(
+                        selectedLTOIndex,
+                        selectedDevIndex,
+                        listOf<String>(
+                            beforeSTOName.text,
+                            beforeSTODetail.text,
+                            beforeSTOTryNum.text,
+                            beforeSTOSuccessStandard.text,
+                            beforeSTOMethod.text,
+                            beforeSTOSchedule.text,
+                            beforeSTOMemo.text
+                        ),
+                        listOf(
+                            stoNameInputValue.text,
+                            stoDetailInputValue.text,
+                            stoTryNumInputValue.text,
+                            stoSuccessStandardInputValue.text,
+                            stoMethodInputValue.text,
+                            stoScheduleInputValue.text,
+                            stoMemoInputValue.text
+                        ))
+                    setSelectedSTODetailList(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first.toMutableList())
+
+                    setUpdateSTOItem(false)
                     stoNameInputValue = TextFieldValue("")
                     stoDetailInputValue = TextFieldValue("")
                     stoTryNumInputValue = TextFieldValue("")
@@ -146,7 +188,7 @@ fun AddSTOItemDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit){
+fun updateSTOTextFieldFrame(inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit){
     TextField(
         value = inputValue,
         onValueChange = {
@@ -156,7 +198,6 @@ fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInput
             .fillMaxWidth()
             .height(100.dp),
         shape = RoundedCornerShape(8.dp),
-        placeholder = { Text(text = typeOfInput) },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
             autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done

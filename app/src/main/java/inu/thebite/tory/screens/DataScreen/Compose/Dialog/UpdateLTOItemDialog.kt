@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.DataScreen.Compose
+package inu.thebite.tory.screens.DataScreen.Compose.Dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -41,19 +41,23 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddLTOItemDialog(
-    setAddLTOItem: (Boolean) -> Unit,
+fun UpdateLTOItemDialog(
+    setUpdateLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
-    stoViewModel: STOViewModel,
-    stoDetailViewModel: STODetailViewModel,
     selectedDevIndex: Int,
+    selectedLTOIndex: Int,
+    setSelectedLTO: (String) -> Unit
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(ltoViewModel.getLTO(selectedDevIndex).first[selectedLTOIndex]))
+    }
+
+    val beforeLTOName by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(ltoViewModel.getLTO(selectedDevIndex).first[selectedLTOIndex]))
     }
     // AddLTOItemDialog 내용
     Dialog(
-        onDismissRequest = {setAddLTOItem(false)},
+        onDismissRequest = {setUpdateLTOItem(false)},
     ){
         Column(
             modifier = Modifier
@@ -95,10 +99,9 @@ fun AddLTOItemDialog(
                     .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    ltoViewModel.addOrUpdateLTO(selectedDevIndex, ltoInputValue.text, -1)
-                    setAddLTOItem(false)
-                    stoViewModel.addLTO(devIndex = selectedDevIndex)
-                    stoDetailViewModel.addLTO(devIndex = selectedDevIndex)
+                    ltoViewModel.updateLTO(selectedDevIndex, selectedLTOIndex,beforeLTOName.text,ltoInputValue.text)
+                    setSelectedLTO(ltoInputValue.text)
+                    setUpdateLTOItem(false)
                     ltoInputValue = TextFieldValue("")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)

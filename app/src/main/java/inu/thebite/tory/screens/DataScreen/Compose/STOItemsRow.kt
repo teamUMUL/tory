@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.DataScreen.Compose
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -39,18 +41,13 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 @Composable
 fun STOItemsRow(
     stoViewModel: STOViewModel,
-    stoDetailViewModel: STODetailViewModel,
     selectedDevIndex: Int,
     selectedLTO: String,
     selectedSTO: String,
     selectedLTOIndex: Int,
-    selectedSTOIndex: Int,
-    setSelectedSTO: (String) -> Unit,
     setAddSTOItem: (Boolean) -> Unit,
-    setDetailListIndex: (Int) -> Unit,
-    setSelectedSTOIndex: (Int) -> Unit,
-    selectedSTODetailList: MutableList<String>,
-    setSelectedSTODetailList: (MutableList<String>) -> Unit
+    deleteSTOItem: (String) -> Unit,
+    selectSTOItem: (it:String, progressState:Int) -> Unit
 ) {
     // STOItemsRow 내용
 
@@ -121,19 +118,14 @@ fun STOItemsRow(
                     val (description, progressState) = ltoItem.split(": ")
                     LazyColumnItemCanDelete(
                         item = description,
-                        selectedSTO,
-                        progressState.toInt(),
-                        delete = {
-                            stoViewModel.removeSTO(selectedLTOIndex, selectedDevIndex,it)
+                        selectedItem = selectedSTO,
+                        progressState = progressState.toInt(),
 
-                            stoDetailViewModel.removeSTODetail(selectedLTOIndex, selectedDevIndex, listOf(it,selectedSTODetailList[1],selectedSTODetailList[2],selectedSTODetailList[3],selectedSTODetailList[4],selectedSTODetailList[5],selectedSTODetailList[6]))
-                            setSelectedSTO("")
+                        delete = {
+                            deleteSTOItem(it)
                         },
                         select = {
-                            setSelectedSTO(it)
-                            setSelectedSTOIndex(stoViewModel.getSTO(selectedLTOIndex, selectedDevIndex).first.indexOf(it))
-                            setDetailListIndex(progressState.toInt())
-                            setSelectedSTODetailList(stoDetailViewModel.getSTODetailListForName(selectedDevIndex, selectedLTOIndex, it))
+                            selectSTOItem(it, progressState.toInt())
                         },
                         listOf(Color.Blue, Color.Green, Color.Red)
                     )
