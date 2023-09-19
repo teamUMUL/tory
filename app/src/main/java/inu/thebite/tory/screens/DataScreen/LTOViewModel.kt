@@ -36,12 +36,55 @@ class LTOViewModel: ViewModel() {
     fun updateLTO(devIndex: Int,ltoIndex:Int, oldKey:String, newKey:String){
         val currentLiveData = getLiveDataForDevIndex(devIndex)
         val currentMap = getMapForDevIndex(devIndex).toMutableMap()
-        val ltoNameList = currentMap.keys.toMutableList()
-        ltoNameList[ltoIndex] = newKey
-        val value = currentMap.remove(oldKey)
-        currentMap[newKey] = value ?: -1
+        val oldValue : Int? = currentMap[oldKey]
 
-        currentLiveData.value = currentMap
+        val beforeLTONameList: List<String> = currentMap.keys.toList()
+        var foundOldKey = false
+        val behindOldKeyList = mutableListOf<String>()
+        val aheadOldKeyList = mutableListOf<String>()
+
+        for(element in beforeLTONameList){
+            if(foundOldKey){
+                behindOldKeyList.add(element)
+            }else{
+                if(element != oldKey){
+                    aheadOldKeyList.add(element)
+                }
+            }
+            if(element == oldKey){
+                foundOldKey = true
+            }
+        }
+        val resultKeyList = mutableListOf<String>()
+        resultKeyList.addAll(aheadOldKeyList)
+        resultKeyList.add(newKey)
+        resultKeyList.addAll(behindOldKeyList)
+
+        val beforeLTOStateList: List<Int> = currentMap.values.toList()
+        var foundOldValue = false
+        val behindOldValueList = mutableListOf<Int>()
+        val aheadOldValueList = mutableListOf<Int>()
+
+        for(element in beforeLTOStateList){
+            if(foundOldValue){
+                behindOldValueList.add(element)
+            }else{
+                if(element != oldValue){
+                    aheadOldValueList.add(element)
+                }
+            }
+            if(element == oldValue){
+                foundOldValue = true
+            }
+        }
+        val resultValueList = mutableListOf<Int>()
+        resultValueList.addAll(aheadOldValueList)
+        resultValueList.add(oldValue!!)
+        resultValueList.addAll(behindOldValueList)
+
+        val resultMap = resultKeyList.zip(resultValueList).toMap()
+
+        currentLiveData.value = resultMap
     }
 
     // Read

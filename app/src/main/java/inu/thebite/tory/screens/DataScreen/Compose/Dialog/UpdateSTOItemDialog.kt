@@ -53,6 +53,7 @@ fun UpdateSTOItemDialog(
     selectedLTOIndex: Int,
     selectedSTOIndex: Int,
     selectedSTO : String,
+    setSelectedSTO : (String) -> Unit,
     setUpdateSTOItem : (Boolean) -> Unit,
     setSelectedSTODetailList: (List<String>) -> Unit
 ) {
@@ -166,7 +167,8 @@ fun UpdateSTOItemDialog(
                             stoMemoInputValue.text
                         ))
                     setSelectedSTODetailList(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first.toMutableList())
-
+                    val selectedSTO = stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]
+                    setSelectedSTO(selectedSTO)
                     setUpdateSTOItem(false)
                     stoNameInputValue = TextFieldValue("")
                     stoDetailInputValue = TextFieldValue("")

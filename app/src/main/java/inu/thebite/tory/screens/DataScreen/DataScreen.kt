@@ -162,6 +162,7 @@ fun DataScreen (
             selectedSTOIndex = selectedSTOIndex,
             selectedSTO = selectedSTO,
             setUpdateSTOItem = {setUpdateSTOItem(it)},
+            setSelectedSTO = {setSelectedSTO(it)},
             setSelectedSTODetailList = {setSelectedSTODetail(it.toMutableList())}
         )
     }
@@ -215,7 +216,7 @@ fun DataScreen (
             ltoViewModel = ltoViewModel,
             selectedDevIndex = selectedDEVIndex,
             setProgressState = { setLTOProgressState(it) },
-            progressState = ltoProgressState,
+            ltoDetailListIndex = ltoDetailListIndex,
             setLTOUpdateDialog = {setUpdateLTOItem(it)}
         )
         //STO ITEM ---------------------------------------------------------------------------------

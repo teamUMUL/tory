@@ -45,7 +45,7 @@ fun LTODetailsRow(
     ltoViewModel: LTOViewModel,
     selectedDevIndex: Int,
     setProgressState: (Int) -> Unit,
-    progressState: Int,
+    ltoDetailListIndex: Int,
     setLTOUpdateDialog: (Boolean) -> Unit
 ) {
     val cornerRadius = 8.dp
@@ -175,19 +175,19 @@ fun LTODetailsRow(
                                         // middle button
                                         else -> RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
                                     },
-                                    border = BorderStroke(1.dp, if(progressState == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(alpha = 0.75f)),
+                                    border = BorderStroke(1.dp, if(ltoDetailListIndex == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(alpha = 0.75f)),
                                     modifier = when (index) {
                                         0 ->
                                             Modifier
                                                 .offset(0.dp, 0.dp)
-                                                .zIndex(if (progressState == index) 1f else 0f)
+                                                .zIndex(if (ltoDetailListIndex == index) 1f else 0f)
                                         else ->
                                             Modifier
                                                 .offset((-1 * index).dp, 0.dp)
-                                                .zIndex(if (progressState == index) 1f else 0f)
+                                                .zIndex(if (ltoDetailListIndex == index) 1f else 0f)
                                     },
                                     colors =
-                                    if(progressState == index){
+                                    if(ltoDetailListIndex == index){
                                         ButtonDefaults.outlinedButtonColors(
                                             containerColor =
                                             when (index) {

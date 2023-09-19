@@ -38,9 +38,54 @@ class STOViewModel: ViewModel() {
             val currentMap = ltoLiveDataLists[devIndex][ltoIndex].value?.toMutableMap()
             if (currentMap != null && currentMap.containsKey(oldKey)) {
                 val oldValue : Int? = currentMap[oldKey]
-                currentMap.remove(oldKey)
-                currentMap[newKey] = oldValue!!
-                ltoLiveDataLists[devIndex][ltoIndex].value = currentMap
+
+                val beforeSTONameList: List<String> = currentMap.keys.toList()
+                var foundOldKey = false
+                val behindOldKeyList = mutableListOf<String>()
+                val aheadOldKeyList = mutableListOf<String>()
+
+                for(element in beforeSTONameList){
+                    if(foundOldKey){
+                        behindOldKeyList.add(element)
+                    }else{
+                        if(element != oldKey){
+                            aheadOldKeyList.add(element)
+                        }
+                    }
+                    if(element == oldKey){
+                        foundOldKey = true
+                    }
+                }
+                val resultKeyList = mutableListOf<String>()
+                resultKeyList.addAll(aheadOldKeyList)
+                resultKeyList.add(newKey)
+                resultKeyList.addAll(behindOldKeyList)
+
+                val beforeSTOStateList: List<Int> = currentMap.values.toList()
+                var foundOldValue = false
+                val behindOldValueList = mutableListOf<Int>()
+                val aheadOldValueList = mutableListOf<Int>()
+
+                for(element in beforeSTOStateList){
+                    if(foundOldValue){
+                        behindOldValueList.add(element)
+                    }else{
+                        if(element != oldValue){
+                            aheadOldValueList.add(element)
+                        }
+                    }
+                    if(element == oldValue){
+                        foundOldValue = true
+                    }
+                }
+                val resultValueList = mutableListOf<Int>()
+                resultValueList.addAll(aheadOldValueList)
+                resultValueList.add(oldValue!!)
+                resultValueList.addAll(behindOldValueList)
+
+                val resultMap = resultKeyList.zip(resultValueList).toMap()
+
+                ltoLiveDataLists[devIndex][ltoIndex].value = resultMap
             }
         }
     }
