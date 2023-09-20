@@ -47,7 +47,8 @@ fun STODetailsRow(
     stoDetailListIndex: Int,
     setProgressState: (Int) -> Unit,
     setSTODetailIndex: (Int) -> Unit,
-    setUpdateSTOItem: (Boolean) -> Unit
+    setUpdateSTOItem: (Boolean) -> Unit,
+    gameStart: () -> Unit
 ){
     val cornerRadius = 8.dp
     val detailList = listOf<String>(
@@ -124,7 +125,7 @@ fun STODetailsRow(
                         border = BorderStroke(2.dp, Color.Black),
                         shape = RoundedCornerShape(5.dp),
                         onClick = {
-
+                            gameStart()
                         },
                         contentPadding = PaddingValues(6.dp)
                     ){

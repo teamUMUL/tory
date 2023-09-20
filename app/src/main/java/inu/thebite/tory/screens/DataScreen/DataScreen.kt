@@ -4,9 +4,13 @@ package inu.thebite.tory.screens.DataScreen
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,16 +18,40 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import co.yml.charts.axis.AxisData
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.LineType
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddLTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddSTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.DevelopZoneRow
@@ -36,13 +64,14 @@ import inu.thebite.tory.screens.DataScreen.Compose.STODetailsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STOItemsRow
 
 @SuppressLint("MutableCollectionMutableState")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DataScreen (
     ltoViewModel: LTOViewModel = viewModel(),
     stoViewModel: STOViewModel = viewModel(),
     stoDetailViewModel: STODetailViewModel = viewModel()
 ) {
+    val context = LocalContext.current
 
     val scrollState = rememberScrollState()
 
@@ -56,6 +85,9 @@ fun DataScreen (
         mutableStateOf(false)
     }
     val (addSTOItem, setAddSTOItem) = rememberSaveable {
+        mutableStateOf(false)
+    }
+    val (gameDialog, setGameDialog) = rememberSaveable {
         mutableStateOf(false)
     }
     val (selectedLTO, setSelectedLTO) = rememberSaveable {
@@ -167,6 +199,50 @@ fun DataScreen (
         )
     }
 
+    if(gameDialog){
+        Dialog(
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            ),
+            onDismissRequest = { setGameDialog(false) }
+        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.1f)
+                        .background(MaterialTheme.colorScheme.secondary),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .clickable {
+                                setGameDialog(false)
+                            },
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null
+                    )
+
+                }
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)) {
+                    Button(onClick = {
+                    }) {
+                        Icon(imageVector = Icons.Default.PlayArrow, contentDescription = null)
+                    }
+
+                }
+            }
+
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -257,7 +333,10 @@ fun DataScreen (
             stoDetailListIndex = stoDetailListIndex,
             setProgressState = { setSTOProgressState(it) },
             setSTODetailIndex = { setSTODetailListIndex(it) },
-            setUpdateSTOItem = {setUpdateSTOItem(it)}
+            setUpdateSTOItem = {setUpdateSTOItem(it)},
+            gameStart = {
+                setGameDialog(true)
+            }
         )
         //STO Detail 내용 및 게임결과
         STODetailTableAndGameResult(
@@ -282,6 +361,14 @@ fun DataScreen (
         }
         //그래프
         if(isLTOGraphSelected){
+            val steps = 5
+            val pointsData = listOf(
+                Point(0f, 40f),
+                Point(1f, 90f),
+                Point(2f, 0f),
+                Point(3f, 4f),
+                Point(4f, 30f),
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -289,7 +376,65 @@ fun DataScreen (
                     .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
                     .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
             ) {
+                val xAxisData = AxisData.Builder()
+                    .axisStepSize(100.dp)
+                    .backgroundColor(Color.Transparent)
+                    .steps(pointsData.size - 1)
+                    .labelData { i -> i.toString() }
+                    .labelAndAxisLinePadding(15.dp)
+                    .axisLineColor(MaterialTheme.colorScheme.secondary)
+                    .axisLabelColor(MaterialTheme.colorScheme.secondary)
+                    .build()
 
+                val yAxisData = AxisData.Builder()
+                    .steps(steps)
+                    .backgroundColor(Color.Transparent)
+                    .labelAndAxisLinePadding(20.dp)
+                    .labelData { i ->
+                        val yScale = 100/steps
+                        (i * yScale).toString()
+                    }
+                    .axisLineColor(MaterialTheme.colorScheme.secondary)
+                    .axisLabelColor(MaterialTheme.colorScheme.secondary)
+                    .build()
+
+                val lineChartData = LineChartData(
+                    linePlotData = LinePlotData(
+                        lines = listOf(
+                            Line(
+                                dataPoints = pointsData,
+                                LineStyle(
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    lineType = LineType.Straight(isDotted = true)
+                                ),
+                                IntersectionPoint(
+                                    color = MaterialTheme.colorScheme.tertiary
+                                ),
+                                SelectionHighlightPoint(color = MaterialTheme.colorScheme.primary),
+                                ShadowUnderLine(
+                                    alpha = 0.5f,
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.inversePrimary,
+                                            Color.Transparent
+                                        )
+                                    )
+                                ),
+                                SelectionHighlightPopUp()
+                            )
+                        ),
+                    ),
+                    backgroundColor = Color.White,
+                    xAxisData = xAxisData,
+                    yAxisData = yAxisData,
+                    gridLines = GridLines(color = MaterialTheme.colorScheme.primary)
+                )
+
+                LineChart(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    lineChartData = lineChartData)
             }
         }
 

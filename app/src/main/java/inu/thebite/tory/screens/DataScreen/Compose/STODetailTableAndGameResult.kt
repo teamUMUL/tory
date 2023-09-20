@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -248,9 +250,42 @@ fun STODetailTableAndGameResult(
                                 }
                             }
                         }
+                        item {
+                            if(!stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.contains("n")) {
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                        .padding(horizontal = 20.dp, vertical = 5.dp),
+                                    onClick = {
+                                        stoDetailViewModel.updateSTODetailValue(
+                                            selectedLTOIndex,
+                                            selectedDEVIndex,
+                                            selectedSTODetail,
+                                            listOf(
+                                                "n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"
+                                            )
+                                        )
+                                        setSelectedSTODetailGameDataIndex(0)
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Cyan.copy(alpha = 0.2f)
+                                    ),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text(
+                                        text = "회차 추가",
+                                        fontSize = 30.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                        }
 
                     }
+
                     Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.tertiary)
+
                     LazyRow(
                         modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -390,7 +425,8 @@ fun STODetailTableAndGameResult(
                         }
 
                     }
-                }
+                    }
+
 
 
         }

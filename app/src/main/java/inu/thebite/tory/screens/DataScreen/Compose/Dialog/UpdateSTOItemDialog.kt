@@ -165,7 +165,8 @@ fun UpdateSTOItemDialog(
                             stoMethodInputValue.text,
                             stoScheduleInputValue.text,
                             stoMemoInputValue.text
-                        ))
+                        )
+                    )
                     setSelectedSTODetailList(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first.toMutableList())
                     val selectedSTO = stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]
                     setSelectedSTO(selectedSTO)

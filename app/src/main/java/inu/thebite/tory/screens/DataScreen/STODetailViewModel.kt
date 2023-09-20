@@ -90,6 +90,14 @@ class STODetailViewModel: ViewModel() {
         }
     }
 
+    fun updateSTODetailValue(ltoIndex: Int, devIndex: Int, stoDetailInfo: List<String>, newValue: List<String>){
+        if (ltoIndex >= 0 && ltoIndex < ltoLiveDataLists[devIndex].size) {
+            val currentMap = ltoLiveDataLists[devIndex][ltoIndex].value?.toMutableMap() ?: mutableMapOf()
+            currentMap[stoDetailInfo] = newValue
+            ltoLiveDataLists[devIndex][ltoIndex].value = currentMap
+        }
+    }
+
     fun getSTODetail(ltoIndex: Int,devIndex: Int, stoIndex: Int): Pair<List<String>, List<String>> {
         val map = ltoLiveDataLists[devIndex].getOrNull(ltoIndex)?.value ?: emptyMap()
         val keys = map.keys.toList()

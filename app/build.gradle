@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.kapt'
 }
 
+
 android {
     namespace 'inu.thebite.tory'
     compileSdk 33
@@ -19,6 +20,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
     }
 
     buildTypes {
@@ -70,7 +72,8 @@ dependencies {
     def koin_android_compose_version = '3.4.4'
     def room_version = "2.5.2"
     def nav_version = "2.5.3"
-    def latest_release = "0.2.4-alpha"
+
+    implementation 'co.yml:ycharts:2.1.0'
 
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation 'com.google.code.gson:gson:2.9.0'
