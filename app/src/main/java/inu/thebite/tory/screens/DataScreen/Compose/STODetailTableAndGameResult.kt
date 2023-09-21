@@ -34,7 +34,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.ChildViewModel
+import inu.thebite.tory.screens.DataScreen.GraphViewModel
+import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
+import java.time.LocalDate
 
 @Composable
 fun STODetailTableAndGameResult(
@@ -46,7 +50,22 @@ fun STODetailTableAndGameResult(
     selectedSTODetailGameDataIndex: Int,
     stoDetailViewModel: STODetailViewModel,
     setSelectedSTODetailGameDataIndex: (Int) -> Unit,
+    graphViewModel : GraphViewModel,
+    childViewModel : ChildViewModel,
+    ltoViewModel : LTOViewModel
 ){
+    val developZoneItems = listOf<String>(
+        "1. 학습준비",
+        "2. 매칭",
+        "3. 동작모방",
+        "4. 언어모방",
+        "5. 변별",
+        "6. 지시따라하기",
+        "7. 요구하기",
+        "8. 명명하기",
+        "9. 인트라",
+        "10. 가나다"
+    )
     val STODetailTitles =
         listOf<String>(
             "STO 이름",
@@ -267,6 +286,16 @@ fun STODetailTableAndGameResult(
                                             )
                                         )
                                         setSelectedSTODetailGameDataIndex(0)
+                                        graphViewModel.addOrUpdateGraph(
+                                            className = childViewModel.selectedChildClass,
+                                            childName = childViewModel.selectedChildName,
+                                            selectedDEV =developZoneItems[selectedDEVIndex],
+                                            selectedLTO = ltoViewModel.getLTO(selectedDEVIndex).first[selectedLTOIndex],
+                                            selectedSTO = selectedSTO,
+                                            date = LocalDate.now(),
+                                            plusRatio = (stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.count{it == "+"}/stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size).toFloat(),
+                                            minusRatio =(stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.count{it == "-"}/stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size).toFloat(),
+                                        )
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color.Cyan.copy(alpha = 0.2f)

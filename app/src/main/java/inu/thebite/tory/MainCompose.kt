@@ -46,6 +46,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.screens.DataScreen.DataScreen
+import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.GameScreen
 import inu.thebite.tory.screens.HomeScreen
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
@@ -63,7 +64,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainCompose(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = viewModel(),
+    viewModel: ChildViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
@@ -71,6 +72,8 @@ fun MainCompose(
     val ltoViewModel : LTOViewModel = viewModel()
     val stoViewModel : STOViewModel = viewModel()
     val stoDetailViewModel : STODetailViewModel = viewModel()
+    val graphViewModel : GraphViewModel = viewModel()
+    val childViewModel : ChildViewModel = viewModel()
 
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
@@ -263,9 +266,13 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.DATA) {
-                    DataScreen(ltoViewModel = ltoViewModel,
+                    DataScreen(
+                        ltoViewModel = ltoViewModel,
                         stoViewModel = stoViewModel,
-                        stoDetailViewModel = stoDetailViewModel)
+                        stoDetailViewModel = stoDetailViewModel,
+                        graphViewModel = graphViewModel,
+                        childViewModel = childViewModel
+                    )
                 }
 
                 composable(AllDestinations.GAME) {

@@ -3,6 +3,7 @@
 package inu.thebite.tory.screens.DataScreen
 
 import android.annotation.SuppressLint
+import android.graphics.Point
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,36 +25,46 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.DefaultAlpha
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.android.animation.SegmentType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import co.yml.charts.axis.AxisData
-import co.yml.charts.common.model.Point
-import co.yml.charts.ui.linechart.LineChart
-import co.yml.charts.ui.linechart.model.GridLines
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
-import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LinePlotData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import com.github.tehras.charts.line.LineChart
+import com.github.tehras.charts.line.LineChartData
+import com.github.tehras.charts.line.renderer.line.LineDrawer
+import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
+import com.github.tehras.charts.line.renderer.xaxis.SimpleXAxisDrawer
+import com.github.tehras.charts.line.renderer.xaxis.XAxisDrawer
+import com.github.tehras.charts.line.renderer.yaxis.SimpleYAxisDrawer
+import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddLTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddSTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.DevelopZoneRow
@@ -63,13 +76,15 @@ import inu.thebite.tory.screens.DataScreen.Compose.STODetailTableAndGameResult
 import inu.thebite.tory.screens.DataScreen.Compose.STODetailsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STOItemsRow
 
+@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("MutableCollectionMutableState")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DataScreen (
     ltoViewModel: LTOViewModel = viewModel(),
     stoViewModel: STOViewModel = viewModel(),
-    stoDetailViewModel: STODetailViewModel = viewModel()
+    stoDetailViewModel: STODetailViewModel = viewModel(),
+    graphViewModel: GraphViewModel = viewModel(),
+    childViewModel: ChildViewModel = viewModel()
 ) {
     val context = LocalContext.current
 
@@ -135,6 +150,56 @@ fun DataScreen (
     val (selectedSTODetailGameDataIndex, setSelectedSTODetailGameDataIndex) = rememberSaveable {
         mutableStateOf(0)
     }
+//    //Chart
+//    val refreshDataset = remember {
+//        mutableIntStateOf(0)
+//    }
+//
+//    val modelProducer = remember {
+//        ChartEntryModelProducer()
+//    }
+//
+//    val datasetForModel = rememberSaveable {
+//        mutableStateListOf(listOf<FloatEntry>())
+//    }
+//    val datasetLineSpec = remember {
+//        arrayListOf<LineChart.LineSpec>()
+//    }
+//
+//    val chartScrollState = rememberChartScrollState()
+//
+//    LaunchedEffect(key1 = refreshDataset){
+//        //rebuild chart
+//        datasetForModel.clear()
+//        datasetLineSpec.clear()
+//        var xPos = 0f
+//        val dataPoints = arrayListOf<FloatEntry>()
+//        datasetLineSpec.add(
+//            LineChart.LineSpec(
+//                lineColor = Green.toArgb(),
+//                lineBackgroundShader = DynamicShaders.fromBrush(
+//                    brush = Brush.verticalGradient(
+//                        listOf(
+//                            Green.copy(com.patrykandpatrick.vico.core.DefaultAlpha.LINE_BACKGROUND_SHADER_START),
+//                            Green.copy(com.patrykandpatrick.vico.core.DefaultAlpha.LINE_BACKGROUND_SHADER_END)
+//
+//                        )
+//                    )
+//                )
+//            )
+//        )
+//        for(i in 1..100){
+//            val randomYFloat = (1..1000).random().toFloat()
+//            dataPoints.add(FloatEntry(x=xPos, y=randomYFloat))
+//            xPos += 1f
+//        }
+//
+//        datasetForModel.add(dataPoints)
+//
+//        modelProducer.setEntries(datasetForModel)
+//    }
+
+
 
     val developZoneItems = listOf<String>(
         "1. 학습준비",
@@ -348,6 +413,9 @@ fun DataScreen (
             selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
             stoDetailViewModel = stoDetailViewModel,
             setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
+            graphViewModel = graphViewModel,
+            ltoViewModel = ltoViewModel,
+            childViewModel = childViewModel
         )
         //게임준비
         Row(
@@ -361,14 +429,7 @@ fun DataScreen (
         }
         //그래프
         if(isLTOGraphSelected){
-            val steps = 5
-            val pointsData = listOf(
-                Point(0f, 40f),
-                Point(1f, 90f),
-                Point(2f, 0f),
-                Point(3f, 4f),
-                Point(4f, 30f),
-            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -376,65 +437,36 @@ fun DataScreen (
                     .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
                     .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
             ) {
-                val xAxisData = AxisData.Builder()
-                    .axisStepSize(100.dp)
-                    .backgroundColor(Color.Transparent)
-                    .steps(pointsData.size - 1)
-                    .labelData { i -> i.toString() }
-                    .labelAndAxisLinePadding(15.dp)
-                    .axisLineColor(MaterialTheme.colorScheme.secondary)
-                    .axisLabelColor(MaterialTheme.colorScheme.secondary)
-                    .build()
-
-                val yAxisData = AxisData.Builder()
-                    .steps(steps)
-                    .backgroundColor(Color.Transparent)
-                    .labelAndAxisLinePadding(20.dp)
-                    .labelData { i ->
-                        val yScale = 100/steps
-                        (i * yScale).toString()
-                    }
-                    .axisLineColor(MaterialTheme.colorScheme.secondary)
-                    .axisLabelColor(MaterialTheme.colorScheme.secondary)
-                    .build()
-
-                val lineChartData = LineChartData(
-                    linePlotData = LinePlotData(
-                        lines = listOf(
-                            Line(
-                                dataPoints = pointsData,
-                                LineStyle(
-                                    color = MaterialTheme.colorScheme.tertiary,
-                                    lineType = LineType.Straight(isDotted = true)
-                                ),
-                                IntersectionPoint(
-                                    color = MaterialTheme.colorScheme.tertiary
-                                ),
-                                SelectionHighlightPoint(color = MaterialTheme.colorScheme.primary),
-                                ShadowUnderLine(
-                                    alpha = 0.5f,
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colorScheme.inversePrimary,
-                                            Color.Transparent
-                                        )
-                                    )
-                                ),
-                                SelectionHighlightPopUp()
+                Card(modifier = Modifier
+                    .fillMaxHeight()
+                    .widthIn(300.dp, 600.dp)
+                    .background(Color.Transparent)
+                ){
+                    LineChart(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .background(Color.Transparent),
+                        linesChartData = listOf(
+                            LineChartData(
+                                points = listOf(LineChartData.Point(10f,"Label 1"),LineChartData.Point(20f,"Label 20"),LineChartData.Point(15f,"Label 3")),
+                                lineDrawer = SolidLineDrawer(color = Color.Black)
+                            ),
+                            LineChartData(
+                                points = listOf(LineChartData.Point(50f,"Label 1"),LineChartData.Point(30f,"Label 2"),LineChartData.Point(15f,"Label 3")),
+                                lineDrawer = SolidLineDrawer(color = Color.Black)
+                            ),
+                            LineChartData(
+                                points = listOf(LineChartData.Point(90f,"Label 1"),LineChartData.Point(90f,"Label 2"),LineChartData.Point(90f,"Label 3")),
+                                lineDrawer = SolidLineDrawer(color = Color.Red)
                             )
-                        ),
-                    ),
-                    backgroundColor = Color.White,
-                    xAxisData = xAxisData,
-                    yAxisData = yAxisData,
-                    gridLines = GridLines(color = MaterialTheme.colorScheme.primary)
-                )
 
-                LineChart(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    lineChartData = lineChartData)
+                        ),
+                        horizontalOffset = 10f
+
+                    )
+                }
+
+
             }
         }
 
