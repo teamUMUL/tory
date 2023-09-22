@@ -431,13 +431,14 @@ fun DataScreen (
             selectedLTOIndex = selectedLTOIndex,
             selectedSTOIndex = selectedSTOIndex,
             selectedSTO = selectedSTO,
+            selectedLTO = selectedLTO,
             selectedSTODetail = selectedSTODetail,
             selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
             stoDetailViewModel = stoDetailViewModel,
             setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
             graphViewModel = graphViewModel,
             ltoViewModel = ltoViewModel,
-            childViewModel = childViewModel
+            childViewModel = childViewModel,
         )
         //게임준비
         Row(

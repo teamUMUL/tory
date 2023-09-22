@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
@@ -46,6 +47,7 @@ fun STODetailTableAndGameResult(
     selectedLTOIndex: Int,
     selectedSTOIndex: Int,
     selectedSTO: String,
+    selectedLTO: String,
     selectedSTODetail: MutableList<String>,
     selectedSTODetailGameDataIndex: Int,
     stoDetailViewModel: STODetailViewModel,
@@ -195,7 +197,18 @@ fun STODetailTableAndGameResult(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = "회차 :", modifier = Modifier.padding(horizontal = 5.dp))
-                            Text(text = "1", modifier = Modifier.padding(horizontal = 5.dp))
+                            Text(
+                                text =
+                                if(
+                                    graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, selectedSTO, childViewModel.selectedChildClass, childViewModel.selectedChildName).isNotNull()
+                                ){
+                                    (graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, selectedSTO, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio.size+1).toString()
+                                } else
+                                {
+                                    "1"
+                                },
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp))
                         }
                     }
                     Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.tertiary)
