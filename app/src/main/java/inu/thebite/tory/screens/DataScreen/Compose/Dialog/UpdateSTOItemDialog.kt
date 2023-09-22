@@ -39,6 +39,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.ChildViewModel
+import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
@@ -49,10 +52,13 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 fun UpdateSTOItemDialog(
     stoViewModel: STOViewModel,
     stoDetailViewModel: STODetailViewModel,
+    graphViewModel: GraphViewModel,
+    childViewModel: ChildViewModel,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
     selectedSTOIndex: Int,
     selectedSTO : String,
+    selectedLTO : String,
     setSelectedSTO : (String) -> Unit,
     setUpdateSTOItem : (Boolean) -> Unit,
     setSelectedSTODetailList: (List<String>) -> Unit
@@ -167,6 +173,24 @@ fun UpdateSTOItemDialog(
                             stoMemoInputValue.text
                         )
                     )
+                    val developZoneItems = listOf<String>(
+                        "1. 학습준비",
+                        "2. 매칭",
+                        "3. 동작모방",
+                        "4. 언어모방",
+                        "5. 변별",
+                        "6. 지시따라하기",
+                        "7. 요구하기",
+                        "8. 명명하기",
+                        "9. 인트라",
+                        "10. 가나다"
+                    )
+                    if(graphViewModel.getGraph(developZoneItems[selectedDevIndex], selectedLTO, beforeSTOName.text, childViewModel.selectedChildClass, childViewModel.selectedChildName).isNotNull()){
+                        graphViewModel.updateSelectedSTO(
+                            graphViewModel.getGraph(developZoneItems[selectedDevIndex], selectedLTO, beforeSTOName.text, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!, stoNameInputValue.text
+                        )
+                    }
+
                     setSelectedSTODetailList(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first.toMutableList())
                     val selectedSTO = stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]
                     setSelectedSTO(selectedSTO)

@@ -66,7 +66,7 @@ class GraphViewModel : ViewModel() {
                     it.className == className &&
                     it.childName == childName
         }
-
+        Log.e("들어온 값", "들어온 값: selectedDEV=$selectedDEV, selectedLTO=$selectedLTO, selectedSTO=$selectedSTO, className=$className, childName=$childName, date=$date, plusRatio=$plusRatio, minusRatio=$minusRatio")
         if (matchingGraph != null) {
             // 이미 데이터가 존재하면 업데이트
             val updatedDate = matchingGraph.date.toMutableList()
@@ -84,7 +84,7 @@ class GraphViewModel : ViewModel() {
                 minusRatio = updatedMinusRatio
             )
 
-            updateGraph(updatedGraph)
+            updateGraph(matchingGraph, updatedGraph)
         } else {
             // 데이터가 존재하지 않으면 추가
             addGraph(
@@ -101,26 +101,36 @@ class GraphViewModel : ViewModel() {
     }
 
     // Read (조회)
-    fun getGraph(selectedDEV: String, selectedLTO: String, selectedSTO: String, className: String, childName: String): Graph {
+    fun getGraph(selectedDEV: String, selectedLTO: String, selectedSTO: String, className: String, childName: String): Graph? {
         val matchingGraph = _graph.find {
             it.selectedDEV == selectedDEV &&
-                    it.selectedLTO == selectedLTO &&
-                    it.selectedSTO == selectedSTO &&
-                    it.className == className &&
-                    it.childName == childName
+            it.selectedLTO == selectedLTO &&
+            it.selectedSTO == selectedSTO &&
+            it.className == className &&
+            it.childName == childName
         }
+        return matchingGraph
+//        return matchingGraph ?: throw IllegalArgumentException(
+//            "그래프 발견 안됨: selectedDEV=$selectedDEV, selectedLTO=$selectedLTO, selectedSTO=$selectedSTO, className=$className, childName=$childName"
+//        ).also {
+//            // 로그에 예외 내용을 출력합니다.
+//            Log.e("GraphViewModel", "그래프 발견 안됨: selectedDEV=$selectedDEV, selectedLTO=$selectedLTO, selectedSTO=$selectedSTO, className=$className, childName=$childName")
+//        }
+    }
+    fun updateSelectedLTO(graphToUpdate: Graph, newSelectedLTO: String) {
+        val updatedGraph = graphToUpdate.copy(selectedLTO = newSelectedLTO)
+        updateGraph(graphToUpdate, updatedGraph)
+    }
 
-        return matchingGraph ?: throw IllegalArgumentException(
-            "그래프 발견 안됨: selectedDEV=$selectedDEV, selectedLTO=$selectedLTO, selectedSTO=$selectedSTO, className=$className, childName=$childName"
-        ).also {
-            // 로그에 예외 내용을 출력합니다.
-            Log.e("GraphViewModel", "그래프 발견 안됨: selectedDEV=$selectedDEV, selectedLTO=$selectedLTO, selectedSTO=$selectedSTO, className=$className, childName=$childName")
-        }
+    // Update selectedSTO for a specific Graph
+    fun updateSelectedSTO(graphToUpdate: Graph, newSelectedSTO: String) {
+        val updatedGraph = graphToUpdate.copy(selectedSTO = newSelectedSTO)
+        updateGraph(graphToUpdate, updatedGraph)
     }
 
     // Update (수정)
-    fun updateGraph(graphToUpdate: Graph) {
-        val index = _graph.indexOfFirst { it == graphToUpdate }
+    fun updateGraph(graphBeforeUpdate: Graph,graphToUpdate: Graph) {
+        val index = _graph.indexOfFirst { it == graphBeforeUpdate }
         if (index != -1) {
             _graph[index] = graphToUpdate
         } else {

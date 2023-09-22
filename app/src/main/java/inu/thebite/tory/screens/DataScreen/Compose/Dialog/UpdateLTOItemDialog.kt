@@ -34,6 +34,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import inu.thebite.tory.ChildViewModel
+import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
@@ -44,6 +46,10 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 fun UpdateLTOItemDialog(
     setUpdateLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
+    graphViewModel: GraphViewModel,
+    childViewModel: ChildViewModel,
+    selectedLTO: String,
+    selectedSTO: String,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
     setSelectedLTO: (String) -> Unit
@@ -99,7 +105,20 @@ fun UpdateLTOItemDialog(
                     .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
+                    val developZoneItems = listOf<String>(
+                        "1. 학습준비",
+                        "2. 매칭",
+                        "3. 동작모방",
+                        "4. 언어모방",
+                        "5. 변별",
+                        "6. 지시따라하기",
+                        "7. 요구하기",
+                        "8. 명명하기",
+                        "9. 인트라",
+                        "10. 가나다"
+                    )
                     ltoViewModel.updateLTO(selectedDevIndex, selectedLTOIndex,beforeLTOName.text,ltoInputValue.text)
+                    graphViewModel.updateSelectedLTO(graphViewModel.getGraph(developZoneItems[selectedDevIndex], beforeLTOName.text,selectedSTO, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!, ltoInputValue.text)
                     setSelectedLTO(ltoInputValue.text)
                     setUpdateLTOItem(false)
                     ltoInputValue = TextFieldValue("")

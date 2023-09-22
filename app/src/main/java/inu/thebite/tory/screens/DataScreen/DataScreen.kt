@@ -3,12 +3,12 @@
 package inu.thebite.tory.screens.DataScreen
 
 import android.annotation.SuppressLint
-import android.graphics.Point
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -26,10 +28,13 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -53,17 +58,27 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.android.animation.SegmentType
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.tehras.charts.line.LineChart
-import com.github.tehras.charts.line.LineChartData
-import com.github.tehras.charts.line.renderer.line.LineDrawer
-import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
-import com.github.tehras.charts.line.renderer.xaxis.SimpleXAxisDrawer
-import com.github.tehras.charts.line.renderer.xaxis.XAxisDrawer
-import com.github.tehras.charts.line.renderer.yaxis.SimpleYAxisDrawer
+import co.yml.charts.axis.AxisData
+import co.yml.charts.common.extensions.isNotNull
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.LineType
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddLTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddSTOItemDialog
@@ -233,6 +248,10 @@ fun DataScreen (
         UpdateLTOItemDialog(
             setUpdateLTOItem = {setUpdateLTOItem(false)},
             ltoViewModel = ltoViewModel,
+            graphViewModel = graphViewModel,
+            childViewModel = childViewModel,
+            selectedSTO = selectedSTO,
+            selectedLTO = selectedLTO,
             selectedDevIndex = selectedDEVIndex,
             selectedLTOIndex = selectedLTOIndex,
             setSelectedLTO = {setSelectedLTO(it)}
@@ -254,10 +273,13 @@ fun DataScreen (
         UpdateSTOItemDialog(
             stoViewModel = stoViewModel,
             stoDetailViewModel = stoDetailViewModel,
+            childViewModel = childViewModel,
+            graphViewModel = graphViewModel,
             selectedDevIndex = selectedDEVIndex,
             selectedLTOIndex = selectedLTOIndex,
             selectedSTOIndex = selectedSTOIndex,
             selectedSTO = selectedSTO,
+            selectedLTO = selectedLTO,
             setUpdateSTOItem = {setUpdateSTOItem(it)},
             setSelectedSTO = {setSelectedSTO(it)},
             setSelectedSTODetailList = {setSelectedSTODetail(it.toMutableList())}
@@ -429,49 +451,212 @@ fun DataScreen (
         }
         //그래프
         if(isLTOGraphSelected){
+            val developZoneItems = listOf<String>(
+                "1. 학습준비",
+                "2. 매칭",
+                "3. 동작모방",
+                "4. 언어모방",
+                "5. 변별",
+                "6. 지시따라하기",
+                "7. 요구하기",
+                "8. 명명하기",
+                "9. 인트라",
+                "10. 가나다"
+            )
 
-            Row(
+            LazyRow(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .height(600.dp)
                     .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
                     .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
             ) {
-                Card(modifier = Modifier
-                    .fillMaxHeight()
-                    .widthIn(300.dp, 600.dp)
-                    .background(Color.Transparent)
-                ){
-                    LineChart(
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .background(Color.Transparent),
-                        linesChartData = listOf(
-                            LineChartData(
-                                points = listOf(LineChartData.Point(10f,"Label 1"),LineChartData.Point(20f,"Label 20"),LineChartData.Point(15f,"Label 3")),
-                                lineDrawer = SolidLineDrawer(color = Color.Black)
+                items(stoViewModel.getSTO(selectedLTOIndex, selectedDEVIndex).first){ stoName ->
+                    if(graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName).isNotNull()){
+                        val steps = 5
+                        var plusIndex = 0f
+                        var minusIndex = 0f
+                        var limitLineIndex = 0f
+                        var successLineIndex = 0f
+                        var minLineIndex = 0f
+
+                        val limitLine = mutableListOf<Point>()
+                        for(a in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                            limitLine.add(Point(limitLineIndex, 100f))
+                            limitLineIndex += 1f
+                        }
+                        val minLine = mutableListOf<Point>()
+                        for(a in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                            minLine.add(Point(minLineIndex, 0f))
+                            minLineIndex += 1f
+                        }
+                        val successLine = mutableListOf<Point>()
+                        for(b in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                            successLine.add(Point(successLineIndex, 90f))
+                            successLineIndex += 1f
+                        }
+                        val pointsData1 = mutableListOf<Point>()
+                        for(plus in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                            pointsData1.add(Point(plusIndex, plus.toInt().toFloat()))
+                            Log.e("성공값", plus.toInt().toFloat().toString())
+                            plusIndex += 1f
+                        }
+                        val pointsData2 = mutableListOf<Point>()
+                        for(minus in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.minusRatio){
+                            pointsData2.add(Point(minusIndex, minus.toInt().toFloat()))
+                            Log.e("실패값", minus.toInt().toFloat().toString())
+                            minusIndex += 1f
+                        }
+                        val xAxisLabelList = graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.date
+                        val xAxisData = AxisData.Builder()
+                            .axisStepSize(50.dp)
+                            .backgroundColor(Color.Transparent)
+                            .steps(pointsData1.size - 1)
+                            .labelData { i -> "          "+xAxisLabelList[i.toInt()].toString().takeLast(5) }
+                            .labelAndAxisLinePadding(0.dp)
+                            .axisLineColor(Color.Black)
+                            .axisLabelColor(Color.Black)
+                            .shouldDrawAxisLineTillEnd(true)
+                            .axisLabelAngle(20f)
+                            .startPadding(10.dp)
+                            .build()
+
+                        val yAxisData = AxisData.Builder()
+                            .steps(steps)
+                            .axisStepSize(50.dp)
+                            .backgroundColor(Color.Transparent)
+                            .labelData { i ->
+                                val yScale = 100 / steps
+                                val yLabel = (i * yScale).toString()+"%"
+                                yLabel
+                            }
+                            .labelAndAxisLinePadding(30.dp)
+                            .axisLineColor(Color.Black)
+                            .axisLabelColor(Color.Black)
+                            .startPadding(10.dp)
+                            .build()
+
+                        val lineChardData = LineChartData(
+                            linePlotData = LinePlotData(
+                                lines = listOf(
+                                    Line(
+                                        dataPoints = pointsData1.toList(),
+                                        LineStyle(
+                                            color = Green,
+                                            lineType = LineType.Straight(isDotted = false)
+                                        ),
+                                        IntersectionPoint(
+                                            color = Green
+                                        ),
+                                        SelectionHighlightPoint(color = Green),
+                                        selectionHighlightPopUp = SelectionHighlightPopUp()
+                                    ),
+                                    Line(
+                                        dataPoints = pointsData2.toList(),
+                                        LineStyle(
+                                            color = Color.Red,
+                                            lineType = LineType.Straight(isDotted = true)
+                                        ),
+                                        IntersectionPoint(
+                                            color = Color.Red
+                                        ),
+                                        SelectionHighlightPoint(color = Color.Yellow),
+                                        selectionHighlightPopUp = SelectionHighlightPopUp()
+                                    ),
+                                    Line(
+                                        dataPoints = limitLine.toList(),
+                                        LineStyle(
+                                            color = Color.Transparent,
+                                            lineType = LineType.Straight(isDotted = false)
+                                        ),
+                                        IntersectionPoint(
+                                            color = Color.Transparent
+                                        ),
+                                        SelectionHighlightPoint(color = Color.Transparent),
+                                    ),
+                                    Line(
+                                        dataPoints = minLine.toList(),
+                                        LineStyle(
+                                            color = Color.Transparent,
+                                            lineType = LineType.Straight(isDotted = false)
+                                        ),
+                                        IntersectionPoint(
+                                            color = Color.Transparent
+                                        ),
+                                        SelectionHighlightPoint(color = Color.Transparent),
+                                    ),
+                                    Line(
+                                        dataPoints = successLine.toList(),
+                                        LineStyle(
+                                            color = Color.Red.copy(0.2f),
+                                            lineType = LineType.Straight(isDotted = true)
+                                        ),
+                                        IntersectionPoint(
+                                            color = Color.Transparent
+                                        ),
+                                        SelectionHighlightPoint(color = Color.Transparent),
+                                    )
+
+                                )
                             ),
-                            LineChartData(
-                                points = listOf(LineChartData.Point(50f,"Label 1"),LineChartData.Point(30f,"Label 2"),LineChartData.Point(15f,"Label 3")),
-                                lineDrawer = SolidLineDrawer(color = Color.Black)
-                            ),
-                            LineChartData(
-                                points = listOf(LineChartData.Point(90f,"Label 1"),LineChartData.Point(90f,"Label 2"),LineChartData.Point(90f,"Label 3")),
-                                lineDrawer = SolidLineDrawer(color = Color.Red)
+                            backgroundColor = Color.Transparent,
+                            xAxisData = xAxisData,
+                            yAxisData = yAxisData,
+                            bottomPadding = 40.dp,
+                            gridLines = GridLines(Color.LightGray),
+                            isZoomAllowed = false
+                        )
+                        Card(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(400.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.Transparent
                             )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(20.dp)
+                            ){
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(0.1f)
+                                        .border(
+                                            4.dp,
+                                            MaterialTheme.colorScheme.secondary,
+                                            RoundedCornerShape(8.dp)
+                                        )
+                                    ,
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = stoName,
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                                LineChart(
+                                    modifier = Modifier
+                                        .fillMaxHeight(),
+                                    lineChartData = lineChardData
+                                )
+                            }
 
-                        ),
-                        horizontalOffset = 10f
+                        }
+                    }
 
-                    )
                 }
 
-
             }
+
+
+
         }
 
     }
 }
+
 
 
 

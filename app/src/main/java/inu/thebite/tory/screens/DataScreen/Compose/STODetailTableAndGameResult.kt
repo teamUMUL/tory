@@ -151,7 +151,6 @@ fun STODetailTableAndGameResult(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(text = "정반응 :", modifier = Modifier.padding(horizontal = 5.dp))
-                            Log.e("인덱스", selectedDEVIndex.toString()+selectedLTOIndex.toString()+selectedSTOIndex.toString())
                             Text(
                                 text = stoDetailViewModel.getSTODetail(
                                     selectedLTOIndex,
@@ -277,15 +276,9 @@ fun STODetailTableAndGameResult(
                                         .fillMaxHeight()
                                         .padding(horizontal = 20.dp, vertical = 5.dp),
                                     onClick = {
-                                        stoDetailViewModel.updateSTODetailValue(
-                                            selectedLTOIndex,
-                                            selectedDEVIndex,
-                                            selectedSTODetail,
-                                            listOf(
-                                                "n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"
-                                            )
-                                        )
+
                                         setSelectedSTODetailGameDataIndex(0)
+                                        Log.e("+숫자", stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size.toString())
                                         graphViewModel.addOrUpdateGraph(
                                             className = childViewModel.selectedChildClass,
                                             childName = childViewModel.selectedChildName,
@@ -293,8 +286,13 @@ fun STODetailTableAndGameResult(
                                             selectedLTO = ltoViewModel.getLTO(selectedDEVIndex).first[selectedLTOIndex],
                                             selectedSTO = selectedSTO,
                                             date = LocalDate.now(),
-                                            plusRatio = (stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.count{it == "+"}/stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size).toFloat(),
-                                            minusRatio =(stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.count{it == "-"}/stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size).toFloat(),
+                                            plusRatio = (stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.count{it == "+"}.toFloat()/stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size.toFloat())*100,
+                                            minusRatio =(stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.count{it == "-"}.toFloat()/stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size.toFloat())*100,
+                                        )
+                                        stoDetailViewModel.updateSTODetailValue(selectedLTOIndex, selectedDEVIndex, selectedSTODetail,
+                                            listOf(
+                                                "n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"
+                                            )
                                         )
                                     },
                                     colors = ButtonDefaults.buttonColors(
