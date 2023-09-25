@@ -35,17 +35,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLTOItemDialog(
     setAddLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
-    stoViewModel: STOViewModel,
-    stoDetailViewModel: STODetailViewModel,
     selectedDevIndex: Int,
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -97,8 +92,6 @@ fun AddLTOItemDialog(
                 onClick = {
                     ltoViewModel.addOrUpdateLTO(selectedDevIndex, ltoInputValue.text, -1)
                     setAddLTOItem(false)
-                    stoViewModel.addLTO(devIndex = selectedDevIndex)
-                    stoDetailViewModel.addLTO(devIndex = selectedDevIndex)
                     ltoInputValue = TextFieldValue("")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)

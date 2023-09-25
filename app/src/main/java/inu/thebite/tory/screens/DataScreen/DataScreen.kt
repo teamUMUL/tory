@@ -43,6 +43,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -53,41 +55,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.DefaultAlpha
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.android.animation.SegmentType
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import co.yml.charts.axis.AxisData
-import co.yml.charts.common.extensions.isNotNull
-import co.yml.charts.common.model.Point
-import co.yml.charts.ui.linechart.LineChart
-import co.yml.charts.ui.linechart.model.GridLines
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
-import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LinePlotData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+
 
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
@@ -108,25 +85,15 @@ import inu.thebite.tory.screens.DataScreen.Compose.STOItemsRow
 @Composable
 fun DataScreen (
     ltoViewModel: LTOViewModel = viewModel(),
-    stoViewModel: STOViewModel = viewModel(),
-    stoDetailViewModel: STODetailViewModel = viewModel(),
-    graphViewModel: GraphViewModel = viewModel(),
     childViewModel: ChildViewModel = viewModel(),
-    stoViewModelByDataClass: STOViewModelByDataClass = viewModel()
+    stoViewModel: STOViewModel = viewModel()
 ) {
     val context = LocalContext.current
 
     val scrollState = rememberScrollState()
 
-    val (stoList, setStoList) = rememberSaveable {
-        mutableStateOf(emptyList<STO>())
-    }
-    val (newStoName, setNewStoName) = rememberSaveable {
-        mutableStateOf("")
-    }
-    val (newStoDescription, setNewStoDescription) = rememberSaveable {
-        mutableStateOf("")
-    }
+    val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
+    val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
 
     val (updateLTOItem, setUpdateLTOItem) = rememberSaveable {
         mutableStateOf(false)
@@ -152,6 +119,7 @@ fun DataScreen (
     val (selectedSTO, setSelectedSTO) = rememberSaveable {
         mutableStateOf("")
     }
+
     val (selectedSTOId, setSelectedSTOId) = rememberSaveable {
         mutableStateOf(-1)
     }
@@ -161,9 +129,9 @@ fun DataScreen (
     val (selectedLTOIndex, setSelectedLTOIndex) = rememberSaveable {
         mutableStateOf(0)
     }
-    val (selectedSTOIndex, setSelectedSTOIndex) = rememberSaveable {
-        mutableStateOf(0)
-    }
+//    val (selectedSTOIndex, setSelectedSTOIndex) = rememberSaveable {
+//        mutableStateOf(0)
+//    }
     val (ltoDetailListIndex, setLTODetailListIndex) = rememberSaveable {
         mutableStateOf(-1)
     }
@@ -174,73 +142,24 @@ fun DataScreen (
     val (isLTOGraphSelected, setIsLTOGraphSelected) = rememberSaveable {
         mutableStateOf(false)
     }
-    val (isSTOGraphSelected, setIsSTOGraphSelected) = rememberSaveable {
-        mutableStateOf(false)
-    }
+//    val (isSTOGraphSelected, setIsSTOGraphSelected) = rememberSaveable {
+//        mutableStateOf(false)
+//    }
+//
+//    val (ltoProgressState, setLTOProgressState) = rememberSaveable {
+//        mutableStateOf(-1)
+//    }
+//    val (stoProgressState, setSTOProgressState) = rememberSaveable {
+//        mutableStateOf(-1)
+//    }
+//    val (stoDetailState, setSTODetailState) = rememberSaveable {
+//        mutableStateOf(mutableListOf<String>())
+//    }
 
-    val (ltoProgressState, setLTOProgressState) = rememberSaveable {
-        mutableStateOf(-1)
-    }
-    val (stoProgressState, setSTOProgressState) = rememberSaveable {
-        mutableStateOf(-1)
-    }
-    val (stoDetailState, setSTODetailState) = rememberSaveable {
-        mutableStateOf(mutableListOf<String>())
-    }
-    val (selectedSTODetail, setSelectedSTODetail) = rememberSaveable {
-        mutableStateOf(mutableListOf<String>())
-    }
     val (selectedSTODetailGameDataIndex, setSelectedSTODetailGameDataIndex) = rememberSaveable {
         mutableStateOf(0)
     }
-//    //Chart
-//    val refreshDataset = remember {
-//        mutableIntStateOf(0)
-//    }
-//
-//    val modelProducer = remember {
-//        ChartEntryModelProducer()
-//    }
-//
-//    val datasetForModel = rememberSaveable {
-//        mutableStateListOf(listOf<FloatEntry>())
-//    }
-//    val datasetLineSpec = remember {
-//        arrayListOf<LineChart.LineSpec>()
-//    }
-//
-//    val chartScrollState = rememberChartScrollState()
-//
-//    LaunchedEffect(key1 = refreshDataset){
-//        //rebuild chart
-//        datasetForModel.clear()
-//        datasetLineSpec.clear()
-//        var xPos = 0f
-//        val dataPoints = arrayListOf<FloatEntry>()
-//        datasetLineSpec.add(
-//            LineChart.LineSpec(
-//                lineColor = Green.toArgb(),
-//                lineBackgroundShader = DynamicShaders.fromBrush(
-//                    brush = Brush.verticalGradient(
-//                        listOf(
-//                            Green.copy(com.patrykandpatrick.vico.core.DefaultAlpha.LINE_BACKGROUND_SHADER_START),
-//                            Green.copy(com.patrykandpatrick.vico.core.DefaultAlpha.LINE_BACKGROUND_SHADER_END)
-//
-//                        )
-//                    )
-//                )
-//            )
-//        )
-//        for(i in 1..100){
-//            val randomYFloat = (1..1000).random().toFloat()
-//            dataPoints.add(FloatEntry(x=xPos, y=randomYFloat))
-//            xPos += 1f
-//        }
-//
-//        datasetForModel.add(dataPoints)
-//
-//        modelProducer.setEntries(datasetForModel)
-//    }
+
 
 
 
@@ -271,8 +190,6 @@ fun DataScreen (
         AddLTOItemDialog(
             setAddLTOItem = { setAddLTOItem(false) },
             ltoViewModel = ltoViewModel,
-            stoViewModel = stoViewModel,
-            stoDetailViewModel = stoDetailViewModel,
             selectedDevIndex = selectedDEVIndex,
         )
     }
@@ -282,10 +199,8 @@ fun DataScreen (
         UpdateLTOItemDialog(
             setUpdateLTOItem = {setUpdateLTOItem(false)},
             ltoViewModel = ltoViewModel,
-            graphViewModel = graphViewModel,
-            childViewModel = childViewModel,
-            selectedSTO = selectedSTO,
-            selectedLTO = selectedLTO,
+            stoViewModel = stoViewModel,
+            selectedSTOId = selectedSTOId,
             selectedDevIndex = selectedDEVIndex,
             selectedLTOIndex = selectedLTOIndex,
             setSelectedLTO = {setSelectedLTO(it)}
@@ -296,30 +211,21 @@ fun DataScreen (
     if (addSTOItem) {
         AddSTOItemDialog(
             setAddSTOItem = { setAddSTOItem(false) },
-            stoViewModel = stoViewModel,
             selectedDevIndex = selectedDEVIndex,
-            selectedLTOIndex = selectedLTOIndex,
-            stoDetailViewModel = stoDetailViewModel,
             childViewModel = childViewModel,
-            stoViewModelByDataClass = stoViewModelByDataClass,
-            selectedLTO = selectedLTO
+            stoViewModel = stoViewModel,
+            selectedLTO = selectedLTO,
+            selectedChildClass = selectedChildClass,
+            selectedChildName = selectedChildName
         )
     }
     //STO 추가 Dialog
     if (updateSTOItem) {
         UpdateSTOItemDialog(
             stoViewModel = stoViewModel,
-            stoDetailViewModel = stoDetailViewModel,
-            childViewModel = childViewModel,
-            graphViewModel = graphViewModel,
-            selectedDevIndex = selectedDEVIndex,
-            selectedLTOIndex = selectedLTOIndex,
-            selectedSTOIndex = selectedSTOIndex,
-            selectedSTO = selectedSTO,
-            selectedLTO = selectedLTO,
+            selectedSTOId = selectedSTOId,
             setUpdateSTOItem = {setUpdateSTOItem(it)},
             setSelectedSTO = {setSelectedSTO(it)},
-            setSelectedSTODetailList = {setSelectedSTODetail(it.toMutableList())}
         )
     }
 
@@ -542,11 +448,10 @@ fun DataScreen (
                 setSelectedSTODetailGameDataIndex(0)
             },
             deleteLTOItem = {
-                stoViewModel.removeLTOAtIndex(ltoViewModel.getLTO(selectedDEVIndex).first.indexOf(it),selectedDEVIndex)
-                stoDetailViewModel.removeLTOAtIndex(ltoViewModel.getLTO(selectedDEVIndex).first.indexOf(it),selectedDEVIndex)
                 ltoViewModel.removeLTO(selectedDEVIndex, it)
+                stoViewModel.deleteSTOsByCriteria(selectedChildClass,selectedChildName,stoViewModel.developZoneItems[selectedDEVIndex], it)
                 setSelectedLTO("")
-                setSelectedSTO("")
+                setSelectedSTOId(-1)
             }
         )
         //LTO Detail--------------------------------------------------------------------------------
@@ -557,37 +462,35 @@ fun DataScreen (
             setDetailListIndex = { setLTODetailListIndex(it) },
             ltoViewModel = ltoViewModel,
             selectedDevIndex = selectedDEVIndex,
-            setProgressState = { setLTOProgressState(it) },
             ltoDetailListIndex = ltoDetailListIndex,
             setLTOUpdateDialog = {setUpdateLTOItem(it)}
         )
         //STO ITEM ---------------------------------------------------------------------------------
         STOItemsRow(
+            childViewModel = childViewModel,
             stoViewModel = stoViewModel,
             selectedDevIndex = selectedDEVIndex,
             selectedLTO = selectedLTO,
             selectedSTO = selectedSTO,
-            selectedLTOIndex = selectedLTOIndex,
             setAddSTOItem = { setAddSTOItem(it) },
+            selectedChildClass = selectedChildClass,
+            selectedChildName = selectedChildName,
             selectSTOItem = { it: String, progressState:Int ->
                 setSelectedSTO(it)
-                setSelectedSTOId(stoViewModelByDataClass.getSTOIdByCriteria(
-                    childClass = childViewModel.selectedChildClass,
-                    childName = childViewModel.selectedChildName,
-                    selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDEVIndex],
+                setSelectedSTOId(stoViewModel.getSTOIdByCriteria(
+                    childClass = selectedChildClass,
+                    childName = selectedChildName,
+                    selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex],
                     selectedLTO = selectedLTO,
                     it
                 )!!)
-                Log.e("선택 STO", selectedSTOIndex.toString())
-                // 이 부분을 LaunchedEffect로 감싸서 업데이트를 다음 프레임으로 보내줍니다.
-                //selectedSTODetailList가 바로 적용되지 않고 한턴씩 밀림 UI에 볂
-                setSelectedSTODetail(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDEVIndex, newIndex).first.toMutableList())
                 setSTODetailListIndex(progressState)
                 setSelectedSTODetailGameDataIndex(0)
             },
             deleteSTOItem = {
-                stoViewModelByDataClass.deleteSTO(stoViewModelByDataClass.getSTOIdByCriteria(childClass = childViewModel.selectedChildClass, childName = childViewModel.selectedChildName, stoViewModelByDataClass.developZoneItems[selectedDEVIndex],selectedLTO, it)!!)
+                stoViewModel.deleteSTO(stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex],selectedLTO, it)!!)
                 setSelectedSTO("")
+                setSelectedSTOId(-1)
                 setSelectedSTODetailGameDataIndex(0)
             }
         )
@@ -595,34 +498,31 @@ fun DataScreen (
         //STO Details Row---------------------------------------------------------------------------
         STODetailsRow(
             selectedSTO = selectedSTO,
-            isSTOGraphSelected = isSTOGraphSelected,
-            setIsSTOGraphSelected = { setIsSTOGraphSelected(it) },
-            stoViewModel = stoViewModel,
-            selectedDevIndex = selectedDEVIndex,
-            selectedLTOIndex = selectedLTOIndex,
+            selectedSTOId = selectedSTOId,
             stoDetailListIndex = stoDetailListIndex,
-            setProgressState = { setSTOProgressState(it) },
+            selectedChildClass = selectedChildClass,
+            selectedChildName = selectedChildName,
+            selectedLTO = selectedLTO,
+            selectedDEVIndex = selectedDEVIndex,
             setSTODetailIndex = { setSTODetailListIndex(it) },
             setUpdateSTOItem = {setUpdateSTOItem(it)},
             gameStart = {
                 setGameDialog(true)
-            }
+            },
+            stoViewModel = stoViewModel
         )
         //STO Detail 내용 및 게임결과
         STODetailTableAndGameResult(
-            selectedDEVIndex = selectedDEVIndex,
-            selectedLTOIndex = selectedLTOIndex,
-            selectedSTOIndex = selectedSTOIndex,
             selectedSTO = selectedSTO,
-            selectedLTO = selectedLTO,
+            selectedSTOId = selectedSTOId,
             selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-            stoDetailViewModel = stoDetailViewModel,
             setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
             setSTODetailListIndex = {setSTODetailListIndex(it)},
-            graphViewModel = graphViewModel,
-            ltoViewModel = ltoViewModel,
-            childViewModel = childViewModel,
-            stoViewModel = stoViewModel
+            stoViewModel = stoViewModel,
+            selectedLTO = selectedLTO,
+            selectedChildName = selectedChildName,
+            selectedChildClass = selectedChildClass,
+            selectedDEVIndex = selectedDEVIndex
         )
         //게임준비
         Row(
@@ -688,13 +588,12 @@ fun DataScreen (
         //그래프
         if(isLTOGraphSelected){
             GraphRow(
-                graphViewModel = graphViewModel,
-                stoViewModel = stoViewModel,
                 childViewModel = childViewModel,
-                stoViewModelByDataClass = stoViewModelByDataClass,
+                stoViewModel = stoViewModel,
                 selectedDEVIndex = selectedDEVIndex,
-                selectedLTOIndex = selectedLTOIndex,
-                selectedLTO =selectedLTO
+                selectedLTO =selectedLTO,
+                selectedChildClass = selectedChildClass,
+                selectedChildName = selectedChildName
             )
         }
 

@@ -28,8 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @Composable

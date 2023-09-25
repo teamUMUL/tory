@@ -38,34 +38,17 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import inu.thebite.tory.ChildViewModel
-import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
 
 @Composable
 fun GraphRow(
-    graphViewModel: GraphViewModel,
-    stoViewModel: STOViewModel,
     childViewModel: ChildViewModel,
-    stoViewModelByDataClass: STOViewModelByDataClass,
+    stoViewModel: STOViewModel,
     selectedDEVIndex: Int,
-    selectedLTOIndex: Int,
     selectedLTO: String,
-
+    selectedChildClass: String,
+    selectedChildName: String
 ){
-    val developZoneItems = listOf<String>(
-        "1. 학습준비",
-        "2. 매칭",
-        "3. 동작모방",
-        "4. 언어모방",
-        "5. 변별",
-        "6. 지시따라하기",
-        "7. 요구하기",
-        "8. 명명하기",
-        "9. 인트라",
-        "10. 가나다"
-    )
-
     LazyRow(
         modifier = Modifier
             .height(600.dp)
@@ -73,9 +56,14 @@ fun GraphRow(
             .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
     ) {
 
-        items(stoViewModelByDataClass.getSTOsByCriteria(className = childViewModel.selectedChildClass, childName = childViewModel.selectedChildName, selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDEVIndex], selectedLTO= selectedLTO)){ sto ->
+        items(stoViewModel.getSTOsByCriteria(
+            className = selectedChildClass,
+            childName = selectedChildName,
+            selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex],
+            selectedLTO= selectedLTO)){ sto ->
             val stoName = sto.stoName
-            if(graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName).isNotNull()){
+            val stoId = sto.stoId
+            if(stoViewModel.getSTOById(stoId)!!.plusRatio.isNotEmpty()){
                 val steps = 5
                 var plusIndex = 0f
                 var minusIndex = 0f
@@ -84,33 +72,33 @@ fun GraphRow(
                 var minLineIndex = 0f
 
                 val limitLine = mutableListOf<Point>()
-                for(a in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                for(a in stoViewModel.getSTOById(stoId)!!.plusRatio){
                     limitLine.add(Point(limitLineIndex, 100f))
                     limitLineIndex += 1f
                 }
                 val minLine = mutableListOf<Point>()
-                for(a in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                for(a in stoViewModel.getSTOById(stoId)!!.plusRatio){
                     minLine.add(Point(minLineIndex, 0f))
                     minLineIndex += 1f
                 }
                 val successLine = mutableListOf<Point>()
-                for(b in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                for(b in stoViewModel.getSTOById(stoId)!!.plusRatio){
                     successLine.add(Point(successLineIndex, 90f))
                     successLineIndex += 1f
                 }
                 val pointsData1 = mutableListOf<Point>()
-                for(plus in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
+                for(plus in stoViewModel.getSTOById(stoId)!!.plusRatio){
                     pointsData1.add(Point(plusIndex, plus.toInt().toFloat()))
                     Log.e("성공값", plus.toInt().toFloat().toString())
                     plusIndex += 1f
                 }
                 val pointsData2 = mutableListOf<Point>()
-                for(minus in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.minusRatio){
+                for(minus in stoViewModel.getSTOById(stoId)!!.minusRatio){
                     pointsData2.add(Point(minusIndex, minus.toInt().toFloat()))
                     Log.e("실패값", minus.toInt().toFloat().toString())
                     minusIndex += 1f
                 }
-                val xAxisLabelList = graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.date
+                val xAxisLabelList = stoViewModel.getSTOById(stoId)!!.date
                 val xAxisData = AxisData.Builder()
                     .axisStepSize(50.dp)
                     .backgroundColor(Color.Transparent)

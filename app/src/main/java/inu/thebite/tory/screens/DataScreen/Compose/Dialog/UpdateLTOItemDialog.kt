@@ -34,24 +34,19 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import inu.thebite.tory.ChildViewModel
-import inu.thebite.tory.screens.DataScreen.GraphViewModel
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateLTOItemDialog(
     setUpdateLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
-    graphViewModel: GraphViewModel,
-    childViewModel: ChildViewModel,
-    selectedLTO: String,
-    selectedSTO: String,
+    stoViewModel: STOViewModel,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
+    selectedSTOId: Int,
     setSelectedLTO: (String) -> Unit
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -118,9 +113,16 @@ fun UpdateLTOItemDialog(
                         "10. 가나다"
                     )
                     ltoViewModel.updateLTO(selectedDevIndex, selectedLTOIndex,beforeLTOName.text,ltoInputValue.text)
-                    graphViewModel.updateSelectedLTO(graphViewModel.getGraph(developZoneItems[selectedDevIndex], beforeLTOName.text,selectedSTO, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!, ltoInputValue.text)
                     setSelectedLTO(ltoInputValue.text)
                     setUpdateLTOItem(false)
+                    if(stoViewModel.getSTOById(selectedSTOId).isNotNull()){
+                        stoViewModel.updateSTO(
+                            stoViewModel.getSTOById(selectedSTOId)!!.copy(
+                                selectedLTO = ltoInputValue.text
+                            )
+                        )
+                    }
+
                     ltoInputValue = TextFieldValue("")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)

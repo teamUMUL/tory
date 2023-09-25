@@ -1,8 +1,6 @@
 package inu.thebite.tory.screens.DataScreen.Compose
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,19 +27,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun STOItemsRow(
+    childViewModel: ChildViewModel,
     stoViewModel: STOViewModel,
     selectedDevIndex: Int,
     selectedLTO: String,
     selectedSTO: String,
-    selectedLTOIndex: Int,
+    selectedChildClass: String,
+    selectedChildName: String,
     setAddSTOItem: (Boolean) -> Unit,
     deleteSTOItem: (String) -> Unit,
     selectSTOItem: (it:String, progressState:Int) -> Unit
@@ -114,18 +111,25 @@ fun STOItemsRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if(selectedLTO != ""){
-                items(stoViewModel.getSTOWithOneData(selectedLTOIndex, selectedDevIndex)){ ltoItem ->
-                    val (description, progressState) = ltoItem.split(": ")
+                items(stoViewModel.getSTOsByCriteria(
+                    className = selectedChildClass,
+                    childName = selectedChildName,
+                    selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
+                    selectedLTO = selectedLTO,
+                    )
+                ){ stoItem ->
+                    val description = stoItem.stoName
+                    val progressState = stoItem.stoState
                     LazyColumnItemCanDelete(
                         item = description,
                         selectedItem = selectedSTO,
-                        progressState = progressState.toInt(),
+                        progressState = progressState,
 
                         delete = {
                             deleteSTOItem(it)
                         },
                         select = {
-                            selectSTOItem(it, progressState.toInt())
+                            selectSTOItem(it, progressState)
                         },
                         listOf(Color.Blue, Color.Green, Color.Red)
                     )

@@ -1,115 +1,151 @@
 package inu.thebite.tory.screens.DataScreen
 
-import android.annotation.SuppressLint
-import android.content.Context
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+data class STO(
+    var className: String,
+    var childName: String,
+    var selectedDEV: String,
+    var selectedLTO: String,
+    var stoId: Int,
+    var stoName: String,
+    var stoDescription: String,
+    var stoTryNum: Int,
+    var stoSuccessStandard: String,
+    var stoMethod: String,
+    var stoSchedule: String,
+    var stoMemo: String,
+    var stoState: Int,
+    var gameResult: List<String>,
+    var date: List<LocalDate>,
+    var plusRatio: List<Float>,
+    var minusRatio: List<Float>
+)
 
-@SuppressLint("MutableCollectionMutableState")
-class STOViewModel: ViewModel() {
 
-    private val ltoLiveDataLists =Array(10){mutableListOf<MutableLiveData<Map<String, Int>>>()}
-    private val ltoNum = MutableLiveData(0)
+class STOViewModel : ViewModel() {
+    private val stoRepository = STORepository()
 
-    fun addLTO(devIndex:Int) {
-        ltoNum.value = (ltoNum.value ?: 0) + 1
-        // 새로운 LTO 추가 시 LiveData 생성
-        ltoLiveDataLists[devIndex].add(MutableLiveData(emptyMap()))
+    // Initialize the stoId counter with 1
+    private var nextStoId = 1
+
+    // Function to generate and return the next available stoId
+    private fun getNextStoId(): Int {
+        val id = nextStoId
+        nextStoId++
+        return id
     }
 
 
-    fun removeLTOAtIndex(index: Int, devIndex: Int) {
-        if (index >= 0 && index < ltoLiveDataLists[devIndex].size) {
-            ltoNum.value = (ltoNum.value ?: 0) - 1
-            ltoLiveDataLists[devIndex].removeAt(index)
+    val developZoneItems = listOf<String>(
+        "1. 학습준비",
+        "2. 매칭",
+        "3. 동작모방",
+        "4. 언어모방",
+        "5. 변별",
+        "6. 지시따라하기",
+        "7. 요구하기",
+        "8. 명명하기",
+        "9. 인트라",
+        "10. 가나다"
+    )
+
+    // Function to create a new STO with an automatically generated stoId
+    fun createSTO(
+        className: String,
+        childName: String,
+        selectedDEV: String,
+        selectedLTO: String,
+        stoName: String,
+        stoDescription: String,
+        stoTryNum: Int,
+        stoSuccessStandard: String,
+        stoMethod: String,
+        stoSchedule: String,
+        stoMemo: String,
+        stoState: Int,
+        gameResult: List<String>,
+        date: List<LocalDate>,
+        plusRatio: List<Float>,
+        minusRatio: List<Float>
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newSTO = STO(
+                stoId = getNextStoId(),
+                className = className,
+                childName = childName,
+                selectedDEV = selectedDEV,
+                selectedLTO = selectedLTO,
+                stoName = stoName,
+                stoDescription = stoDescription,
+                stoTryNum = stoTryNum,
+                stoSuccessStandard = stoSuccessStandard,
+                stoMethod = stoMethod,
+                stoSchedule = stoSchedule,
+                stoMemo = stoMemo,
+                stoState = stoState,
+                gameResult= gameResult,
+                date = date,
+                plusRatio = plusRatio,
+                minusRatio = minusRatio
+            )
+            stoRepository.createSTO(newSTO)
         }
     }
 
-    fun addOrUpdateSTO(ltoIndex: Int,devIndex: Int, key: String, value: Int) {
-        if (ltoIndex >= 0 && ltoIndex < ltoLiveDataLists[devIndex].size) {
-            val currentMap = ltoLiveDataLists[devIndex][ltoIndex].value?.toMutableMap() ?: mutableMapOf()
-            currentMap[key] = value
-            ltoLiveDataLists[devIndex][ltoIndex].value = currentMap
-        }
+    fun getSTOsByCriteria(
+        className: String? = null,
+        childName: String? = null,
+        selectedDEV: String? = null,
+        selectedLTO: String? = null
+    ) = stoRepository.getSTOsByCriteria(className, childName, selectedDEV, selectedLTO)
+
+    fun getSTOIdByCriteria(
+        childClass: String,
+        childName: String,
+        selectedDEV: String,
+        selectedLTO: String,
+        selectedSTO: String
+    ): Int? {
+        return stoRepository.getSTOIdByCriteria(
+            className = childClass,
+            childName = childName,
+            selectedDEV = selectedDEV,
+            selectedLTO = selectedLTO,
+            stoName = selectedSTO
+        )
     }
-    fun updateSTO(ltoIndex: Int, devIndex: Int, oldKey: String, newKey: String) {
-        if (ltoIndex >= 0 && ltoIndex < ltoLiveDataLists[devIndex].size) {
-            val currentMap = ltoLiveDataLists[devIndex][ltoIndex].value?.toMutableMap()
-            if (currentMap != null && currentMap.containsKey(oldKey)) {
-                val oldValue : Int? = currentMap[oldKey]
+    fun getSTOById(stoId: Int): STO? {
+        return stoRepository.getSTOById(stoId)
+    }
 
-                val beforeSTONameList: List<String> = currentMap.keys.toList()
-                var foundOldKey = false
-                val behindOldKeyList = mutableListOf<String>()
-                val aheadOldKeyList = mutableListOf<String>()
-
-                for(element in beforeSTONameList){
-                    if(foundOldKey){
-                        behindOldKeyList.add(element)
-                    }else{
-                        if(element != oldKey){
-                            aheadOldKeyList.add(element)
-                        }
-                    }
-                    if(element == oldKey){
-                        foundOldKey = true
-                    }
-                }
-                val resultKeyList = mutableListOf<String>()
-                resultKeyList.addAll(aheadOldKeyList)
-                resultKeyList.add(newKey)
-                resultKeyList.addAll(behindOldKeyList)
-
-                val beforeSTOStateList: List<Int> = currentMap.values.toList()
-                var foundOldValue = false
-                val behindOldValueList = mutableListOf<Int>()
-                val aheadOldValueList = mutableListOf<Int>()
-
-                for(element in beforeSTOStateList){
-                    if(foundOldValue){
-                        behindOldValueList.add(element)
-                    }else{
-                        if(element != oldValue){
-                            aheadOldValueList.add(element)
-                        }
-                    }
-                    if(element == oldValue){
-                        foundOldValue = true
-                    }
-                }
-                val resultValueList = mutableListOf<Int>()
-                resultValueList.addAll(aheadOldValueList)
-                resultValueList.add(oldValue!!)
-                resultValueList.addAll(behindOldValueList)
-
-                val resultMap = resultKeyList.zip(resultValueList).toMap()
-
-                ltoLiveDataLists[devIndex][ltoIndex].value = resultMap
-            }
+    // Update an existing STO entry
+    fun updateSTO(updatedSTO: STO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            stoRepository.updateSTO(updatedSTO)
         }
     }
 
-
-    fun getSTO(ltoIndex: Int,devIndex: Int): Pair<List<String>, List<Int>> {
-        val map = ltoLiveDataLists[devIndex].getOrNull(ltoIndex)?.value ?: emptyMap()
-        val keys = map.keys.toList()
-        val values = map.values.toList()
-        return Pair(keys, values)
+    // Delete an STO entry by its ID
+    fun deleteSTO(stoId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            stoRepository.deleteSTO(stoId)
+        }
     }
 
-    fun getSTOWithOneData(ltoIndex: Int, devIndex: Int): List<String> {
-        val map = ltoLiveDataLists[devIndex].getOrNull(ltoIndex)?.value ?: emptyMap()
-        return map.entries.map { (key, value) -> "$key: $value" }
-    }
-
-    fun removeSTO(ltoIndex: Int,devIndex: Int, key: String) {
-        if (ltoIndex >= 0 && ltoIndex < ltoLiveDataLists[devIndex].size) {
-            val currentMap = ltoLiveDataLists[devIndex][ltoIndex].value?.toMutableMap() ?: mutableMapOf()
-            currentMap.remove(key)
-            ltoLiveDataLists[devIndex][ltoIndex].value = currentMap
+    fun deleteSTOsByCriteria(
+        childClass: String,
+        childName: String,
+        selectedDEV: String,
+        selectedLTO: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            stoRepository.deleteSTOsByCriteria(childClass, childName, selectedDEV, selectedLTO)
         }
     }
 }

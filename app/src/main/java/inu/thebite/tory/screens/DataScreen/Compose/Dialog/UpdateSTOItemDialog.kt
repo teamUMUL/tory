@@ -39,76 +39,42 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.ChildViewModel
-import inu.thebite.tory.screens.DataScreen.GraphViewModel
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
 
 
 @SuppressLint("MutableCollectionMutableState")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateSTOItemDialog(
     stoViewModel: STOViewModel,
-    stoDetailViewModel: STODetailViewModel,
-    graphViewModel: GraphViewModel,
-    childViewModel: ChildViewModel,
-    stoViewModelByDataClass: STOViewModelByDataClass,
-    selectedDevIndex: Int,
-    selectedLTOIndex: Int,
-    selectedSTOIndex: Int,
-    selectedSTO : String,
-    selectedLTO : String,
+    selectedSTOId: Int,
     setSelectedSTO : (String) -> Unit,
     setUpdateSTOItem : (Boolean) -> Unit,
-    setSelectedSTODetailList: (List<String>) -> Unit
 ) {
     val addSTOScrollState = rememberScrollState()
 
     var stoNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]))
+        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoName))
     }
     var stoDetailInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[1]))
+        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoDescription))
     }
     var stoTryNumInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[2]))
+        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoTryNum.toString()))
     }
     var stoSuccessStandardInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[3]))
+        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoSuccessStandard))
     }
     var stoMethodInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[4]))
+        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoMethod))
+
     }
     var stoScheduleInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[5]))
+        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoSchedule))
+
     }
     var stoMemoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[6]))
-    }
+        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoMemo))
 
-    val beforeSTOName by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]))
-    }
-    val beforeSTODetail by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[1]))
-    }
-    val beforeSTOTryNum by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[2]))
-    }
-    val beforeSTOSuccessStandard by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[3]))
-    }
-    val beforeSTOMethod by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[4]))
-    }
-    val beforeSTOSchedule by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[5]))
-    }
-    val beforeSTOMemo by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[6]))
     }
 
     Dialog(
@@ -152,38 +118,9 @@ fun UpdateSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    stoViewModel.updateSTO(selectedLTOIndex,selectedDevIndex,beforeSTOName.text,stoNameInputValue.text)
-                    stoDetailViewModel.updateSTODetail(
-                        selectedLTOIndex,
-                        selectedDevIndex,
-                        listOf<String>(
-                            beforeSTOName.text,
-                            beforeSTODetail.text,
-                            beforeSTOTryNum.text,
-                            beforeSTOSuccessStandard.text,
-                            beforeSTOMethod.text,
-                            beforeSTOSchedule.text,
-                            beforeSTOMemo.text
-                        ),
-                        listOf(
-                            stoNameInputValue.text,
-                            stoDetailInputValue.text,
-                            stoTryNumInputValue.text,
-                            stoSuccessStandardInputValue.text,
-                            stoMethodInputValue.text,
-                            stoScheduleInputValue.text,
-                            stoMemoInputValue.text
-                        )
-                    )
                     //-----------
-                    val stoId = stoViewModelByDataClass.getSTOIdByCriteria(
-                        childClass = childViewModel.selectedChildClass,
-                        childName = childViewModel.selectedChildName,
-                        selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDevIndex],
-                        selectedLTO = selectedLTO,
-                        selectedSTO = selectedSTO
-                    )
-                    val sto = stoViewModelByDataClass.getSTOById(stoId!!)
+
+                    val sto = stoViewModel.getSTOById(selectedSTOId)
                     sto?.stoName = stoNameInputValue.text
                     sto?.stoDescription = stoDetailInputValue.text
                     sto?.stoTryNum = stoTryNumInputValue.text.toInt()
@@ -191,28 +128,9 @@ fun UpdateSTOItemDialog(
                     sto?.stoMethod = stoMethodInputValue.text
                     sto?.stoSchedule = stoScheduleInputValue.text
                     sto?.stoMemo = stoMemoInputValue.text
-                    stoViewModelByDataClass.updateSTO(sto!!)
+                    stoViewModel.updateSTO(sto!!)
                     //----------------
-                    val developZoneItems = listOf<String>(
-                        "1. 학습준비",
-                        "2. 매칭",
-                        "3. 동작모방",
-                        "4. 언어모방",
-                        "5. 변별",
-                        "6. 지시따라하기",
-                        "7. 요구하기",
-                        "8. 명명하기",
-                        "9. 인트라",
-                        "10. 가나다"
-                    )
-                    if(graphViewModel.getGraph(developZoneItems[selectedDevIndex], selectedLTO, beforeSTOName.text, childViewModel.selectedChildClass, childViewModel.selectedChildName).isNotNull()){
-                        graphViewModel.updateSelectedSTO(
-                            graphViewModel.getGraph(developZoneItems[selectedDevIndex], selectedLTO, beforeSTOName.text, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!, stoNameInputValue.text
-                        )
-                    }
-
-                    setSelectedSTODetailList(stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first.toMutableList())
-                    val selectedSTO = stoDetailViewModel.getSTODetail(selectedLTOIndex, selectedDevIndex, selectedSTOIndex).first[0]
+                    val selectedSTO = stoViewModel.getSTOById(selectedSTOId)!!.stoName
                     setSelectedSTO(selectedSTO)
                     setUpdateSTOItem(false)
                     stoNameInputValue = TextFieldValue("")

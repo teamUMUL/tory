@@ -30,27 +30,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.screens.DataScreen.Compose.Dialog.UpdateSTOItemDialog
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
 
 
 @Composable
 fun STODetailsRow(
     selectedSTO: String,
-    isSTOGraphSelected: Boolean,
-    setIsSTOGraphSelected: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
-    stoViewModelByDataClass: STOViewModelByDataClass,
-    childViewModel: ChildViewModel,
-    selectedDevIndex: Int,
-    selectedLTOIndex: Int,
-    selectedLTO: String,
+    selectedSTOId: Int,
     stoDetailListIndex: Int,
-    setProgressState: (Int) -> Unit,
+    selectedChildClass: String,
+    selectedChildName: String,
+    selectedLTO : String,
+    selectedDEVIndex : Int,
     setSTODetailIndex: (Int) -> Unit,
     setUpdateSTOItem: (Boolean) -> Unit,
     gameStart: () -> Unit
@@ -83,27 +76,7 @@ fun STODetailsRow(
                     modifier = Modifier
                         .padding(end = 10.dp)
                 )
-                if(selectedSTO != ""){
-//                    OutlinedButton(
-//                        modifier = Modifier
-//                            .size(40.dp),
-//                        border = BorderStroke(2.dp, Color.Black),
-//                        shape = RoundedCornerShape(5.dp),
-//                        onClick = {
-//                            setIsSTOGraphSelected(!isSTOGraphSelected)
-//                        },
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = if(isSTOGraphSelected) MaterialTheme.colorScheme.secondary else Color.Transparent
-//                        ),
-//                        contentPadding = PaddingValues(2.dp)
-//                    ){
-//                        Icon(
-//                            modifier = Modifier
-//                                .size(35.dp),
-//                            painter = painterResource(id = R.drawable.icon_chart_inner),
-//                            contentDescription = null,
-//                            tint = Color.Black)
-//                    }
+                if(selectedSTO != "" && stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = selectedLTO, selectedSTO= selectedSTO) == selectedSTOId){
                     Spacer(modifier = Modifier.width(10.dp))
                     OutlinedButton(
                         modifier = Modifier
@@ -147,7 +120,7 @@ fun STODetailsRow(
                 }
             }
 
-            if(selectedSTO != "") {
+            if(selectedSTO != ""&& stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = selectedLTO, selectedSTO= selectedSTO) == selectedSTOId) {
                 Box(
                     modifier = Modifier
                         .width(300.dp)
@@ -163,24 +136,10 @@ fun STODetailsRow(
                             OutlinedButton(
                                 onClick = {
                                     setSTODetailIndex(index)
-                                    setProgressState(index)
-                                    stoViewModel.addOrUpdateSTO(
-                                        selectedLTOIndex,
-                                        selectedDevIndex,
-                                        selectedSTO,
-                                        index
-                                    )
 
-                                    val stoId = stoViewModelByDataClass.getSTOIdByCriteria(
-                                        childClass = childViewModel.selectedChildClass,
-                                        childName = childViewModel.selectedChildName,
-                                        selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDevIndex],
-                                        selectedLTO = selectedLTO,
-                                        selectedSTO = selectedSTO
-                                    )
-                                    val sto = stoViewModelByDataClass.getSTOById(stoId!!)
+                                    val sto = stoViewModel.getSTOById(selectedSTOId)
                                     sto?.stoState= index
-                                    stoViewModelByDataClass.updateSTO(sto!!)
+                                    stoViewModel.updateSTO(sto!!)
                                 },
                                 shape = when (index) {
                                     // left outer button

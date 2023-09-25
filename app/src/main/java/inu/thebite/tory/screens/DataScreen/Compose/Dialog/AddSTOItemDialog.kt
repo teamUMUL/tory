@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.DataScreen.Compose.Dialog
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,23 +39,19 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.ChildViewModel
-import inu.thebite.tory.screens.DataScreen.STO
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
+import java.time.LocalDate
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddSTOItemDialog(
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
-    stoDetailViewModel: STODetailViewModel,
-    stoViewModelByDataClass: STOViewModelByDataClass,
     childViewModel : ChildViewModel,
     selectedLTO : String,
+    selectedChildClass: String,
+    selectedChildName: String,
     selectedDevIndex: Int,
-    selectedLTOIndex: Int,
 ) {
     val addSTOScrollState = rememberScrollState()
 
@@ -65,7 +62,7 @@ fun AddSTOItemDialog(
         mutableStateOf(TextFieldValue())
     }
     var stoTryNumInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue("15"))
     }
     var stoSuccessStandardInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
@@ -120,10 +117,11 @@ fun AddSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    stoViewModelByDataClass.createSTO(
-                        className = childViewModel.selectedChildClass,
-                        childName = childViewModel.selectedChildName,
-                        selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDevIndex],
+                    Log.e("sto 추가 당시 선택된 아이 정보", selectedChildClass+selectedChildName)
+                    stoViewModel.createSTO(
+                        className = selectedChildClass,
+                        childName = selectedChildName,
+                        selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
                         selectedLTO = selectedLTO,
                         stoName = stoNameInputValue.text,
                         stoDescription = stoDetailInputValue.text,
@@ -132,20 +130,12 @@ fun AddSTOItemDialog(
                         stoMethod = stoMethodInputValue.text,
                         stoSchedule = stoScheduleInputValue.text,
                         stoMemo = stoMemoInputValue.text,
-                        stoState = -1
+                        stoState = -1,
+                        gameResult = List(15) { "n" },
+                        date = mutableListOf<LocalDate>(),
+                        plusRatio = mutableListOf<Float>(),
+                        minusRatio =mutableListOf<Float>()
                     )
-
-
-                    stoViewModel.addOrUpdateSTO(selectedLTOIndex,selectedDevIndex, stoNameInputValue.text, -1)
-                    stoDetailViewModel.addOrUpdateSTODetail(selectedLTOIndex,selectedDevIndex, listOf(
-                        stoNameInputValue.text,
-                        stoDetailInputValue.text,
-                        stoTryNumInputValue.text,
-                        stoSuccessStandardInputValue.text,
-                        stoMethodInputValue.text,
-                        stoScheduleInputValue.text,
-                        stoMemoInputValue.text
-                    ), listOf("n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"))
                     setAddSTOItem(false)
                     stoNameInputValue = TextFieldValue("")
                     stoDetailInputValue = TextFieldValue("")

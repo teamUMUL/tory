@@ -46,11 +46,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.screens.DataScreen.DataScreen
-import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.GameScreen
 import inu.thebite.tory.screens.HomeScreen
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
@@ -70,10 +68,8 @@ fun MainCompose(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
 ) {
     val ltoViewModel : LTOViewModel = viewModel()
-    val stoViewModel : STOViewModel = viewModel()
-    val stoDetailViewModel : STODetailViewModel = viewModel()
-    val graphViewModel : GraphViewModel = viewModel()
     val childViewModel : ChildViewModel = viewModel()
+    val stoViewModel : STOViewModel = viewModel()
 
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
@@ -96,6 +92,9 @@ fun MainCompose(
         "오전반(화목)",
         "오후반(화목)"
     )
+
+
+
     val (selectedChildClass, setSelectedChildClass) = rememberSaveable {
         mutableStateOf(classList[0])
     }
@@ -178,8 +177,11 @@ fun MainCompose(
                         setSelectedChildName(childList[selectedChildClassIndex][selectedChildrenIndex])
                         setSelectedChildClass(classList[selectedChildClassIndex])
                         Log.e("아이 선택", "selectedChildName : ${childList[selectedChildClassIndex][selectedChildrenIndex]}")
-                        viewModel.selectedChildName = selectedChildName
-                        viewModel.selectedChildClass = selectedChildClass
+                        val selectedChildName = childList[selectedChildClassIndex][selectedChildrenIndex]
+                        val selectedChildClass = classList[selectedChildClassIndex]
+                        viewModel.setSelectedChildName(selectedChildName)
+                        viewModel.setSelectedChildClass(selectedChildClass)
+
                         setChildDialogOpen(false)
                     }
                 ){
@@ -268,10 +270,8 @@ fun MainCompose(
                 composable(AllDestinations.DATA) {
                     DataScreen(
                         ltoViewModel = ltoViewModel,
-                        stoViewModel = stoViewModel,
-                        stoDetailViewModel = stoDetailViewModel,
-                        graphViewModel = graphViewModel,
-                        childViewModel = childViewModel
+                        childViewModel = childViewModel,
+                        stoViewModel = stoViewModel
                     )
                 }
 

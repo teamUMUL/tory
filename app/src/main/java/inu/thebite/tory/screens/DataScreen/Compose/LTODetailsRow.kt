@@ -44,7 +44,6 @@ fun LTODetailsRow(
     setDetailListIndex: (Int) -> Unit,
     ltoViewModel: LTOViewModel,
     selectedDevIndex: Int,
-    setProgressState: (Int) -> Unit,
     ltoDetailListIndex: Int,
     setLTOUpdateDialog: (Boolean) -> Unit
 ) {
@@ -164,7 +163,6 @@ fun LTODetailsRow(
                                 OutlinedButton(
                                     onClick = {
                                         setDetailListIndex(index)
-                                        setProgressState(index)
                                         ltoViewModel.addOrUpdateLTO(selectedDevIndex, selectedLTO, index)
                                     },
                                     shape =  when (index) {

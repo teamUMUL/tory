@@ -61,4 +61,22 @@ class STORepository {
             stoList.removeAt(index)
         }
     }
+
+    fun deleteSTOsByCriteria(
+        childClass: String,
+        childName: String,
+        selectedDEV: String,
+        selectedLTO: String
+    ) {
+        val matchingSTOs = stoList.filter { sto ->
+            (childClass == null || sto.className == childClass) &&
+            (childName == null || sto.childName == childName) &&
+            (selectedDEV == null || sto.selectedDEV == selectedDEV) &&
+            (selectedLTO == null || sto.selectedLTO == selectedLTO)
+        }
+
+        matchingSTOs.forEach { sto ->
+            stoList.remove(sto)
+        }
+    }
 }
