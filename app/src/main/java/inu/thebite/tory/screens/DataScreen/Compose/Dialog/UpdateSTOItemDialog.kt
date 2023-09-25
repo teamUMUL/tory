@@ -44,6 +44,7 @@ import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -54,6 +55,7 @@ fun UpdateSTOItemDialog(
     stoDetailViewModel: STODetailViewModel,
     graphViewModel: GraphViewModel,
     childViewModel: ChildViewModel,
+    stoViewModelByDataClass: STOViewModelByDataClass,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
     selectedSTOIndex: Int,
@@ -173,6 +175,24 @@ fun UpdateSTOItemDialog(
                             stoMemoInputValue.text
                         )
                     )
+                    //-----------
+                    val stoId = stoViewModelByDataClass.getSTOIdByCriteria(
+                        childClass = childViewModel.selectedChildClass,
+                        childName = childViewModel.selectedChildName,
+                        selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDevIndex],
+                        selectedLTO = selectedLTO,
+                        selectedSTO = selectedSTO
+                    )
+                    val sto = stoViewModelByDataClass.getSTOById(stoId!!)
+                    sto?.stoName = stoNameInputValue.text
+                    sto?.stoDescription = stoDetailInputValue.text
+                    sto?.stoTryNum = stoTryNumInputValue.text.toInt()
+                    sto?.stoSuccessStandard = stoSuccessStandardInputValue.text
+                    sto?.stoMethod = stoMethodInputValue.text
+                    sto?.stoSchedule = stoScheduleInputValue.text
+                    sto?.stoMemo = stoMemoInputValue.text
+                    stoViewModelByDataClass.updateSTO(sto!!)
+                    //----------------
                     val developZoneItems = listOf<String>(
                         "1. 학습준비",
                         "2. 매칭",

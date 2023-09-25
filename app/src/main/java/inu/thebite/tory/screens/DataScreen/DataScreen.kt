@@ -3,7 +3,9 @@
 package inu.thebite.tory.screens.DataScreen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,8 +18,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -33,13 +37,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -57,6 +66,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.android.animation.SegmentType
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -80,11 +90,13 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 
 import inu.thebite.tory.ChildViewModel
+import inu.thebite.tory.R
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddLTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddSTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.DevelopZoneRow
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.UpdateLTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.UpdateSTOItemDialog
+import inu.thebite.tory.screens.DataScreen.Compose.GraphRow
 import inu.thebite.tory.screens.DataScreen.Compose.LTODetailsRow
 import inu.thebite.tory.screens.DataScreen.Compose.LTOItemsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STODetailTableAndGameResult
@@ -99,11 +111,22 @@ fun DataScreen (
     stoViewModel: STOViewModel = viewModel(),
     stoDetailViewModel: STODetailViewModel = viewModel(),
     graphViewModel: GraphViewModel = viewModel(),
-    childViewModel: ChildViewModel = viewModel()
+    childViewModel: ChildViewModel = viewModel(),
+    stoViewModelByDataClass: STOViewModelByDataClass = viewModel()
 ) {
     val context = LocalContext.current
 
     val scrollState = rememberScrollState()
+
+    val (stoList, setStoList) = rememberSaveable {
+        mutableStateOf(emptyList<STO>())
+    }
+    val (newStoName, setNewStoName) = rememberSaveable {
+        mutableStateOf("")
+    }
+    val (newStoDescription, setNewStoDescription) = rememberSaveable {
+        mutableStateOf("")
+    }
 
     val (updateLTOItem, setUpdateLTOItem) = rememberSaveable {
         mutableStateOf(false)
@@ -120,13 +143,18 @@ fun DataScreen (
     val (gameDialog, setGameDialog) = rememberSaveable {
         mutableStateOf(false)
     }
+    val (addGameItem, setAddGameItem) = rememberSaveable {
+        mutableStateOf(false)
+    }
     val (selectedLTO, setSelectedLTO) = rememberSaveable {
         mutableStateOf("")
     }
     val (selectedSTO, setSelectedSTO) = rememberSaveable {
         mutableStateOf("")
     }
-
+    val (selectedSTOId, setSelectedSTOId) = rememberSaveable {
+        mutableStateOf(-1)
+    }
     val (selectedDEVIndex, setSelectedDEVIndex) = rememberSaveable {
         mutableStateOf(0)
     }
@@ -229,8 +257,14 @@ fun DataScreen (
         "10. 가나다"
     )
 
+    val selectedIdxMap = remember {
+        mutableStateMapOf<String, Int>()
+    }
+    val selectedGameItems = remember { mutableStateListOf<String>() }
 
-
+    val (mainGameItem, setMainGameItem) = rememberSaveable {
+        mutableStateOf("")
+    }
 
     //LTO 추가 Dialog
     if (addLTOItem) {
@@ -266,6 +300,9 @@ fun DataScreen (
             selectedDevIndex = selectedDEVIndex,
             selectedLTOIndex = selectedLTOIndex,
             stoDetailViewModel = stoDetailViewModel,
+            childViewModel = childViewModel,
+            stoViewModelByDataClass = stoViewModelByDataClass,
+            selectedLTO = selectedLTO
         )
     }
     //STO 추가 Dialog
@@ -331,6 +368,148 @@ fun DataScreen (
         }
     }
 
+    if(addGameItem){
+
+        Dialog(
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            ),
+            onDismissRequest = {
+                setAddGameItem(false)
+            }
+        ){
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize(),
+                shape = RoundedCornerShape(10.dp),
+                color = Color.White
+            ){
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+
+                ){
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.1f),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 20.dp),
+                            text = "교육준비",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        IconButton(
+                            modifier = Modifier
+                                .padding(end = 20.dp),
+                            onClick ={
+                                setAddGameItem(false)
+                            }
+                        ){
+                            Icon(
+                                modifier = Modifier
+                                    .size(40.dp),
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null
+                            )
+                        }
+                    }
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.9f)
+                    ) {
+                        items(
+                            listOf(
+                                "spoon",
+                                "cup",
+                                "ball",
+                                "block",
+                                "clock",
+                                "colorpencil",
+                                "doll",
+                                "scissor",
+                                "socks",
+                                "toothbrush"
+                            )
+                        ) { GameItemCategory ->
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    modifier = Modifier.padding(start = 10.dp),
+                                    text = GameItemCategory,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                ) {
+                                    for (i in 1..3) {
+                                        val imageName = "${GameItemCategory}_${i}"
+                                        val imageResource = getResourceIdByName(imageName, context)
+                                        val isSelected = i - 1 == selectedIdxMap.getOrDefault(GameItemCategory, -1)
+                                        Image(
+                                            modifier = Modifier
+                                                .weight(1.0f)
+                                                .padding(10.dp)
+                                                .clickable {
+
+                                                    if (isSelected) {
+                                                        selectedGameItems.remove(imageName)
+                                                        selectedIdxMap[GameItemCategory] = -1
+                                                    } else {
+                                                        selectedGameItems.removeAll {
+                                                            it.startsWith(
+                                                                GameItemCategory
+                                                            )
+                                                        }
+                                                        selectedGameItems.add(imageName)
+                                                        selectedIdxMap[GameItemCategory] = i - 1
+                                                    }
+                                                },
+                                            painter = painterResource(id = imageResource),
+                                            contentDescription = null,
+                                            alpha =  if (isSelected) 1.0f else 0.5f
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(10.dp),
+                        onClick = {
+                            Log.e("선택된 게임들", selectedGameItems.toList().toString())
+                            setAddGameItem(false)
+                        },
+                        shape = RoundedCornerShape(12.dp)
+                    ){
+                        Text(
+                            text = "카드 준비",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+
+
+
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -391,9 +570,14 @@ fun DataScreen (
             selectedLTOIndex = selectedLTOIndex,
             setAddSTOItem = { setAddSTOItem(it) },
             selectSTOItem = { it: String, progressState:Int ->
-                val newIndex = stoViewModel.getSTO(selectedLTOIndex, selectedDEVIndex).first.indexOf(it)
                 setSelectedSTO(it)
-                setSelectedSTOIndex(newIndex)
+                setSelectedSTOId(stoViewModelByDataClass.getSTOIdByCriteria(
+                    childClass = childViewModel.selectedChildClass,
+                    childName = childViewModel.selectedChildName,
+                    selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDEVIndex],
+                    selectedLTO = selectedLTO,
+                    it
+                )!!)
                 Log.e("선택 STO", selectedSTOIndex.toString())
                 // 이 부분을 LaunchedEffect로 감싸서 업데이트를 다음 프레임으로 보내줍니다.
                 //selectedSTODetailList가 바로 적용되지 않고 한턴씩 밀림 UI에 볂
@@ -402,14 +586,13 @@ fun DataScreen (
                 setSelectedSTODetailGameDataIndex(0)
             },
             deleteSTOItem = {
-                stoDetailViewModel.removeSTODetail(selectedLTOIndex, selectedDEVIndex, listOf(it,selectedSTODetail[1],selectedSTODetail[2],selectedSTODetail[3],selectedSTODetail[4],selectedSTODetail[5],selectedSTODetail[6]))
-                stoViewModel.removeSTO(selectedLTOIndex, selectedDEVIndex,it)
+                stoViewModelByDataClass.deleteSTO(stoViewModelByDataClass.getSTOIdByCriteria(childClass = childViewModel.selectedChildClass, childName = childViewModel.selectedChildName, stoViewModelByDataClass.developZoneItems[selectedDEVIndex],selectedLTO, it)!!)
                 setSelectedSTO("")
                 setSelectedSTODetailGameDataIndex(0)
             }
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
-//      STO Details Row---------------------------------------------------------------------------
+        //STO Details Row---------------------------------------------------------------------------
         STODetailsRow(
             selectedSTO = selectedSTO,
             isSTOGraphSelected = isSTOGraphSelected,
@@ -432,13 +615,14 @@ fun DataScreen (
             selectedSTOIndex = selectedSTOIndex,
             selectedSTO = selectedSTO,
             selectedLTO = selectedLTO,
-            selectedSTODetail = selectedSTODetail,
             selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
             stoDetailViewModel = stoDetailViewModel,
             setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
+            setSTODetailListIndex = {setSTODetailListIndex(it)},
             graphViewModel = graphViewModel,
             ltoViewModel = ltoViewModel,
             childViewModel = childViewModel,
+            stoViewModel = stoViewModel
         )
         //게임준비
         Row(
@@ -448,212 +632,73 @@ fun DataScreen (
                 .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
                 .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
         ) {
-
-        }
-        //그래프
-        if(isLTOGraphSelected){
-            val developZoneItems = listOf<String>(
-                "1. 학습준비",
-                "2. 매칭",
-                "3. 동작모방",
-                "4. 언어모방",
-                "5. 변별",
-                "6. 지시따라하기",
-                "7. 요구하기",
-                "8. 명명하기",
-                "9. 인트라",
-                "10. 가나다"
-            )
-
-            LazyRow(
-                modifier = Modifier
-                    .height(600.dp)
-                    .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-                    .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
-            ) {
-                items(stoViewModel.getSTO(selectedLTOIndex, selectedDEVIndex).first){ stoName ->
-                    if(graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName).isNotNull()){
-                        val steps = 5
-                        var plusIndex = 0f
-                        var minusIndex = 0f
-                        var limitLineIndex = 0f
-                        var successLineIndex = 0f
-                        var minLineIndex = 0f
-
-                        val limitLine = mutableListOf<Point>()
-                        for(a in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
-                            limitLine.add(Point(limitLineIndex, 100f))
-                            limitLineIndex += 1f
-                        }
-                        val minLine = mutableListOf<Point>()
-                        for(a in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
-                            minLine.add(Point(minLineIndex, 0f))
-                            minLineIndex += 1f
-                        }
-                        val successLine = mutableListOf<Point>()
-                        for(b in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
-                            successLine.add(Point(successLineIndex, 90f))
-                            successLineIndex += 1f
-                        }
-                        val pointsData1 = mutableListOf<Point>()
-                        for(plus in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.plusRatio){
-                            pointsData1.add(Point(plusIndex, plus.toInt().toFloat()))
-                            Log.e("성공값", plus.toInt().toFloat().toString())
-                            plusIndex += 1f
-                        }
-                        val pointsData2 = mutableListOf<Point>()
-                        for(minus in graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.minusRatio){
-                            pointsData2.add(Point(minusIndex, minus.toInt().toFloat()))
-                            Log.e("실패값", minus.toInt().toFloat().toString())
-                            minusIndex += 1f
-                        }
-                        val xAxisLabelList = graphViewModel.getGraph(developZoneItems[selectedDEVIndex], selectedLTO, stoName, childViewModel.selectedChildClass, childViewModel.selectedChildName)!!.date
-                        val xAxisData = AxisData.Builder()
-                            .axisStepSize(50.dp)
-                            .backgroundColor(Color.Transparent)
-                            .steps(pointsData1.size - 1)
-                            .labelData { i -> "          "+xAxisLabelList[i.toInt()].toString().takeLast(5) }
-                            .labelAndAxisLinePadding(0.dp)
-                            .axisLineColor(Color.Black)
-                            .axisLabelColor(Color.Black)
-                            .shouldDrawAxisLineTillEnd(true)
-                            .axisLabelAngle(20f)
-                            .startPadding(10.dp)
-                            .build()
-
-                        val yAxisData = AxisData.Builder()
-                            .steps(steps)
-                            .axisStepSize(50.dp)
-                            .backgroundColor(Color.Transparent)
-                            .labelData { i ->
-                                val yScale = 100 / steps
-                                val yLabel = (i * yScale).toString()+"%"
-                                yLabel
-                            }
-                            .labelAndAxisLinePadding(30.dp)
-                            .axisLineColor(Color.Black)
-                            .axisLabelColor(Color.Black)
-                            .startPadding(10.dp)
-                            .build()
-
-                        val lineChardData = LineChartData(
-                            linePlotData = LinePlotData(
-                                lines = listOf(
-                                    Line(
-                                        dataPoints = pointsData1.toList(),
-                                        LineStyle(
-                                            color = Green,
-                                            lineType = LineType.Straight(isDotted = false)
-                                        ),
-                                        IntersectionPoint(
-                                            color = Green
-                                        ),
-                                        SelectionHighlightPoint(color = Green),
-                                        selectionHighlightPopUp = SelectionHighlightPopUp()
-                                    ),
-                                    Line(
-                                        dataPoints = pointsData2.toList(),
-                                        LineStyle(
-                                            color = Color.Red,
-                                            lineType = LineType.Straight(isDotted = true)
-                                        ),
-                                        IntersectionPoint(
-                                            color = Color.Red
-                                        ),
-                                        SelectionHighlightPoint(color = Color.Yellow),
-                                        selectionHighlightPopUp = SelectionHighlightPopUp()
-                                    ),
-                                    Line(
-                                        dataPoints = limitLine.toList(),
-                                        LineStyle(
-                                            color = Color.Transparent,
-                                            lineType = LineType.Straight(isDotted = false)
-                                        ),
-                                        IntersectionPoint(
-                                            color = Color.Transparent
-                                        ),
-                                        SelectionHighlightPoint(color = Color.Transparent),
-                                    ),
-                                    Line(
-                                        dataPoints = minLine.toList(),
-                                        LineStyle(
-                                            color = Color.Transparent,
-                                            lineType = LineType.Straight(isDotted = false)
-                                        ),
-                                        IntersectionPoint(
-                                            color = Color.Transparent
-                                        ),
-                                        SelectionHighlightPoint(color = Color.Transparent),
-                                    ),
-                                    Line(
-                                        dataPoints = successLine.toList(),
-                                        LineStyle(
-                                            color = Color.Red.copy(0.2f),
-                                            lineType = LineType.Straight(isDotted = true)
-                                        ),
-                                        IntersectionPoint(
-                                            color = Color.Transparent
-                                        ),
-                                        SelectionHighlightPoint(color = Color.Transparent),
-                                    )
-
-                                )
-                            ),
-                            backgroundColor = Color.Transparent,
-                            xAxisData = xAxisData,
-                            yAxisData = yAxisData,
-                            bottomPadding = 40.dp,
-                            gridLines = GridLines(Color.LightGray),
-                            isZoomAllowed = false
-                        )
-                        Card(
+            if(selectedSTO != ""){
+                Box(modifier = Modifier
+                    .width(100.dp)
+                    .fillMaxHeight()
+                    .padding(5.dp)
+                    .clickable {
+                        setAddGameItem(true)
+                    },
+                    contentAlignment = Alignment.Center
+                ){
+                    Column(modifier = Modifier
+                        .fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ){
+                        Icon(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .width(400.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Transparent
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(20.dp)
-                            ){
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .fillMaxHeight(0.1f)
-                                        .border(
-                                            4.dp,
-                                            MaterialTheme.colorScheme.secondary,
-                                            RoundedCornerShape(8.dp)
-                                        )
-                                    ,
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = stoName,
-                                        fontSize = 22.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-                                LineChart(
-                                    modifier = Modifier
-                                        .fillMaxHeight(),
-                                    lineChartData = lineChardData
-                                )
-                            }
-
-                        }
+                                .size(80.dp),
+                            painter = painterResource(id = R.drawable.icon_add_square_light),
+                            contentDescription = null
+                        )
                     }
 
                 }
 
+                LazyRow(
+                ) {
+                    items(selectedGameItems.toList()) { selectedGameItem ->
+                        val imageResource = getResourceIdByName(selectedGameItem, context)
+                        val isSelected = selectedGameItem == mainGameItem
+
+                        Image(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
+                                .clickable {
+                                    // Update the selected item when clicked
+                                    if (isSelected) {
+                                        setMainGameItem("")
+                                    } else {
+                                        setMainGameItem(selectedGameItem)
+                                    }
+                                },
+                            painter = painterResource(id = imageResource),
+                            contentDescription = null,
+                            alpha = if (isSelected) 1.0f else 0.5f
+                        )
+                    }
+                }
             }
 
 
-
         }
+        //그래프
+        if(isLTOGraphSelected){
+            GraphRow(
+                graphViewModel = graphViewModel,
+                stoViewModel = stoViewModel,
+                childViewModel = childViewModel,
+                stoViewModelByDataClass = stoViewModelByDataClass,
+                selectedDEVIndex = selectedDEVIndex,
+                selectedLTOIndex = selectedLTOIndex,
+                selectedLTO =selectedLTO
+            )
+        }
+
+
 
     }
 }
@@ -662,7 +707,12 @@ fun DataScreen (
 
 
 
-
+@Composable
+fun getResourceIdByName(imageName: String, context: Context): Int {
+    // 이 함수는 이미지 리소스 이름을 리소스 ID로 변환합니다.
+    val packageName = context.packageName
+    return context.resources.getIdentifier(imageName, "drawable", packageName)
+}
 
 
 

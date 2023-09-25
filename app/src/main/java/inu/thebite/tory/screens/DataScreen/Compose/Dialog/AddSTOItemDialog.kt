@@ -37,8 +37,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import inu.thebite.tory.ChildViewModel
+import inu.thebite.tory.screens.DataScreen.STO
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +50,9 @@ fun AddSTOItemDialog(
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
     stoDetailViewModel: STODetailViewModel,
+    stoViewModelByDataClass: STOViewModelByDataClass,
+    childViewModel : ChildViewModel,
+    selectedLTO : String,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
 ) {
@@ -114,6 +120,22 @@ fun AddSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
+                    stoViewModelByDataClass.createSTO(
+                        className = childViewModel.selectedChildClass,
+                        childName = childViewModel.selectedChildName,
+                        selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDevIndex],
+                        selectedLTO = selectedLTO,
+                        stoName = stoNameInputValue.text,
+                        stoDescription = stoDetailInputValue.text,
+                        stoTryNum = stoTryNumInputValue.text.toInt(),
+                        stoSuccessStandard = stoSuccessStandardInputValue.text,
+                        stoMethod = stoMethodInputValue.text,
+                        stoSchedule = stoScheduleInputValue.text,
+                        stoMemo = stoMemoInputValue.text,
+                        stoState = -1
+                    )
+
+
                     stoViewModel.addOrUpdateSTO(selectedLTOIndex,selectedDevIndex, stoNameInputValue.text, -1)
                     stoDetailViewModel.addOrUpdateSTODetail(selectedLTOIndex,selectedDevIndex, listOf(
                         stoNameInputValue.text,

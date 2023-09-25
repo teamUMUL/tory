@@ -38,7 +38,10 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
+import inu.thebite.tory.screens.DataScreen.STO
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
 import java.time.LocalDate
 
 @Composable
@@ -48,13 +51,16 @@ fun STODetailTableAndGameResult(
     selectedSTOIndex: Int,
     selectedSTO: String,
     selectedLTO: String,
-    selectedSTODetail: MutableList<String>,
+//    selectedSTODetail: MutableList<String>,
+    setSTODetailListIndex: (Int) -> Unit,
     selectedSTODetailGameDataIndex: Int,
     stoDetailViewModel: STODetailViewModel,
     setSelectedSTODetailGameDataIndex: (Int) -> Unit,
     graphViewModel : GraphViewModel,
     childViewModel : ChildViewModel,
-    ltoViewModel : LTOViewModel
+    ltoViewModel : LTOViewModel,
+    stoViewModel: STOViewModel,
+    stoViewModelByDataClass: STOViewModelByDataClass,
 ){
     val developZoneItems = listOf<String>(
         "1. 학습준비",
@@ -289,7 +295,40 @@ fun STODetailTableAndGameResult(
                                         .fillMaxHeight()
                                         .padding(horizontal = 20.dp, vertical = 5.dp),
                                     onClick = {
+                                        //+비율이 90%이상인 경우 자동으로 준거완료 설정
+                                        if((stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.count{it == "+"}.toFloat()/stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size.toFloat())*100 >= 90f){
+                                            stoViewModel.addOrUpdateSTO(selectedLTOIndex, selectedDEVIndex, selectedSTO, 1)
 
+                                            //----------------
+                                            val stoId = stoViewModelByDataClass.getSTOIdByCriteria(
+                                                childClass = childViewModel.selectedChildClass,
+                                                childName = childViewModel.selectedChildName,
+                                                selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDEVIndex],
+                                                selectedLTO = selectedLTO,
+                                                selectedSTO = selectedSTO
+                                            )
+                                            val sto = stoViewModelByDataClass.getSTOById(stoId!!)
+                                            sto?.stoState= 1
+                                            stoViewModelByDataClass.updateSTO(sto!!)
+                                            //--------------
+                                            setSTODetailListIndex(1)
+                                        }else{
+                                            stoViewModel.addOrUpdateSTO(selectedLTOIndex, selectedDEVIndex, selectedSTO, 0)
+                                            setSTODetailListIndex(0)
+
+                                            //----------------
+                                            val stoId = stoViewModelByDataClass.getSTOIdByCriteria(
+                                                childClass = childViewModel.selectedChildClass,
+                                                childName = childViewModel.selectedChildName,
+                                                selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDEVIndex],
+                                                selectedLTO = selectedLTO,
+                                                selectedSTO = selectedSTO
+                                            )
+                                            val sto = stoViewModelByDataClass.getSTOById(stoId!!)
+                                            sto?.stoState= 0
+                                            stoViewModelByDataClass.updateSTO(sto!!)
+                                            //--------------
+                                        }
                                         setSelectedSTODetailGameDataIndex(0)
                                         Log.e("+숫자", stoDetailViewModel.getSTODetail(selectedLTOIndex,selectedDEVIndex,selectedSTOIndex).second.size.toString())
                                         graphViewModel.addOrUpdateGraph(
@@ -307,6 +346,7 @@ fun STODetailTableAndGameResult(
                                                 "n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"
                                             )
                                         )
+
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color.Cyan.copy(alpha = 0.2f)

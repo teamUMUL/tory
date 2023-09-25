@@ -30,10 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.UpdateSTOItemDialog
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModelByDataClass
 
 
 @Composable
@@ -42,8 +44,11 @@ fun STODetailsRow(
     isSTOGraphSelected: Boolean,
     setIsSTOGraphSelected: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
+    stoViewModelByDataClass: STOViewModelByDataClass,
+    childViewModel: ChildViewModel,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
+    selectedLTO: String,
     stoDetailListIndex: Int,
     setProgressState: (Int) -> Unit,
     setSTODetailIndex: (Int) -> Unit,
@@ -165,6 +170,17 @@ fun STODetailsRow(
                                         selectedSTO,
                                         index
                                     )
+
+                                    val stoId = stoViewModelByDataClass.getSTOIdByCriteria(
+                                        childClass = childViewModel.selectedChildClass,
+                                        childName = childViewModel.selectedChildName,
+                                        selectedDEV = stoViewModelByDataClass.developZoneItems[selectedDevIndex],
+                                        selectedLTO = selectedLTO,
+                                        selectedSTO = selectedSTO
+                                    )
+                                    val sto = stoViewModelByDataClass.getSTOById(stoId!!)
+                                    sto?.stoState= index
+                                    stoViewModelByDataClass.updateSTO(sto!!)
                                 },
                                 shape = when (index) {
                                     // left outer button
