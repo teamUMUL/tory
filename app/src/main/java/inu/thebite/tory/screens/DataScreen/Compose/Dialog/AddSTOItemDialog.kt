@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
-import java.time.LocalDate
+import java.sql.Date
 
 
 @Composable
@@ -132,7 +132,7 @@ fun AddSTOItemDialog(
                         stoMemo = stoMemoInputValue.text,
                         stoState = -1,
                         gameResult = List(15) { "n" },
-                        date = mutableListOf<LocalDate>(),
+                        date = mutableListOf<Date>(),
                         plusRatio = mutableListOf<Float>(),
                         minusRatio =mutableListOf<Float>()
                     )

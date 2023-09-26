@@ -1,8 +1,8 @@
-package inu.thebite.tory.database
+package inu.thebite.tory.database.TypeConverter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 
-class ListConverter {
+class StringListConverter {
     @TypeConverter
     fun listToJson(value: List<String>?): String? {
         return Gson().toJson(value)
@@ -12,4 +12,6 @@ class ListConverter {
     fun jsonToList(value: String): List<String>? {
         return Gson().fromJson(value,Array<String>::class.java)?.toList()
     }
+
+
 }

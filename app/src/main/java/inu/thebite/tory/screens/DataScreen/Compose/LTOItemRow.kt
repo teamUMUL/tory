@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @Composable
@@ -35,6 +36,9 @@ fun LTOItemsRow(
     ltoViewModel: LTOViewModel,
     selectedDevIndex: Int,
     selectedLTO: String,
+    stoViewModel: STOViewModel,
+    selectedChildName: String,
+    selectedChildClass: String,
     setAddLTOItem: (Boolean) -> Unit,
     selectLTOItem: (it:String,progressState: Int) -> Unit,
     deleteLTOItem: (String) -> Unit
@@ -110,7 +114,6 @@ fun LTOItemsRow(
                     },
                     select = {
                         selectLTOItem(it, progressState.toInt())
-
                     },
                     listOf(Color.Blue, Color.Red, Color.Green)
                 )

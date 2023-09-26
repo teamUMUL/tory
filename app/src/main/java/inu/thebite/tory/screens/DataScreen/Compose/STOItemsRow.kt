@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.DataScreen.Compose
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,23 +28,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.ChildViewModel
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
+import inu.thebite.tory.database.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun STOItemsRow(
-    childViewModel: ChildViewModel,
     stoViewModel: STOViewModel,
-    selectedDevIndex: Int,
     selectedLTO: String,
-    selectedSTO: String,
-    selectedChildClass: String,
-    selectedChildName: String,
+    selectedSTO: STOEntity?,
+    stos: List<STOEntity>,
     setAddSTOItem: (Boolean) -> Unit,
-    deleteSTOItem: (String) -> Unit,
     selectSTOItem: (it:String, progressState:Int) -> Unit
 ) {
     // STOItemsRow 내용
@@ -106,36 +104,46 @@ fun STOItemsRow(
             }
         }
 
-        LazyRow(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if(selectedLTO != ""){
-                items(stoViewModel.getSTOsByCriteria(
-                    className = selectedChildClass,
-                    childName = selectedChildName,
-                    selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
-                    selectedLTO = selectedLTO,
-                    )
-                ){ stoItem ->
-                    val description = stoItem.stoName
-                    val progressState = stoItem.stoState
-                    LazyColumnItemCanDelete(
-                        item = description,
-                        selectedItem = selectedSTO,
-                        progressState = progressState,
+        stoListRow(selectedLTO = selectedLTO, stos = stos, selectedSTO = selectedSTO, stoViewModel = stoViewModel, selectSTOItem = selectSTOItem)
 
-                        delete = {
-                            deleteSTOItem(it)
-                        },
-                        select = {
-                            selectSTOItem(it, progressState)
-                        },
-                        listOf(Color.Blue, Color.Green, Color.Red)
-                    )
-                }
+
+    }
+}
+
+@Composable
+fun stoListRow(
+    selectedLTO: String,
+    stos: List<STOEntity>,
+    selectedSTO: STOEntity?,
+    stoViewModel: STOViewModel,
+    selectSTOItem: (it:String, progressState:Int) -> Unit
+){
+    Log.e("STOItemsRow", stos.toString())
+    LazyRow(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if(selectedLTO != ""){
+            items(stos){ stoItem ->
+                val description = stoItem.stoName
+                val progressState = stoItem.stoState
+                LazyColumnItemCanDelete(
+                    item = description,
+                    selectedItem = if(selectedSTO.isNotNull()){
+                        selectedSTO!!.stoName} else{""},
+                    progressState = progressState,
+
+                    delete = {
+                        stoViewModel.deleteSTO(stoItem)
+                    },
+                    select = {
+                        selectSTOItem(it, progressState)
+                        stoViewModel.setSelectedSTO(stoItem)
+                    },
+                    listOf(Color.Blue, Color.Green, Color.Red)
+                )
             }
-
         }
+
     }
 }

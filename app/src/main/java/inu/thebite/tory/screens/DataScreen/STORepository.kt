@@ -1,10 +1,12 @@
 package inu.thebite.tory.screens.DataScreen
 
+import inu.thebite.tory.database.STOEntity
+
 class STORepository {
-    private val stoList = mutableListOf<STO>()
+    private val stoList = mutableListOf<STOEntity>()
     private var nextId = 1 // Initialize with a value
 
-    fun createSTO(sto: STO) {
+    fun createSTO(sto: STOEntity) {
         val newSTO = sto.copy(stoId = nextId++)
         stoList.add(newSTO)
     }
@@ -17,7 +19,7 @@ class STORepository {
         selectedDEV: String? = null,
         selectedLTO: String? = null,
         stoName: String? = null,
-        ): List<STO> {
+        ): List<STOEntity> {
         return stoList.filter { sto ->
             (className == null || sto.className == className) &&
                     (childName == null || sto.childName == childName) &&
@@ -26,7 +28,7 @@ class STORepository {
                     (stoName == null || sto.stoName == stoName)
         }
     }
-    fun getSTOById(stoId: Int): STO? {
+    fun getSTOById(stoId: Int): STOEntity? {
         return stoList.find { it.stoId == stoId }
     }
     // Get STO ID by criteria
@@ -48,7 +50,7 @@ class STORepository {
         return matchingSTO?.stoId
     }
 
-    fun updateSTO(updatedSTO: STO) {
+    fun updateSTO(updatedSTO: STOEntity) {
         val index = stoList.indexOfFirst { it.stoId == updatedSTO.stoId }
         if (index != -1) {
             stoList[index] = updatedSTO

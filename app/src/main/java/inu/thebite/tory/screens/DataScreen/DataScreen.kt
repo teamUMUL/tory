@@ -43,6 +43,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import co.yml.charts.common.extensions.isNotNull
 
 
 import inu.thebite.tory.ChildViewModel
@@ -94,6 +96,10 @@ fun DataScreen (
 
     val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
     val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
+    val stos by stoViewModel.stos.collectAsState()
+    val selectedSTO by stoViewModel.selectedSTO.collectAsState()
+
+
 
     val (updateLTOItem, setUpdateLTOItem) = rememberSaveable {
         mutableStateOf(false)
@@ -116,22 +122,15 @@ fun DataScreen (
     val (selectedLTO, setSelectedLTO) = rememberSaveable {
         mutableStateOf("")
     }
-    val (selectedSTO, setSelectedSTO) = rememberSaveable {
-        mutableStateOf("")
-    }
 
-    val (selectedSTOId, setSelectedSTOId) = rememberSaveable {
-        mutableStateOf(-1)
-    }
+
     val (selectedDEVIndex, setSelectedDEVIndex) = rememberSaveable {
         mutableStateOf(0)
     }
     val (selectedLTOIndex, setSelectedLTOIndex) = rememberSaveable {
         mutableStateOf(0)
     }
-//    val (selectedSTOIndex, setSelectedSTOIndex) = rememberSaveable {
-//        mutableStateOf(0)
-//    }
+
     val (ltoDetailListIndex, setLTODetailListIndex) = rememberSaveable {
         mutableStateOf(-1)
     }
@@ -142,19 +141,7 @@ fun DataScreen (
     val (isLTOGraphSelected, setIsLTOGraphSelected) = rememberSaveable {
         mutableStateOf(false)
     }
-//    val (isSTOGraphSelected, setIsSTOGraphSelected) = rememberSaveable {
-//        mutableStateOf(false)
-//    }
-//
-//    val (ltoProgressState, setLTOProgressState) = rememberSaveable {
-//        mutableStateOf(-1)
-//    }
-//    val (stoProgressState, setSTOProgressState) = rememberSaveable {
-//        mutableStateOf(-1)
-//    }
-//    val (stoDetailState, setSTODetailState) = rememberSaveable {
-//        mutableStateOf(mutableListOf<String>())
-//    }
+
 
     val (selectedSTODetailGameDataIndex, setSelectedSTODetailGameDataIndex) = rememberSaveable {
         mutableStateOf(0)
@@ -200,7 +187,9 @@ fun DataScreen (
             setUpdateLTOItem = {setUpdateLTOItem(false)},
             ltoViewModel = ltoViewModel,
             stoViewModel = stoViewModel,
-            selectedSTOId = selectedSTOId,
+            stos = stos,
+            selectedChildClass = selectedChildClass,
+            selectedChildName = selectedChildName,
             selectedDevIndex = selectedDEVIndex,
             selectedLTOIndex = selectedLTOIndex,
             setSelectedLTO = {setSelectedLTO(it)}
@@ -223,9 +212,8 @@ fun DataScreen (
     if (updateSTOItem) {
         UpdateSTOItemDialog(
             stoViewModel = stoViewModel,
-            selectedSTOId = selectedSTOId,
             setUpdateSTOItem = {setUpdateSTOItem(it)},
-            setSelectedSTO = {setSelectedSTO(it)},
+            selectedSTO = selectedSTO!!
         )
     }
 
@@ -428,10 +416,11 @@ fun DataScreen (
             selectDevelopItem = {
                 setSelectedDEVIndex(developZoneItems.indexOf(it))
                 setSelectedLTO("")
-                setSelectedSTO("")
+                stoViewModel.clearSelectedSTO()
                 Log.e("버그위치", "버그위치")
                 setSelectedSTODetailGameDataIndex(0)
-            }
+            },
+            stoViewModel = stoViewModel
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
         //LTO ITEM----------------------------------------------------------------------------------
@@ -441,18 +430,21 @@ fun DataScreen (
             selectedLTO = selectedLTO,
             setAddLTOItem = {setAddLTOItem(it)},
             selectLTOItem = { it: String, progressState:Int ->
-                setSelectedSTO("")
+                stoViewModel.clearSelectedSTO()
                 setSelectedLTO(it)
                 setSelectedLTOIndex(ltoViewModel.getLTO(selectedDEVIndex).first.indexOf(it))
                 setLTODetailListIndex(progressState)
                 setSelectedSTODetailGameDataIndex(0)
+                stoViewModel.getSTOsByCriteria(className = selectedChildClass, childName = selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = it )
             },
             deleteLTOItem = {
                 ltoViewModel.removeLTO(selectedDEVIndex, it)
                 stoViewModel.deleteSTOsByCriteria(selectedChildClass,selectedChildName,stoViewModel.developZoneItems[selectedDEVIndex], it)
                 setSelectedLTO("")
-                setSelectedSTOId(-1)
-            }
+            },
+            stoViewModel = stoViewModel,
+            selectedChildClass = selectedChildClass,
+            selectedChildName = selectedChildName
         )
         //LTO Detail--------------------------------------------------------------------------------
         LTODetailsRow(
@@ -466,64 +458,42 @@ fun DataScreen (
             setLTOUpdateDialog = {setUpdateLTOItem(it)}
         )
         //STO ITEM ---------------------------------------------------------------------------------
+
         STOItemsRow(
-            childViewModel = childViewModel,
             stoViewModel = stoViewModel,
-            selectedDevIndex = selectedDEVIndex,
             selectedLTO = selectedLTO,
             selectedSTO = selectedSTO,
+            stos = stos,
             setAddSTOItem = { setAddSTOItem(it) },
-            selectedChildClass = selectedChildClass,
-            selectedChildName = selectedChildName,
             selectSTOItem = { it: String, progressState:Int ->
-                setSelectedSTO(it)
-                setSelectedSTOId(stoViewModel.getSTOIdByCriteria(
-                    childClass = selectedChildClass,
-                    childName = selectedChildName,
-                    selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex],
-                    selectedLTO = selectedLTO,
-                    it
-                )!!)
                 setSTODetailListIndex(progressState)
                 setSelectedSTODetailGameDataIndex(0)
             },
-            deleteSTOItem = {
-                stoViewModel.deleteSTO(stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex],selectedLTO, it)!!)
-                setSelectedSTO("")
-                setSelectedSTOId(-1)
-                setSelectedSTODetailGameDataIndex(0)
-            }
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
         //STO Details Row---------------------------------------------------------------------------
-        STODetailsRow(
-            selectedSTO = selectedSTO,
-            selectedSTOId = selectedSTOId,
-            stoDetailListIndex = stoDetailListIndex,
-            selectedChildClass = selectedChildClass,
-            selectedChildName = selectedChildName,
-            selectedLTO = selectedLTO,
-            selectedDEVIndex = selectedDEVIndex,
-            setSTODetailIndex = { setSTODetailListIndex(it) },
-            setUpdateSTOItem = {setUpdateSTOItem(it)},
-            gameStart = {
-                setGameDialog(true)
-            },
-            stoViewModel = stoViewModel
-        )
+        selectedSTO?.let {
+            STODetailsRow(
+                selectedSTO = it,
+                stoDetailListIndex = stoDetailListIndex,
+                setSTODetailIndex = { setSTODetailListIndex(it) },
+                setUpdateSTOItem = {setUpdateSTOItem(it)},
+                gameStart = {
+                    setGameDialog(true)
+                },
+                stoViewModel = stoViewModel
+            )
+        }
         //STO Detail 내용 및 게임결과
-        STODetailTableAndGameResult(
-            selectedSTO = selectedSTO,
-            selectedSTOId = selectedSTOId,
-            selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-            setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
-            setSTODetailListIndex = {setSTODetailListIndex(it)},
-            stoViewModel = stoViewModel,
-            selectedLTO = selectedLTO,
-            selectedChildName = selectedChildName,
-            selectedChildClass = selectedChildClass,
-            selectedDEVIndex = selectedDEVIndex
-        )
+        selectedSTO?.let {
+            STODetailTableAndGameResult(
+                selectedSTO = it,
+                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
+                setSTODetailListIndex = {setSTODetailListIndex(it)},
+                stoViewModel = stoViewModel,
+            )
+        }
         //게임준비
         Row(
             modifier = Modifier
@@ -532,7 +502,7 @@ fun DataScreen (
                 .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
                 .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
         ) {
-            if(selectedSTO != ""){
+            if(selectedSTO.isNotNull()){
                 Box(modifier = Modifier
                     .width(100.dp)
                     .fillMaxHeight()
@@ -588,12 +558,7 @@ fun DataScreen (
         //그래프
         if(isLTOGraphSelected){
             GraphRow(
-                childViewModel = childViewModel,
-                stoViewModel = stoViewModel,
-                selectedDEVIndex = selectedDEVIndex,
-                selectedLTO =selectedLTO,
-                selectedChildClass = selectedChildClass,
-                selectedChildName = selectedChildName
+                stos = stos,
             )
         }
 

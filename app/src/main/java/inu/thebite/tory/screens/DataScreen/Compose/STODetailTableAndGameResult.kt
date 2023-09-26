@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.DataScreen.Compose
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -35,17 +36,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.database.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
+import java.sql.Date
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun STODetailTableAndGameResult(
-    selectedSTO: String,
-    selectedChildClass: String,
-    selectedChildName: String,
-    selectedLTO: String,
-    selectedSTOId: Int,
-    selectedDEVIndex: Int,
+    selectedSTO: STOEntity,
     setSTODetailListIndex: (Int) -> Unit,
     selectedSTODetailGameDataIndex: Int,
     setSelectedSTODetailGameDataIndex: (Int) -> Unit,
@@ -79,9 +80,7 @@ fun STODetailTableAndGameResult(
                 .padding(10.dp)
                 .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
         ) {
-            if(selectedSTO != "" && stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = selectedLTO, selectedSTO= selectedSTO) == selectedSTOId){
-                val sto = stoViewModel.getSTOById(selectedSTOId)!!
-
+            if(selectedSTO.isNotNull()){
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -94,13 +93,13 @@ fun STODetailTableAndGameResult(
                                 .height(if (STODetailTitles.indexOf(stoDetailItem) != 6) 40.dp else 300.dp)
                         ) {
                             val selectedSTODetail = listOf(
-                                sto.stoName,
-                                sto.stoDescription,
-                                sto.stoTryNum.toString(),
-                                sto.stoSuccessStandard,
-                                sto.stoMethod,
-                                sto.stoSchedule,
-                                sto.stoMemo,
+                                selectedSTO.stoName,
+                                selectedSTO.stoDescription,
+                                selectedSTO.stoTryNum.toString(),
+                                selectedSTO.stoSuccessStandard,
+                                selectedSTO.stoMethod,
+                                selectedSTO.stoSchedule,
+                                selectedSTO.stoMemo,
                             )
                             TableCell(text = stoDetailItem, weight = 0.3f)
                             Divider(
@@ -128,7 +127,7 @@ fun STODetailTableAndGameResult(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                if(selectedSTO != "" && stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = selectedLTO, selectedSTO= selectedSTO) == selectedSTOId){
+                if(selectedSTO.isNotNull()){
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -149,7 +148,7 @@ fun STODetailTableAndGameResult(
                         ) {
                             Text(text = "정반응 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = stoViewModel.getSTOById(selectedSTOId)!!.gameResult.count { it == "+" }.toString(),
+                                text = selectedSTO.gameResult.count { it == "+" }.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
                             Divider(
@@ -159,7 +158,7 @@ fun STODetailTableAndGameResult(
                             )
                             Text(text = "촉구 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = stoViewModel.getSTOById(selectedSTOId)!!.gameResult.count { it == "P" }.toString(),
+                                text = selectedSTO.gameResult.count { it == "P" }.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
 
@@ -170,7 +169,7 @@ fun STODetailTableAndGameResult(
                             )
                             Text(text = "미반응 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = stoViewModel.getSTOById(selectedSTOId)!!.gameResult.count { it == "-" }.toString(),
+                                text = selectedSTO.gameResult.count { it == "-" }.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
                         }
@@ -183,9 +182,9 @@ fun STODetailTableAndGameResult(
                             Text(
                                 text =
                                 if(
-                                    stoViewModel.getSTOById(selectedSTOId)!!.plusRatio.isNotNull()
+                                    selectedSTO.plusRatio.isNotNull()
                                 ){
-                                    (stoViewModel.getSTOById(selectedSTOId)!!.plusRatio.size+1).toString()
+                                    (selectedSTO.plusRatio.size+1).toString()
                                 } else
                                 {
                                     "1"
@@ -209,10 +208,8 @@ fun STODetailTableAndGameResult(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 items(5) { horizonIndex ->
-                                    val stoGameDataList =
-                                        stoViewModel.getSTOById(selectedSTOId)!!.gameResult
                                     val stoGameData =
-                                        stoGameDataList[(5 * verticalIndex) + horizonIndex]
+                                        selectedSTO.gameResult[(5 * verticalIndex) + horizonIndex]
                                     Card(
                                         modifier = Modifier
                                             .padding(2.dp)
@@ -261,7 +258,7 @@ fun STODetailTableAndGameResult(
                             }
                         }
                         item {
-                            if(!stoViewModel.getSTOById(selectedSTOId)!!.gameResult.contains("n")) {
+                            if(!selectedSTO.gameResult.contains("n")) {
                                 Button(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -269,16 +266,11 @@ fun STODetailTableAndGameResult(
                                         .padding(horizontal = 20.dp, vertical = 5.dp),
                                     onClick = {
                                         //+비율이 90%이상인 경우 자동으로 준거완료 설정
-                                        if((stoViewModel.getSTOById(selectedSTOId)!!.gameResult.count { it == "+" }.toFloat()/stoViewModel.getSTOById(selectedSTOId)!!.gameResult.size.toFloat())*100 >= 90f){
-
-                                            val sto = stoViewModel.getSTOById(selectedSTOId)
-                                            sto?.stoState= 1
-                                            stoViewModel.updateSTO(sto!!)
+                                        if((selectedSTO.gameResult.count { it == "+" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100 >= 90f){
+                                            selectedSTO.stoState= 1
                                             setSTODetailListIndex(1)
                                         }else{
-                                            val sto = stoViewModel.getSTOById(selectedSTOId)
-                                            sto?.stoState= 0
-                                            stoViewModel.updateSTO(sto!!)
+                                            selectedSTO.stoState= 0
                                             setSTODetailListIndex(0)
 
                                             //--------------
@@ -286,12 +278,14 @@ fun STODetailTableAndGameResult(
                                         setSelectedSTODetailGameDataIndex(0)
 
 
-                                        val sto = stoViewModel.getSTOById(selectedSTOId)!!
-                                        sto.minusRatio += (sto.gameResult.count { it == "-" }.toFloat()/sto.gameResult.size.toFloat())*100
-                                        sto.plusRatio += (sto.gameResult.count { it == "+" }.toFloat()/sto.gameResult.size.toFloat())*100
-                                        sto.date += LocalDate.now()
-                                        sto.gameResult = List(15){"n"}
+                                        selectedSTO.minusRatio += (selectedSTO.gameResult.count { it == "-" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
+                                        selectedSTO.plusRatio += (selectedSTO.gameResult.count { it == "+" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
+                                        val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                                        val date = SimpleDateFormat("yyyy-MM-dd").parse(formattedDate)
+                                        selectedSTO.date += (date)
+                                        selectedSTO.gameResult = List(15){"n"}
 
+                                        stoViewModel.updateSTO(selectedSTO)
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Color.Cyan.copy(alpha = 0.2f)
@@ -345,52 +339,39 @@ fun STODetailTableAndGameResult(
                                     }
                                 ),
                                 onClick = {
-                                    val sto = stoViewModel.getSTOById(selectedSTOId)!!
-                                    if(selectedSTODetailGameDataIndex < stoViewModel.getSTOById(selectedSTOId)!!.gameResult.size)
+                                    if(selectedSTODetailGameDataIndex < selectedSTO.gameResult.size)
                                         when (buttonItem) {
                                             "+" -> {
 
-                                                val changeList = sto.gameResult.toMutableList()
+                                                val changeList = selectedSTO.gameResult.toMutableList()
                                                 changeList[selectedSTODetailGameDataIndex] = "+"
-                                                stoViewModel.updateSTO(
-                                                    sto.copy(
-                                                        gameResult = changeList
-                                                    )
-                                                )
+                                                selectedSTO.gameResult = changeList
+                                                stoViewModel.updateSTO(selectedSTO)
                                                 setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
                                             }
 
                                             "-" -> {
-                                                val changeList = sto.gameResult.toMutableList()
+                                                val changeList = selectedSTO.gameResult.toMutableList()
                                                 changeList[selectedSTODetailGameDataIndex] = "-"
-                                                stoViewModel.updateSTO(
-                                                    sto.copy(
-                                                        gameResult = changeList
-                                                    )
-                                                )
+                                                selectedSTO.gameResult = changeList
+                                                stoViewModel.updateSTO(selectedSTO)
                                                 setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
                                             }
 
                                             "P" -> {
-                                                val changeList = sto.gameResult.toMutableList()
-                                                changeList[selectedSTODetailGameDataIndex] = "P"
-                                                stoViewModel.updateSTO(
-                                                    sto.copy(
-                                                        gameResult = changeList
-                                                    )
-                                                )
+                                                val changeList = selectedSTO.gameResult.toMutableList()
+                                                changeList[selectedSTODetailGameDataIndex] = "p"
+                                                selectedSTO.gameResult = changeList
+                                                stoViewModel.updateSTO(selectedSTO)
                                                 setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
 
                                             }
 
                                             else -> {
-                                                val changeList = sto.gameResult.toMutableList()
+                                                val changeList = selectedSTO.gameResult.toMutableList()
                                                 changeList[selectedSTODetailGameDataIndex] = "n"
-                                                stoViewModel.updateSTO(
-                                                    sto.copy(
-                                                        gameResult = changeList
-                                                    )
-                                                )
+                                                selectedSTO.gameResult = changeList
+                                                stoViewModel.updateSTO(selectedSTO)
                                                 setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
 
                                             }

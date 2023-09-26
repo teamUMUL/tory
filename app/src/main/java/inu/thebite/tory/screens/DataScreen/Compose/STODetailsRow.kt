@@ -30,20 +30,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
+import inu.thebite.tory.database.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @Composable
 fun STODetailsRow(
-    selectedSTO: String,
+    selectedSTO: STOEntity,
     stoViewModel: STOViewModel,
-    selectedSTOId: Int,
     stoDetailListIndex: Int,
-    selectedChildClass: String,
-    selectedChildName: String,
-    selectedLTO : String,
-    selectedDEVIndex : Int,
     setSTODetailIndex: (Int) -> Unit,
     setUpdateSTOItem: (Boolean) -> Unit,
     gameStart: () -> Unit
@@ -76,7 +73,7 @@ fun STODetailsRow(
                     modifier = Modifier
                         .padding(end = 10.dp)
                 )
-                if(selectedSTO != "" && stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = selectedLTO, selectedSTO= selectedSTO) == selectedSTOId){
+                if(selectedSTO.isNotNull()){
                     Spacer(modifier = Modifier.width(10.dp))
                     OutlinedButton(
                         modifier = Modifier
@@ -120,7 +117,7 @@ fun STODetailsRow(
                 }
             }
 
-            if(selectedSTO != ""&& stoViewModel.getSTOIdByCriteria(childClass = selectedChildClass, childName = selectedChildName, selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = selectedLTO, selectedSTO= selectedSTO) == selectedSTOId) {
+            if(selectedSTO.isNotNull()) {
                 Box(
                     modifier = Modifier
                         .width(300.dp)
@@ -137,9 +134,8 @@ fun STODetailsRow(
                                 onClick = {
                                     setSTODetailIndex(index)
 
-                                    val sto = stoViewModel.getSTOById(selectedSTOId)
-                                    sto?.stoState= index
-                                    stoViewModel.updateSTO(sto!!)
+                                    selectedSTO.stoState = index
+                                    stoViewModel.updateSTO(selectedSTO)
                                 },
                                 shape = when (index) {
                                     // left outer button

@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import inu.thebite.tory.database.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
@@ -46,34 +47,33 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 @Composable
 fun UpdateSTOItemDialog(
     stoViewModel: STOViewModel,
-    selectedSTOId: Int,
-    setSelectedSTO : (String) -> Unit,
+    selectedSTO: STOEntity,
     setUpdateSTOItem : (Boolean) -> Unit,
 ) {
     val addSTOScrollState = rememberScrollState()
 
     var stoNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoName))
+        mutableStateOf(TextFieldValue(selectedSTO.stoName))
     }
     var stoDetailInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoDescription))
+        mutableStateOf(TextFieldValue(selectedSTO.stoDescription))
     }
     var stoTryNumInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoTryNum.toString()))
+        mutableStateOf(TextFieldValue(selectedSTO.stoTryNum.toString()))
     }
     var stoSuccessStandardInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoSuccessStandard))
+        mutableStateOf(TextFieldValue(selectedSTO.stoSuccessStandard))
     }
     var stoMethodInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoMethod))
+        mutableStateOf(TextFieldValue(selectedSTO.stoMethod))
 
     }
     var stoScheduleInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoSchedule))
+        mutableStateOf(TextFieldValue(selectedSTO.stoSchedule))
 
     }
     var stoMemoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(stoViewModel.getSTOById(stoId = selectedSTOId)!!.stoMemo))
+        mutableStateOf(TextFieldValue(selectedSTO.stoMemo))
 
     }
 
@@ -120,18 +120,16 @@ fun UpdateSTOItemDialog(
                 onClick = {
                     //-----------
 
-                    val sto = stoViewModel.getSTOById(selectedSTOId)
-                    sto?.stoName = stoNameInputValue.text
-                    sto?.stoDescription = stoDetailInputValue.text
-                    sto?.stoTryNum = stoTryNumInputValue.text.toInt()
-                    sto?.stoSuccessStandard = stoSuccessStandardInputValue.text
-                    sto?.stoMethod = stoMethodInputValue.text
-                    sto?.stoSchedule = stoScheduleInputValue.text
-                    sto?.stoMemo = stoMemoInputValue.text
-                    stoViewModel.updateSTO(sto!!)
+                    selectedSTO.stoName = stoNameInputValue.text
+                    selectedSTO.stoDescription = stoDetailInputValue.text
+                    selectedSTO.stoTryNum = stoTryNumInputValue.text.toInt()
+                    selectedSTO.stoSuccessStandard = stoSuccessStandardInputValue.text
+                    selectedSTO.stoMethod = stoMethodInputValue.text
+                    selectedSTO.stoSchedule = stoScheduleInputValue.text
+                    selectedSTO.stoMemo = stoMemoInputValue.text
+                    stoViewModel.updateSTO(selectedSTO)
+                    stoViewModel.setSelectedSTO(selectedSTO)
                     //----------------
-                    val selectedSTO = stoViewModel.getSTOById(selectedSTOId)!!.stoName
-                    setSelectedSTO(selectedSTO)
                     setUpdateSTOItem(false)
                     stoNameInputValue = TextFieldValue("")
                     stoDetailInputValue = TextFieldValue("")

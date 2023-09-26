@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.database.STOEntity
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
@@ -44,9 +45,11 @@ fun UpdateLTOItemDialog(
     setUpdateLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
+    stos : List<STOEntity>,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
-    selectedSTOId: Int,
+    selectedChildClass: String,
+    selectedChildName: String,
     setSelectedLTO: (String) -> Unit
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -100,29 +103,14 @@ fun UpdateLTOItemDialog(
                     .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    val developZoneItems = listOf<String>(
-                        "1. 학습준비",
-                        "2. 매칭",
-                        "3. 동작모방",
-                        "4. 언어모방",
-                        "5. 변별",
-                        "6. 지시따라하기",
-                        "7. 요구하기",
-                        "8. 명명하기",
-                        "9. 인트라",
-                        "10. 가나다"
-                    )
                     ltoViewModel.updateLTO(selectedDevIndex, selectedLTOIndex,beforeLTOName.text,ltoInputValue.text)
                     setSelectedLTO(ltoInputValue.text)
                     setUpdateLTOItem(false)
-                    if(stoViewModel.getSTOById(selectedSTOId).isNotNull()){
-                        stoViewModel.updateSTO(
-                            stoViewModel.getSTOById(selectedSTOId)!!.copy(
-                                selectedLTO = ltoInputValue.text
-                            )
-                        )
+                    for(sto in stos){
+                        sto.selectedLTO = ltoInputValue.text
+                        stoViewModel.updateSTO(sto)
                     }
-
+                    stoViewModel.getSTOsByCriteria(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDevIndex], ltoInputValue.text)
                     ltoInputValue = TextFieldValue("")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)

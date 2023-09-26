@@ -38,16 +38,15 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import inu.thebite.tory.ChildViewModel
+import inu.thebite.tory.database.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun GraphRow(
-    childViewModel: ChildViewModel,
-    stoViewModel: STOViewModel,
-    selectedDEVIndex: Int,
-    selectedLTO: String,
-    selectedChildClass: String,
-    selectedChildName: String
+    stos: List<STOEntity>,
 ){
     LazyRow(
         modifier = Modifier
@@ -55,15 +54,10 @@ fun GraphRow(
             .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
             .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
     ) {
-
-        items(stoViewModel.getSTOsByCriteria(
-            className = selectedChildClass,
-            childName = selectedChildName,
-            selectedDEV = stoViewModel.developZoneItems[selectedDEVIndex],
-            selectedLTO= selectedLTO)){ sto ->
+        items(stos){ sto ->
             val stoName = sto.stoName
             val stoId = sto.stoId
-            if(stoViewModel.getSTOById(stoId)!!.plusRatio.isNotEmpty()){
+            if(sto.plusRatio.isNotEmpty()){
                 val steps = 5
                 var plusIndex = 0f
                 var minusIndex = 0f
@@ -72,38 +66,40 @@ fun GraphRow(
                 var minLineIndex = 0f
 
                 val limitLine = mutableListOf<Point>()
-                for(a in stoViewModel.getSTOById(stoId)!!.plusRatio){
+                for(a in sto.plusRatio){
                     limitLine.add(Point(limitLineIndex, 100f))
                     limitLineIndex += 1f
                 }
                 val minLine = mutableListOf<Point>()
-                for(a in stoViewModel.getSTOById(stoId)!!.plusRatio){
+                for(a in sto.plusRatio){
                     minLine.add(Point(minLineIndex, 0f))
                     minLineIndex += 1f
                 }
                 val successLine = mutableListOf<Point>()
-                for(b in stoViewModel.getSTOById(stoId)!!.plusRatio){
+                for(b in sto.plusRatio){
                     successLine.add(Point(successLineIndex, 90f))
                     successLineIndex += 1f
                 }
                 val pointsData1 = mutableListOf<Point>()
-                for(plus in stoViewModel.getSTOById(stoId)!!.plusRatio){
+                for(plus in sto.plusRatio){
                     pointsData1.add(Point(plusIndex, plus.toInt().toFloat()))
                     Log.e("성공값", plus.toInt().toFloat().toString())
                     plusIndex += 1f
                 }
                 val pointsData2 = mutableListOf<Point>()
-                for(minus in stoViewModel.getSTOById(stoId)!!.minusRatio){
+                for(minus in sto.minusRatio){
                     pointsData2.add(Point(minusIndex, minus.toInt().toFloat()))
                     Log.e("실패값", minus.toInt().toFloat().toString())
                     minusIndex += 1f
                 }
-                val xAxisLabelList = stoViewModel.getSTOById(stoId)!!.date
+                val xAxisLabelList = sto.date
+                Log.e("날짜", xAxisLabelList[0].toString())
                 val xAxisData = AxisData.Builder()
                     .axisStepSize(50.dp)
                     .backgroundColor(Color.Transparent)
                     .steps(pointsData1.size - 1)
-                    .labelData { i -> "          "+xAxisLabelList[i.toInt()].toString().takeLast(5) }
+                    .labelData { i -> "          "+formatDateToYYYYMMDD(xAxisLabelList[i]).takeLast(5)
+                    }
                     .labelAndAxisLinePadding(0.dp)
                     .axisLineColor(Color.Black)
                     .axisLabelColor(Color.Black)
@@ -241,4 +237,9 @@ fun GraphRow(
         }
 
     }
+}
+
+fun formatDateToYYYYMMDD(date: Date): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    return sdf.format(date)
 }

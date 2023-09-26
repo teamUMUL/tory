@@ -24,12 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @Composable
 fun DevelopZoneRow(
     developZoneItems: List<String>,
-    selectDevelopItem: (String)->Unit
+    selectDevelopItem: (String)->Unit,
+    stoViewModel : STOViewModel
 ) {
     // DevelopZoneRow 내용
     val selectedDevItem = rememberSaveable{ mutableStateOf<String?>("1. 학습준비") }
@@ -73,6 +75,7 @@ fun DevelopZoneRow(
                 LazyColumnItem(item = developZoneItem, selectedDevItem,
                     select = {
                         selectDevelopItem(it)
+                        stoViewModel.deleteAllData()
 
                     })
             }

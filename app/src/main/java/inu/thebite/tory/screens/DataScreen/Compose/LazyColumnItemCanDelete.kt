@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun LazyColumnItemCanDelete(item: String, selectedItem: String, progressState:Int, delete: (String) -> Unit, select:(String) -> Unit, colorList:List<Color>){
+fun LazyColumnItemCanDelete(item: String, selectedItem: String?, progressState:Int, delete: (String) -> Unit, select:(String) -> Unit, colorList:List<Color>){
     var _selectedItem = selectedItem
     val isSelected = _selectedItem == item
     Card(
