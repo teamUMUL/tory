@@ -31,7 +31,6 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 fun DevelopZoneRow(
     developZoneItems: List<String>,
     selectDevelopItem: (String)->Unit,
-    stoViewModel : STOViewModel
 ) {
     // DevelopZoneRow 내용
     val selectedDevItem = rememberSaveable{ mutableStateOf<String?>("1. 학습준비") }
@@ -75,7 +74,6 @@ fun DevelopZoneRow(
                 LazyColumnItem(item = developZoneItem, selectedDevItem,
                     select = {
                         selectDevelopItem(it)
-                        stoViewModel.deleteAllData()
 
                     })
             }

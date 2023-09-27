@@ -129,11 +129,10 @@ fun STODetailsRow(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {
-                        detailList.forEachIndexed { index, item ->
+                        detailList.forEachIndexed { index, _ ->
                             OutlinedButton(
                                 onClick = {
                                     setSTODetailIndex(index)
-
                                     selectedSTO.stoState = index
                                     stoViewModel.updateSTO(selectedSTO)
                                 },
@@ -178,7 +177,7 @@ fun STODetailsRow(
                                             .zIndex(if (stoDetailListIndex == index) 1f else 0f)
                                 },
                                 colors =
-                                if (stoDetailListIndex == index) {
+                                if (selectedSTO.stoState == index) {
                                     ButtonDefaults.outlinedButtonColors(
                                         containerColor =
                                         when (index) {

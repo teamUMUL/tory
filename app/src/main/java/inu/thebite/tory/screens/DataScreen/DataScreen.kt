@@ -98,6 +98,7 @@ fun DataScreen (
     val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
     val stos by stoViewModel.stos.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
+    val allSTOs by stoViewModel.allSTOs.collectAsState()
 
 
 
@@ -178,6 +179,10 @@ fun DataScreen (
             setAddLTOItem = { setAddLTOItem(false) },
             ltoViewModel = ltoViewModel,
             selectedDevIndex = selectedDEVIndex,
+            selectedChildClass = selectedChildClass,
+            selectedChildName = selectedChildName,
+            stoViewModel = stoViewModel,
+            selectedLTO = selectedLTO
         )
     }
 
@@ -205,7 +210,8 @@ fun DataScreen (
             stoViewModel = stoViewModel,
             selectedLTO = selectedLTO,
             selectedChildClass = selectedChildClass,
-            selectedChildName = selectedChildName
+            selectedChildName = selectedChildName,
+            updateSTOs = {}
         )
     }
     //STO 추가 Dialog
@@ -420,7 +426,6 @@ fun DataScreen (
                 Log.e("버그위치", "버그위치")
                 setSelectedSTODetailGameDataIndex(0)
             },
-            stoViewModel = stoViewModel
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
         //LTO ITEM----------------------------------------------------------------------------------
@@ -430,16 +435,13 @@ fun DataScreen (
             selectedLTO = selectedLTO,
             setAddLTOItem = {setAddLTOItem(it)},
             selectLTOItem = { it: String, progressState:Int ->
-                stoViewModel.clearSelectedSTO()
                 setSelectedLTO(it)
                 setSelectedLTOIndex(ltoViewModel.getLTO(selectedDEVIndex).first.indexOf(it))
                 setLTODetailListIndex(progressState)
                 setSelectedSTODetailGameDataIndex(0)
-                stoViewModel.getSTOsByCriteria(className = selectedChildClass, childName = selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO = it )
             },
             deleteLTOItem = {
                 ltoViewModel.removeLTO(selectedDEVIndex, it)
-                stoViewModel.deleteSTOsByCriteria(selectedChildClass,selectedChildName,stoViewModel.developZoneItems[selectedDEVIndex], it)
                 setSelectedLTO("")
             },
             stoViewModel = stoViewModel,
@@ -458,12 +460,15 @@ fun DataScreen (
             setLTOUpdateDialog = {setUpdateLTOItem(it)}
         )
         //STO ITEM ---------------------------------------------------------------------------------
-
+        LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildName, addSTOItem, allSTOs, selectedSTO){
+            stoViewModel.getSTOsByCriteria(selectedChildClass,selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO)
+        }
         STOItemsRow(
             stoViewModel = stoViewModel,
             selectedLTO = selectedLTO,
             selectedSTO = selectedSTO,
             stos = stos,
+            allSTOs = allSTOs,
             setAddSTOItem = { setAddSTOItem(it) },
             selectSTOItem = { it: String, progressState:Int ->
                 setSTODetailListIndex(progressState)
@@ -485,6 +490,9 @@ fun DataScreen (
             )
         }
         //STO Detail 내용 및 게임결과
+        if(selectedSTO.isNotNull()){
+
+        }
         selectedSTO?.let {
             STODetailTableAndGameResult(
                 selectedSTO = it,
@@ -492,6 +500,10 @@ fun DataScreen (
                 setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
                 setSTODetailListIndex = {setSTODetailListIndex(it)},
                 stoViewModel = stoViewModel,
+                selectedLTO = selectedLTO,
+                selectedChildName = selectedChildName,
+                selectedChildClass = selectedChildClass,
+                selectedDEVIndex = selectedDEVIndex
             )
         }
         //게임준비
@@ -571,6 +583,166 @@ fun DataScreen (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@SuppressLint("DiscouragedApi")
 @Composable
 fun getResourceIdByName(imageName: String, context: Context): Int {
     // 이 함수는 이미지 리소스 이름을 리소스 ID로 변환합니다.

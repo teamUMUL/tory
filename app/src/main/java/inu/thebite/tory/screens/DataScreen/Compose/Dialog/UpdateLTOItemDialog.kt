@@ -45,7 +45,7 @@ fun UpdateLTOItemDialog(
     setUpdateLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
-    stos : List<STOEntity>,
+    stos : List<STOEntity>?,
     selectedDevIndex: Int,
     selectedLTOIndex: Int,
     selectedChildClass: String,
@@ -106,11 +106,12 @@ fun UpdateLTOItemDialog(
                     ltoViewModel.updateLTO(selectedDevIndex, selectedLTOIndex,beforeLTOName.text,ltoInputValue.text)
                     setSelectedLTO(ltoInputValue.text)
                     setUpdateLTOItem(false)
-                    for(sto in stos){
-                        sto.selectedLTO = ltoInputValue.text
-                        stoViewModel.updateSTO(sto)
+                    if(stos.isNotNull()){
+                        for(sto in stos!!){
+                            sto.selectedLTO = ltoInputValue.text
+                            stoViewModel.updateSTO(sto)
+                        }
                     }
-                    stoViewModel.getSTOsByCriteria(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDevIndex], ltoInputValue.text)
                     ltoInputValue = TextFieldValue("")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)

@@ -51,6 +51,11 @@ fun STODetailTableAndGameResult(
     selectedSTODetailGameDataIndex: Int,
     setSelectedSTODetailGameDataIndex: (Int) -> Unit,
     stoViewModel: STOViewModel,
+    selectedLTO: String,
+    selectedChildClass : String,
+    selectedChildName : String,
+    selectedDEVIndex: Int,
+
 ){
 
     val STODetailTitles =
@@ -339,43 +344,29 @@ fun STODetailTableAndGameResult(
                                     }
                                 ),
                                 onClick = {
-                                    if(selectedSTODetailGameDataIndex < selectedSTO.gameResult.size)
+                                    if(selectedSTODetailGameDataIndex < selectedSTO.gameResult.size){
+                                        val changeList = selectedSTO.gameResult.toMutableList()
+
                                         when (buttonItem) {
                                             "+" -> {
-
-                                                val changeList = selectedSTO.gameResult.toMutableList()
                                                 changeList[selectedSTODetailGameDataIndex] = "+"
-                                                selectedSTO.gameResult = changeList
-                                                stoViewModel.updateSTO(selectedSTO)
-                                                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
                                             }
-
                                             "-" -> {
-                                                val changeList = selectedSTO.gameResult.toMutableList()
                                                 changeList[selectedSTODetailGameDataIndex] = "-"
-                                                selectedSTO.gameResult = changeList
-                                                stoViewModel.updateSTO(selectedSTO)
-                                                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
                                             }
-
                                             "P" -> {
-                                                val changeList = selectedSTO.gameResult.toMutableList()
-                                                changeList[selectedSTODetailGameDataIndex] = "p"
-                                                selectedSTO.gameResult = changeList
-                                                stoViewModel.updateSTO(selectedSTO)
-                                                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
-
+                                                changeList[selectedSTODetailGameDataIndex] = "P"
                                             }
-
                                             else -> {
-                                                val changeList = selectedSTO.gameResult.toMutableList()
                                                 changeList[selectedSTODetailGameDataIndex] = "n"
-                                                selectedSTO.gameResult = changeList
-                                                stoViewModel.updateSTO(selectedSTO)
-                                                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
-
                                             }
                                         }
+                                        selectedSTO.gameResult = changeList
+                                        stoViewModel.updateSTO(selectedSTO)
+                                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
+//                                        stoViewModel.getSTOsByCriteria(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO)
+                                    }
+
                                 }
                             ) {
                                 Text(

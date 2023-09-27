@@ -8,6 +8,7 @@ import inu.thebite.tory.repositories.STORepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,7 +20,10 @@ class STOViewModel : ViewModel(), KoinComponent {
 
     private val repo: STORepo by inject()
 
-    private val _stos: MutableStateFlow<List<STOEntity>> = MutableStateFlow(emptyList())
+    private val _allSTOs : MutableStateFlow<List<STOEntity>> = MutableStateFlow(emptyList())
+    val allSTOs = _allSTOs.asStateFlow()
+
+    private val _stos: MutableStateFlow<List<STOEntity>?> = MutableStateFlow(null)
     val stos = _stos.asStateFlow()
 
     private val _stoId: MutableStateFlow<Int> = MutableStateFlow(-1)
@@ -48,23 +52,30 @@ class STOViewModel : ViewModel(), KoinComponent {
     )
     val sto = _sto.asStateFlow()
 
+    init {
+        getAllSTOs()
+    }
+
+    private fun getAllSTOs(){
+        viewModelScope.launch(Dispatchers.IO) {
+           repo.getAllSTOs().collect{data ->
+               _allSTOs.update { data }
+           }
+        }
+    }
+
     private val _selectedSTO = MutableStateFlow<STOEntity?>(null)
     val selectedSTO = _selectedSTO.asStateFlow()
 
     // Function to set the selected STO
     fun setSelectedSTO(stoEntity: STOEntity) {
+
         _selectedSTO.value = stoEntity
     }
 
-    // Function to clear the selected STO
     fun clearSelectedSTO() {
         _selectedSTO.value = null
     }
-    init {
-        getSTOsByCriteria()
-
-    }
-
 
 
     val developZoneItems = listOf<String>(
@@ -79,7 +90,6 @@ class STOViewModel : ViewModel(), KoinComponent {
         "9. 인트라",
         "10. 가나다"
     )
-    // Function to create a new STO
     fun createSTO(
         className: String,
         childName: String,
@@ -119,47 +129,54 @@ class STOViewModel : ViewModel(), KoinComponent {
             )
             repo.createSTO(newSTOEntity)
         }
-        getSTOsByCriteria(className, childName, selectedDEV, selectedLTO)
     }
 
-    // Function to get STOs by criteria
     fun getSTOsByCriteria(
-        className: String? = null,
-        childName: String? = null,
-        selectedDEV: String? = null,
-        selectedLTO: String? = null,
-    ){
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.getSTOsByCriteria(className, childName, selectedDEV, selectedLTO).collect{data ->
-                _stos.update { data }
-            }
-
-        }
-    }
-
-    // Function to get STO ID by criteria
-    fun getSTOIdByCriteria(
         className: String,
         childName: String,
         selectedDEV: String,
         selectedLTO: String,
-        selectedSTO: String
     ){
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.getSTOIdByCriteria(className, childName, selectedDEV, selectedLTO, selectedSTO).collect{data ->
-                _stoId.update { data }
+        if(className.isEmpty() || childName.isEmpty() || selectedDEV.isEmpty() || selectedLTO.isEmpty()){
+            _stos.update { null }
+        }else{
+            _stos.update {
+                Log.d("FilteringResult", "Filtered Criteria: $className, $childName, $selectedDEV, $selectedLTO")
+                val filteredSTOs = allSTOs.value.filter {
+                    it.className == className &&
+                    it.childName == childName &&
+                    it.selectedDEV == selectedDEV &&
+                    it.selectedLTO == selectedLTO
+                }
+                Log.d("FilteringResult", "Filtered STOs: $filteredSTOs")
+                filteredSTOs
             }
         }
     }
 
+    // Function to get STO ID by criteria
+//    fun getSTOIdByCriteria(
+//        className: String,
+//        childName: String,
+//        selectedDEV: String,
+//        selectedLTO: String,
+//        selectedSTO: String
+//    ){
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.getSTOIdByCriteria(className, childName, selectedDEV, selectedLTO, selectedSTO).collect{data ->
+//                _stoId.update { data }
+//            }
+//        }
+//    }
+
     // Function to get STO by ID
-    fun getSTOById(stoId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.getSTOById(stoId).collect{data ->
-                _sto.update { data }
-            }
-        }
-    }
+//    fun getSTOById(stoId: Int) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.getSTOById(stoId).collect{data ->
+//                _sto.update { data }
+//            }
+//        }
+//    }
 
     // Function to update an existing STO entry
     fun updateSTO(updatedSTOEntity: STOEntity) {
@@ -167,24 +184,21 @@ class STOViewModel : ViewModel(), KoinComponent {
         viewModelScope.launch(Dispatchers.IO) {
             repo.updateSTO(updatedSTOEntity)
         }
+
     }
 
-    // Function to delete an STO entry by its ID
     fun deleteSTO(sto: STOEntity) {
-        // Implement the logic to delete STO by ID
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteSTO(sto)
         }
     }
 
-    // Function to delete STOs by criteria
     fun deleteSTOsByCriteria(
         childClass: String,
         childName: String,
         selectedDEV: String,
         selectedLTO: String
     ) {
-        // Implement the logic to delete STOs by criteria
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteSTOsByCriteria(childClass, childName, selectedDEV, selectedLTO)
         }

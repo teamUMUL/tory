@@ -38,8 +38,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
+import kotlinx.coroutines.launch
 import java.sql.Date
 
 
@@ -52,6 +54,7 @@ fun AddSTOItemDialog(
     selectedChildClass: String,
     selectedChildName: String,
     selectedDevIndex: Int,
+    updateSTOs: () -> Unit
 ) {
     val addSTOScrollState = rememberScrollState()
 
@@ -117,7 +120,6 @@ fun AddSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    Log.e("sto 추가 당시 선택된 아이 정보", selectedChildClass+selectedChildName)
                     stoViewModel.createSTO(
                         className = selectedChildClass,
                         childName = selectedChildName,
@@ -136,6 +138,8 @@ fun AddSTOItemDialog(
                         plusRatio = mutableListOf<Float>(),
                         minusRatio =mutableListOf<Float>()
                     )
+
+
                     setAddSTOItem(false)
                     stoNameInputValue = TextFieldValue("")
                     stoDetailInputValue = TextFieldValue("")
@@ -144,6 +148,7 @@ fun AddSTOItemDialog(
                     stoMethodInputValue = TextFieldValue("")
                     stoScheduleInputValue = TextFieldValue("")
                     stoMemoInputValue = TextFieldValue("")
+
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
             ){

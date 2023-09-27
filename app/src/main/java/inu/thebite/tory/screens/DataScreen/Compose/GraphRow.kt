@@ -46,7 +46,7 @@ import java.util.Locale
 
 @Composable
 fun GraphRow(
-    stos: List<STOEntity>,
+    stos: List<STOEntity>?,
 ){
     LazyRow(
         modifier = Modifier
@@ -54,187 +54,190 @@ fun GraphRow(
             .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
             .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
     ) {
-        items(stos){ sto ->
-            val stoName = sto.stoName
-            val stoId = sto.stoId
-            if(sto.plusRatio.isNotEmpty()){
-                val steps = 5
-                var plusIndex = 0f
-                var minusIndex = 0f
-                var limitLineIndex = 0f
-                var successLineIndex = 0f
-                var minLineIndex = 0f
+        if(stos.isNotNull()){
+            items(stos!!){ sto ->
+                val stoName = sto.stoName
+                val stoId = sto.stoId
+                if(sto.plusRatio.isNotEmpty()){
+                    val steps = 5
+                    var plusIndex = 0f
+                    var minusIndex = 0f
+                    var limitLineIndex = 0f
+                    var successLineIndex = 0f
+                    var minLineIndex = 0f
 
-                val limitLine = mutableListOf<Point>()
-                for(a in sto.plusRatio){
-                    limitLine.add(Point(limitLineIndex, 100f))
-                    limitLineIndex += 1f
-                }
-                val minLine = mutableListOf<Point>()
-                for(a in sto.plusRatio){
-                    minLine.add(Point(minLineIndex, 0f))
-                    minLineIndex += 1f
-                }
-                val successLine = mutableListOf<Point>()
-                for(b in sto.plusRatio){
-                    successLine.add(Point(successLineIndex, 90f))
-                    successLineIndex += 1f
-                }
-                val pointsData1 = mutableListOf<Point>()
-                for(plus in sto.plusRatio){
-                    pointsData1.add(Point(plusIndex, plus.toInt().toFloat()))
-                    Log.e("성공값", plus.toInt().toFloat().toString())
-                    plusIndex += 1f
-                }
-                val pointsData2 = mutableListOf<Point>()
-                for(minus in sto.minusRatio){
-                    pointsData2.add(Point(minusIndex, minus.toInt().toFloat()))
-                    Log.e("실패값", minus.toInt().toFloat().toString())
-                    minusIndex += 1f
-                }
-                val xAxisLabelList = sto.date
-                Log.e("날짜", xAxisLabelList[0].toString())
-                val xAxisData = AxisData.Builder()
-                    .axisStepSize(50.dp)
-                    .backgroundColor(Color.Transparent)
-                    .steps(pointsData1.size - 1)
-                    .labelData { i -> "          "+formatDateToYYYYMMDD(xAxisLabelList[i]).takeLast(5)
+                    val limitLine = mutableListOf<Point>()
+                    for(a in sto.plusRatio){
+                        limitLine.add(Point(limitLineIndex, 100f))
+                        limitLineIndex += 1f
                     }
-                    .labelAndAxisLinePadding(0.dp)
-                    .axisLineColor(Color.Black)
-                    .axisLabelColor(Color.Black)
-                    .shouldDrawAxisLineTillEnd(true)
-                    .axisLabelAngle(20f)
-                    .startPadding(10.dp)
-                    .build()
-
-                val yAxisData = AxisData.Builder()
-                    .steps(steps)
-                    .axisStepSize(50.dp)
-                    .backgroundColor(Color.Transparent)
-                    .labelData { i ->
-                        val yScale = 100 / steps
-                        val yLabel = (i * yScale).toString()+"%"
-                        yLabel
+                    val minLine = mutableListOf<Point>()
+                    for(a in sto.plusRatio){
+                        minLine.add(Point(minLineIndex, 0f))
+                        minLineIndex += 1f
                     }
-                    .labelAndAxisLinePadding(30.dp)
-                    .axisLineColor(Color.Black)
-                    .axisLabelColor(Color.Black)
-                    .startPadding(10.dp)
-                    .build()
+                    val successLine = mutableListOf<Point>()
+                    for(b in sto.plusRatio){
+                        successLine.add(Point(successLineIndex, 90f))
+                        successLineIndex += 1f
+                    }
+                    val pointsData1 = mutableListOf<Point>()
+                    for(plus in sto.plusRatio){
+                        pointsData1.add(Point(plusIndex, plus.toInt().toFloat()))
+                        Log.e("성공값", plus.toInt().toFloat().toString())
+                        plusIndex += 1f
+                    }
+                    val pointsData2 = mutableListOf<Point>()
+                    for(minus in sto.minusRatio){
+                        pointsData2.add(Point(minusIndex, minus.toInt().toFloat()))
+                        Log.e("실패값", minus.toInt().toFloat().toString())
+                        minusIndex += 1f
+                    }
+                    val xAxisLabelList = sto.date
+                    Log.e("날짜", xAxisLabelList[0].toString())
+                    val xAxisData = AxisData.Builder()
+                        .axisStepSize(50.dp)
+                        .backgroundColor(Color.Transparent)
+                        .steps(pointsData1.size - 1)
+                        .labelData { i -> "          "+formatDateToYYYYMMDD(xAxisLabelList[i]).takeLast(5)
+                        }
+                        .labelAndAxisLinePadding(0.dp)
+                        .axisLineColor(Color.Black)
+                        .axisLabelColor(Color.Black)
+                        .shouldDrawAxisLineTillEnd(true)
+                        .axisLabelAngle(20f)
+                        .startPadding(10.dp)
+                        .build()
 
-                val lineChardData = LineChartData(
-                    linePlotData = LinePlotData(
-                        lines = listOf(
-                            Line(
-                                dataPoints = pointsData1.toList(),
-                                LineStyle(
-                                    color = Color.Green,
-                                    lineType = LineType.Straight(isDotted = false)
-                                ),
-                                IntersectionPoint(
-                                    color = Color.Green
-                                ),
-                                SelectionHighlightPoint(color = Color.Green),
-                                selectionHighlightPopUp = SelectionHighlightPopUp()
-                            ),
-                            Line(
-                                dataPoints = pointsData2.toList(),
-                                LineStyle(
-                                    color = Color.Red,
-                                    lineType = LineType.Straight(isDotted = true)
-                                ),
-                                IntersectionPoint(
-                                    color = Color.Red
-                                ),
-                                SelectionHighlightPoint(color = Color.Yellow),
-                                selectionHighlightPopUp = SelectionHighlightPopUp()
-                            ),
-                            Line(
-                                dataPoints = limitLine.toList(),
-                                LineStyle(
-                                    color = Color.Transparent,
-                                    lineType = LineType.Straight(isDotted = false)
-                                ),
-                                IntersectionPoint(
-                                    color = Color.Transparent
-                                ),
-                                SelectionHighlightPoint(color = Color.Transparent),
-                            ),
-                            Line(
-                                dataPoints = minLine.toList(),
-                                LineStyle(
-                                    color = Color.Transparent,
-                                    lineType = LineType.Straight(isDotted = false)
-                                ),
-                                IntersectionPoint(
-                                    color = Color.Transparent
-                                ),
-                                SelectionHighlightPoint(color = Color.Transparent),
-                            ),
-                            Line(
-                                dataPoints = successLine.toList(),
-                                LineStyle(
-                                    color = Color.Red.copy(0.2f),
-                                    lineType = LineType.Straight(isDotted = true)
-                                ),
-                                IntersectionPoint(
-                                    color = Color.Transparent
-                                ),
-                                SelectionHighlightPoint(color = Color.Transparent),
-                            )
+                    val yAxisData = AxisData.Builder()
+                        .steps(steps)
+                        .axisStepSize(50.dp)
+                        .backgroundColor(Color.Transparent)
+                        .labelData { i ->
+                            val yScale = 100 / steps
+                            val yLabel = (i * yScale).toString()+"%"
+                            yLabel
+                        }
+                        .labelAndAxisLinePadding(30.dp)
+                        .axisLineColor(Color.Black)
+                        .axisLabelColor(Color.Black)
+                        .startPadding(10.dp)
+                        .build()
 
-                        )
-                    ),
-                    backgroundColor = Color.Transparent,
-                    xAxisData = xAxisData,
-                    yAxisData = yAxisData,
-                    bottomPadding = 40.dp,
-                    gridLines = GridLines(Color.LightGray),
-                    isZoomAllowed = false
-                )
-                Card(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(400.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp)
-                    ){
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(0.1f)
-                                .border(
-                                    4.dp,
-                                    MaterialTheme.colorScheme.secondary,
-                                    RoundedCornerShape(8.dp)
+                    val lineChardData = LineChartData(
+                        linePlotData = LinePlotData(
+                            lines = listOf(
+                                Line(
+                                    dataPoints = pointsData1.toList(),
+                                    LineStyle(
+                                        color = Color.Green,
+                                        lineType = LineType.Straight(isDotted = false)
+                                    ),
+                                    IntersectionPoint(
+                                        color = Color.Green
+                                    ),
+                                    SelectionHighlightPoint(color = Color.Green),
+                                    selectionHighlightPopUp = SelectionHighlightPopUp()
+                                ),
+                                Line(
+                                    dataPoints = pointsData2.toList(),
+                                    LineStyle(
+                                        color = Color.Red,
+                                        lineType = LineType.Straight(isDotted = true)
+                                    ),
+                                    IntersectionPoint(
+                                        color = Color.Red
+                                    ),
+                                    SelectionHighlightPoint(color = Color.Yellow),
+                                    selectionHighlightPopUp = SelectionHighlightPopUp()
+                                ),
+                                Line(
+                                    dataPoints = limitLine.toList(),
+                                    LineStyle(
+                                        color = Color.Transparent,
+                                        lineType = LineType.Straight(isDotted = false)
+                                    ),
+                                    IntersectionPoint(
+                                        color = Color.Transparent
+                                    ),
+                                    SelectionHighlightPoint(color = Color.Transparent),
+                                ),
+                                Line(
+                                    dataPoints = minLine.toList(),
+                                    LineStyle(
+                                        color = Color.Transparent,
+                                        lineType = LineType.Straight(isDotted = false)
+                                    ),
+                                    IntersectionPoint(
+                                        color = Color.Transparent
+                                    ),
+                                    SelectionHighlightPoint(color = Color.Transparent),
+                                ),
+                                Line(
+                                    dataPoints = successLine.toList(),
+                                    LineStyle(
+                                        color = Color.Red.copy(0.2f),
+                                        lineType = LineType.Straight(isDotted = true)
+                                    ),
+                                    IntersectionPoint(
+                                        color = Color.Transparent
+                                    ),
+                                    SelectionHighlightPoint(color = Color.Transparent),
                                 )
-                            ,
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = stoName,
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight.SemiBold
+
+                            )
+                        ),
+                        backgroundColor = Color.Transparent,
+                        xAxisData = xAxisData,
+                        yAxisData = yAxisData,
+                        bottomPadding = 40.dp,
+                        gridLines = GridLines(Color.LightGray),
+                        isZoomAllowed = false
+                    )
+                    Card(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(400.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(20.dp)
+                        ){
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(0.1f)
+                                    .border(
+                                        4.dp,
+                                        MaterialTheme.colorScheme.secondary,
+                                        RoundedCornerShape(8.dp)
+                                    )
+                                ,
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stoName,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            LineChart(
+                                modifier = Modifier
+                                    .fillMaxHeight(),
+                                lineChartData = lineChardData
                             )
                         }
-                        LineChart(
-                            modifier = Modifier
-                                .fillMaxHeight(),
-                            lineChartData = lineChardData
-                        )
+
                     }
-
                 }
-            }
 
+            }
         }
+
 
     }
 }

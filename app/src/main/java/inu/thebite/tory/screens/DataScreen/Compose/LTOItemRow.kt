@@ -110,9 +110,11 @@ fun LTOItemsRow(
                     selectedLTO,
                     progressState.toInt(),
                     delete = {
+                        stoViewModel.deleteSTOsByCriteria(selectedChildClass,selectedChildName,stoViewModel.developZoneItems[selectedDevIndex], it)
                         deleteLTOItem(it)
                     },
                     select = {
+                        stoViewModel.clearSelectedSTO()
                         selectLTOItem(it, progressState.toInt())
                     },
                     listOf(Color.Blue, Color.Red, Color.Green)

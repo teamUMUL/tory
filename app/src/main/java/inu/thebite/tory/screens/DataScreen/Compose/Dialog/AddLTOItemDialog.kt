@@ -35,13 +35,18 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @Composable
 fun AddLTOItemDialog(
     setAddLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
+    stoViewModel : STOViewModel,
     selectedDevIndex: Int,
+    selectedLTO: String,
+    selectedChildClass: String,
+    selectedChildName: String,
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
@@ -93,6 +98,7 @@ fun AddLTOItemDialog(
                     ltoViewModel.addOrUpdateLTO(selectedDevIndex, ltoInputValue.text, -1)
                     setAddLTOItem(false)
                     ltoInputValue = TextFieldValue("")
+                    stoViewModel.clearSelectedSTO()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
             ){

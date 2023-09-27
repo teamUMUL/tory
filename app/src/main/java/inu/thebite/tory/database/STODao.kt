@@ -9,6 +9,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 
+
 @Dao
 interface STODao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -17,8 +18,9 @@ interface STODao {
     @Update
     suspend fun updateSTO(sto: STOEntity)
 
-//    @Query("SELECT * FROM `STO`")
-//    suspend fun getAllSTOs(): Flow<List<STOEntity>>
+    //suspend와 Flow는 같이 사용할 수 없음
+    @Query("SELECT * FROM `STO`")
+    fun getAllSTOs(): Flow<List<STOEntity>>
 
     @Query("SELECT * FROM `STO` WHERE stoId = :stoId")
     fun getSTOById(stoId: Int): Flow<STOEntity>
@@ -28,30 +30,30 @@ interface STODao {
 
     @Query("DELETE FROM `STO`")
     suspend fun deleteAllData()
-    @Query("SELECT * FROM `STO` WHERE className = :className " +
-            "AND (childName = :childName OR :childName IS NULL) " +
-            "AND (selectedDEV = :selectedDEV OR :selectedDEV IS NULL) " +
-            "AND (selectedLTO = :selectedLTO OR :selectedLTO IS NULL) ")
-    fun getSTOsByCriteria(
-        className: String?,
-        childName: String?,
-        selectedDEV: String?,
-        selectedLTO: String?,
-    ): Flow<List<STOEntity>>
+//    @Query("SELECT * FROM `STO` WHERE className = :className " +
+//            "AND (childName = :childName) " +
+//            "AND (selectedDEV = :selectedDEV) " +
+//            "AND (selectedLTO = :selectedLTO) ")
+//    fun getSTOsByCriteria(
+//        className: String,
+//        childName: String,
+//        selectedDEV: String,
+//        selectedLTO: String,
+//    ): Flow<List<STOEntity>>
 
-    @Query("SELECT stoId FROM `STO` WHERE " +
-            "(className = :className OR :className IS NULL) " +
-            "AND (childName = :childName OR :childName IS NULL) " +
-            "AND (selectedDEV = :selectedDEV OR :selectedDEV IS NULL) " +
-            "AND (selectedLTO = :selectedLTO OR :selectedLTO IS NULL) " +
-            "AND (stoName = :stoName OR :stoName IS NULL)")
-    fun getSTOIdByCriteria(
-        className: String?,
-        childName: String?,
-        selectedDEV: String?,
-        selectedLTO: String?,
-        stoName: String?
-    ): Flow<Int>
+//    @Query("SELECT stoId FROM `STO` WHERE " +
+//            "(className = :className OR :className IS NULL) " +
+//            "AND (childName = :childName OR :childName IS NULL) " +
+//            "AND (selectedDEV = :selectedDEV OR :selectedDEV IS NULL) " +
+//            "AND (selectedLTO = :selectedLTO OR :selectedLTO IS NULL) " +
+//            "AND (stoName = :stoName OR :stoName IS NULL)")
+//    fun getSTOIdByCriteria(
+//        className: String?,
+//        childName: String?,
+//        selectedDEV: String?,
+//        selectedLTO: String?,
+//        stoName: String?
+//    ): Flow<Int>
 
 
     @Query("DELETE FROM `STO` WHERE " +

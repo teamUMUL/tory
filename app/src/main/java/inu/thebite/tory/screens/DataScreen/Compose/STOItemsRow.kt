@@ -40,12 +40,13 @@ fun STOItemsRow(
     stoViewModel: STOViewModel,
     selectedLTO: String,
     selectedSTO: STOEntity?,
-    stos: List<STOEntity>,
+    stos: List<STOEntity>?,
+    allSTOs: List<STOEntity>,
     setAddSTOItem: (Boolean) -> Unit,
     selectSTOItem: (it:String, progressState:Int) -> Unit
 ) {
     // STOItemsRow 내용
-
+    var selectedSTOName : String = ""
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(90.dp)
@@ -103,47 +104,38 @@ fun STOItemsRow(
 
             }
         }
+        selectedSTO?.let {
+            selectedSTOName = it.stoName
+        }
+        LazyRow(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if(selectedLTO != ""){
+                Log.e("stos", stos.toString())
+                items(stos ?: allSTOs, key = {it.stoId}){ stoItem ->
+                    val description = stoItem.stoName
+                    val progressState = stoItem.stoState
+                    LazyColumnItemCanDelete(
+                        item = description,
+                        selectedItem = selectedSTOName ?: "",
+                        progressState = progressState,
 
-        stoListRow(selectedLTO = selectedLTO, stos = stos, selectedSTO = selectedSTO, stoViewModel = stoViewModel, selectSTOItem = selectSTOItem)
-
-
-    }
-}
-
-@Composable
-fun stoListRow(
-    selectedLTO: String,
-    stos: List<STOEntity>,
-    selectedSTO: STOEntity?,
-    stoViewModel: STOViewModel,
-    selectSTOItem: (it:String, progressState:Int) -> Unit
-){
-    Log.e("STOItemsRow", stos.toString())
-    LazyRow(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if(selectedLTO != ""){
-            items(stos){ stoItem ->
-                val description = stoItem.stoName
-                val progressState = stoItem.stoState
-                LazyColumnItemCanDelete(
-                    item = description,
-                    selectedItem = if(selectedSTO.isNotNull()){
-                        selectedSTO!!.stoName} else{""},
-                    progressState = progressState,
-
-                    delete = {
-                        stoViewModel.deleteSTO(stoItem)
-                    },
-                    select = {
-                        selectSTOItem(it, progressState)
-                        stoViewModel.setSelectedSTO(stoItem)
-                    },
-                    listOf(Color.Blue, Color.Green, Color.Red)
-                )
+                        delete = {
+                            stoViewModel.deleteSTO(stoItem)
+                            stoViewModel.clearSelectedSTO()
+                        },
+                        select = {
+                            selectSTOItem(it, progressState)
+                            stoViewModel.setSelectedSTO(stoItem)
+                        },
+                        listOf(Color.Blue, Color.Green, Color.Red)
+                    )
+                }
             }
+
         }
 
     }
 }
+
