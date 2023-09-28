@@ -53,6 +53,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -161,10 +162,7 @@ fun DataScreen (
         "10. 가나다"
     )
 
-    val selectedIdxMap = remember {
-        mutableStateMapOf<String, Int>()
-    }
-    val selectedGameItems = remember { mutableStateListOf<String>() }
+
 
     val (mainGameItem, setMainGameItem) = rememberSaveable {
         mutableStateOf("")
@@ -269,7 +267,23 @@ fun DataScreen (
     }
 
     if(addGameItem){
-
+        val selectedGameItems by remember {
+            mutableStateOf(selectedSTO!!.gameItems.toMutableList())
+        }
+        val selectedIdxMap = remember {
+            mutableStateMapOf<String, Int>()
+        }
+        for (selectedGameItem in selectedSTO!!.gameItems) {
+            val parts = selectedGameItem.split("_")
+            if (parts.size == 2) {
+                val category = parts[0]
+                val index = parts[1].toIntOrNull()
+                if (index != null) {
+                    // 카테고리와 인덱스를 selectedIdxMap에 추가
+                    selectedIdxMap[category] = index-1
+                }
+            }
+        }
         Dialog(
             properties = DialogProperties(
                 dismissOnBackPress = false,
@@ -347,12 +361,13 @@ fun DataScreen (
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
-                                Row(
+                                LazyRow(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .fillMaxHeight()
                                 ) {
-                                    for (i in 1..3) {
+                                    items(3){ i ->
+                                        val i = i + 1
                                         val imageName = "${GameItemCategory}_${i}"
                                         val imageResource = getResourceIdByName(imageName, context)
                                         val isSelected = i - 1 == selectedIdxMap.getOrDefault(GameItemCategory, -1)
@@ -361,7 +376,6 @@ fun DataScreen (
                                                 .weight(1.0f)
                                                 .padding(10.dp)
                                                 .clickable {
-
                                                     if (isSelected) {
                                                         selectedGameItems.remove(imageName)
                                                         selectedIdxMap[GameItemCategory] = -1
@@ -374,12 +388,16 @@ fun DataScreen (
                                                         selectedGameItems.add(imageName)
                                                         selectedIdxMap[GameItemCategory] = i - 1
                                                     }
+
+                                                    selectedSTO!!.gameItems = selectedGameItems
+                                                    stoViewModel.updateSTO(selectedSTO!!)
                                                 },
                                             painter = painterResource(id = imageResource),
                                             contentDescription = null,
                                             alpha =  if (isSelected) 1.0f else 0.5f
                                         )
                                     }
+
                                 }
                             }
                         }
@@ -392,6 +410,8 @@ fun DataScreen (
                             .padding(10.dp),
                         onClick = {
                             Log.e("선택된 게임들", selectedGameItems.toList().toString())
+                            selectedSTO!!.gameItems = selectedGameItems
+                            stoViewModel.updateSTO(selectedSTO!!)
                             setAddGameItem(false)
                         },
                         shape = RoundedCornerShape(12.dp)
@@ -493,66 +513,69 @@ fun DataScreen (
             )
         }
         //게임준비
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-                .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
-        ) {
-            if(selectedSTO.isNotNull()){
-                Box(modifier = Modifier
-                    .width(100.dp)
-                    .fillMaxHeight()
-                    .padding(5.dp)
-                    .clickable {
-                        setAddGameItem(true)
-                    },
-                    contentAlignment = Alignment.Center
-                ){
-                    Column(modifier = Modifier
-                        .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+        if(selectedSTO.isNotNull()){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                    .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
+            ) {
+                if(selectedSTO.isNotNull()){
+                    Box(modifier = Modifier
+                        .width(100.dp)
+                        .fillMaxHeight()
+                        .padding(5.dp)
+                        .clickable {
+                            setAddGameItem(true)
+                        },
+                        contentAlignment = Alignment.Center
                     ){
-                        Icon(
-                            modifier = Modifier
-                                .size(80.dp),
-                            painter = painterResource(id = R.drawable.icon_add_square_light),
-                            contentDescription = null
-                        )
+                        Column(modifier = Modifier
+                            .fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            Icon(
+                                modifier = Modifier
+                                    .size(80.dp),
+                                painter = painterResource(id = R.drawable.icon_add_square_light),
+                                contentDescription = null
+                            )
+                        }
+
                     }
 
-                }
+                    LazyRow(
+                    ) {
+                        items(selectedSTO?.gameItems ?: emptyList()) { selectedGameItem ->
+                            val imageResource = getResourceIdByName(selectedGameItem, context)
+                            val isSelected = selectedGameItem == mainGameItem
 
-                LazyRow(
-                ) {
-                    items(selectedGameItems.toList()) { selectedGameItem ->
-                        val imageResource = getResourceIdByName(selectedGameItem, context)
-                        val isSelected = selectedGameItem == mainGameItem
-
-                        Image(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
-                                .clickable {
-                                    // Update the selected item when clicked
-                                    if (isSelected) {
-                                        setMainGameItem("")
-                                    } else {
-                                        setMainGameItem(selectedGameItem)
-                                    }
-                                },
-                            painter = painterResource(id = imageResource),
-                            contentDescription = null,
-                            alpha = if (isSelected) 1.0f else 0.5f
-                        )
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
+                                    .clickable {
+                                        // Update the selected item when clicked
+                                        if (isSelected) {
+                                            setMainGameItem("")
+                                        } else {
+                                            setMainGameItem(selectedGameItem)
+                                        }
+                                    },
+                                painter = painterResource(id = imageResource),
+                                contentDescription = null,
+                                alpha = if (isSelected) 1.0f else 0.5f
+                            )
+                        }
                     }
                 }
+
+
             }
-
-
         }
+
         //그래프
         if(isLTOGraphSelected && selectedLTO.isNotNull()){
             GraphRow(

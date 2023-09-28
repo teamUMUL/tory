@@ -20,6 +20,7 @@ class KoinApp : Application() {
                 single {
                     Room
                         .databaseBuilder(this@KoinApp, STODatabase::class.java, "sto")
+                        .fallbackToDestructiveMigration()
                         .build()
                 }
                 single {

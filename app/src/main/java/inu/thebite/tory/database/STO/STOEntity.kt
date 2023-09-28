@@ -35,6 +35,8 @@ data class STOEntity(
     var stoState: Int,
     @ColumnInfo("gameResult")
     var gameResult: List<String>,
+    @ColumnInfo("gameItems")
+    var gameItems: List<String>,
     @ColumnInfo("date")
     var date: List<Date>,
     @ColumnInfo("plusRatio")

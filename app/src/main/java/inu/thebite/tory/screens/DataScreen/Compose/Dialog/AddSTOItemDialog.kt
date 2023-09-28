@@ -134,7 +134,8 @@ fun AddSTOItemDialog(
                         stoSchedule = stoScheduleInputValue.text,
                         stoMemo = stoMemoInputValue.text,
                         stoState = -1,
-                        gameResult = List(15) { "n" },
+                        gameResult = List(stoTryNumInputValue.text.toInt()) { "n" },
+                        gameItems = mutableListOf<String>(),
                         date = mutableListOf<Date>(),
                         plusRatio = mutableListOf<Float>(),
                         minusRatio =mutableListOf<Float>()

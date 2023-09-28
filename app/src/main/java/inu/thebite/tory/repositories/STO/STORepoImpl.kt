@@ -7,24 +7,12 @@ import kotlinx.coroutines.flow.Flow
 class STORepoImpl(private val database: STODatabase): STORepo {
 
     private val stoDao = database.stoDao()
-
     override suspend fun createSTO(sto: STOEntity) {
         stoDao.insertSTO(sto)
     }
-
     override suspend fun getAllSTOs(): Flow<List<STOEntity>>{
         return stoDao.getAllSTOs()
     }
-
-//    override suspend fun getSTOsByCriteria(
-//        className: String,
-//        childName: String,
-//        selectedDEV: String,
-//        selectedLTO: String,
-//    ): Flow<List<STOEntity>> {
-//        return stoDao.getSTOsByCriteria(className,childName,selectedDEV,selectedLTO)
-//    }
-
     override suspend fun deleteAllData() {
         stoDao.deleteAllData()
     }
@@ -32,17 +20,6 @@ class STORepoImpl(private val database: STODatabase): STORepo {
     override suspend fun getSTOById(stoId: Int): Flow<STOEntity> {
         return stoDao.getSTOById(stoId)
     }
-
-//    override suspend fun getSTOIdByCriteria(
-//        className: String?,
-//        childName: String?,
-//        selectedDEV: String?,
-//        selectedLTO: String?,
-//        stoName: String?
-//    ): Flow<Int> {
-//        return stoDao.getSTOIdByCriteria(className, childName, selectedDEV, selectedLTO, stoName)
-//    }
-
     override suspend fun updateSTO(updatedSTO: STOEntity) {
         stoDao.updateSTO(updatedSTO)
     }
@@ -50,7 +27,6 @@ class STORepoImpl(private val database: STODatabase): STORepo {
     override suspend fun deleteSTO(sto: STOEntity) {
         stoDao.deleteSTO(sto)
     }
-
     override suspend fun deleteSTOsByCriteria(
         childClass: String,
         childName: String,

@@ -198,7 +198,7 @@ fun STODetailTableAndGameResult(
                             .fillMaxHeight(0.8f)
                             .padding(10.dp)
                     ) {
-                        items(15 / 5) { verticalIndex ->
+                        items(selectedSTO.gameResult.size / 5) { verticalIndex ->
                             LazyRow(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -281,7 +281,7 @@ fun STODetailTableAndGameResult(
                                         val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                                         val date = SimpleDateFormat("yyyy-MM-dd").parse(formattedDate)
                                         selectedSTO.date += (date)
-                                        selectedSTO.gameResult = List(15){"n"}
+                                        selectedSTO.gameResult = List(selectedSTO.gameResult.size){"n"}
 
                                         stoViewModel.updateSTO(selectedSTO)
                                     },

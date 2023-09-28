@@ -26,34 +26,9 @@ class STOViewModel : ViewModel(), KoinComponent {
 
     private val _stoId: MutableStateFlow<Int> = MutableStateFlow(-1)
     val stoId = _stoId.asStateFlow()
-
-    private val _sto: MutableStateFlow<STOEntity> = MutableStateFlow(
-        STOEntity(
-            stoId = -1,
-            className = "",
-            childName = "",
-            selectedDEV = "",
-            selectedLTO = "",
-            stoName = "",
-            stoDescription = "",
-            stoTryNum = 15,
-            stoSuccessStandard = "",
-            stoMethod = "",
-            stoSchedule = "",
-            stoMemo = "",
-            stoState = 1,
-            gameResult = emptyList(),
-            date = emptyList(),
-            plusRatio = emptyList(),
-            minusRatio = emptyList()
-        )
-    )
-    val sto = _sto.asStateFlow()
-
     init {
         getAllSTOs()
     }
-
     private fun getAllSTOs(){
         viewModelScope.launch(Dispatchers.IO) {
            repo.getAllSTOs().collect{data ->
@@ -61,21 +36,15 @@ class STOViewModel : ViewModel(), KoinComponent {
            }
         }
     }
-
     private val _selectedSTO = MutableStateFlow<STOEntity?>(null)
     val selectedSTO = _selectedSTO.asStateFlow()
-
-    // Function to set the selected STO
     fun setSelectedSTO(stoEntity: STOEntity) {
 
         _selectedSTO.value = stoEntity
     }
-
     fun clearSelectedSTO() {
         _selectedSTO.value = null
     }
-
-
     val developZoneItems = listOf<String>(
         "1. 학습준비",
         "2. 매칭",
@@ -102,6 +71,7 @@ class STOViewModel : ViewModel(), KoinComponent {
         stoMemo: String,
         stoState: Int,
         gameResult: List<String>,
+        gameItems: List<String>,
         date: List<Date>,
         plusRatio: List<Float>,
         minusRatio: List<Float>
@@ -121,6 +91,7 @@ class STOViewModel : ViewModel(), KoinComponent {
                 stoMemo = stoMemo,
                 stoState = stoState,
                 gameResult = gameResult,
+                gameItems = gameItems,
                 date = date,
                 plusRatio = plusRatio,
                 minusRatio = minusRatio
