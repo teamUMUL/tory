@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,7 +34,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.database.STOEntity
+import inu.thebite.tory.database.LTO.LTOEntity
+import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
@@ -46,18 +46,10 @@ fun UpdateLTOItemDialog(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
     stos : List<STOEntity>?,
-    selectedDevIndex: Int,
-    selectedLTOIndex: Int,
-    selectedChildClass: String,
-    selectedChildName: String,
-    setSelectedLTO: (String) -> Unit
+    selectedLTO: LTOEntity?,
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(ltoViewModel.getLTO(selectedDevIndex).first[selectedLTOIndex]))
-    }
-
-    val beforeLTOName by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(ltoViewModel.getLTO(selectedDevIndex).first[selectedLTOIndex]))
+        mutableStateOf(TextFieldValue(selectedLTO!!.ltoName))
     }
     // AddLTOItemDialog 내용
     Dialog(
@@ -103,8 +95,9 @@ fun UpdateLTOItemDialog(
                     .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    ltoViewModel.updateLTO(selectedDevIndex, selectedLTOIndex,beforeLTOName.text,ltoInputValue.text)
-                    setSelectedLTO(ltoInputValue.text)
+                    selectedLTO!!.ltoName = ltoInputValue.text
+                    ltoViewModel.updateLTO(selectedLTO)
+                    ltoViewModel.setSelectedLTO(selectedLTO)
                     setUpdateLTOItem(false)
                     if(stos.isNotNull()){
                         for(sto in stos!!){

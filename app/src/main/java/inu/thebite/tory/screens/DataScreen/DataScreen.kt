@@ -96,10 +96,14 @@ fun DataScreen (
 
     val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
     val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
+
     val stos by stoViewModel.stos.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val allSTOs by stoViewModel.allSTOs.collectAsState()
 
+    val ltos by ltoViewModel.ltos.collectAsState()
+    val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
+    val allLTOs by ltoViewModel.allLTOs.collectAsState()
 
 
     val (updateLTOItem, setUpdateLTOItem) = rememberSaveable {
@@ -120,17 +124,10 @@ fun DataScreen (
     val (addGameItem, setAddGameItem) = rememberSaveable {
         mutableStateOf(false)
     }
-    val (selectedLTO, setSelectedLTO) = rememberSaveable {
-        mutableStateOf("")
-    }
-
-
     val (selectedDEVIndex, setSelectedDEVIndex) = rememberSaveable {
         mutableStateOf(0)
     }
-    val (selectedLTOIndex, setSelectedLTOIndex) = rememberSaveable {
-        mutableStateOf(0)
-    }
+
 
     val (ltoDetailListIndex, setLTODetailListIndex) = rememberSaveable {
         mutableStateOf(-1)
@@ -173,6 +170,14 @@ fun DataScreen (
         mutableStateOf("")
     }
 
+    LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildName, addSTOItem, allSTOs, selectedSTO){
+        selectedLTO?.let { stoViewModel.getSTOsByCriteria(selectedChildClass,selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], it.ltoName) }
+    }
+
+    LaunchedEffect(selectedChildClass, selectedChildName, selectedDEVIndex, allLTOs){
+        ltoViewModel.getLTOsByCriteria(selectedChildClass,selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex])
+    }
+
     //LTO 추가 Dialog
     if (addLTOItem) {
         AddLTOItemDialog(
@@ -182,7 +187,6 @@ fun DataScreen (
             selectedChildClass = selectedChildClass,
             selectedChildName = selectedChildName,
             stoViewModel = stoViewModel,
-            selectedLTO = selectedLTO
         )
     }
 
@@ -193,11 +197,7 @@ fun DataScreen (
             ltoViewModel = ltoViewModel,
             stoViewModel = stoViewModel,
             stos = stos,
-            selectedChildClass = selectedChildClass,
-            selectedChildName = selectedChildName,
-            selectedDevIndex = selectedDEVIndex,
-            selectedLTOIndex = selectedLTOIndex,
-            setSelectedLTO = {setSelectedLTO(it)}
+            selectedLTO = selectedLTO
         )
     }
 
@@ -421,7 +421,7 @@ fun DataScreen (
             developZoneItems = developZoneItems,
             selectDevelopItem = {
                 setSelectedDEVIndex(developZoneItems.indexOf(it))
-                setSelectedLTO("")
+                ltoViewModel.clearSelectedLTO()
                 stoViewModel.clearSelectedSTO()
                 Log.e("버그위치", "버그위치")
                 setSelectedSTODetailGameDataIndex(0)
@@ -433,16 +433,11 @@ fun DataScreen (
             ltoViewModel = ltoViewModel,
             selectedDevIndex = selectedDEVIndex,
             selectedLTO = selectedLTO,
+            ltos = ltos,
             setAddLTOItem = {setAddLTOItem(it)},
             selectLTOItem = { it: String, progressState:Int ->
-                setSelectedLTO(it)
-                setSelectedLTOIndex(ltoViewModel.getLTO(selectedDEVIndex).first.indexOf(it))
                 setLTODetailListIndex(progressState)
                 setSelectedSTODetailGameDataIndex(0)
-            },
-            deleteLTOItem = {
-                ltoViewModel.removeLTO(selectedDEVIndex, it)
-                setSelectedLTO("")
             },
             stoViewModel = stoViewModel,
             selectedChildClass = selectedChildClass,
@@ -460,9 +455,7 @@ fun DataScreen (
             setLTOUpdateDialog = {setUpdateLTOItem(it)}
         )
         //STO ITEM ---------------------------------------------------------------------------------
-        LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildName, addSTOItem, allSTOs, selectedSTO){
-            stoViewModel.getSTOsByCriteria(selectedChildClass,selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO)
-        }
+
         STOItemsRow(
             stoViewModel = stoViewModel,
             selectedLTO = selectedLTO,
@@ -490,9 +483,6 @@ fun DataScreen (
             )
         }
         //STO Detail 내용 및 게임결과
-        if(selectedSTO.isNotNull()){
-
-        }
         selectedSTO?.let {
             STODetailTableAndGameResult(
                 selectedSTO = it,
@@ -500,10 +490,6 @@ fun DataScreen (
                 setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
                 setSTODetailListIndex = {setSTODetailListIndex(it)},
                 stoViewModel = stoViewModel,
-                selectedLTO = selectedLTO,
-                selectedChildName = selectedChildName,
-                selectedChildClass = selectedChildClass,
-                selectedDEVIndex = selectedDEVIndex
             )
         }
         //게임준비
@@ -568,7 +554,7 @@ fun DataScreen (
 
         }
         //그래프
-        if(isLTOGraphSelected){
+        if(isLTOGraphSelected && selectedLTO.isNotNull()){
             GraphRow(
                 stos = stos,
             )

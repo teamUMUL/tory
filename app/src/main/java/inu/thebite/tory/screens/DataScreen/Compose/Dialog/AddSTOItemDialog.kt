@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.ChildViewModel
+import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 import kotlinx.coroutines.launch
 import java.sql.Date
@@ -50,7 +51,7 @@ fun AddSTOItemDialog(
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
     childViewModel : ChildViewModel,
-    selectedLTO : String,
+    selectedLTO : LTOEntity?,
     selectedChildClass: String,
     selectedChildName: String,
     selectedDevIndex: Int,
@@ -124,7 +125,7 @@ fun AddSTOItemDialog(
                         className = selectedChildClass,
                         childName = selectedChildName,
                         selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
-                        selectedLTO = selectedLTO,
+                        selectedLTO = selectedLTO!!.ltoName,
                         stoName = stoNameInputValue.text,
                         stoDescription = stoDetailInputValue.text,
                         stoTryNum = stoTryNumInputValue.text.toInt(),

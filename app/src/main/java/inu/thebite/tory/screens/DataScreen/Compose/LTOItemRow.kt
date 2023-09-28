@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
@@ -35,14 +36,15 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 fun LTOItemsRow(
     ltoViewModel: LTOViewModel,
     selectedDevIndex: Int,
-    selectedLTO: String,
+    selectedLTO: LTOEntity?,
+    ltos : List<LTOEntity>?,
     stoViewModel: STOViewModel,
     selectedChildName: String,
     selectedChildClass: String,
     setAddLTOItem: (Boolean) -> Unit,
     selectLTOItem: (it:String,progressState: Int) -> Unit,
-    deleteLTOItem: (String) -> Unit
 ) {
+    var selectedLTOName : String = ""
     // LTOItemsRow 내용
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -99,23 +101,28 @@ fun LTOItemsRow(
             }
 
         }
+
+        selectedLTO?.let {
+            selectedLTOName = it.ltoName
+        }
         LazyRow(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(ltoViewModel.getLTOWithOneData(selectedDevIndex)){ ltoItem ->
-                val (description, progressState) = ltoItem.split(": ")
+            items(ltos ?: emptyList()){ ltoItem ->
                 LazyColumnItemCanDelete(
-                    item = description,
-                    selectedLTO,
-                    progressState.toInt(),
+                    item = ltoItem.ltoName,
+                    selectedLTOName,
+                    ltoItem.ltoState,
                     delete = {
                         stoViewModel.deleteSTOsByCriteria(selectedChildClass,selectedChildName,stoViewModel.developZoneItems[selectedDevIndex], it)
-                        deleteLTOItem(it)
+                        ltoViewModel.clearSelectedLTO()
+                        ltoViewModel.deleteLTO(ltoItem)
                     },
                     select = {
                         stoViewModel.clearSelectedSTO()
-                        selectLTOItem(it, progressState.toInt())
+                        ltoViewModel.setSelectedLTO(ltoItem)
+                        selectLTOItem(it, ltoItem.ltoState)
                     },
                     listOf(Color.Blue, Color.Red, Color.Green)
                 )

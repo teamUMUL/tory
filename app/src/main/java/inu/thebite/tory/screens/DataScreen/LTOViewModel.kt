@@ -1,137 +1,109 @@
 package inu.thebite.tory.screens.DataScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import inu.thebite.tory.database.LTO.LTOEntity
+import inu.thebite.tory.database.STO.STOEntity
+import inu.thebite.tory.repositories.LTO.LTORepo
+import inu.thebite.tory.repositories.STO.STORepo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import java.sql.Date
 
 @SuppressLint("MutableCollectionMutableState")
-class LTOViewModel: ViewModel() {
-    private val _ltoList1 = MutableLiveData<Map<String, Int>>()
+class LTOViewModel: ViewModel(), KoinComponent {
 
-    private val _ltoList2 = MutableLiveData<Map<String, Int>>()
 
-    private val _ltoList3 = MutableLiveData<Map<String, Int>>()
+    private val repo: LTORepo by inject()
 
-    private val _ltoList4 = MutableLiveData<Map<String, Int>>()
+    private val _allLTOs : MutableStateFlow<List<LTOEntity>> = MutableStateFlow(emptyList())
+    val allLTOs = _allLTOs.asStateFlow()
 
-    private val _ltoList5 = MutableLiveData<Map<String, Int>>()
+    private val _ltos: MutableStateFlow<List<LTOEntity>?> = MutableStateFlow(null)
+    val ltos = _ltos.asStateFlow()
 
-    private val _ltoList6 = MutableLiveData<Map<String, Int>>()
+    private val _selectedLTO = MutableStateFlow<LTOEntity?>(null)
+    val selectedLTO = _selectedLTO.asStateFlow()
 
-    private val _ltoList7 = MutableLiveData<Map<String, Int>>()
+    // Function to set the selected STO
+    fun setSelectedLTO(ltoEntity: LTOEntity) {
 
-    private val _ltoList8 = MutableLiveData<Map<String, Int>>()
-
-    private val _ltoList9 = MutableLiveData<Map<String, Int>>()
-
-    private val _ltoList10 = MutableLiveData<Map<String, Int>>()
-
-    // Create or Update
-    fun addOrUpdateLTO(devIndex: Int, key: String, value: Int) {
-        val currentMap = getMapForDevIndex(devIndex).toMutableMap()
-        currentMap[key] = value
-        updateLiveData(devIndex, currentMap)
+        _selectedLTO.value = ltoEntity
     }
 
-    fun updateLTO(devIndex: Int,ltoIndex:Int, oldKey:String, newKey:String){
-        val currentLiveData = getLiveDataForDevIndex(devIndex)
-        val currentMap = getMapForDevIndex(devIndex).toMutableMap()
-        val oldValue : Int? = currentMap[oldKey]
+    fun clearSelectedLTO() {
+        _selectedLTO.value = null
+    }
+    init {
+        getAllLTOs()
+    }
 
-        val beforeLTONameList: List<String> = currentMap.keys.toList()
-        var foundOldKey = false
-        val behindOldKeyList = mutableListOf<String>()
-        val aheadOldKeyList = mutableListOf<String>()
+    private fun getAllLTOs(){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.getAllLTOs().collect{data ->
+                _allLTOs.update { data }
+            }
+        }
+    }
 
-        for(element in beforeLTONameList){
-            if(foundOldKey){
-                behindOldKeyList.add(element)
-            }else{
-                if(element != oldKey){
-                    aheadOldKeyList.add(element)
+
+    fun createLTO(
+        className: String,
+        childName: String,
+        selectedDEV: String,
+        ltoName: String,
+        ltoState: Int,
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newLTOEntity = LTOEntity(
+                className = className,
+                childName = childName,
+                selectedDEV = selectedDEV,
+                ltoName = ltoName,
+                ltoState = ltoState
+            )
+            repo.createLTO(newLTOEntity)
+        }
+    }
+
+    fun getLTOsByCriteria(
+        className: String,
+        childName: String,
+        selectedDEV: String,
+    ){
+        if(className.isEmpty() || childName.isEmpty() || selectedDEV.isEmpty()){
+            _ltos.update { null }
+        }else{
+            _ltos.update {
+                Log.d("FilteringResult", "Filtered Criteria: $className, $childName, $selectedDEV")
+                val filteredLTOs = allLTOs.value.filter {
+                    it.className == className &&
+                    it.childName == childName &&
+                    it.selectedDEV == selectedDEV
                 }
-            }
-            if(element == oldKey){
-                foundOldKey = true
-            }
-        }
-        val resultKeyList = mutableListOf<String>()
-        resultKeyList.addAll(aheadOldKeyList)
-        resultKeyList.add(newKey)
-        resultKeyList.addAll(behindOldKeyList)
-
-        val beforeLTOStateList: List<Int> = currentMap.values.toList()
-        var foundOldValue = false
-        val behindOldValueList = mutableListOf<Int>()
-        val aheadOldValueList = mutableListOf<Int>()
-
-        for(element in beforeLTOStateList){
-            if(foundOldValue){
-                behindOldValueList.add(element)
-            }else{
-                if(element != oldValue){
-                    aheadOldValueList.add(element)
-                }
-            }
-            if(element == oldValue){
-                foundOldValue = true
+                Log.d("FilteringResult", "Filtered LTOs: $filteredLTOs")
+                filteredLTOs
             }
         }
-        val resultValueList = mutableListOf<Int>()
-        resultValueList.addAll(aheadOldValueList)
-        resultValueList.add(oldValue!!)
-        resultValueList.addAll(behindOldValueList)
-
-        val resultMap = resultKeyList.zip(resultValueList).toMap()
-
-        currentLiveData.value = resultMap
     }
-
-    // Read
-    fun getLTO(devIndex: Int): Pair<List<String>, List<Int>> {
-        val map = getMapForDevIndex(devIndex)
-        val keys = map.keys.toList()
-        val values = map.values.toList()
-        return Pair(keys, values)
-    }
-
-    // Read
-    fun getLTOWithOneData(devIndex: Int): List<String> {
-        val map = getMapForDevIndex(devIndex)
-        val keyValueStrings = map.entries.map { entry ->
-            "${entry.key}: ${entry.value}"
+    fun updateLTO(updatedLTOEntity: LTOEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateLTO(updatedLTOEntity)
         }
-        return keyValueStrings
+
     }
 
-    // Delete
-    fun removeLTO(devIndex: Int, key: String) {
-        val currentMap = getMapForDevIndex(devIndex).toMutableMap()
-        currentMap.remove(key)
-        updateLiveData(devIndex, currentMap)
-    }
-
-    private fun getLiveDataForDevIndex(devIndex: Int): MutableLiveData<Map<String, Int>> {
-        return when (devIndex) {
-            0 -> _ltoList1
-            1 -> _ltoList2
-            2 -> _ltoList3
-            3 -> _ltoList4
-            4 -> _ltoList5
-            5 -> _ltoList6
-            6 -> _ltoList7
-            7 -> _ltoList8
-            8 -> _ltoList9
-            9 -> _ltoList10
-            else -> _ltoList1
+    fun deleteLTO(lto: LTOEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteLTO(lto)
         }
-    }
-
-    private fun getMapForDevIndex(devIndex: Int): Map<String, Int> {
-        return getLiveDataForDevIndex(devIndex).value ?: emptyMap()
-    }
-
-    private fun updateLiveData(devIndex: Int, updatedMap: Map<String, Int>) {
-        getLiveDataForDevIndex(devIndex).value = updatedMap
     }
 }

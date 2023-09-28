@@ -30,7 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
-import inu.thebite.tory.database.STOEntity
+import inu.thebite.tory.database.LTO.LTOEntity
+import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
@@ -38,7 +39,7 @@ import inu.thebite.tory.screens.DataScreen.STOViewModel
 @Composable
 fun STOItemsRow(
     stoViewModel: STOViewModel,
-    selectedLTO: String,
+    selectedLTO: LTOEntity?,
     selectedSTO: STOEntity?,
     stos: List<STOEntity>?,
     allSTOs: List<STOEntity>,
@@ -79,7 +80,7 @@ fun STOItemsRow(
                 )
             }
         }
-        if(selectedLTO!=""){
+        if(selectedLTO.isNotNull()){
             Box(modifier = Modifier
                 .width(100.dp)
                 .fillMaxHeight()
@@ -111,9 +112,9 @@ fun STOItemsRow(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if(selectedLTO != ""){
+            if(selectedLTO.isNotNull()){
                 Log.e("stos", stos.toString())
-                items(stos ?: allSTOs, key = {it.stoId}){ stoItem ->
+                items(stos ?: emptyList(), key = {it.stoId}){ stoItem ->
                     val description = stoItem.stoName
                     val progressState = stoItem.stoState
                     LazyColumnItemCanDelete(

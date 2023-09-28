@@ -37,9 +37,7 @@ import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import inu.thebite.tory.ChildViewModel
-import inu.thebite.tory.database.STOEntity
-import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.database.STO.STOEntity
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -71,6 +72,10 @@ fun MainCompose(
     val childViewModel : ChildViewModel = viewModel()
     val stoViewModel : STOViewModel = viewModel()
 
+
+    val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
+    val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
+
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
     }
@@ -95,13 +100,6 @@ fun MainCompose(
 
 
 
-    val (selectedChildClass, setSelectedChildClass) = rememberSaveable {
-        mutableStateOf(classList[0])
-    }
-
-    val (selectedChildName, setSelectedChildName) = rememberSaveable {
-        mutableStateOf(childList[0][0])
-    }
 
     val (selectedChildClassIndex, setSelectedChildClassIndex) = rememberSaveable {
         mutableStateOf(0)
@@ -174,14 +172,11 @@ fun MainCompose(
                         containerColor = colorResource(id = R.color.light_gray)
                     ),
                     onClick = {
-                        setSelectedChildName(childList[selectedChildClassIndex][selectedChildrenIndex])
-                        setSelectedChildClass(classList[selectedChildClassIndex])
                         Log.e("아이 선택", "selectedChildName : ${childList[selectedChildClassIndex][selectedChildrenIndex]}")
-                        val selectedChildName = childList[selectedChildClassIndex][selectedChildrenIndex]
-                        val selectedChildClass = classList[selectedChildClassIndex]
-                        viewModel.setSelectedChildName(selectedChildName)
-                        viewModel.setSelectedChildClass(selectedChildClass)
-
+                        viewModel.setSelectedChildName(childList[selectedChildClassIndex][selectedChildrenIndex])
+                        viewModel.setSelectedChildClass(classList[selectedChildClassIndex])
+                        ltoViewModel.clearSelectedLTO()
+                        stoViewModel.clearSelectedSTO()
                         setChildDialogOpen(false)
                     }
                 ){

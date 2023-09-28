@@ -1,4 +1,4 @@
-package inu.thebite.tory.database
+package inu.thebite.tory.database.STO
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

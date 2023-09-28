@@ -1,4 +1,4 @@
-package inu.thebite.tory.database
+package inu.thebite.tory.database.STO
 
 import androidx.room.Dao
 import androidx.room.Delete

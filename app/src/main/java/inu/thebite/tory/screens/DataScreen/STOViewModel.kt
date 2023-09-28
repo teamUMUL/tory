@@ -3,13 +3,11 @@ package inu.thebite.tory.screens.DataScreen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.database.STOEntity
-import inu.thebite.tory.repositories.STORepo
+import inu.thebite.tory.database.STO.STOEntity
+import inu.thebite.tory.repositories.STO.STORepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -153,32 +151,6 @@ class STOViewModel : ViewModel(), KoinComponent {
             }
         }
     }
-
-    // Function to get STO ID by criteria
-//    fun getSTOIdByCriteria(
-//        className: String,
-//        childName: String,
-//        selectedDEV: String,
-//        selectedLTO: String,
-//        selectedSTO: String
-//    ){
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.getSTOIdByCriteria(className, childName, selectedDEV, selectedLTO, selectedSTO).collect{data ->
-//                _stoId.update { data }
-//            }
-//        }
-//    }
-
-    // Function to get STO by ID
-//    fun getSTOById(stoId: Int) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.getSTOById(stoId).collect{data ->
-//                _sto.update { data }
-//            }
-//        }
-//    }
-
-    // Function to update an existing STO entry
     fun updateSTO(updatedSTOEntity: STOEntity) {
         // Implement the logic to update STO
         viewModelScope.launch(Dispatchers.IO) {

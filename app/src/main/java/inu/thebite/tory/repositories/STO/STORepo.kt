@@ -1,6 +1,6 @@
-package inu.thebite.tory.repositories
+package inu.thebite.tory.repositories.STO
 
-import inu.thebite.tory.database.STOEntity
+import inu.thebite.tory.database.STO.STOEntity
 import kotlinx.coroutines.flow.Flow
 
 interface STORepo {

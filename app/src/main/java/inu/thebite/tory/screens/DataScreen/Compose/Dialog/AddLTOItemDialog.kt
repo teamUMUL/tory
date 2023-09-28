@@ -44,7 +44,6 @@ fun AddLTOItemDialog(
     ltoViewModel: LTOViewModel,
     stoViewModel : STOViewModel,
     selectedDevIndex: Int,
-    selectedLTO: String,
     selectedChildClass: String,
     selectedChildName: String,
 ) {
@@ -95,7 +94,7 @@ fun AddLTOItemDialog(
                     .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    ltoViewModel.addOrUpdateLTO(selectedDevIndex, ltoInputValue.text, -1)
+                    ltoViewModel.createLTO(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDevIndex], ltoInputValue.text, -1)
                     setAddLTOItem(false)
                     ltoInputValue = TextFieldValue("")
                     stoViewModel.clearSelectedSTO()

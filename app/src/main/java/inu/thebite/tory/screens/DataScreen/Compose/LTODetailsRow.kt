@@ -33,12 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
+import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 
 @Composable
 fun LTODetailsRow(
-    selectedLTO: String,
+    selectedLTO: LTOEntity?,
     isGraphSelected: Boolean,
     setGraphSelected: (Boolean) -> Unit,
     setDetailListIndex: (Int) -> Unit,
@@ -54,6 +56,10 @@ fun LTODetailsRow(
         "중지",
         "완료"
     )
+    var selectedLTOName = ""
+    if(selectedLTO.isNotNull()){
+        selectedLTOName = selectedLTO!!.ltoName
+    }
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(70.dp)
@@ -100,13 +106,13 @@ fun LTODetailsRow(
                         Text(
                             modifier = Modifier
                                 .padding(horizontal = 10.dp),
-                            text = selectedLTO,
+                            text = selectedLTOName,
                             fontSize = 35.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black,
                             textAlign = TextAlign.Center
                         )
-                        if(selectedLTO != ""){
+                        if(selectedLTO.isNotNull()){
                             OutlinedButton(
                                 modifier = Modifier
                                     .size(40.dp),
@@ -148,7 +154,7 @@ fun LTODetailsRow(
                         }
                     }
                 }
-                if(selectedLTO != ""){
+                if(selectedLTO.isNotNull()){
                     Box(modifier = Modifier
                         .width(300.dp)
                         .fillMaxHeight()
@@ -163,7 +169,8 @@ fun LTODetailsRow(
                                 OutlinedButton(
                                     onClick = {
                                         setDetailListIndex(index)
-                                        ltoViewModel.addOrUpdateLTO(selectedDevIndex, selectedLTO, index)
+                                        selectedLTO!!.ltoState = index
+                                        ltoViewModel.updateLTO(selectedLTO)
                                     },
                                     shape =  when (index) {
                                         // left outer button

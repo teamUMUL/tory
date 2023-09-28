@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
-import inu.thebite.tory.database.STOEntity
+import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 

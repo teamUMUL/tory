@@ -1,7 +1,6 @@
 package inu.thebite.tory.screens.DataScreen.Compose
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,9 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.database.STOEntity
+import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
-import java.sql.Date
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -51,11 +49,6 @@ fun STODetailTableAndGameResult(
     selectedSTODetailGameDataIndex: Int,
     setSelectedSTODetailGameDataIndex: (Int) -> Unit,
     stoViewModel: STOViewModel,
-    selectedLTO: String,
-    selectedChildClass : String,
-    selectedChildName : String,
-    selectedDEVIndex: Int,
-
 ){
 
     val STODetailTitles =

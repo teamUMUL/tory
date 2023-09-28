@@ -1,12 +1,10 @@
-package inu.thebite.tory.repositories
+package inu.thebite.tory.repositories.STO
 
-import inu.thebite.tory.database.STODao
-import inu.thebite.tory.database.STODatabase
-import inu.thebite.tory.database.STOEntity
+import inu.thebite.tory.database.STO.STODatabase
+import inu.thebite.tory.database.STO.STOEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
-class STORepoImpl(private val database: STODatabase):STORepo {
+class STORepoImpl(private val database: STODatabase): STORepo {
 
     private val stoDao = database.stoDao()
 
