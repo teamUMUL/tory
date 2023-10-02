@@ -9,14 +9,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -43,6 +46,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -58,9 +62,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -82,6 +91,7 @@ import inu.thebite.tory.screens.DataScreen.Compose.LTOItemsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STODetailTableAndGameResult
 import inu.thebite.tory.screens.DataScreen.Compose.STODetailsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STOItemsRow
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("MutableCollectionMutableState")
@@ -238,12 +248,14 @@ fun DataScreen (
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.1f)
-                        .background(MaterialTheme.colorScheme.secondary),
+                        .background(MaterialTheme.colorScheme.tertiary),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         modifier = Modifier
+                            .size(80.dp)
+                            .padding(10.dp)
                             .clickable {
                                 setGameDialog(false)
                             },
@@ -254,12 +266,47 @@ fun DataScreen (
                 }
                 Column(modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)) {
-                    Button(onClick = {
-                    }) {
-                        Icon(imageVector = Icons.Default.PlayArrow, contentDescription = null)
-                    }
+                    .background(Color.White),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    val isCollided = remember { mutableStateOf(false) }
 
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        val imageModifier = Modifier
+                            .size(320.dp)
+                            .padding(16.dp)
+
+
+                        Image(
+                            painter = painterResource(id = R.drawable.socks_1),
+                            contentDescription = null,
+                            modifier = imageModifier,
+                            contentScale = ContentScale.Fit
+                        )
+                        Image(
+                            painter = if (isCollided.value) painterResource(id = R.drawable.ellipse) else painterResource(id = R.drawable.spoon_2),
+                            contentDescription = null,
+                            modifier = imageModifier,
+                            contentScale = ContentScale.Fit
+                        )
+
+                        Image(
+                            painter = painterResource(id = R.drawable.toothbrush_2),
+                            contentDescription = null,
+                            modifier = imageModifier,
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(100.dp))
+                    DraggableObject(
+                        image = painterResource(id = R.drawable.spoon_1),
+                        isDragging = isCollided
+                    ) {
+                        isCollided.value = true
+                    }
                 }
             }
 
@@ -599,7 +646,52 @@ fun DataScreen (
 
 
 
+@Composable
+fun DraggableObject(image: Painter, isDragging: MutableState<Boolean>, onCollision: () -> Unit) {
+    val density = LocalDensity.current.density
+    val offsetX = remember { mutableStateOf(0f) }
+    val offsetY = remember { mutableStateOf(0f) }
 
+    Box(
+        modifier = Modifier
+            .offset {
+                IntOffset(
+                    x = offsetX.value.roundToInt(),
+                    y = offsetY.value.roundToInt()
+                )
+            }
+            .pointerInput(Unit) {
+                detectDragGestures { _, dragAmount ->
+                    offsetX.value += dragAmount.x / density
+                    offsetY.value += dragAmount.y / density
+                    isDragging.value = true
+                }
+            }
+            .size(320.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = image,
+            contentDescription = null,
+            modifier = Modifier
+                .size(320.dp),
+            contentScale = ContentScale.Fit
+        )
+    }
+
+    if (isColliding(offsetX.value)) {
+        onCollision()
+    }
+}
+
+private fun isColliding(offsetX: Float): Boolean {
+//     Implement collision detection logic here
+//     You can customize this logic to check if the DraggableObject and the first image are colliding
+//     For simplicity, we'll assume they collide when the DraggableObject is dragged to a certain position on the screen.
+//     You can use the offsetX parameter to determine the position of DraggableObject.
+    val collisionThreshold = 1000 // Adjust this threshold as needed
+    return offsetX > collisionThreshold
+}
 
 
 
