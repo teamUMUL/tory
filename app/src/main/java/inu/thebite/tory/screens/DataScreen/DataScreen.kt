@@ -10,8 +10,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,9 +47,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,15 +65,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -93,6 +104,8 @@ import inu.thebite.tory.screens.DataScreen.Compose.STODetailsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STOItemsRow
 import kotlin.math.roundToInt
 
+
+
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -101,6 +114,7 @@ fun DataScreen (
     childViewModel: ChildViewModel = viewModel(),
     stoViewModel: STOViewModel = viewModel()
 ) {
+
     val context = LocalContext.current
 
     val scrollState = rememberScrollState()
@@ -661,9 +675,20 @@ fun DraggableObject(image: Painter, isDragging: MutableState<Boolean>, onCollisi
                 )
             }
             .pointerInput(Unit) {
-                detectDragGestures { _, dragAmount ->
-                    offsetX.value += dragAmount.x / density
-                    offsetY.value += dragAmount.y / density
+                detectDragGestures(
+                    onDragEnd = {
+                        offsetX.value = 0f
+                        offsetY.value = 0f
+                        isDragging.value = false
+                    },
+                    onDragCancel = {
+                        offsetX.value = 0f
+                        offsetY.value = 0f
+                        isDragging.value = false
+                    }
+                ) { _, dragAmount ->
+                    offsetX.value += dragAmount.x
+                    offsetY.value += dragAmount.y
                     isDragging.value = true
                 }
             }
@@ -692,24 +717,6 @@ private fun isColliding(offsetX: Float): Boolean {
     val collisionThreshold = 1000 // Adjust this threshold as needed
     return offsetX > collisionThreshold
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
