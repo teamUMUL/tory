@@ -5,6 +5,12 @@ package inu.thebite.tory.screens.DataScreen
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,9 +39,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -43,7 +52,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +70,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -70,6 +82,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -79,18 +92,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.zIndex
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.yml.charts.common.extensions.isNotNull
 
 
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
+import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddLTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddSTOItemDialog
 import inu.thebite.tory.screens.DataScreen.Compose.DevelopZoneRow
@@ -102,6 +119,8 @@ import inu.thebite.tory.screens.DataScreen.Compose.LTOItemsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STODetailTableAndGameResult
 import inu.thebite.tory.screens.DataScreen.Compose.STODetailsRow
 import inu.thebite.tory.screens.DataScreen.Compose.STOItemsRow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
@@ -112,7 +131,8 @@ import kotlin.math.roundToInt
 fun DataScreen (
     ltoViewModel: LTOViewModel = viewModel(),
     childViewModel: ChildViewModel = viewModel(),
-    stoViewModel: STOViewModel = viewModel()
+    stoViewModel: STOViewModel = viewModel(),
+    gameViewModel: GameViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
@@ -121,6 +141,10 @@ fun DataScreen (
 
     val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
     val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
+    
+    val oneGameResult by gameViewModel.oneGameResult.observeAsState("+")
+    val gameIndex by gameViewModel.gameIndex.observeAsState(-1)
+
 
     val stos by stoViewModel.stos.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
@@ -152,7 +176,9 @@ fun DataScreen (
     val (selectedDEVIndex, setSelectedDEVIndex) = rememberSaveable {
         mutableStateOf(0)
     }
-
+    val (gameButtonIndex, setGameButtonIndex) = rememberSaveable {
+        mutableStateOf(-1)
+    }
 
     val (ltoDetailListIndex, setLTODetailListIndex) = rememberSaveable {
         mutableStateOf(-1)
@@ -165,9 +191,11 @@ fun DataScreen (
         mutableStateOf(false)
     }
 
-
+    val (isCardSelectEnd, setIsCardSelectEnd) = rememberSaveable {
+        mutableStateOf(false)
+    }
     val (selectedSTODetailGameDataIndex, setSelectedSTODetailGameDataIndex) = rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
 
@@ -190,6 +218,19 @@ fun DataScreen (
 
     val (mainGameItem, setMainGameItem) = rememberSaveable {
         mutableStateOf("")
+    }
+
+    LaunchedEffect(isCardSelectEnd){
+        if(isCardSelectEnd){
+            if (selectedSTODetailGameDataIndex < selectedSTO!!.gameResult.size) {
+                val changeList = selectedSTO!!.gameResult.toMutableList()
+                changeList[selectedSTODetailGameDataIndex] = oneGameResult
+                selectedSTO!!.gameResult = changeList
+                stoViewModel.updateSTO(selectedSTO!!)
+                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
+            }
+            gameViewModel.setOneGameResult("+")
+        }
     }
 
     LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildName, addSTOItem, allSTOs, selectedSTO){
@@ -245,6 +286,10 @@ fun DataScreen (
         )
     }
 
+    val gameButtons = listOf("P", "C")
+    val cornerRadius = 4.dp
+    val timerStart = remember { mutableStateOf(false) }
+    val timerRestart = remember { mutableStateOf(false) }
     if(gameDialog){
         Dialog(
             properties = DialogProperties(
@@ -263,20 +308,153 @@ fun DataScreen (
                         .fillMaxWidth()
                         .fillMaxHeight(0.1f)
                         .background(MaterialTheme.colorScheme.tertiary),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(80.dp)
+                            .size(60.dp)
                             .padding(10.dp)
                             .clickable {
                                 setGameDialog(false)
                             },
-                        imageVector = Icons.Default.Close,
+                        painter = painterResource(id = R.drawable.icon_back),
                         contentDescription = null
                     )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(5.dp)
+                            .border(
+                                2.dp,
+                                MaterialTheme.colorScheme.secondary,
+                                RoundedCornerShape(4.dp)
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(7f)
+                                .fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LazyRow(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                items(selectedSTO!!.gameResult) { gameResult ->
+                                    if (gameResult != "n") {
+                                        Text(
+                                            modifier = Modifier
+                                                .padding(start = 5.dp),
+                                            fontSize = 40.sp,
+                                            text = gameResult,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
 
+
+                                }
+                            }
+
+                        }
+                        Row(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .padding(3.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ){
+                            Timer(timerStart = timerStart, timerRestart = timerRestart, gameButtonIndex = gameButtonIndex, oneGameResult = oneGameResult, gameViewModel = gameViewModel)
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .padding(3.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            gameButtons.forEachIndexed { index, item ->
+                                OutlinedButton(
+                                    onClick = {
+                                        setGameButtonIndex(index)
+                                        if(index == gameButtonIndex){
+                                            setGameButtonIndex(-1)
+                                        }
+                                        if(item == "C"){
+                                            gameViewModel.setOneGameResult("-")
+                                        }else{
+                                            gameViewModel.setOneGameResult("P")
+                                        }
+                                    },
+                                    shape = when (index) {
+                                        // left outer button
+                                        0 -> RoundedCornerShape(
+                                            topStart = cornerRadius,
+                                            topEnd = 0.dp,
+                                            bottomStart = cornerRadius,
+                                            bottomEnd = 0.dp
+                                        )
+                                        // right outer button
+                                        gameButtons.size - 1 -> RoundedCornerShape(
+                                            topStart = 0.dp,
+                                            topEnd = cornerRadius,
+                                            bottomStart = 0.dp,
+                                            bottomEnd = cornerRadius
+                                        )
+                                        // middle button
+                                        else -> RoundedCornerShape(
+                                            topStart = 0.dp,
+                                            topEnd = 0.dp,
+                                            bottomStart = 0.dp,
+                                            bottomEnd = 0.dp
+                                        )
+                                    },
+                                    border = BorderStroke(
+                                        1.dp,
+                                        if (gameButtonIndex == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(
+                                            alpha = 0.75f
+                                        )
+                                    ),
+                                    modifier = when (index) {
+                                        0 ->
+                                            Modifier
+                                                .offset(0.dp, 0.dp)
+                                                .zIndex(if (gameButtonIndex == index) 1f else 0f)
+
+                                        else ->
+                                            Modifier
+                                                .offset((-1 * index).dp, 0.dp)
+                                                .zIndex(if (gameButtonIndex == index) 1f else 0f)
+                                    },
+                                    colors =
+                                    if (gameButtonIndex == index) {
+                                        ButtonDefaults.outlinedButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.primary.copy(
+                                                alpha = 0.5f
+                                            ),
+                                            contentColor = Color.Black
+                                        )
+                                    } else {
+                                        ButtonDefaults.outlinedButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiary,
+                                            contentColor = Color.Black
+                                        )
+                                    }
+
+                                ) {
+                                    Text(
+                                        text = gameButtons[index],
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
                 Column(modifier = Modifier
                     .fillMaxSize()
@@ -292,7 +470,6 @@ fun DataScreen (
                         val imageModifier = Modifier
                             .size(320.dp)
                             .padding(16.dp)
-
 
                         Image(
                             painter = painterResource(id = R.drawable.socks_1),
@@ -315,11 +492,17 @@ fun DataScreen (
                         )
                     }
                     Spacer(modifier = Modifier.height(100.dp))
-                    DraggableObject(
-                        image = painterResource(id = R.drawable.spoon_1),
-                        isDragging = isCollided
-                    ) {
-                        isCollided.value = true
+                    selectedSTO?.let {
+                        DraggableObject(
+                            image = painterResource(id = R.drawable.spoon_1),
+                            isDragging = isCollided,
+                            timerStart = timerStart,
+                            timerRestart = timerRestart,
+                            resetGameButtonIndex = {setGameButtonIndex(-1)},
+                            onCollision = {isCollided.value = true},
+                            setIsCardSelectEnd = { it -> setIsCardSelectEnd(it)},
+                            gameViewModel = gameViewModel,
+                        )
                     }
                 }
             }
@@ -661,7 +844,16 @@ fun DataScreen (
 
 
 @Composable
-fun DraggableObject(image: Painter, isDragging: MutableState<Boolean>, onCollision: () -> Unit) {
+fun DraggableObject(
+    image: Painter,
+    isDragging: MutableState<Boolean>,
+    timerStart: MutableState<Boolean>,
+    timerRestart: MutableState<Boolean>,
+    gameViewModel: GameViewModel,
+    resetGameButtonIndex:() -> Unit,
+    onCollision: () -> Unit,
+    setIsCardSelectEnd: (Boolean) -> Unit
+){
     val density = LocalDensity.current.density
     val offsetX = remember { mutableStateOf(0f) }
     val offsetY = remember { mutableStateOf(0f) }
@@ -676,16 +868,26 @@ fun DraggableObject(image: Painter, isDragging: MutableState<Boolean>, onCollisi
             }
             .pointerInput(Unit) {
                 detectDragGestures(
+                    onDragStart = {
+                        timerStart.value = true
+                        setIsCardSelectEnd(true)
+                    },
                     onDragEnd = {
                         offsetX.value = 0f
                         offsetY.value = 0f
                         isDragging.value = false
+                        timerRestart.value = true
+                        timerStart.value = false
+                        resetGameButtonIndex()
+//                        if (gameIndex < selectedSTO.gameResult.size) {
+//                            val changeList = selectedSTO.gameResult.toMutableList()
+//                            changeList[gameIndex] = oneGameResult
+//                            selectedSTO.gameResult = changeList
+//                            stoViewModel.updateSTO(selectedSTO)
+//                        }
+                        setIsCardSelectEnd(false)
+
                     },
-                    onDragCancel = {
-                        offsetX.value = 0f
-                        offsetY.value = 0f
-                        isDragging.value = false
-                    }
                 ) { _, dragAmount ->
                     offsetX.value += dragAmount.x
                     offsetY.value += dragAmount.y
@@ -721,8 +923,39 @@ private fun isColliding(offsetX: Float): Boolean {
 
 
 
+@Composable
+fun Timer(timerStart: MutableState<Boolean>, timerRestart: MutableState<Boolean>,oneGameResult: String, gameButtonIndex : Int, gameViewModel : GameViewModel) {
+    var progress by remember { mutableStateOf(1f) }
+
+    LaunchedEffect(timerStart.value, timerRestart.value) {
+        if(gameButtonIndex == -1){
+            if(timerStart.value){
+                val startTime = System.currentTimeMillis()
+                val duration = 5000L // 5 seconds
+
+                while (progress > 0f) {
+                    val elapsedTime = System.currentTimeMillis() - startTime
+                    progress = 1 - (elapsedTime.toFloat() / duration)
+                    delay(16) // Update every 16ms (approximately 60 FPS)
+                }
+                gameViewModel.setOneGameResult("-")
+                timerRestart.value = true
+                timerStart.value = false
+            }
+            if(timerRestart.value){
+                progress = 1f
+            }
+        }
 
 
+    }
+
+    LinearProgressIndicator(
+        modifier = Modifier.fillMaxSize(),
+        progress = progress,
+        color = MaterialTheme.colorScheme.primary // Customize the color as needed
+    )
+}
 
 
 
@@ -857,6 +1090,7 @@ fun getResourceIdByName(imageName: String, context: Context): Int {
     val packageName = context.packageName
     return context.resources.getIdentifier(imageName, "drawable", packageName)
 }
+
 
 
 
