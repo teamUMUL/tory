@@ -44,7 +44,8 @@ fun STOItemsRow(
     stos: List<STOEntity>?,
     allSTOs: List<STOEntity>,
     setAddSTOItem: (Boolean) -> Unit,
-    selectSTOItem: (it:String, progressState:Int) -> Unit
+    selectSTOItem: (it:String, progressState:Int) -> Unit,
+    setSelectedSTOTryNum: (Int) -> Unit
 ) {
     // STOItemsRow 내용
     var selectedSTOName : String = ""
@@ -127,6 +128,7 @@ fun STOItemsRow(
                             stoViewModel.clearSelectedSTO()
                         },
                         select = {
+                            setSelectedSTOTryNum(stoItem.stoTryNum)
                             selectSTOItem(it, progressState)
                             stoViewModel.setSelectedSTO(stoItem)
                         },

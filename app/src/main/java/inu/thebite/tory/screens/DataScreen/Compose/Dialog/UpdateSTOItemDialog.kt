@@ -19,10 +19,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -36,6 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.DataScreen.STOViewModel
@@ -47,6 +52,7 @@ fun UpdateSTOItemDialog(
     stoViewModel: STOViewModel,
     selectedSTO: STOEntity,
     setUpdateSTOItem : (Boolean) -> Unit,
+    setSelectedTryNum : (Int) -> Unit
 ) {
     val addSTOScrollState = rememberScrollState()
 
@@ -75,6 +81,8 @@ fun UpdateSTOItemDialog(
 
     }
 
+    val stoTryNum = remember { mutableStateOf(selectedSTO.stoTryNum) }
+
     Dialog(
         onDismissRequest = {setUpdateSTOItem(false)},
     ){
@@ -93,19 +101,31 @@ fun UpdateSTOItemDialog(
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f)
                 .verticalScroll(addSTOScrollState)) {
-                updateSTOTextFieldFrame(stoNameInputValue, setInputValue = {stoNameInputValue = it})
+                updateSTOTextFieldFrame("STO 이름", setInputValue = {stoNameInputValue = it}, inputValue = stoNameInputValue, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame(stoDetailInputValue, setInputValue = {stoDetailInputValue = it})
+                updateSTOTextFieldFrame("STO 내용", setInputValue = {stoDetailInputValue = it}, inputValue = stoDetailInputValue, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame(stoTryNumInputValue, setInputValue = {stoTryNumInputValue = it})
+                Text(
+                    text = "시도 수",
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                )
+                roundedSelectButtons(
+                    buttonList = listOf(10, 15, 20),
+                    cornerRadius = 5.dp,
+                    colorList = listOf(),
+                    defaultButtonIndex = listOf(10,15,20).indexOf(selectedSTO.stoTryNum),
+                    stoTryNum = stoTryNum
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame(stoSuccessStandardInputValue, setInputValue = {stoSuccessStandardInputValue = it})
+                updateSTOTextFieldFrame("준거도달 기준", setInputValue = {stoSuccessStandardInputValue = it}, inputValue = stoSuccessStandardInputValue, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame(stoMethodInputValue, setInputValue = {stoMethodInputValue = it})
+                updateSTOTextFieldFrame("촉구방법", setInputValue = {stoMethodInputValue = it}, inputValue = stoMethodInputValue, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame(stoScheduleInputValue, setInputValue = {stoScheduleInputValue = it})
+                updateSTOTextFieldFrame("강화스케줄", setInputValue = {stoScheduleInputValue = it}, inputValue = stoScheduleInputValue, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame(stoMemoInputValue, setInputValue = {stoMemoInputValue = it})
+                updateSTOTextFieldFrame("메모", setInputValue = {stoMemoInputValue = it}, inputValue = stoMemoInputValue, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
@@ -116,15 +136,29 @@ fun UpdateSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    //-----------
+                    val changeGameResult = selectedSTO.gameResult.toMutableList()
 
+
+                    //업데이트 하는 게임 결과 크기가 기존에 있던 게임 결과 크기보다 작을 경우에는 뒤에 있는 결과 제거, 더 큰 경우에는 n값 추가
+                    if(stoTryNum.value < changeGameResult.size){
+                        changeGameResult.subList(stoTryNum.value, changeGameResult.size).clear()
+                    } else if(stoTryNum.value > changeGameResult.size){
+                        val nullToAdd = stoTryNum.value - changeGameResult.size
+                        for(i in 0 until nullToAdd){
+                            changeGameResult.add("n")
+                        }
+                    }
+
+                    //-----------
+                    setSelectedTryNum(stoTryNum.value)
                     selectedSTO.stoName = stoNameInputValue.text
                     selectedSTO.stoDescription = stoDetailInputValue.text
-                    selectedSTO.stoTryNum = stoTryNumInputValue.text.toInt()
+                    selectedSTO.stoTryNum = stoTryNum.value
                     selectedSTO.stoSuccessStandard = stoSuccessStandardInputValue.text
                     selectedSTO.stoMethod = stoMethodInputValue.text
                     selectedSTO.stoSchedule = stoScheduleInputValue.text
                     selectedSTO.stoMemo = stoMemoInputValue.text
+                    selectedSTO.gameResult = changeGameResult
                     stoViewModel.updateSTO(selectedSTO)
                     stoViewModel.setSelectedSTO(selectedSTO)
                     //----------------
@@ -149,25 +183,35 @@ fun UpdateSTOItemDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun updateSTOTextFieldFrame(inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit){
+fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean){
+    val containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
+    val containerColor1 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     TextField(
         value = inputValue,
         onValueChange = {
             setInputValue(it)
         },
         modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
+        label = { Text(text = typeOfInput) },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
             autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
         ),
         textStyle = TextStyle(
-            color = Color.Black, fontSize = TextUnit.Unspecified,
+            color = Color.Black, fontSize = 22.sp,
             fontFamily = FontFamily.SansSerif
         ),
         maxLines = 2,
-        singleLine = false
+        singleLine = isSingleLine,
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+        )
     )
 }
+
+

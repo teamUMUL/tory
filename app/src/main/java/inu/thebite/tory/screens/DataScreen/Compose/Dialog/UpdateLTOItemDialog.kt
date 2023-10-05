@@ -13,9 +13,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.LTO.LTOEntity
@@ -40,6 +44,7 @@ import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateLTOItemDialog(
     setUpdateLTOItem: (Boolean) -> Unit,
@@ -74,19 +79,25 @@ fun UpdateLTOItemDialog(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp),
+                    .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
-                placeholder = { Text(text = "Enter your LTO") },
+                label = { Text(text = "LTO 이름") },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
                 ),
                 textStyle = TextStyle(
-                    color = Color.Black, fontSize = TextUnit.Unspecified,
+                    color = Color.Black, fontSize = 30.sp,
                     fontFamily = FontFamily.SansSerif
                 ),
                 maxLines = 2,
-                singleLine = false
+                singleLine = false,
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                )
             )
             Spacer(modifier = Modifier.height(10.dp))
             Button(

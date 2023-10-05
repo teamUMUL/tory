@@ -199,7 +199,9 @@ fun DataScreen (
         mutableIntStateOf(0)
     }
 
-
+    val (selectedSTOTryNum, setSelectedSTOTryNum) = rememberSaveable {
+        mutableIntStateOf(0)
+    }
 
 
     val developZoneItems = listOf<String>(
@@ -262,7 +264,7 @@ fun DataScreen (
             ltoViewModel = ltoViewModel,
             stoViewModel = stoViewModel,
             stos = stos,
-            selectedLTO = selectedLTO
+            selectedLTO = selectedLTO,
         )
     }
 
@@ -284,7 +286,8 @@ fun DataScreen (
         UpdateSTOItemDialog(
             stoViewModel = stoViewModel,
             setUpdateSTOItem = {setUpdateSTOItem(it)},
-            selectedSTO = selectedSTO!!
+            selectedSTO = selectedSTO!!,
+            setSelectedTryNum = {setSelectedSTOTryNum(it)}
         )
     }
 
@@ -293,6 +296,7 @@ fun DataScreen (
     val timerStart = remember { mutableStateOf(false) }
     val timerRestart = remember { mutableStateOf(false) }
     if(gameDialog){
+
         Dialog(
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
@@ -735,6 +739,7 @@ fun DataScreen (
                 setSTODetailListIndex(progressState)
                 setSelectedSTODetailGameDataIndex(0)
             },
+            setSelectedSTOTryNum = {setSelectedSTOTryNum(it)}
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
         //STO Details Row---------------------------------------------------------------------------
@@ -746,6 +751,14 @@ fun DataScreen (
                 setUpdateSTOItem = {setUpdateSTOItem(it)},
                 gameStart = {
                     setGameDialog(true)
+                    val targetElement = "n"
+                    val firstNIndex = it.gameResult.indexOf(targetElement)
+                    //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
+                    if(firstNIndex != -1){
+                        setSelectedSTODetailGameDataIndex(firstNIndex)
+                    }else {
+                        setSelectedSTODetailGameDataIndex(0)
+                    }
                 },
                 stoViewModel = stoViewModel
             )
@@ -758,6 +771,7 @@ fun DataScreen (
                 setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
                 setSTODetailListIndex = {setSTODetailListIndex(it)},
                 stoViewModel = stoViewModel,
+                selectedSTOTryNum = selectedSTOTryNum
             )
         }
         //게임준비

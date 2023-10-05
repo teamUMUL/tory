@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.DataScreen.Compose
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +29,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,7 +52,9 @@ fun STODetailTableAndGameResult(
     selectedSTODetailGameDataIndex: Int,
     setSelectedSTODetailGameDataIndex: (Int) -> Unit,
     stoViewModel: STOViewModel,
+    selectedSTOTryNum : Int
 ){
+
 
     val STODetailTitles =
         listOf<String>(
@@ -198,7 +203,8 @@ fun STODetailTableAndGameResult(
                             .fillMaxHeight(0.8f)
                             .padding(10.dp)
                     ) {
-                        items(selectedSTO.gameResult.size / 5) { verticalIndex ->
+                        Log.e("selectedSTOTryNum", selectedSTOTryNum.toString())
+                        items(selectedSTOTryNum / 5) { verticalIndex ->
                             LazyRow(
                                 modifier = Modifier
                                     .fillMaxSize()
