@@ -144,6 +144,7 @@ fun DataScreen (
     
     val oneGameResult by gameViewModel.oneGameResult.observeAsState("+")
     val gameIndex by gameViewModel.gameIndex.observeAsState(-1)
+    val gameResultList by gameViewModel.gameResultList.observeAsState()
 
 
     val stos by stoViewModel.stos.collectAsState()
@@ -227,6 +228,7 @@ fun DataScreen (
                 changeList[selectedSTODetailGameDataIndex] = oneGameResult
                 selectedSTO!!.gameResult = changeList
                 stoViewModel.updateSTO(selectedSTO!!)
+                gameViewModel.setGameResultList(changeList)
                 setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
             }
             gameViewModel.setOneGameResult("+")
@@ -342,18 +344,21 @@ fun DataScreen (
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                items(selectedSTO!!.gameResult) { gameResult ->
-                                    if (gameResult != "n") {
-                                        Text(
-                                            modifier = Modifier
-                                                .padding(start = 5.dp),
-                                            fontSize = 40.sp,
-                                            text = gameResult,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
+                                selectedSTO?.let {
+                                    gameViewModel.setGameResultList(it.gameResult)
+                                    items(gameResultList!!) { gameResult ->
+                                        if (gameResult != "n") {
+                                            Text(
+                                                modifier = Modifier
+                                                    .padding(start = 5.dp),
+                                                fontSize = 40.sp,
+                                                text = gameResult,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        }
+
+
                                     }
-
-
                                 }
                             }
 
@@ -501,7 +506,6 @@ fun DataScreen (
                             resetGameButtonIndex = {setGameButtonIndex(-1)},
                             onCollision = {isCollided.value = true},
                             setIsCardSelectEnd = { it -> setIsCardSelectEnd(it)},
-                            gameViewModel = gameViewModel,
                         )
                     }
                 }
@@ -849,11 +853,11 @@ fun DraggableObject(
     isDragging: MutableState<Boolean>,
     timerStart: MutableState<Boolean>,
     timerRestart: MutableState<Boolean>,
-    gameViewModel: GameViewModel,
     resetGameButtonIndex:() -> Unit,
     onCollision: () -> Unit,
     setIsCardSelectEnd: (Boolean) -> Unit
 ){
+    //density를 넣을 경우 터치 민감도가 낮아지는 현상이 발견됨 -> density 사용 X
     val density = LocalDensity.current.density
     val offsetX = remember { mutableStateOf(0f) }
     val offsetY = remember { mutableStateOf(0f) }
@@ -869,23 +873,19 @@ fun DraggableObject(
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
+                        //드래그 시작 시 타이머 시작 및 카드 선택 상태 false로 설정
                         timerStart.value = true
-                        setIsCardSelectEnd(true)
+                        setIsCardSelectEnd(false)
                     },
                     onDragEnd = {
+                        //드래그 종료 시 원래 카드 위치로 옮기기 및 드래그 상태, 타이머 상태, 카트 선택 상태 설정
                         offsetX.value = 0f
                         offsetY.value = 0f
                         isDragging.value = false
                         timerRestart.value = true
                         timerStart.value = false
                         resetGameButtonIndex()
-//                        if (gameIndex < selectedSTO.gameResult.size) {
-//                            val changeList = selectedSTO.gameResult.toMutableList()
-//                            changeList[gameIndex] = oneGameResult
-//                            selectedSTO.gameResult = changeList
-//                            stoViewModel.updateSTO(selectedSTO)
-//                        }
-                        setIsCardSelectEnd(false)
+                        setIsCardSelectEnd(true)
 
                     },
                 ) { _, dragAmount ->

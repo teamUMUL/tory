@@ -20,7 +20,17 @@ class GameViewModel: ViewModel() {
     val gameIndex: LiveData<String>
         get() = _oneGameResult
 
-    fun setGamaIndex(gameIndex: Int) {
+    fun setGameIndex(gameIndex: Int) {
         _gameIndex.value = gameIndex
+    }
+
+
+    private val _gameResultList = MutableLiveData<List<String>>(null)
+
+    val gameResultList: LiveData<List<String>>
+        get() = _gameResultList
+
+    fun setGameResultList(gameResultList: List<String>) {
+        _gameResultList.value = gameResultList
     }
 }
