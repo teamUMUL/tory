@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datascreen.compose.Dialog
+package inu.thebite.tory.screens.Datascreen.Compose.Dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -39,8 +39,8 @@ import androidx.compose.ui.window.Dialog
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.datascreen.LTOViewModel
-import inu.thebite.tory.screens.datascreen.STOViewModel
+import inu.thebite.tory.screens.Datascreen.LTOViewModel
+import inu.thebite.tory.screens.Datascreen.STOViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)

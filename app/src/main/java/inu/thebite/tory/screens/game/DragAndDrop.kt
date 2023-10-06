@@ -1,5 +1,7 @@
 package inu.thebite.tory.screens.game
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -13,14 +15,17 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
+import inu.thebite.tory.R
 
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 
 @Composable
 fun DragableScreen(
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    dragAndDropViewModel: DragAndDropViewModel,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     val state = remember { DragTargetInfo() }
     CompositionLocalProvider(
@@ -46,7 +51,8 @@ fun DragableScreen(
                         targetSize = it.size
                     }
                 ) {
-                    state.draggableComposable?.invoke()
+                    Image(painter = painterResource(id = dragAndDropViewModel.mainItems.first().image), contentDescription = null)
+//                    state.draggableComposable?.invoke()
                 }
             }
         }
@@ -64,7 +70,7 @@ fun <T> DragTarget(
 
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
     val currentState = LocalDragTargetInfo.current
-
+    val copiedContent = content
     Box(modifier = modifier
         .onGloballyPositioned {
             currentPosition = it.localToWindow(
@@ -72,12 +78,12 @@ fun <T> DragTarget(
             )
         }
         .pointerInput(Unit) {
-            detectDragGesturesAfterLongPress(onDragStart = {
+            detectDragGestures(onDragStart = {
                 viewModel.startDragging(context = context)
                 currentState.dataToDrop = dataToDrop
                 currentState.isDragging = true
                 currentState.dragPosition = currentPosition + it
-                currentState.draggableComposable = content
+                currentState.draggableComposable = copiedContent
             }, onDrag = { change, dragAmount ->
                 change.consumeAllChanges()
                 currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
@@ -90,7 +96,8 @@ fun <T> DragTarget(
                 currentState.dragOffset = Offset.Zero
                 currentState.isDragging = false
             })
-        }) {
+        })
+    {
         content()
     }
 }

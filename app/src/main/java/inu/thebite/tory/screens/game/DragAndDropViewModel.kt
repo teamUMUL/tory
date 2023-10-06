@@ -14,8 +14,12 @@ class DragAndDropViewModel :ViewModel() {
     var items by mutableStateOf(emptyList<GameItem>())
         private set
 
+    var mainItems by mutableStateOf(emptyList<GameItem>())
+        private set
+
     var addedPersons = mutableStateListOf<GameItem>()
         private set
+
 
     init {
         items = listOf(
@@ -57,6 +61,10 @@ class DragAndDropViewModel :ViewModel() {
         isCorrect = false
     }
 
+    fun setMainItem(gameItem: GameItem){
+        mainItems = listOf(gameItem)
+    }
+
     fun stopDragging(){
         isCurrentlyDragging = false
     }
@@ -83,3 +91,4 @@ class DragAndDropViewModel :ViewModel() {
     }
 
 }
+

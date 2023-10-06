@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
-import inu.thebite.tory.screens.datascreen.LTOViewModel
+import inu.thebite.tory.screens.Datascreen.LTOViewModel
 //import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 @Composable

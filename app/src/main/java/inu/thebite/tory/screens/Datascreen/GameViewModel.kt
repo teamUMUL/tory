@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datascreen
+package inu.thebite.tory.screens.Datascreen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,6 +1,6 @@
 @file:Suppress("NAME_SHADOWING")
 
-package inu.thebite.tory.screens.datascreen
+package inu.thebite.tory.screens.Datascreen
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -77,17 +77,17 @@ import co.yml.charts.common.extensions.isNotNull
 
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.screens.datascreen.compose.Dialog.AddLTOItemDialog
-import inu.thebite.tory.screens.datascreen.compose.Dialog.AddSTOItemDialog
-import inu.thebite.tory.screens.datascreen.compose.DevelopZoneRow
-import inu.thebite.tory.screens.datascreen.compose.Dialog.UpdateLTOItemDialog
-import inu.thebite.tory.screens.datascreen.compose.Dialog.UpdateSTOItemDialog
-import inu.thebite.tory.screens.datascreen.compose.GraphRow
-import inu.thebite.tory.screens.datascreen.compose.LTODetailsRow
-import inu.thebite.tory.screens.datascreen.compose.LTOItemsRow
-import inu.thebite.tory.screens.datascreen.compose.STODetailTableAndGameResult
-import inu.thebite.tory.screens.datascreen.compose.STODetailsRow
-import inu.thebite.tory.screens.datascreen.compose.STOItemsRow
+import inu.thebite.tory.screens.Datascreen.Compose.Dialog.AddLTOItemDialog
+import inu.thebite.tory.screens.Datascreen.Compose.Dialog.AddSTOItemDialog
+import inu.thebite.tory.screens.Datascreen.Compose.DevelopZoneRow
+import inu.thebite.tory.screens.Datascreen.Compose.Dialog.UpdateLTOItemDialog
+import inu.thebite.tory.screens.Datascreen.Compose.Dialog.UpdateSTOItemDialog
+import inu.thebite.tory.screens.Datascreen.Compose.GraphRow
+import inu.thebite.tory.screens.Datascreen.Compose.LTODetailsRow
+import inu.thebite.tory.screens.Datascreen.Compose.LTOItemsRow
+import inu.thebite.tory.screens.Datascreen.Compose.STODetailTableAndGameResult
+import inu.thebite.tory.screens.Datascreen.Compose.STODetailsRow
+import inu.thebite.tory.screens.Datascreen.Compose.STOItemsRow
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 

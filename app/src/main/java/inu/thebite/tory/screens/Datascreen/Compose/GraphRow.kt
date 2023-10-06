@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datascreen.compose
+package inu.thebite.tory.screens.Datascreen.Compose
 
 import android.util.Log
 import androidx.compose.foundation.border

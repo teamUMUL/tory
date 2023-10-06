@@ -46,10 +46,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import inu.thebite.tory.screens.datascreen.DataScreen
+import inu.thebite.tory.screens.Datascreen.DataScreen
 import inu.thebite.tory.screens.HomeScreen
-import inu.thebite.tory.screens.datascreen.LTOViewModel
-import inu.thebite.tory.screens.datascreen.STOViewModel
+import inu.thebite.tory.screens.Datascreen.LTOViewModel
+import inu.thebite.tory.screens.Datascreen.STOViewModel
 import inu.thebite.tory.screens.game.GameScreen
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer

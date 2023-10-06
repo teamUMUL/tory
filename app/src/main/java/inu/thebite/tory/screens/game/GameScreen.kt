@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -21,15 +22,18 @@ import inu.thebite.tory.R
 fun GameScreen(
     dragAndDropViewModel: DragAndDropViewModel = viewModel()
 ) {
-    val mainGameItem = GameItem(
-        name = "spoon_1",
-        image = R.drawable.spoon_1
+    dragAndDropViewModel.setMainItem(
+        GameItem(
+            name = "spoon_1",
+            image = R.drawable.spoon_1
+        )
     )
     val screenWidth = LocalConfiguration.current.screenWidthDp
     DragableScreen(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color.White),
+        dragAndDropViewModel = dragAndDropViewModel
     ){
         Column(
             modifier = Modifier
@@ -68,9 +72,11 @@ fun GameScreen(
                                 }
                             }
                         }
+
                         Image(
                             painter = painterResource(id = gameItem.image),
-                            contentDescription = null
+                            contentDescription = null,
+                            alpha = if(isInBound) 0.5f else 1f
                         )
 
 
@@ -79,16 +85,17 @@ fun GameScreen(
             }
 
             DragTarget(
-                dataToDrop = mainGameItem,
+                dataToDrop = dragAndDropViewModel.mainItems.first(),
                 viewModel = dragAndDropViewModel
             ) {
-
-                Image(painter = painterResource(id = mainGameItem.image), contentDescription = null)
-            }
-
+                if(!dragAndDropViewModel.isCurrentlyDragging){
+                    Image(painter = painterResource(id = dragAndDropViewModel.mainItems.first().image), contentDescription = null)
+                }
             }
 
         }
+
     }
+}
 
 
