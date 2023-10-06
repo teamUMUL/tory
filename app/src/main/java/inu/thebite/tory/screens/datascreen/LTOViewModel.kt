@@ -1,14 +1,11 @@
-package inu.thebite.tory.screens.DataScreen
+package inu.thebite.tory.screens.datascreen
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.database.LTO.LTOEntity
-import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.repositories.LTO.LTORepo
-import inu.thebite.tory.repositories.STO.STORepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.sql.Date
 
 @SuppressLint("MutableCollectionMutableState")
 class LTOViewModel: ViewModel(), KoinComponent {

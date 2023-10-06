@@ -2,7 +2,6 @@ package inu.thebite.tory.database.TypeConverter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import java.util.Date
 
 class FloatListConverter {
     @TypeConverter

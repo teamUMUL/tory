@@ -1,25 +1,18 @@
 @file:Suppress("NAME_SHADOWING")
 
-package inu.thebite.tory.screens.DataScreen
+package inu.thebite.tory.screens.datascreen
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +24,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -39,17 +31,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -58,69 +43,52 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.yml.charts.common.extensions.isNotNull
 
 
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddLTOItemDialog
-import inu.thebite.tory.screens.DataScreen.Compose.Dialog.AddSTOItemDialog
-import inu.thebite.tory.screens.DataScreen.Compose.DevelopZoneRow
-import inu.thebite.tory.screens.DataScreen.Compose.Dialog.UpdateLTOItemDialog
-import inu.thebite.tory.screens.DataScreen.Compose.Dialog.UpdateSTOItemDialog
-import inu.thebite.tory.screens.DataScreen.Compose.GraphRow
-import inu.thebite.tory.screens.DataScreen.Compose.LTODetailsRow
-import inu.thebite.tory.screens.DataScreen.Compose.LTOItemsRow
-import inu.thebite.tory.screens.DataScreen.Compose.STODetailTableAndGameResult
-import inu.thebite.tory.screens.DataScreen.Compose.STODetailsRow
-import inu.thebite.tory.screens.DataScreen.Compose.STOItemsRow
+import inu.thebite.tory.screens.datascreen.compose.Dialog.AddLTOItemDialog
+import inu.thebite.tory.screens.datascreen.compose.Dialog.AddSTOItemDialog
+import inu.thebite.tory.screens.datascreen.compose.DevelopZoneRow
+import inu.thebite.tory.screens.datascreen.compose.Dialog.UpdateLTOItemDialog
+import inu.thebite.tory.screens.datascreen.compose.Dialog.UpdateSTOItemDialog
+import inu.thebite.tory.screens.datascreen.compose.GraphRow
+import inu.thebite.tory.screens.datascreen.compose.LTODetailsRow
+import inu.thebite.tory.screens.datascreen.compose.LTOItemsRow
+import inu.thebite.tory.screens.datascreen.compose.STODetailTableAndGameResult
+import inu.thebite.tory.screens.datascreen.compose.STODetailsRow
+import inu.thebite.tory.screens.datascreen.compose.STOItemsRow
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
@@ -492,7 +460,6 @@ fun DataScreen (
                             modifier = imageModifier,
                             contentScale = ContentScale.Fit
                         )
-
                         Image(
                             painter = painterResource(id = R.drawable.toothbrush_2),
                             contentDescription = null,
@@ -970,130 +937,6 @@ fun Timer(timerStart: MutableState<Boolean>, timerRestart: MutableState<Boolean>
         color = MaterialTheme.colorScheme.primary // Customize the color as needed
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

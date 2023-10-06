@@ -46,11 +46,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import inu.thebite.tory.screens.DataScreen.DataScreen
-import inu.thebite.tory.screens.GameScreen
+import inu.thebite.tory.screens.datascreen.DataScreen
 import inu.thebite.tory.screens.HomeScreen
-import inu.thebite.tory.screens.DataScreen.LTOViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.datascreen.LTOViewModel
+import inu.thebite.tory.screens.datascreen.STOViewModel
+import inu.thebite.tory.screens.game.GameScreen
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
@@ -71,7 +71,6 @@ fun MainCompose(
     val ltoViewModel : LTOViewModel = viewModel()
     val childViewModel : ChildViewModel = viewModel()
     val stoViewModel : STOViewModel = viewModel()
-
 
     val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
     val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")

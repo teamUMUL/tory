@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.DataScreen.Compose.Dialog
+package inu.thebite.tory.screens.datascreen.compose.Dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -33,15 +33,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.DataScreen.LTOViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.datascreen.LTOViewModel
+import inu.thebite.tory.screens.datascreen.STOViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)

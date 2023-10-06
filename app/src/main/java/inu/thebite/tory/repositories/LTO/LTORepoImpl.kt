@@ -2,7 +2,6 @@ package inu.thebite.tory.repositories.LTO
 
 import inu.thebite.tory.database.LTO.LTODatabase
 import inu.thebite.tory.database.LTO.LTOEntity
-import inu.thebite.tory.database.STO.STOEntity
 import kotlinx.coroutines.flow.Flow
 
 class LTORepoImpl(private val database: LTODatabase): LTORepo {

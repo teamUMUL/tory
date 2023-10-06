@@ -19,3 +19,5 @@ data class LTOEntity(
     @ColumnInfo("ltoState")
     var ltoState: Int,
 )
+
+

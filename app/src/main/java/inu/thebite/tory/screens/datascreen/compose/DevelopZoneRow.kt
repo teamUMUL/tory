@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.DataScreen.Compose
+package inu.thebite.tory.screens.datascreen.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.screens.DataScreen.STOViewModel
 
 
 @Composable

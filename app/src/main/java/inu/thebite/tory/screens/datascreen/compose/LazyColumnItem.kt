@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.DataScreen.Compose
+package inu.thebite.tory.screens.datascreen.compose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
