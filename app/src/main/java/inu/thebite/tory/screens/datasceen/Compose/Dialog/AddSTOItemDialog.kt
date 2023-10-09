@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package inu.thebite.tory.screens.Datascreen.Compose.Dialog
+package inu.thebite.tory.screens.datasceen.Compose.Dialog
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -54,7 +54,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.database.LTO.LTOEntity
-import inu.thebite.tory.screens.Datascreen.STOViewModel
+import inu.thebite.tory.screens.datasceen.STOViewModel
 import java.sql.Date
 
 

@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.game
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
@@ -21,6 +22,7 @@ import inu.thebite.tory.R
 
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun DragableScreen(
     modifier: Modifier = Modifier,
@@ -51,7 +53,7 @@ fun DragableScreen(
                         targetSize = it.size
                     }
                 ) {
-                    Image(painter = painterResource(id = dragAndDropViewModel.mainItems.first().image), contentDescription = null)
+                    Image(painter = painterResource(id = dragAndDropViewModel.mainItem.value!!.image), contentDescription = null)
 //                    state.draggableComposable?.invoke()
                 }
             }
@@ -64,6 +66,10 @@ fun <T> DragTarget(
     modifier: Modifier = Modifier,
     dataToDrop: T,
     viewModel: DragAndDropViewModel,
+    timerStart : MutableState<Boolean>,
+    timerRestart : MutableState<Boolean>,
+    setIsCardSelectEnd : (Boolean) -> Unit,
+    resetGameButtonIndex:() -> Unit,
     content: @Composable (() -> Unit)
 ) {
     val context = LocalContext.current
@@ -79,6 +85,10 @@ fun <T> DragTarget(
         }
         .pointerInput(Unit) {
             detectDragGestures(onDragStart = {
+                //드래그 시작 시 타이머 시작 및 카드 선택 상태 false로 설정
+                timerStart.value = true
+                setIsCardSelectEnd(false)
+
                 viewModel.startDragging(context = context)
                 currentState.dataToDrop = dataToDrop
                 currentState.isDragging = true
@@ -91,6 +101,11 @@ fun <T> DragTarget(
                 viewModel.stopDragging()
                 currentState.isDragging = false
                 currentState.dragOffset = Offset.Zero
+
+                timerRestart.value = true
+                timerStart.value = false
+                resetGameButtonIndex()
+                setIsCardSelectEnd(true)
             }, onDragCancel = {
                 viewModel.stopDragging()
                 currentState.dragOffset = Offset.Zero

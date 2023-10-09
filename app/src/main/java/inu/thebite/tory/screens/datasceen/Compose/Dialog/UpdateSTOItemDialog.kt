@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.Datascreen.Compose.Dialog
+package inu.thebite.tory.screens.datasceen.Compose.Dialog
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.Datascreen.STOViewModel
+import inu.thebite.tory.screens.datasceen.STOViewModel
 
 
 @SuppressLint("MutableCollectionMutableState")

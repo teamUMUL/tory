@@ -1,6 +1,6 @@
 @file:Suppress("NAME_SHADOWING")
 
-package inu.thebite.tory.screens.Datascreen
+package inu.thebite.tory.screens.datasceen
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -77,17 +76,21 @@ import co.yml.charts.common.extensions.isNotNull
 
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.screens.Datascreen.Compose.Dialog.AddLTOItemDialog
-import inu.thebite.tory.screens.Datascreen.Compose.Dialog.AddSTOItemDialog
-import inu.thebite.tory.screens.Datascreen.Compose.DevelopZoneRow
-import inu.thebite.tory.screens.Datascreen.Compose.Dialog.UpdateLTOItemDialog
-import inu.thebite.tory.screens.Datascreen.Compose.Dialog.UpdateSTOItemDialog
-import inu.thebite.tory.screens.Datascreen.Compose.GraphRow
-import inu.thebite.tory.screens.Datascreen.Compose.LTODetailsRow
-import inu.thebite.tory.screens.Datascreen.Compose.LTOItemsRow
-import inu.thebite.tory.screens.Datascreen.Compose.STODetailTableAndGameResult
-import inu.thebite.tory.screens.Datascreen.Compose.STODetailsRow
-import inu.thebite.tory.screens.Datascreen.Compose.STOItemsRow
+import inu.thebite.tory.screens.datasceen.Compose.DevelopZoneRow
+import inu.thebite.tory.screens.datasceen.Compose.GraphRow
+import inu.thebite.tory.screens.datasceen.Compose.LTODetailsRow
+import inu.thebite.tory.screens.datasceen.Compose.LTOItemsRow
+import inu.thebite.tory.screens.datasceen.Compose.STODetailTableAndGameResult
+import inu.thebite.tory.screens.datasceen.Compose.STODetailsRow
+import inu.thebite.tory.screens.datasceen.Compose.STOItemsRow
+import inu.thebite.tory.screens.datasceen.Compose.Dialog.AddLTOItemDialog
+import inu.thebite.tory.screens.datasceen.Compose.Dialog.AddSTOItemDialog
+import inu.thebite.tory.screens.datasceen.Compose.Dialog.UpdateLTOItemDialog
+import inu.thebite.tory.screens.datasceen.Compose.Dialog.UpdateSTOItemDialog
+
+import inu.thebite.tory.screens.game.DragAndDropViewModel
+import inu.thebite.tory.screens.game.GameItem
+import inu.thebite.tory.screens.game.GameScreen
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
@@ -100,7 +103,8 @@ fun DataScreen (
     ltoViewModel: LTOViewModel = viewModel(),
     childViewModel: ChildViewModel = viewModel(),
     stoViewModel: STOViewModel = viewModel(),
-    gameViewModel: GameViewModel = viewModel()
+    gameViewModel: GameViewModel = viewModel(),
+    dragAndDropViewModel: DragAndDropViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
@@ -110,7 +114,7 @@ fun DataScreen (
     val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
     val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
     
-    val oneGameResult by gameViewModel.oneGameResult.observeAsState("+")
+    val oneGameResult by gameViewModel.oneGameResult.collectAsState()
     val gameIndex by gameViewModel.gameIndex.observeAsState(-1)
     val gameResultList by gameViewModel.gameResultList.observeAsState()
 
@@ -191,11 +195,12 @@ fun DataScreen (
         mutableStateOf("")
     }
 
+
     LaunchedEffect(isCardSelectEnd){
         if(isCardSelectEnd){
             if (selectedSTODetailGameDataIndex < selectedSTO!!.gameResult.size) {
                 val changeList = selectedSTO!!.gameResult.toMutableList()
-                changeList[selectedSTODetailGameDataIndex] = oneGameResult
+                changeList[selectedSTODetailGameDataIndex] = oneGameResult!!
                 selectedSTO!!.gameResult = changeList
                 stoViewModel.updateSTO(selectedSTO!!)
                 gameViewModel.setGameResultList(changeList)
@@ -343,7 +348,7 @@ fun DataScreen (
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ){
-                            Timer(timerStart = timerStart, timerRestart = timerRestart, gameButtonIndex = gameButtonIndex, oneGameResult = oneGameResult, gameViewModel = gameViewModel)
+                            Timer(timerStart = timerStart, timerRestart = timerRestart, gameButtonIndex = gameButtonIndex, gameViewModel = gameViewModel)
                         }
 
                         Row(
@@ -435,50 +440,57 @@ fun DataScreen (
                 }
                 Column(modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    val isCollided = remember { mutableStateOf(false) }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        val imageModifier = Modifier
-                            .size(320.dp)
-                            .padding(16.dp)
-
-                        Image(
-                            painter = painterResource(id = R.drawable.socks_1),
-                            contentDescription = null,
-                            modifier = imageModifier,
-                            contentScale = ContentScale.Fit
-                        )
-                        Image(
-                            painter = if (isCollided.value) painterResource(id = R.drawable.ellipse) else painterResource(id = R.drawable.spoon_2),
-                            contentDescription = null,
-                            modifier = imageModifier,
-                            contentScale = ContentScale.Fit
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.toothbrush_2),
-                            contentDescription = null,
-                            modifier = imageModifier,
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(100.dp))
-                    selectedSTO?.let {
-                        DraggableObject(
-                            image = painterResource(id = R.drawable.spoon_1),
-                            isDragging = isCollided,
-                            timerStart = timerStart,
-                            timerRestart = timerRestart,
-                            resetGameButtonIndex = {setGameButtonIndex(-1)},
-                            onCollision = {isCollided.value = true},
-                            setIsCardSelectEnd = { it -> setIsCardSelectEnd(it)},
-                        )
-                    }
+                    .background(Color.White)
+                ) {
+                    GameScreen(
+                        dragAndDropViewModel = dragAndDropViewModel,
+                        gameViewModel = gameViewModel,
+                        timerStart = timerStart,
+                        timerRestart = timerRestart,
+                        resetGameButtonIndex = {setGameButtonIndex(-1)},
+                        setIsCardSelectEnd = { it -> setIsCardSelectEnd(it)},
+                    )
+//                    val isCollided = remember { mutableStateOf(false) }
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        val imageModifier = Modifier
+//                            .size(320.dp)
+//                            .padding(16.dp)
+//
+//                        Image(
+//                            painter = painterResource(id = R.drawable.socks_1),
+//                            contentDescription = null,
+//                            modifier = imageModifier,
+//                            contentScale = ContentScale.Fit
+//                        )
+//                        Image(
+//                            painter = if (isCollided.value) painterResource(id = R.drawable.ellipse) else painterResource(id = R.drawable.spoon_2),
+//                            contentDescription = null,
+//                            modifier = imageModifier,
+//                            contentScale = ContentScale.Fit
+//                        )
+//                        Image(
+//                            painter = painterResource(id = R.drawable.toothbrush_2),
+//                            contentDescription = null,
+//                            modifier = imageModifier,
+//                            contentScale = ContentScale.Fit
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.height(100.dp))
+//                    selectedSTO?.let {
+//                        DraggableObject(
+//                            image = painterResource(id = R.drawable.spoon_1),
+//                            isDragging = isCollided,
+//                            timerStart = timerStart,
+//                            timerRestart = timerRestart,
+//                            resetGameButtonIndex = {setGameButtonIndex(-1)},
+//                            onCollision = {isCollided.value = true},
+//                            setIsCardSelectEnd = { it -> setIsCardSelectEnd(it)},
+//                        )
+//                    }
                 }
             }
 
@@ -630,6 +642,7 @@ fun DataScreen (
                         onClick = {
                             Log.e("선택된 게임들", selectedGameItems.toList().toString())
                             selectedSTO!!.gameItems = selectedGameItems
+
                             stoViewModel.updateSTO(selectedSTO!!)
                             setAddGameItem(false)
                         },
@@ -717,15 +730,30 @@ fun DataScreen (
                 setSTODetailIndex = { setSTODetailListIndex(it) },
                 setUpdateSTOItem = {setUpdateSTOItem(it)},
                 gameStart = {
-                    setGameDialog(true)
-                    val targetElement = "n"
-                    val firstNIndex = it.gameResult.indexOf(targetElement)
-                    //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
-                    if(firstNIndex != -1){
-                        setSelectedSTODetailGameDataIndex(firstNIndex)
-                    }else {
-                        setSelectedSTODetailGameDataIndex(0)
+                    val targetItems = mutableListOf<GameItem>()
+                    selectedSTO!!.gameItems.forEach { itemName ->
+                        targetItems.add(
+                            GameItem(
+                                name = itemName,
+                                image = getResourceIdByName(itemName,context)
+                            )
+                        )
                     }
+                    dragAndDropViewModel.setTargetItems(targetItems)
+                    Log.e("게임아이템들", dragAndDropViewModel.targetItems.value.toString()+dragAndDropViewModel.mainItem.value.toString())
+                    //타겟아이템과 메인아이템이 null이 아닌 경우에만 게임 시작
+                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.mainItem.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<GameItem>()){
+                        setGameDialog(true)
+                        val targetElement = "n"
+                        val firstNIndex = it.gameResult.indexOf(targetElement)
+                        //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
+                        if(firstNIndex != -1){
+                            setSelectedSTODetailGameDataIndex(firstNIndex)
+                        }else {
+                            setSelectedSTODetailGameDataIndex(0)
+                        }
+                    }
+
                 },
                 stoViewModel = stoViewModel
             )
@@ -757,6 +785,7 @@ fun DataScreen (
                         .padding(5.dp)
                         .clickable {
                             setAddGameItem(true)
+
                         },
                         contentAlignment = Alignment.Center
                     ){
@@ -789,8 +818,16 @@ fun DataScreen (
                                         // Update the selected item when clicked
                                         if (isSelected) {
                                             setMainGameItem("")
+                                            dragAndDropViewModel.clearMainItem()
                                         } else {
                                             setMainGameItem(selectedGameItem)
+                                            dragAndDropViewModel.setMainItem(
+                                                GameItem(
+                                                    name = selectedGameItem,
+                                                    image = imageResource
+                                                )
+                                            )
+
                                         }
                                     },
                                 painter = painterResource(id = imageResource),
@@ -905,7 +942,7 @@ private fun isColliding(offsetX: Float): Boolean {
 
 
 @Composable
-fun Timer(timerStart: MutableState<Boolean>, timerRestart: MutableState<Boolean>,oneGameResult: String, gameButtonIndex : Int, gameViewModel : GameViewModel) {
+fun Timer(timerStart: MutableState<Boolean>, timerRestart: MutableState<Boolean>, gameButtonIndex : Int, gameViewModel : GameViewModel) {
     var progress by remember { mutableStateOf(1f) }
 
     LaunchedEffect(timerStart.value, timerRestart.value) {
@@ -941,7 +978,6 @@ fun Timer(timerStart: MutableState<Boolean>, timerRestart: MutableState<Boolean>
 
 
 @SuppressLint("DiscouragedApi")
-@Composable
 fun getResourceIdByName(imageName: String, context: Context): Int {
     // 이 함수는 이미지 리소스 이름을 리소스 ID로 변환합니다.
     val packageName = context.packageName

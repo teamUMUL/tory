@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.Datascreen.Compose.Dialog
+package inu.thebite.tory.screens.datasceen.Compose.Dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -36,26 +36,28 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import inu.thebite.tory.screens.Datascreen.LTOViewModel
-import inu.thebite.tory.screens.Datascreen.STOViewModel
+import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.database.LTO.LTOEntity
+import inu.thebite.tory.database.STO.STOEntity
+import inu.thebite.tory.screens.datasceen.LTOViewModel
+import inu.thebite.tory.screens.datasceen.STOViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddLTOItemDialog(
-    setAddLTOItem: (Boolean) -> Unit,
+fun UpdateLTOItemDialog(
+    setUpdateLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
-    stoViewModel : STOViewModel,
-    selectedDevIndex: Int,
-    selectedChildClass: String,
-    selectedChildName: String,
+    stoViewModel: STOViewModel,
+    stos : List<STOEntity>?,
+    selectedLTO: LTOEntity?,
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(selectedLTO!!.ltoName))
     }
     // AddLTOItemDialog 내용
     Dialog(
-        onDismissRequest = {setAddLTOItem(false)},
+        onDismissRequest = {setUpdateLTOItem(false)},
     ){
         Column(
             modifier = Modifier
@@ -103,10 +105,17 @@ fun AddLTOItemDialog(
                     .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    ltoViewModel.createLTO(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDevIndex], ltoInputValue.text, -1)
-                    setAddLTOItem(false)
+                    selectedLTO!!.ltoName = ltoInputValue.text
+                    ltoViewModel.updateLTO(selectedLTO)
+                    ltoViewModel.setSelectedLTO(selectedLTO)
+                    setUpdateLTOItem(false)
+                    if(stos.isNotNull()){
+                        for(sto in stos!!){
+                            sto.selectedLTO = ltoInputValue.text
+                            stoViewModel.updateSTO(sto)
+                        }
+                    }
                     ltoInputValue = TextFieldValue("")
-                    stoViewModel.clearSelectedSTO()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
             ){

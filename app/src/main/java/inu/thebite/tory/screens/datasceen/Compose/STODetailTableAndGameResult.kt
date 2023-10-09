@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.Datascreen.Compose
+package inu.thebite.tory.screens.datasceen.Compose
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.Datascreen.STOViewModel
+import inu.thebite.tory.screens.datasceen.STOViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
