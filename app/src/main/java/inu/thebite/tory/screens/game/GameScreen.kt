@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.game
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,19 +26,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import inu.thebite.tory.R
+import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.datasceen.GameViewModel
+import inu.thebite.tory.screens.datasceen.STOViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.forEach
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun GameScreen(
+    context : Context,
     dragAndDropViewModel: DragAndDropViewModel,
     gameViewModel: GameViewModel,
+    stoViewModel: STOViewModel,
+    selectedSTO: STOEntity?,
     timerStart : MutableState<Boolean>,
     timerRestart : MutableState<Boolean>,
+    selectedSTODetailGameDataIndex : MutableIntState,
+    setSelectedSTODetailGameDataIndex : (Int) -> Unit,
     resetGameButtonIndex : () -> Unit,
-    setIsCardSelectEnd : (Boolean) -> Unit,
 ) {
+    val (isCardSelectEnd, setIsCardSelectEnd) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(isCardSelectEnd){
+        if(isCardSelectEnd){
+            if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
+                val changeList = selectedSTO.gameResult.toMutableList()
+                changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
+                selectedSTO.gameResult = changeList
+                stoViewModel.updateSTO(selectedSTO)
+                gameViewModel.setGameResultList(changeList)
+                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
+            }
+            gameViewModel.clearOneGameResult()
+        }
+    }
 
     val targetItems by dragAndDropViewModel.targetItems.collectAsState()
 
@@ -77,14 +103,39 @@ fun GameScreen(
                                         )
                                     )
                                     dragAndDropViewModel.isCorrect()
-                                    gameViewModel.setOneGameResult("+")
+                                    when (gameViewModel.oneGameResult.value) {
+                                        "P" -> {
+                                            gameViewModel.setOneGameResult("P")
+                                        }
+                                        "-" -> {
+                                            gameViewModel.setOneGameResult("-")
+                                        }
+                                        else -> {
+                                            gameViewModel.setOneGameResult("+")
+                                        }
+                                    }
                                 }
                                 //여기는 틀린 경우에 들어갈 행동
                                 else{
-                                    gameViewModel.setOneGameResult("-")
+                                    when (gameViewModel.oneGameResult.value) {
+                                        "P" -> {
+                                            gameViewModel.setOneGameResult("P")
+                                        }
+                                        "-" -> {
+                                            gameViewModel.setOneGameResult("-")
+                                        }
+                                        else -> {
+                                            gameViewModel.setOneGameResult("-")
+                                        }
+                                    }
                                     Log.e("정답 틀림", gameViewModel.oneGameResult.value.toString())
 
                                 }
+                                timerRestart.value = true
+                                timerStart.value = false
+                                resetGameButtonIndex()
+                                setIsCardSelectEnd(true)
+
                             }
                         }
                         Image(

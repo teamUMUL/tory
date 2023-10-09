@@ -167,9 +167,10 @@ fun DataScreen (
     val (isCardSelectEnd, setIsCardSelectEnd) = rememberSaveable {
         mutableStateOf(false)
     }
-    val (selectedSTODetailGameDataIndex, setSelectedSTODetailGameDataIndex) = rememberSaveable {
-        mutableIntStateOf(0)
-    }
+//    val (selectedSTODetailGameDataIndex, setSelectedSTODetailGameDataIndex) = rememberSaveable {
+//        mutableIntStateOf(0)
+//    }
+    val selectedSTODetailGameDataIndex = remember { mutableIntStateOf(0) }
 
     val (selectedSTOTryNum, setSelectedSTOTryNum) = rememberSaveable {
         mutableIntStateOf(0)
@@ -196,19 +197,19 @@ fun DataScreen (
     }
 
 
-    LaunchedEffect(isCardSelectEnd){
-        if(isCardSelectEnd){
-            if (selectedSTODetailGameDataIndex < selectedSTO!!.gameResult.size) {
-                val changeList = selectedSTO!!.gameResult.toMutableList()
-                changeList[selectedSTODetailGameDataIndex] = oneGameResult!!
-                selectedSTO!!.gameResult = changeList
-                stoViewModel.updateSTO(selectedSTO!!)
-                gameViewModel.setGameResultList(changeList)
-                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
-            }
-            gameViewModel.setOneGameResult("+")
-        }
-    }
+//    LaunchedEffect(isCardSelectEnd){
+//        if(isCardSelectEnd){
+//            if (selectedSTODetailGameDataIndex < selectedSTO!!.gameResult.size) {
+//                val changeList = selectedSTO!!.gameResult.toMutableList()
+//                changeList[selectedSTODetailGameDataIndex] = oneGameResult!!
+//                selectedSTO!!.gameResult = changeList
+//                stoViewModel.updateSTO(selectedSTO!!)
+//                gameViewModel.setGameResultList(changeList)
+//                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
+//            }
+//            gameViewModel.clearOneGameResult()
+//        }
+//    }
 
     LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildName, addSTOItem, allSTOs, selectedSTO){
         selectedLTO?.let { stoViewModel.getSTOsByCriteria(selectedChildClass,selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], it.ltoName) }
@@ -295,6 +296,8 @@ fun DataScreen (
                             .padding(10.dp)
                             .clickable {
                                 setGameDialog(false)
+                                dragAndDropViewModel.isWrong()
+                                setGameButtonIndex(-1)
                             },
                         painter = painterResource(id = R.drawable.icon_back),
                         contentDescription = null
@@ -365,12 +368,16 @@ fun DataScreen (
                                         setGameButtonIndex(index)
                                         if(index == gameButtonIndex){
                                             setGameButtonIndex(-1)
+                                            gameViewModel.clearOneGameResult()
                                         }
-                                        if(item == "C"){
-                                            gameViewModel.setOneGameResult("-")
-                                        }else{
-                                            gameViewModel.setOneGameResult("P")
+                                        if(!dragAndDropViewModel.isCurrentlyDragging){
+                                            if(item == "C"){
+                                                gameViewModel.setOneGameResult("-")
+                                            }else{
+                                                gameViewModel.setOneGameResult("P")
+                                            }
                                         }
+
                                     },
                                     shape = when (index) {
                                         // left outer button
@@ -443,12 +450,16 @@ fun DataScreen (
                     .background(Color.White)
                 ) {
                     GameScreen(
+                        context = context,
                         dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel,
+                        stoViewModel = stoViewModel,
+                        selectedSTO = selectedSTO,
+                        selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
                         timerStart = timerStart,
                         timerRestart = timerRestart,
                         resetGameButtonIndex = {setGameButtonIndex(-1)},
-                        setIsCardSelectEnd = { it -> setIsCardSelectEnd(it)},
+                        setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it}
                     )
 //                    val isCollided = remember { mutableStateOf(false) }
 //
@@ -676,7 +687,7 @@ fun DataScreen (
                 ltoViewModel.clearSelectedLTO()
                 stoViewModel.clearSelectedSTO()
                 Log.e("버그위치", "버그위치")
-                setSelectedSTODetailGameDataIndex(0)
+                selectedSTODetailGameDataIndex.intValue = 0
             },
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
@@ -689,7 +700,7 @@ fun DataScreen (
             setAddLTOItem = {setAddLTOItem(it)},
             selectLTOItem = { it: String, progressState:Int ->
                 setLTODetailListIndex(progressState)
-                setSelectedSTODetailGameDataIndex(0)
+                selectedSTODetailGameDataIndex.intValue = 0
             },
             stoViewModel = stoViewModel,
             selectedChildClass = selectedChildClass,
@@ -717,7 +728,7 @@ fun DataScreen (
             setAddSTOItem = { setAddSTOItem(it) },
             selectSTOItem = { it: String, progressState:Int ->
                 setSTODetailListIndex(progressState)
-                setSelectedSTODetailGameDataIndex(0)
+                selectedSTODetailGameDataIndex.intValue = 0
             },
             setSelectedSTOTryNum = {setSelectedSTOTryNum(it)}
         )
@@ -748,9 +759,10 @@ fun DataScreen (
                         val firstNIndex = it.gameResult.indexOf(targetElement)
                         //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
                         if(firstNIndex != -1){
-                            setSelectedSTODetailGameDataIndex(firstNIndex)
+                            selectedSTODetailGameDataIndex.intValue = firstNIndex
                         }else {
-                            setSelectedSTODetailGameDataIndex(0)
+                            selectedSTODetailGameDataIndex.intValue = 0
+
                         }
                     }
 
@@ -762,8 +774,8 @@ fun DataScreen (
         selectedSTO?.let {
             STODetailTableAndGameResult(
                 selectedSTO = it,
-                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-                setSelectedSTODetailGameDataIndex = {setSelectedSTODetailGameDataIndex(it)},
+                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex.intValue,
+                setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
                 setSTODetailListIndex = {setSTODetailListIndex(it)},
                 stoViewModel = stoViewModel,
                 selectedSTOTryNum = selectedSTOTryNum

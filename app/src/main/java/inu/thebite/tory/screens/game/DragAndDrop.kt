@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.game
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
@@ -102,10 +103,6 @@ fun <T> DragTarget(
                 currentState.isDragging = false
                 currentState.dragOffset = Offset.Zero
 
-                timerRestart.value = true
-                timerStart.value = false
-                resetGameButtonIndex()
-                setIsCardSelectEnd(true)
             }, onDragCancel = {
                 viewModel.stopDragging()
                 currentState.dragOffset = Offset.Zero

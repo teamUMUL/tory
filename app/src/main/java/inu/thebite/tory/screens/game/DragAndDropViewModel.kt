@@ -91,7 +91,9 @@ class DragAndDropViewModel :ViewModel() {
         isCorrect = true
     }
 
-
+    fun isWrong(){
+        isCorrect = false
+    }
 
     fun updateGameItem(updatedItem: GameItem) {
         Log.e("정답 유무", updatedItem.name)

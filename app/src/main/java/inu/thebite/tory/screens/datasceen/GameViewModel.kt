@@ -17,7 +17,7 @@ class GameViewModel: ViewModel() {
         _oneGameResult.value = oneGameResult
     }
 
-    fun clearSelectedChildClass() {
+    fun clearOneGameResult() {
         _oneGameResult.value = null
     }
 
