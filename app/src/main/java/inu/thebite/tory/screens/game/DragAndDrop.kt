@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
@@ -69,6 +70,7 @@ fun <T> DragTarget(
     viewModel: DragAndDropViewModel,
     timerStart : MutableState<Boolean>,
     timerRestart : MutableState<Boolean>,
+    isCardSelectEnd : Boolean,
     setIsCardSelectEnd : (Boolean) -> Unit,
     resetGameButtonIndex:() -> Unit,
     content: @Composable (() -> Unit)
@@ -87,8 +89,9 @@ fun <T> DragTarget(
         .pointerInput(Unit) {
             detectDragGestures(onDragStart = {
                 //드래그 시작 시 타이머 시작 및 카드 선택 상태 false로 설정
-                timerStart.value = true
                 setIsCardSelectEnd(false)
+
+
 
                 viewModel.startDragging(context = context)
                 currentState.dataToDrop = dataToDrop
@@ -127,11 +130,15 @@ fun <T> DropItem(
         mutableStateOf(false)
     }
 
-    Box(modifier = modifier.onGloballyPositioned {
-        it.boundsInWindow().let { rect ->
-            isCurrentDropTarget = rect.contains(dragPosition + dragOffset)
-        }
-    }) {
+    Box(
+        modifier = modifier
+            .onGloballyPositioned {
+                it.boundsInWindow().let { rect ->
+                    isCurrentDropTarget = rect.contains(dragPosition + dragOffset)
+                }
+             },
+        contentAlignment = Alignment.Center
+    ){
         val data =
             if (isCurrentDropTarget && !dragInfo.isDragging) dragInfo.dataToDrop as T? else null
         content(isCurrentDropTarget, data)

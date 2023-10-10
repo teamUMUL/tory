@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datasceen.Compose
+package inu.thebite.tory.screens.education.Compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

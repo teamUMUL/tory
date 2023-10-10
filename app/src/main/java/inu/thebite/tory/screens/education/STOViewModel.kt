@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datasceen
+package inu.thebite.tory.screens.education
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

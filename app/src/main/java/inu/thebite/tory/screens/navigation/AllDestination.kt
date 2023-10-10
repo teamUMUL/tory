@@ -1,15 +1,16 @@
 package inu.thebite.tory.screens.navigation
 
 import androidx.navigation.NavController
-import inu.thebite.tory.screens.navigation.AllDestinations.DATA
-import inu.thebite.tory.screens.navigation.AllDestinations.GAME
+import inu.thebite.tory.screens.navigation.AllDestinations.EDUCATION
 import inu.thebite.tory.screens.navigation.AllDestinations.HOME
+import inu.thebite.tory.screens.navigation.AllDestinations.SETTING
 
 
 object AllDestinations{
     const val HOME = "Home"
-    const val GAME = "Game"
-    const val DATA = "Data"
+    const val SETTING = "Setting"
+    const val EDUCATION = "Education"
+    const val READY = "READY"
 }
 
 class AppNavigationActions(private val navController: NavController) {
@@ -21,14 +22,14 @@ class AppNavigationActions(private val navController: NavController) {
     }
 
     fun navigateToGame(){
-        navController.navigate(GAME){
+        navController.navigate(SETTING){
             launchSingleTop = true
             restoreState = true
         }
 
     }
     fun navigateToData(){
-        navController.navigate(DATA){
+        navController.navigate(EDUCATION){
             launchSingleTop = true
             restoreState = true
         }

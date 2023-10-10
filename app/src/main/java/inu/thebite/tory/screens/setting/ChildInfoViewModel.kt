@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens
+package inu.thebite.tory.screens.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

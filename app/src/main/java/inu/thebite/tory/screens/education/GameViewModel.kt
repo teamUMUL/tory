@@ -1,9 +1,8 @@
-package inu.thebite.tory.screens.datasceen
+package inu.thebite.tory.screens.education
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 

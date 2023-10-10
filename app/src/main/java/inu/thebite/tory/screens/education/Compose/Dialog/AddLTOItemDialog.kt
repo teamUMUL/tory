@@ -1,5 +1,7 @@
-package inu.thebite.tory.screens.datasceen.Compose.Dialog
+package inu.thebite.tory.screens.education.Compose.Dialog
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -36,28 +38,30 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import co.yml.charts.common.extensions.isNotNull
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.database.LTO.LTOEntity
-import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.datasceen.LTOViewModel
-import inu.thebite.tory.screens.datasceen.STOViewModel
+import inu.thebite.tory.screens.education.LTOViewModel
+import inu.thebite.tory.screens.education.STOViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateLTOItemDialog(
-    setUpdateLTOItem: (Boolean) -> Unit,
+fun AddLTOItemDialog(
+    context : Context,
+    allLTOs : List<LTOEntity>,
+    setAddLTOItem: (Boolean) -> Unit,
     ltoViewModel: LTOViewModel,
-    stoViewModel: STOViewModel,
-    stos : List<STOEntity>?,
-    selectedLTO: LTOEntity?,
+    stoViewModel : STOViewModel,
+    selectedDevIndex: Int,
+    selectedChildClass: String,
+    selectedChildName: String,
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(selectedLTO!!.ltoName))
+        mutableStateOf(TextFieldValue())
     }
     // AddLTOItemDialog 내용
     Dialog(
-        onDismissRequest = {setUpdateLTOItem(false)},
+        onDismissRequest = {setAddLTOItem(false)},
     ){
         Column(
             modifier = Modifier
@@ -105,17 +109,19 @@ fun UpdateLTOItemDialog(
                     .height(80.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    selectedLTO!!.ltoName = ltoInputValue.text
-                    ltoViewModel.updateLTO(selectedLTO)
-                    ltoViewModel.setSelectedLTO(selectedLTO)
-                    setUpdateLTOItem(false)
-                    if(stos.isNotNull()){
-                        for(sto in stos!!){
-                            sto.selectedLTO = ltoInputValue.text
-                            stoViewModel.updateSTO(sto)
+                    if(ltoInputValue.text.isNotEmpty()){
+                        if(!allLTOs.any { it.ltoName == ltoInputValue.text}){
+                            ltoViewModel.createLTO(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDevIndex], ltoInputValue.text, -1)
+                            setAddLTOItem(false)
+                            ltoInputValue = TextFieldValue("")
+                            stoViewModel.clearSelectedSTO()
+                        }else{
+                            Toasty.warning(context, "동일한 이름의 LTO가 존재합니다", Toast.LENGTH_SHORT, true).show()
                         }
+                    } else{
+                        Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
                     }
-                    ltoInputValue = TextFieldValue("")
+
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
             ){

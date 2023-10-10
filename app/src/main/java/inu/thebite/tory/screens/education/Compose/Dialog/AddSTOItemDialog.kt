@@ -1,7 +1,9 @@
 @file:Suppress("DEPRECATION")
 
-package inu.thebite.tory.screens.datasceen.Compose.Dialog
+package inu.thebite.tory.screens.education.Compose.Dialog
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -52,14 +54,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.database.LTO.LTOEntity
-import inu.thebite.tory.screens.datasceen.STOViewModel
+import inu.thebite.tory.database.STO.STOEntity
+import inu.thebite.tory.screens.education.STOViewModel
 import java.sql.Date
 
 
 @Composable
 fun AddSTOItemDialog(
+    context : Context,
+    allSTOs : List<STOEntity>,
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
     childViewModel : ChildViewModel,
@@ -149,35 +155,44 @@ fun AddSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    stoViewModel.createSTO(
-                        className = selectedChildClass,
-                        childName = selectedChildName,
-                        selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
-                        selectedLTO = selectedLTO!!.ltoName,
-                        stoName = stoNameInputValue.text,
-                        stoDescription = stoDetailInputValue.text,
-                        stoTryNum = stoTryNum.value,
-                        stoSuccessStandard = stoSuccessStandardInputValue.text,
-                        stoMethod = stoMethodInputValue.text,
-                        stoSchedule = stoScheduleInputValue.text,
-                        stoMemo = stoMemoInputValue.text,
-                        stoState = -1,
-                        gameResult = List(stoTryNum.value) { "n" },
-                        gameItems = mutableListOf<String>(),
-                        date = mutableListOf<Date>(),
-                        plusRatio = mutableListOf<Float>(),
-                        minusRatio =mutableListOf<Float>()
-                    )
+                    if(stoNameInputValue.text.isNotEmpty()){
+                        if(!allSTOs.any { it.stoName == stoNameInputValue.text }){
+                            stoViewModel.createSTO(
+                                className = selectedChildClass,
+                                childName = selectedChildName,
+                                selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
+                                selectedLTO = selectedLTO!!.ltoName,
+                                stoName = stoNameInputValue.text,
+                                stoDescription = stoDetailInputValue.text,
+                                stoTryNum = stoTryNum.value,
+                                stoSuccessStandard = stoSuccessStandardInputValue.text,
+                                stoMethod = stoMethodInputValue.text,
+                                stoSchedule = stoScheduleInputValue.text,
+                                stoMemo = stoMemoInputValue.text,
+                                stoState = -1,
+                                gameResult = List(stoTryNum.value) { "n" },
+                                gameItems = mutableListOf<String>(),
+                                date = mutableListOf<Date>(),
+                                plusRatio = mutableListOf<Float>(),
+                                minusRatio =mutableListOf<Float>()
+                            )
 
 
-                    setAddSTOItem(false)
-                    stoNameInputValue = TextFieldValue("")
-                    stoDetailInputValue = TextFieldValue("")
-                    stoTryNumInputValue = TextFieldValue("")
-                    stoSuccessStandardInputValue = TextFieldValue("")
-                    stoMethodInputValue = TextFieldValue("")
-                    stoScheduleInputValue = TextFieldValue("")
-                    stoMemoInputValue = TextFieldValue("")
+                            setAddSTOItem(false)
+                            stoNameInputValue = TextFieldValue("")
+                            stoDetailInputValue = TextFieldValue("")
+                            stoTryNumInputValue = TextFieldValue("")
+                            stoSuccessStandardInputValue = TextFieldValue("")
+                            stoMethodInputValue = TextFieldValue("")
+                            stoScheduleInputValue = TextFieldValue("")
+                            stoMemoInputValue = TextFieldValue("")
+                        }else{
+                            Toasty.warning(context, "동일한 이름의 STO가 존재합니다", Toast.LENGTH_SHORT, true).show()
+                        }
+                    } else{
+                        Toasty.warning(context, "STO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                    }
+
 
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)

@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datasceen
+package inu.thebite.tory.screens.education
 
 import android.annotation.SuppressLint
 import android.util.Log

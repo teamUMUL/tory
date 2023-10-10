@@ -46,13 +46,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import inu.thebite.tory.screens.datasceen.DataScreen
 import inu.thebite.tory.screens.HomeScreen
-import inu.thebite.tory.screens.datasceen.LTOViewModel
-import inu.thebite.tory.screens.datasceen.STOViewModel
+import inu.thebite.tory.screens.education.EducationScreen
+import inu.thebite.tory.screens.education.LTOViewModel
+import inu.thebite.tory.screens.education.STOViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
+import inu.thebite.tory.screens.setting.CenterViewModel
+import inu.thebite.tory.screens.setting.ChildClassViewModel
+import inu.thebite.tory.screens.setting.ChildInfoViewModel
+import inu.thebite.tory.screens.setting.SettingScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -70,6 +74,9 @@ fun MainCompose(
     val ltoViewModel : LTOViewModel = viewModel()
     val childViewModel : ChildViewModel = viewModel()
     val stoViewModel : STOViewModel = viewModel()
+    val centerViewModel : CenterViewModel = viewModel()
+    val childClassViewModel : ChildClassViewModel = viewModel()
+    val childInfoViewModel : ChildInfoViewModel = viewModel()
 
     val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
     val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
@@ -260,15 +267,20 @@ fun MainCompose(
                     HomeScreen()
                 }
 
-                composable(AllDestinations.DATA) {
-                    DataScreen(
+                composable(AllDestinations.EDUCATION) {
+                    EducationScreen(
                         ltoViewModel = ltoViewModel,
                         childViewModel = childViewModel,
                         stoViewModel = stoViewModel
                     )
                 }
 
-                composable(AllDestinations.GAME) {
+                composable(AllDestinations.SETTING) {
+                    SettingScreen(
+                        centerViewModel = centerViewModel,
+                        childClassViewModel = childClassViewModel,
+                        childInfoViewModel = childInfoViewModel
+                    )
                 }
             }
         }

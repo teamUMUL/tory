@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datasceen.Compose
+package inu.thebite.tory.screens.education.Compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.database.LTO.LTOEntity
-import inu.thebite.tory.screens.datasceen.LTOViewModel
-import inu.thebite.tory.screens.datasceen.STOViewModel
+import inu.thebite.tory.screens.education.LTOViewModel
+import inu.thebite.tory.screens.education.STOViewModel
 
 
 @Composable

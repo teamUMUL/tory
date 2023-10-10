@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datasceen.Compose
+package inu.thebite.tory.screens.education.Compose
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -32,7 +32,7 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
 import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.datasceen.STOViewModel
+import inu.thebite.tory.screens.education.STOViewModel
 
 
 @SuppressLint("MutableCollectionMutableState")

@@ -63,14 +63,12 @@ class DragAndDropViewModel :ViewModel() {
 
     fun startDragging(context: Context) {
         isCurrentlyDragging = true
-        restart(context)
+//        restart(context)
 
     }
 
     fun restart(context: Context){
-        if (isCorrect) {
-            _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
-        }
+        _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
 
         // 아이템 별로 이름 별 이미지로 재설정(정답을 맞춘 경우에는 O로 이미지가 변하기 때문에 이미지를 되돌리기 위해서 필요)
         _targetItems.value = _targetItems.value!!.map { gameItem ->

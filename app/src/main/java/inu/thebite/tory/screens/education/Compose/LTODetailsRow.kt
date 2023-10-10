@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.datasceen.Compose
+package inu.thebite.tory.screens.education.Compose
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,7 +36,7 @@ import androidx.compose.ui.zIndex
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
 import inu.thebite.tory.database.LTO.LTOEntity
-import inu.thebite.tory.screens.datasceen.LTOViewModel
+import inu.thebite.tory.screens.education.LTOViewModel
 
 @Composable
 fun LTODetailsRow(

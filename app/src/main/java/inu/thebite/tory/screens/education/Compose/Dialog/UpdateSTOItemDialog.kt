@@ -1,6 +1,8 @@
-package inu.thebite.tory.screens.datasceen.Compose.Dialog
+package inu.thebite.tory.screens.education.Compose.Dialog
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,13 +43,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.datasceen.STOViewModel
+import inu.thebite.tory.screens.education.STOViewModel
 
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun UpdateSTOItemDialog(
+    context : Context,
+    allSTOs : List<STOEntity>,
     stoViewModel: STOViewModel,
     selectedSTO: STOEntity,
     setUpdateSTOItem : (Boolean) -> Unit,
@@ -135,40 +140,87 @@ fun UpdateSTOItemDialog(
                     .fillMaxHeight(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    val changeGameResult = selectedSTO.gameResult.toMutableList()
+                    if(stoNameInputValue.text.isNotEmpty()){
+                        if(!allSTOs.any { it.stoName == stoNameInputValue.text }){
+                            val changeGameResult = selectedSTO.gameResult.toMutableList()
 
 
-                    //업데이트 하는 게임 결과 크기가 기존에 있던 게임 결과 크기보다 작을 경우에는 뒤에 있는 결과 제거, 더 큰 경우에는 n값 추가
-                    if(stoTryNum.value < changeGameResult.size){
-                        changeGameResult.subList(stoTryNum.value, changeGameResult.size).clear()
-                    } else if(stoTryNum.value > changeGameResult.size){
-                        val nullToAdd = stoTryNum.value - changeGameResult.size
-                        for(i in 0 until nullToAdd){
-                            changeGameResult.add("n")
+                            //업데이트 하는 게임 결과 크기가 기존에 있던 게임 결과 크기보다 작을 경우에는 뒤에 있는 결과 제거, 더 큰 경우에는 n값 추가
+                            if(stoTryNum.value < changeGameResult.size){
+                                changeGameResult.subList(stoTryNum.value, changeGameResult.size).clear()
+                            } else if(stoTryNum.value > changeGameResult.size){
+                                val nullToAdd = stoTryNum.value - changeGameResult.size
+                                for(i in 0 until nullToAdd){
+                                    changeGameResult.add("n")
+                                }
+                            }
+
+                            //-----------
+                            setSelectedTryNum(stoTryNum.value)
+                            selectedSTO.stoName = stoNameInputValue.text
+                            selectedSTO.stoDescription = stoDetailInputValue.text
+                            selectedSTO.stoTryNum = stoTryNum.value
+                            selectedSTO.stoSuccessStandard = stoSuccessStandardInputValue.text
+                            selectedSTO.stoMethod = stoMethodInputValue.text
+                            selectedSTO.stoSchedule = stoScheduleInputValue.text
+                            selectedSTO.stoMemo = stoMemoInputValue.text
+                            selectedSTO.gameResult = changeGameResult
+                            stoViewModel.updateSTO(selectedSTO)
+                            stoViewModel.setSelectedSTO(selectedSTO)
+                            //----------------
+                            setUpdateSTOItem(false)
+                            stoNameInputValue = TextFieldValue("")
+                            stoDetailInputValue = TextFieldValue("")
+                            stoTryNumInputValue = TextFieldValue("")
+                            stoSuccessStandardInputValue = TextFieldValue("")
+                            stoMethodInputValue = TextFieldValue("")
+                            stoScheduleInputValue = TextFieldValue("")
+                            stoMemoInputValue = TextFieldValue("")
+                        }else{
+                            if(selectedSTO.stoName == stoNameInputValue.text){
+                                val changeGameResult = selectedSTO.gameResult.toMutableList()
+
+
+                                //업데이트 하는 게임 결과 크기가 기존에 있던 게임 결과 크기보다 작을 경우에는 뒤에 있는 결과 제거, 더 큰 경우에는 n값 추가
+                                if(stoTryNum.value < changeGameResult.size){
+                                    changeGameResult.subList(stoTryNum.value, changeGameResult.size).clear()
+                                } else if(stoTryNum.value > changeGameResult.size){
+                                    val nullToAdd = stoTryNum.value - changeGameResult.size
+                                    for(i in 0 until nullToAdd){
+                                        changeGameResult.add("n")
+                                    }
+                                }
+
+                                //-----------
+                                setSelectedTryNum(stoTryNum.value)
+                                selectedSTO.stoName = stoNameInputValue.text
+                                selectedSTO.stoDescription = stoDetailInputValue.text
+                                selectedSTO.stoTryNum = stoTryNum.value
+                                selectedSTO.stoSuccessStandard = stoSuccessStandardInputValue.text
+                                selectedSTO.stoMethod = stoMethodInputValue.text
+                                selectedSTO.stoSchedule = stoScheduleInputValue.text
+                                selectedSTO.stoMemo = stoMemoInputValue.text
+                                selectedSTO.gameResult = changeGameResult
+                                stoViewModel.updateSTO(selectedSTO)
+                                stoViewModel.setSelectedSTO(selectedSTO)
+                                //----------------
+                                setUpdateSTOItem(false)
+                                stoNameInputValue = TextFieldValue("")
+                                stoDetailInputValue = TextFieldValue("")
+                                stoTryNumInputValue = TextFieldValue("")
+                                stoSuccessStandardInputValue = TextFieldValue("")
+                                stoMethodInputValue = TextFieldValue("")
+                                stoScheduleInputValue = TextFieldValue("")
+                                stoMemoInputValue = TextFieldValue("")
+                            } else{
+                                Toasty.warning(context, "동일한 이름의 STO가 존재합니다", Toast.LENGTH_SHORT, true).show()
+                            }
                         }
+                    } else{
+                        Toasty.warning(context, "STO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
                     }
 
-                    //-----------
-                    setSelectedTryNum(stoTryNum.value)
-                    selectedSTO.stoName = stoNameInputValue.text
-                    selectedSTO.stoDescription = stoDetailInputValue.text
-                    selectedSTO.stoTryNum = stoTryNum.value
-                    selectedSTO.stoSuccessStandard = stoSuccessStandardInputValue.text
-                    selectedSTO.stoMethod = stoMethodInputValue.text
-                    selectedSTO.stoSchedule = stoScheduleInputValue.text
-                    selectedSTO.stoMemo = stoMemoInputValue.text
-                    selectedSTO.gameResult = changeGameResult
-                    stoViewModel.updateSTO(selectedSTO)
-                    stoViewModel.setSelectedSTO(selectedSTO)
-                    //----------------
-                    setUpdateSTOItem(false)
-                    stoNameInputValue = TextFieldValue("")
-                    stoDetailInputValue = TextFieldValue("")
-                    stoTryNumInputValue = TextFieldValue("")
-                    stoSuccessStandardInputValue = TextFieldValue("")
-                    stoMethodInputValue = TextFieldValue("")
-                    stoScheduleInputValue = TextFieldValue("")
-                    stoMemoInputValue = TextFieldValue("")
+
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
             ){
