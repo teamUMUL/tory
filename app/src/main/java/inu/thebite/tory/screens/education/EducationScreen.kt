@@ -53,6 +53,9 @@ import inu.thebite.tory.screens.game.DragAndDropViewModel
 import inu.thebite.tory.screens.game.GameItem
 import inu.thebite.tory.screens.game.GameScreen
 import inu.thebite.tory.screens.game.GameTopBar
+import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -63,18 +66,21 @@ fun EducationScreen (
     childViewModel: ChildViewModel = viewModel(),
     stoViewModel: STOViewModel = viewModel(),
     gameViewModel: GameViewModel = viewModel(),
-    dragAndDropViewModel: DragAndDropViewModel = viewModel()
+    dragAndDropViewModel: DragAndDropViewModel = viewModel(),
+    centerViewModel: CenterViewModel = viewModel(),
+    childClassViewModel : ChildClassViewModel = viewModel(),
+    childInfoViewModel: ChildInfoViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
 
     val scrollState = rememberScrollState()
 
-    val selectedChildName by childViewModel.selectedChildName.observeAsState("오전1")
-    val selectedChildClass by childViewModel.selectedChildClass.observeAsState("오전반(월수금)")
-    
-    val gameResultList by gameViewModel.gameResultList.observeAsState()
+    val selectedChildClass by childClassViewModel.selectedChildClass.collectAsState()
 
+    val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
+
+    val gameResultList by gameViewModel.gameResultList.observeAsState()
 
     val stos by stoViewModel.stos.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
@@ -151,26 +157,49 @@ fun EducationScreen (
         mutableStateOf("")
     }
 
-    LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildName, addSTOItem, allSTOs, selectedSTO){
-        selectedLTO?.let { stoViewModel.getSTOsByCriteria(selectedChildClass,selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], it.ltoName) }
+
+    LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildInfo, addSTOItem, allSTOs, selectedSTO){
+        selectedLTO?.let {
+            selectedChildInfo?.let { selectedChildInfo ->
+                selectedChildClass?.let { selectedChildClass ->
+                    stoViewModel.getSTOsByCriteria(
+                        selectedChildClass.className,
+                        selectedChildInfo.childName,
+                        stoViewModel.developZoneItems[selectedDEVIndex],
+                        it.ltoName)
+                }
+            }
+        }
     }
 
-    LaunchedEffect(selectedChildClass, selectedChildName, selectedDEVIndex, allLTOs){
-        ltoViewModel.getLTOsByCriteria(selectedChildClass,selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex])
+    LaunchedEffect(selectedChildClass, selectedChildInfo, selectedDEVIndex, allLTOs){
+        selectedChildClass?.let { selectedChildClass ->
+            selectedChildInfo?.let  { selectedChildInfo ->
+                ltoViewModel.getLTOsByCriteria(
+                    selectedChildClass.className,
+                    selectedChildInfo.childName,
+                    stoViewModel.developZoneItems[selectedDEVIndex]
+                )
+            }
+        }
     }
 
     //LTO 추가 Dialog
     if (addLTOItem) {
-        AddLTOItemDialog(
-            context = context,
-            allLTOs = allLTOs,
-            setAddLTOItem = { setAddLTOItem(false) },
-            ltoViewModel = ltoViewModel,
-            selectedDevIndex = selectedDEVIndex,
-            selectedChildClass = selectedChildClass,
-            selectedChildName = selectedChildName,
-            stoViewModel = stoViewModel,
-        )
+        selectedChildClass?.let { selectedChildClass ->
+            selectedChildInfo?.let { selectedChildInfo ->
+                AddLTOItemDialog(
+                    context = context,
+                    allLTOs = allLTOs,
+                    setAddLTOItem = { setAddLTOItem(false) },
+                    ltoViewModel = ltoViewModel,
+                    selectedDevIndex = selectedDEVIndex,
+                    selectedChildClass = selectedChildClass.className,
+                    selectedChildName = selectedChildInfo.childName,
+                    stoViewModel = stoViewModel,
+                )
+            }
+        }
     }
 
     //LTO 추가 Dialog
@@ -188,18 +217,22 @@ fun EducationScreen (
 
     //STO 추가 Dialog
     if (addSTOItem) {
-        AddSTOItemDialog(
-            context = context,
-            allSTOs = allSTOs,
-            setAddSTOItem = { setAddSTOItem(false) },
-            selectedDevIndex = selectedDEVIndex,
-            childViewModel = childViewModel,
-            stoViewModel = stoViewModel,
-            selectedLTO = selectedLTO,
-            selectedChildClass = selectedChildClass,
-            selectedChildName = selectedChildName,
-            updateSTOs = {}
-        )
+        selectedChildClass?.let {selectedChildClass ->
+            selectedChildInfo?.let { selectedChildInfo ->
+                AddSTOItemDialog(
+                    context = context,
+                    allSTOs = allSTOs,
+                    setAddSTOItem = { setAddSTOItem(false) },
+                    selectedDevIndex = selectedDEVIndex,
+                    childViewModel = childViewModel,
+                    stoViewModel = stoViewModel,
+                    selectedLTO = selectedLTO,
+                    selectedChildClass = selectedChildClass.className,
+                    selectedChildName = selectedChildInfo.childName,
+                    updateSTOs = {}
+                )
+            }
+        }
     }
     //STO 추가 Dialog
     if (updateSTOItem) {
@@ -297,20 +330,24 @@ fun EducationScreen (
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
         //LTO ITEM----------------------------------------------------------------------------------
-        LTOItemsRow(
-            ltoViewModel = ltoViewModel,
-            selectedDevIndex = selectedDEVIndex,
-            selectedLTO = selectedLTO,
-            ltos = ltos,
-            setAddLTOItem = {setAddLTOItem(it)},
-            selectLTOItem = { it: String, progressState:Int ->
-                setLTODetailListIndex(progressState)
-                selectedSTODetailGameDataIndex.intValue = 0
-            },
-            stoViewModel = stoViewModel,
-            selectedChildClass = selectedChildClass,
-            selectedChildName = selectedChildName
-        )
+        selectedChildClass?.let {selectedChildClass ->
+            selectedChildInfo?.let { selectedChildInfo ->
+                LTOItemsRow(
+                    ltoViewModel = ltoViewModel,
+                    selectedDevIndex = selectedDEVIndex,
+                    selectedLTO = selectedLTO,
+                    ltos = ltos,
+                    setAddLTOItem = {setAddLTOItem(it)},
+                    selectLTOItem = { it: String, progressState:Int ->
+                        setLTODetailListIndex(progressState)
+                        selectedSTODetailGameDataIndex.intValue = 0
+                    },
+                    stoViewModel = stoViewModel,
+                    selectedChildClass = selectedChildClass.className,
+                    selectedChildName = selectedChildInfo.childName
+                )
+            }
+        }
         //LTO Detail--------------------------------------------------------------------------------
         LTODetailsRow(
             selectedLTO = selectedLTO,

@@ -1,162 +1,208 @@
 package inu.thebite.tory.screens.setting
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.selects.select
-import java.nio.file.Files.delete
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import inu.thebite.tory.screens.setting.compose.CenterItemRow
+import inu.thebite.tory.screens.setting.compose.ChildClassItemRow
+import inu.thebite.tory.screens.setting.compose.ChildInfoItemRow
+import inu.thebite.tory.screens.setting.dialog.AddCenterDialog
+import inu.thebite.tory.screens.setting.dialog.AddChildClassDialog
+import inu.thebite.tory.screens.setting.dialog.AddChildInfoDialog
+import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 
 @Composable
 fun SettingScreen(
-    centerViewModel: CenterViewModel,
-    childClassViewModel: ChildClassViewModel,
-    childInfoViewModel: ChildInfoViewModel
+    centerViewModel: CenterViewModel = viewModel(),
+    childClassViewModel: ChildClassViewModel = viewModel(),
+    childInfoViewModel: ChildInfoViewModel = viewModel()
 ){
+    val context = LocalContext.current
+
+    val centers by centerViewModel.centers.collectAsState()
+    val selectedCenter by centerViewModel.selectedCenter.collectAsState()
+    val allCenters by centerViewModel.allCenters.collectAsState()
+
+    val childClasses by childClassViewModel.childClasses.collectAsState()
+    val selectedChildClass by childClassViewModel.selectedChildClass.collectAsState()
+    val allChildClasses by childClassViewModel.allChildClasses.collectAsState()
+
+    val childInfos by childInfoViewModel.childInfos.collectAsState()
+    val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
+    val allChildInfos by childInfoViewModel.allChildInfos.collectAsState()
+
+    val settingTypeList = listOf(
+        "센터",
+        "반",
+        "아이"
+    )
+
+    val (addCenterDialog, setAddCenterDialog) = rememberSaveable{
+        mutableStateOf(false)
+    }
+    val (addChildClassDialog, setAddChildClassDialog) = rememberSaveable{
+        mutableStateOf(false)
+    }
+    val (addChildInfoDialog, setAddChildInfoDialog) = rememberSaveable{
+        mutableStateOf(false)
+    }
+
+    val (updateCenterDialog, setUpdateCenterDialog) = rememberSaveable{
+        mutableStateOf(false)
+    }
+    val (updateChildClassDialog, setUpdateChildClassDialog) = rememberSaveable{
+        mutableStateOf(false)
+    }
+    val (updateChildInfoDialog, setUpdateChildInfoDialog) = rememberSaveable{
+        mutableStateOf(false)
+    }
+
+
+
+    LaunchedEffect(selectedCenter, allChildClasses){
+        selectedCenter?.let {
+            childClassViewModel.getChildClassesByCenterName(
+                it.centerName
+            )
+        }
+    }
+
+    LaunchedEffect(selectedChildClass, allChildInfos){
+        selectedChildClass?.let { selectedChildClass ->
+                childInfoViewModel.getChildInfosByCenterNameAndClassName(
+                    selectedChildClass.centerName,
+                    selectedChildClass.className
+                )
+        }
+    }
+
+    if(addCenterDialog){
+        AddCenterDialog(
+            centerViewModel = centerViewModel,
+            childClassViewModel = childClassViewModel,
+            childInfoViewModel = childInfoViewModel,
+            setAddCenterDialog = {setAddCenterDialog(it)},
+            isUpdate = false,
+            selectedCenter = selectedCenter,
+            childClasses = childClasses
+        )
+    }
+    if(updateCenterDialog){
+        AddCenterDialog(
+            centerViewModel = centerViewModel,
+            childClassViewModel = childClassViewModel,
+            childInfoViewModel = childInfoViewModel,
+            setAddCenterDialog = {setUpdateCenterDialog(it)},
+            isUpdate = true,
+            selectedCenter = selectedCenter,
+            childClasses = childClasses
+        )
+    }
+    if(addChildClassDialog){
+        AddChildClassDialog(
+            selectedCenter = selectedCenter,
+            childClassViewModel = childClassViewModel,
+            setAddChildClassDialog = {setAddChildClassDialog(it)},
+            selectedChildClass = selectedChildClass,
+            childInfoViewModel = childInfoViewModel,
+            childInfos = childInfos,
+            isUpdate = false
+        )
+    }
+    if(updateChildClassDialog){
+        AddChildClassDialog(
+            selectedCenter = selectedCenter,
+            childClassViewModel = childClassViewModel,
+            setAddChildClassDialog = {setUpdateChildClassDialog(it)},
+            selectedChildClass = selectedChildClass,
+            childInfoViewModel = childInfoViewModel,
+            childInfos = childInfos,
+            isUpdate = true
+        )
+    }
+    if(addChildInfoDialog){
+        AddChildInfoDialog(
+            context = context,
+            childInfos = childInfos,
+            selectedChildClass = selectedChildClass,
+            childInfoViewModel = childInfoViewModel,
+            setAddChildInfoDialog = {setAddChildInfoDialog(it)},
+            selectedChildInfo = selectedChildInfo,
+            isUpdate = false
+        )
+    }
+    if(updateChildInfoDialog){
+        AddChildInfoDialog(
+            context = context,
+            childInfos = childInfos,
+            selectedChildClass = selectedChildClass,
+            childInfoViewModel = childInfoViewModel,
+            setAddChildInfoDialog = {setUpdateChildInfoDialog(it)},
+            selectedChildInfo = selectedChildInfo,
+            isUpdate = true
+        )
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-
-        //센터
-        SettingItemRow("센터", listOf("토리"))
-        //반
-        SettingItemRow("반", listOf("월수금(오전)", "월수금(오후)", "화목(오전)", "화목(오후)"))
-        //아이
-        SettingItemRow("아이" , listOf("김토리", "김토릐", "안토리", "안토릐"))
-
-    }
-}
-
-@Composable
-fun SettingItemRow(
-    settingType : String,
-    settingList : List<String>
-){
-    val rowHeight = LocalConfiguration.current.screenHeightDp
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(Dp(rowHeight / 3.0f))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-
-        ) {
-            Divider(
-                thickness = 2.dp, color = MaterialTheme.colorScheme.primary
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(start = 10.dp),
-                    text = settingType,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 40.sp
-                )
-                OutlinedButton(
-                    modifier = Modifier
-                        .padding(end = 10.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.secondary),
-                    onClick = {
-
-                    }
-                ){
-                    Text(
-                        text = "추가",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp
-                    )
-                }
-            }
-            Divider(
-                thickness = 2.dp, color = MaterialTheme.colorScheme.primary
-            )
-            LazyRow{
-                items(settingList){settingName ->
-                    Card(
-                        modifier = Modifier
-                            .padding(14.dp)
-                            .widthIn(min = 80.dp)
-                            .height(70.dp)
-                            .border(width = 2.dp, color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(8.dp))
-                            .clickable {
-
-                            },
-
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.Transparent
+        LazyColumn{
+            items(settingTypeList){settingType ->
+                when(settingType){
+                    "센터" -> {
+                        CenterItemRow(
+                            settingType = settingType,
+                            allCenters = allCenters,
+                            selectedCenter = selectedCenter,
+                            centerViewModel = centerViewModel,
+                            childClassViewModel = childClassViewModel,
+                            childInfoViewModel = childInfoViewModel,
+                            setAddCenterDialog = {setAddCenterDialog(it)},
+                            setUpdateCenterDialg = {setUpdateCenterDialog(it)}
                         )
-                    ) {
-                        Row(modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ){
-                            Text(
-                                text = settingName,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                color = Color.Black
-                            )
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .clickable {
-
-                                    },
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null,
-
-                                )
-                        }
+                    }
+                    "반" -> {
+                        ChildClassItemRow(
+                            settingType = settingType,
+                            childClasses = childClasses,
+                            selectedChildClass = selectedChildClass,
+                            selectedCenter = selectedCenter,
+                            childClassViewModel = childClassViewModel,
+                            childInfoViewModel = childInfoViewModel,
+                            setAddChildClassDialog = {setAddChildClassDialog(it)},
+                            setUpdateChildClassDialog = {setUpdateChildClassDialog(it)}
+                        )
+                    }
+                    "아이" -> {
+                        ChildInfoItemRow(
+                            settingType = settingType,
+                            childInfos = childInfos,
+                            selectedChildInfo = selectedChildInfo,
+                            selectedChildClass = selectedChildClass,
+                            childInfoViewModel = childInfoViewModel,
+                            setAddChildInfoDialog = {setAddChildInfoDialog(it)},
+                            setUpdateChildInfoDialog = {setUpdateChildInfoDialog(it)}
+                        )
                     }
                 }
 
             }
-
         }
     }
 }
+
+
+
+

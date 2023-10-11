@@ -1,10 +1,8 @@
-package inu.thebite.tory.screens.setting
+package inu.thebite.tory.screens.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
 import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
-import inu.thebite.tory.repositories.ChildClass.ChildClassRepo
 import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +32,10 @@ class ChildInfoViewModel : ViewModel(), KoinComponent {
     fun clearSelectedChildInfo() {
         _selectedChildInfo.value = null
     }
+
+    fun clearChildInfos(){
+        _childInfos.value = null
+    }
     init {
         getAllChildInfos()
     }
@@ -46,7 +48,22 @@ class ChildInfoViewModel : ViewModel(), KoinComponent {
         }
     }
 
-
+    fun getChildInfosByCenterNameAndClassName(
+        selectedCenterName: String,
+        selectedClassName: String?,
+    ){
+        if(selectedClassName == null ){
+            _childInfos.update { null }
+        }else{
+            _childInfos.update {
+                val filteredChildClasses = allChildInfos.value.filter {
+                    it.centerName == selectedCenterName &&
+                    it.className == selectedClassName
+                }
+                filteredChildClasses
+            }
+        }
+    }
 
     fun createChildInfo(
         centerName: String,
@@ -85,6 +102,33 @@ class ChildInfoViewModel : ViewModel(), KoinComponent {
     fun deleteChildInfo(childInfoEntity: ChildInfoEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteChildInfo(childInfoEntity)
+        }
+    }
+
+
+    fun deleteChildInfosByCenterName(centerName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val childInfosToDelete = allChildInfos.value.filter {
+                it.centerName == centerName
+            }
+
+            childInfosToDelete.forEach { childInfoEntity ->
+                repo.deleteChildInfo(childInfoEntity)
+            }
+        }
+    }
+
+
+    fun deleteChildInfosByCenterNameAndClassName(centerName: String, className: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val childInfosToDelete = allChildInfos.value.filter {
+                it.centerName == centerName &&
+                it.className == className
+            }
+
+            childInfosToDelete.forEach { childInfoEntity ->
+                repo.deleteChildInfo(childInfoEntity)
+            }
         }
     }
 }

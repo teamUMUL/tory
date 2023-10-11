@@ -4,26 +4,50 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import inu.thebite.tory.database.Center.CenterEntity
+import inu.thebite.tory.database.ChildClass.ChildClassEntity
+import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class ChildViewModel : ViewModel(){
-    private val _selectedChildName = MutableLiveData<String>("오전1")
-    private val _selectedChildClass = MutableLiveData<String>("오전반(월수금)")
 
-    // Expose LiveData for observing changes
-    val selectedChildName: LiveData<String>
-        get() = _selectedChildName
+    //센터
+    private val _selectedCenter = MutableStateFlow<CenterEntity?>(null)
+    val selectedCenter = _selectedCenter.asStateFlow()
 
-    val selectedChildClass: LiveData<String>
-        get() = _selectedChildClass
+    fun setSelectedCenter(centerEntity: CenterEntity) {
 
-    // Setters to update the LiveData values
-    fun setSelectedChildName(name: String) {
-        Log.e("setSelectedChildName", name)
-        _selectedChildName.value = name
+        _selectedCenter.value = centerEntity
     }
 
-    fun setSelectedChildClass(className: String) {
-        Log.e("setSelectedChildClass", className)
-        _selectedChildClass.value = className
+    fun clearSelectedCenter() {
+        _selectedCenter.value = null
+    }
+
+    //방
+    private val _selectedChildClass = MutableStateFlow<ChildClassEntity?>(null)
+    val selectedChildClass = _selectedChildClass.asStateFlow()
+
+    fun setSelectedChildClass(childClassEntity: ChildClassEntity) {
+
+        _selectedChildClass.value = childClassEntity
+    }
+
+    fun clearSelectedChildClass() {
+        _selectedChildClass.value = null
+    }
+
+    //아이
+    private val _selectedChildInfo = MutableStateFlow<ChildInfoEntity?>(null)
+    val selectedChildInfo = _selectedChildInfo.asStateFlow()
+
+    fun setSelectedChildInfo(childInfoEntity: ChildInfoEntity) {
+
+        _selectedChildInfo.value = childInfoEntity
+    }
+
+    fun clearSelectedChildInfo() {
+        _selectedChildInfo.value = null
     }
 }

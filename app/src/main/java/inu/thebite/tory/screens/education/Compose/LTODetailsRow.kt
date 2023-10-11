@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -62,7 +64,7 @@ fun LTODetailsRow(
     }
     Row(modifier = Modifier
         .fillMaxWidth()
-        .height(70.dp)
+        .heightIn(min = 70.dp, max= 110.dp)
         .padding(5.dp)
         .background(Color.Transparent)
         .border(4.dp, MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(8.dp)),
@@ -96,7 +98,7 @@ fun LTODetailsRow(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(modifier = Modifier
-                    .width(500.dp)
+                    .width(800.dp)
                     .fillMaxHeight()
                 ){
                     Row(modifier = Modifier
@@ -105,6 +107,7 @@ fun LTODetailsRow(
                     ) {
                         Text(
                             modifier = Modifier
+                                .widthIn(min=0.dp, max=700.dp)
                                 .padding(horizontal = 10.dp),
                             text = selectedLTOName,
                             fontSize = 35.sp,

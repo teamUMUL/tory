@@ -1,10 +1,8 @@
-package inu.thebite.tory.screens.setting
+package inu.thebite.tory.screens.setting.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.database.Center.CenterEntity
 import inu.thebite.tory.database.ChildClass.ChildClassEntity
-import inu.thebite.tory.repositories.Center.CenterRepo
 import inu.thebite.tory.repositories.ChildClass.ChildClassRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +32,10 @@ class ChildClassViewModel : ViewModel(), KoinComponent {
     fun clearSelectedChildClass() {
         _selectedChildClass.value = null
     }
+
+    fun clearChildClasses(){
+        _childClasses.value = null
+    }
     init {
         getAllChildClasses()
     }
@@ -46,7 +48,20 @@ class ChildClassViewModel : ViewModel(), KoinComponent {
         }
     }
 
-
+    fun getChildClassesByCenterName(
+        selectedCenterName: String,
+    ){
+        if(selectedCenterName.isEmpty()){
+            _childClasses.update { null }
+        }else{
+            _childClasses.update {
+                val filteredChildClasses = allChildClasses.value.filter {
+                    it.centerName == selectedCenterName
+                }
+                filteredChildClasses
+            }
+        }
+    }
 
     fun createChildClass(
         centerName: String,
@@ -71,6 +86,18 @@ class ChildClassViewModel : ViewModel(), KoinComponent {
     fun deleteChildClass(childClassEntity: ChildClassEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteChildClass(childClassEntity)
+        }
+    }
+
+    fun deleteChildClassesByCenterName(centerName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val childClassesToDelete = allChildClasses.value.filter {
+                it.centerName == centerName
+            }
+
+            childClassesToDelete.forEach { childClassEntity ->
+                repo.deleteChildClass(childClassEntity)
+            }
         }
     }
 }
