@@ -1,10 +1,7 @@
-package inu.thebite.tory.screens.setting.viewmodel
+package inu.thebite.tory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import inu.thebite.tory.CenterSelectViewModel
-import inu.thebite.tory.ChildClassSelectViewModel
 import inu.thebite.tory.database.ChildClass.ChildClassEntity
 import inu.thebite.tory.repositories.ChildClass.ChildClassRepo
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +12,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ChildClassViewModel : ViewModel(), KoinComponent {
+//반을 선택할 때 사용하는 ViewModel 선택과 조회만 가능함(삭제, 수정은 불가능)
+class ChildClassSelectViewModel : ViewModel(), KoinComponent {
     private val repo: ChildClassRepo by inject()
 
     private val _allChildClasses : MutableStateFlow<List<ChildClassEntity>> = MutableStateFlow(emptyList())
@@ -63,50 +61,6 @@ class ChildClassViewModel : ViewModel(), KoinComponent {
                 }
                 filteredChildClasses
             }
-        }
-    }
-
-    fun createChildClass(
-        centerName: String,
-        childClassName: String
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val newChildClassEntity = ChildClassEntity(
-                centerName = centerName,
-                className = childClassName
-            )
-            repo.createChildClass(newChildClassEntity)
-
-        }
-
-    }
-
-    fun updateChildClass(updatedChildClassEntity: ChildClassEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.updateChildClass(updatedChildClassEntity)
-
-        }
-
-    }
-
-    fun deleteChildClass(childClassEntity: ChildClassEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteChildClass(childClassEntity)
-
-        }
-
-    }
-
-    fun deleteChildClassesByCenterName(centerName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val childClassesToDelete = allChildClasses.value.filter {
-                it.centerName == centerName
-            }
-
-            childClassesToDelete.forEach { childClassEntity ->
-                repo.deleteChildClass(childClassEntity)
-            }
-
         }
     }
 }

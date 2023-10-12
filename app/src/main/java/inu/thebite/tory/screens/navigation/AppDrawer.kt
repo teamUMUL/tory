@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,8 +37,9 @@ fun AppDrawer(
     route: String,
     modifier: Modifier = Modifier,
     navigateToHome: () -> Unit = {},
-    navigateToGame: () -> Unit = {},
-    navigateToData: () -> Unit = {},
+    navigateToSetting: () -> Unit = {},
+    navigateToEducation: () -> Unit = {},
+    navigateToReady: () -> Unit = {},
     closeDrawer: () -> Unit = {}
 ) {
     ModalDrawerSheet(modifier = Modifier) {
@@ -65,10 +67,24 @@ fun AppDrawer(
             },
             selected = route == AllDestinations.EDUCATION,
             onClick = {
-                navigateToData()
+                navigateToEducation()
                 closeDrawer()
             },
             icon = { Icon(painter = painterResource(id = R.drawable.icon_book), contentDescription = null)},
+            shape = MaterialTheme.shapes.small
+        )
+        NavigationDrawerItem(
+            label = {
+                Text(
+                    text = stringResource(id = R.string.ready),
+                )
+            },
+            selected = route == AllDestinations.READY,
+            onClick = {
+                navigateToReady()
+                closeDrawer()
+            },
+            icon = { Icon(painter = painterResource(id = R.drawable.icon_photo), contentDescription = null)},
             shape = MaterialTheme.shapes.small
         )
         NavigationDrawerItem(
@@ -79,7 +95,7 @@ fun AppDrawer(
             },
             selected = route == AllDestinations.SETTING,
             onClick = {
-                navigateToGame()
+                navigateToSetting()
                 closeDrawer()
             },
             icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = null)},

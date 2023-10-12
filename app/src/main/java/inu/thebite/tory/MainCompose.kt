@@ -53,6 +53,7 @@ import inu.thebite.tory.screens.education.STOViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
+import inu.thebite.tory.screens.ready.ReadyScreen
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
@@ -66,13 +67,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainCompose(
     modifier: Modifier = Modifier,
-    childViewModel: ChildViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
 ) {
     val ltoViewModel : LTOViewModel = viewModel()
-    val childViewModel : ChildViewModel = viewModel()
+    val centerSelectViewModel : CenterSelectViewModel = viewModel()
+    val childClassSelectViewModel : ChildClassSelectViewModel = viewModel()
+    val childSelectViewModel : ChildSelectViewModel = viewModel()
     val stoViewModel : STOViewModel = viewModel()
     val centerViewModel : CenterViewModel = viewModel()
     val childClassViewModel : ChildClassViewModel = viewModel()
@@ -82,35 +84,54 @@ fun MainCompose(
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
     }
+    val allCenters by centerSelectViewModel.allCenters.collectAsState()
+    val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
 
-    val _selectedCenter by childViewModel.selectedCenter.collectAsState()
-    val _selectedChildClass by childViewModel.selectedChildClass.collectAsState()
-    val _selectedChildInfo by childViewModel.selectedChildInfo.collectAsState()
+    val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
+    val childClasses by childClassSelectViewModel.childClasses.collectAsState()
+    val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
 
+    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
+    val childInfos by childSelectViewModel.childInfos.collectAsState()
+    val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
 
-    val selectedCenter by centerViewModel.selectedCenter.collectAsState()
-    val allCenters by centerViewModel.allCenters.collectAsState()
+    var _selectedCenter by rememberSaveable{
+        mutableStateOf<CenterEntity?>(null)
 
-    val childClasses by childClassViewModel.childClasses.collectAsState()
-    val selectedChildClass by childClassViewModel.selectedChildClass.collectAsState()
+    }
+    var _selectedChildClass by rememberSaveable{
+        mutableStateOf<ChildClassEntity?>(null)
 
-    val childInfos by childInfoViewModel.childInfos.collectAsState()
-    val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
+    }
+    var _selectedChildInfo by rememberSaveable{
+        mutableStateOf<ChildInfoEntity?>(null)
+    }
 
-    LaunchedEffect(selectedCenter){
-        selectedCenter?.let {
-            childClassViewModel.getChildClassesByCenterName(
+    LaunchedEffect(_selectedCenter, allCenters){
+        _selectedCenter?.let {
+            childClassSelectViewModel.getChildClassesByCenterName(
                 it.centerName
             )
         }
     }
 
-    LaunchedEffect(selectedChildClass){
-        selectedChildClass?.let { selectedChildClass ->
-            childInfoViewModel.getChildInfosByCenterNameAndClassName(
+    LaunchedEffect(_selectedChildClass, allChildClasses){
+        _selectedChildClass?.let { selectedChildClass ->
+            childSelectViewModel.getChildInfosByCenterNameAndClassName(
                 selectedChildClass.centerName,
                 selectedChildClass.className
             )
+        }
+    }
+
+    LaunchedEffect(allChildInfos){
+        _selectedCenter?.let {selectedCenter ->
+            _selectedChildClass?.let{selectedChildClass ->
+                childSelectViewModel.getChildInfosByCenterNameAndClassName(
+                    selectedCenter.centerName,
+                    selectedChildClass.className
+                )
+            }
         }
     }
 
@@ -157,9 +178,11 @@ fun MainCompose(
                         CenterControl(
                             items = allCenters,
                             selectedCenter = _selectedCenter,
-                            childViewModel = childViewModel,
-                            childClassViewModel =  childClassViewModel,
-                            childInfoViewModel = childInfoViewModel
+                            childClassSelectViewModel = childClassSelectViewModel,
+                            childSelectViewModel = childSelectViewModel,
+                            setSelectedCenter = {_selectedCenter = it},
+                            setSelectedChildClass =  {_selectedChildClass = it},
+                            setSelectedChildInfo = {_selectedChildInfo = it}
                         )
 
                     }
@@ -175,8 +198,9 @@ fun MainCompose(
                         ChildClassControl(
                             items = childClasses,
                             selectedChildClass = _selectedChildClass,
-                            childViewModel = childViewModel,
-                            childInfoViewModel = childInfoViewModel
+                            childSelectViewModel = childSelectViewModel,
+                            setSelectedChildClass = {_selectedChildClass = it},
+                            setSelectedChildInfo = {_selectedChildInfo = it}
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
@@ -192,13 +216,13 @@ fun MainCompose(
                         ChildInfoControl(
                             items = childInfos,
                             selectedChildInfo = _selectedChildInfo,
-                            childViewModel = childViewModel
+                            setSelectedChildInfo = {_selectedChildInfo = it}
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    _selectedCenter?.let { _selectedCenter ->
-                        _selectedChildInfo?.let { _selectedChildInfo ->
-                            _selectedChildClass?.let{_selectedChildClass ->
+                    _selectedCenter?.let { selectedCenter ->
+                        _selectedChildInfo?.let { selectedChildInfo ->
+                            _selectedChildClass?.let{selectedChildClass ->
                                 Button(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -208,9 +232,9 @@ fun MainCompose(
                                         containerColor = colorResource(id = R.color.light_gray)
                                     ),
                                     onClick = {
-                                        centerViewModel.setSelectedCenter(_selectedCenter)
-                                        childClassViewModel.setSelectedChildClass(_selectedChildClass)
-                                        childInfoViewModel.setSelectedChildInfo(_selectedChildInfo)
+                                        centerSelectViewModel.setSelectedCenter(selectedCenter)
+                                        childClassSelectViewModel.setSelectedChildClass(selectedChildClass)
+                                        childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
                                         ltoViewModel.clearSelectedLTO()
                                         stoViewModel.clearSelectedSTO()
                                         setChildDialogOpen(false)
@@ -236,13 +260,30 @@ fun MainCompose(
     val navigationActions = remember(navController){
         AppNavigationActions(navController)
     }
-
+    val currentRouteToKorean = when(currentRoute){
+        "Home" -> {
+            "홈"
+        }
+        "Education" -> {
+            "교육"
+        }
+        "READY" -> {
+            "수업준비"
+        }
+        "Setting" -> {
+            "관리"
+        }
+        else -> {
+            currentRoute
+        }
+    }
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(
             route = currentRoute,
             navigateToHome = { navigationActions.navigateToHome()},
-            navigateToGame = { navigationActions.navigateToGame()},
-            navigateToData = { navigationActions.navigateToData()},
+            navigateToSetting = { navigationActions.navigateToSetting()},
+            navigateToEducation = { navigationActions.navigateToEducation()},
+            navigateToReady = { navigationActions.navigateToReady()},
             closeDrawer = { coroutineScope.launch { drawerState.close() }},
             modifier = Modifier
         )
@@ -250,7 +291,7 @@ fun MainCompose(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = currentRoute) },
+                    title = { Text(text = currentRouteToKorean) },
                     modifier = Modifier.fillMaxWidth(),
                     navigationIcon = {
                         IconButton(onClick = {
@@ -301,11 +342,11 @@ fun MainCompose(
                 composable(AllDestinations.EDUCATION) {
                     EducationScreen(
                         ltoViewModel = ltoViewModel,
-                        childViewModel = childViewModel,
+                        childSelectViewModel = childSelectViewModel,
                         stoViewModel = stoViewModel,
-                        centerViewModel = centerViewModel,
-                        childInfoViewModel = childInfoViewModel,
-                        childClassViewModel = childClassViewModel
+                        centerViewModel = centerSelectViewModel,
+                        childInfoViewModel = childSelectViewModel,
+                        childClassViewModel = childClassSelectViewModel
                     )
                 }
 
@@ -316,6 +357,10 @@ fun MainCompose(
                         childInfoViewModel = childInfoViewModel
                     )
                 }
+
+                composable(AllDestinations.READY){
+                    ReadyScreen()
+                }
             }
         }
     }
@@ -325,9 +370,11 @@ fun MainCompose(
 fun CenterControl(
     items: List<CenterEntity>,
     selectedCenter: CenterEntity?,
-    childViewModel: ChildViewModel,
-    childClassViewModel: ChildClassViewModel,
-    childInfoViewModel: ChildInfoViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel,
+    setSelectedCenter : (CenterEntity?) -> Unit,
+    setSelectedChildClass : (ChildClassEntity?) -> Unit,
+    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -368,16 +415,16 @@ fun CenterControl(
                 },
                 onClick = {
                     if(selectedCenter == item){
-                        childViewModel.clearSelectedCenter()
-                        childViewModel.clearSelectedChildClass()
-                        childViewModel.clearSelectedChildInfo()
-
-                        childClassViewModel.clearChildClasses()
-                        childInfoViewModel.clearChildInfos()
+                        setSelectedCenter(null)
+                        childClassSelectViewModel.clearChildClasses()
                     } else {
-                        childViewModel.setSelectedCenter(item)
-                        childClassViewModel.getChildClassesByCenterName(item.centerName)
+                        setSelectedCenter(item)
+                        childClassSelectViewModel.getChildClassesByCenterName(item.centerName)
                     }
+                    childSelectViewModel.clearChildInfos()
+                    setSelectedChildClass(null)
+                    setSelectedChildInfo(null)
+
                 },
                 shape = when(index) {
                     //왼쪽 바깥
@@ -439,8 +486,9 @@ fun CenterControl(
 fun ChildClassControl(
     items: List<ChildClassEntity>,
     selectedChildClass: ChildClassEntity?,
-    childViewModel: ChildViewModel,
-    childInfoViewModel: ChildInfoViewModel,
+    childSelectViewModel: ChildSelectViewModel,
+    setSelectedChildClass : (ChildClassEntity?) -> Unit,
+    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -481,18 +529,18 @@ fun ChildClassControl(
                 },
                 onClick = {
                     if(selectedChildClass == item){
-                        childViewModel.clearSelectedChildClass()
-                        childViewModel.clearSelectedChildInfo()
+                        setSelectedChildClass(null)
 
-                        childInfoViewModel.clearChildInfos()
                     } else {
-                        childViewModel.setSelectedChildClass(item)
+                        setSelectedChildClass(item)
 
-                        childInfoViewModel.getChildInfosByCenterNameAndClassName(
+                        childSelectViewModel.getChildInfosByCenterNameAndClassName(
                             item.centerName,
                             item.className
                         )
                     }
+                    setSelectedChildInfo(null)
+                    childSelectViewModel.clearChildInfos()
                 },
                 shape = when(index) {
                     //왼쪽 바깥
@@ -555,7 +603,7 @@ fun ChildClassControl(
 fun ChildInfoControl(
     items: List<ChildInfoEntity>,
     selectedChildInfo: ChildInfoEntity?,
-    childViewModel : ChildViewModel,
+    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -596,9 +644,9 @@ fun ChildInfoControl(
                 },
                 onClick = {
                     if(selectedChildInfo == item){
-                        childViewModel.clearSelectedChildInfo()
+                        setSelectedChildInfo(null)
                     } else {
-                        childViewModel.setSelectedChildInfo(item)
+                        setSelectedChildInfo(item)
                     }
                 },
                 shape = when(index) {

@@ -29,6 +29,7 @@ internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 fun DragableScreen(
     modifier: Modifier = Modifier,
     dragAndDropViewModel: DragAndDropViewModel,
+    timerRestart : MutableState<Boolean>,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val state = remember { DragTargetInfo() }
@@ -38,25 +39,30 @@ fun DragableScreen(
         Box(modifier = modifier.fillMaxSize())
         {
             content()
+
             if (state.isDragging) {
                 var targetSize by remember {
                     mutableStateOf(IntSize.Zero)
                 }
-                Box(modifier = Modifier
-                    .graphicsLayer {
-                        val offset = (state.dragPosition + state.dragOffset)
-                        scaleX = 1.3f
-                        scaleY = 1.3f
-                        alpha = if (targetSize == IntSize.Zero) 0f else .9f
-                        translationX = offset.x.minus(targetSize.width / 2)
-                        translationY = offset.y.minus(targetSize.height / 2)
-                    }
-                    .onGloballyPositioned {
-                        targetSize = it.size
-                    }
-                ) {
-                    Image(painter = painterResource(id = dragAndDropViewModel.mainItem.value!!.image), contentDescription = null)
+                if(timerRestart.value){
+
+                } else{
+                    Box(modifier = Modifier
+                        .graphicsLayer {
+                            val offset = (state.dragPosition + state.dragOffset)
+                            scaleX = 1.3f
+                            scaleY = 1.3f
+                            alpha = if (targetSize == IntSize.Zero) 0f else .9f
+                            translationX = offset.x.minus(targetSize.width / 2)
+                            translationY = offset.y.minus(targetSize.height / 2)
+                        }
+                        .onGloballyPositioned {
+                            targetSize = it.size
+                        }
+                    ) {
+                        Image(painter = painterResource(id = dragAndDropViewModel.mainItem.value!!.image), contentDescription = null)
 //                    state.draggableComposable?.invoke()
+                    }
                 }
             }
         }
@@ -90,7 +96,7 @@ fun <T> DragTarget(
             detectDragGestures(onDragStart = {
                 //드래그 시작 시 타이머 시작 및 카드 선택 상태 false로 설정
                 setIsCardSelectEnd(false)
-
+                timerRestart.value = false
 
 
                 viewModel.startDragging(context = context)

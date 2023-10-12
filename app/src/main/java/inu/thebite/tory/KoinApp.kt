@@ -25,6 +25,7 @@ class KoinApp : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
+//            modules(viewModelModule)
             modules(module {
                 //STO
                 single {

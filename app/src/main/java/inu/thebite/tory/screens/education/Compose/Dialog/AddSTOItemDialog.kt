@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import es.dmoral.toasty.Toasty
-import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.STOViewModel
@@ -68,7 +67,6 @@ fun AddSTOItemDialog(
     allSTOs : List<STOEntity>,
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
-    childViewModel : ChildViewModel,
     selectedLTO : LTOEntity?,
     selectedChildClass: String,
     selectedChildName: String,

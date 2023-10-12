@@ -2,7 +2,11 @@ package inu.thebite.tory.screens.game
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import android.view.View
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,9 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import inu.thebite.tory.R
@@ -43,15 +49,11 @@ fun GameScreen(
     selectedSTODetailGameDataIndex : MutableIntState,
     setSelectedSTODetailGameDataIndex : (Int) -> Unit,
     resetGameButtonIndex : () -> Unit,
+    setIsCardSelectEnd : (Boolean) -> Unit,
+    isCardSelectEnd : Boolean
 ) {
-    val systemUiController: SystemUiController = rememberSystemUiController()
 
-    systemUiController.isStatusBarVisible = false // Status bar
-    systemUiController.isNavigationBarVisible = false // Navigation bar
-    systemUiController.isSystemBarsVisible = false // Status & Navigation bars
-    val (isCardSelectEnd, setIsCardSelectEnd) = rememberSaveable {
-        mutableStateOf(false)
-    }
+
     LaunchedEffect(isCardSelectEnd){
         if(isCardSelectEnd){
             if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
@@ -76,7 +78,8 @@ fun GameScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
-        dragAndDropViewModel = dragAndDropViewModel
+        dragAndDropViewModel = dragAndDropViewModel,
+        timerRestart = timerRestart
     ){
         Column(
             modifier = Modifier
@@ -139,6 +142,7 @@ fun GameScreen(
                                     timerRestart.value = true
                                     timerStart.value = false
                                     resetGameButtonIndex()
+                                    if(gameViewModel.oneGameResult.value == "C")
                                     setIsCardSelectEnd(true)
 
 
@@ -319,14 +323,17 @@ fun GameScreen(
             Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 20.dp),
+                    .fillMaxWidth()
+                    .height(500.dp)
+                    .background(MaterialTheme.colorScheme.secondary),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Bottom
             ) {
                 DragTarget(
                     modifier = Modifier
-                        .size(cardSize),
+                        .size(cardSize)
+                        .padding(bottom = 20.dp)
+                    ,
                     dataToDrop = dragAndDropViewModel.mainItem.value,
                     viewModel = dragAndDropViewModel,
                     timerStart = timerStart,
@@ -349,13 +356,4 @@ fun GameScreen(
         }
 
     }
-}
-
-
-@Composable
-fun DivideList(list: List<GameItem>) {
-    val group1Size = (list.size + 1) / 2 // 첫 번째 그룹 크기
-
-
-
 }

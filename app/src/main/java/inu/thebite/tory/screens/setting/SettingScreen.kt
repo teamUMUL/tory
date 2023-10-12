@@ -13,6 +13,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import inu.thebite.tory.CenterSelectViewModel
+import inu.thebite.tory.ChildClassSelectViewModel
+import inu.thebite.tory.ChildSelectViewModel
 import inu.thebite.tory.screens.setting.compose.CenterItemRow
 import inu.thebite.tory.screens.setting.compose.ChildClassItemRow
 import inu.thebite.tory.screens.setting.compose.ChildInfoItemRow
@@ -27,7 +30,8 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 fun SettingScreen(
     centerViewModel: CenterViewModel = viewModel(),
     childClassViewModel: ChildClassViewModel = viewModel(),
-    childInfoViewModel: ChildInfoViewModel = viewModel()
+    childInfoViewModel: ChildInfoViewModel = viewModel(),
+
 ){
     val context = LocalContext.current
 
@@ -68,7 +72,6 @@ fun SettingScreen(
     val (updateChildInfoDialog, setUpdateChildInfoDialog) = rememberSaveable{
         mutableStateOf(false)
     }
-
 
 
     LaunchedEffect(selectedCenter, allChildClasses){

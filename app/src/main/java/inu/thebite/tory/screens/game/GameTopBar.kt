@@ -7,8 +7,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -28,9 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import inu.thebite.tory.R
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.GameViewModel
@@ -48,18 +52,24 @@ fun GameTopBar(
     timerRestart: MutableState<Boolean>,
     setGameDialog : (Boolean) -> Unit,
     setGameButton1Index : (Int) -> Unit,
-    setGameButton2Index : (Int) -> Unit
+    setGameButton2Index : (Int) -> Unit,
+    setIsCardSelectEnd : (Boolean) -> Unit
 
 ){
+    val systemUiController = rememberSystemUiController()
+    systemUiController.isStatusBarVisible = false // Status bar
+    systemUiController.isNavigationBarVisible = false // Navigation bar
+    systemUiController.isSystemBarsVisible = false // Status & Navigation bars
+    systemUiController.navigationBarDarkContentEnabled =false
     val gameButtons1 = listOf("P", "C")
-    val gameButtons2 = listOf("카드섞기", "타이머시작")
+    val gameButtons2 = listOf("M", "T")
     val cornerRadius = 4.dp
 
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.1f)
+            .fillMaxHeight(0.05f)
             .background(Color(0xFFF5F5F5)),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -104,7 +114,7 @@ fun GameTopBar(
                                 Text(
                                     modifier = Modifier
                                         .padding(start = 5.dp),
-                                    fontSize = 40.sp,
+                                    fontSize = 20.sp,
                                     text = gameResult,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -124,7 +134,7 @@ fun GameTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ){
-                Timer(timerStart = timerStart, timerRestart = timerRestart, gameButtonIndex = gameButton1Index, gameViewModel = gameViewModel)
+                Timer(timerStart = timerStart, timerRestart = timerRestart, gameButtonIndex = gameButton1Index, gameViewModel = gameViewModel, dragAndDropViewModel = dragAndDropViewModel, setIsCardSelectEnd = {setIsCardSelectEnd(it)})
             }
 
             Row(
@@ -133,7 +143,7 @@ fun GameTopBar(
                     .fillMaxHeight()
                     .padding(3.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
             ) {
                 gameButtons1.forEachIndexed { index, item ->
                     OutlinedButton(
@@ -145,7 +155,7 @@ fun GameTopBar(
                                     gameViewModel.clearOneGameResult()
                                 }
                                 if(item == "C"){
-                                    gameViewModel.setOneGameResult("-")
+                                    gameViewModel.setOneGameResult("C")
                                 }else{
                                     gameViewModel.setOneGameResult("P")
                                 }
@@ -202,13 +212,15 @@ fun GameTopBar(
                                 containerColor = Color.Transparent,
                                 contentColor = Color.Black
                             )
-                        }
+                        },
+                        contentPadding = PaddingValues(0.dp)
 
                     ) {
                         Text(
+
                             text = gameButtons1[index],
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
                         )
                     }
                 }
@@ -217,7 +229,7 @@ fun GameTopBar(
 
             Row(
                 modifier = Modifier
-                    .weight(2f)
+                    .weight(1f)
                     .fillMaxHeight()
                     .padding(3.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -226,7 +238,7 @@ fun GameTopBar(
                 gameButtons2.forEachIndexed { index, item ->
                     OutlinedButton(
                         onClick = {
-                            if(item == "카드섞기"){
+                            if(item == "M"){
                                 dragAndDropViewModel.restart(context = context)
                             }else{
                                 if(gameButton1Index == -1) {
@@ -286,12 +298,13 @@ fun GameTopBar(
                                 containerColor = Color.Transparent,
                                 contentColor = Color.Black
                             )
-                        }
+                        },
+                        contentPadding = PaddingValues(0.dp)
 
                     ) {
                         Text(
                             text = gameButtons2[index],
-                            fontSize = 20.sp,
+                            fontSize = 15.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }

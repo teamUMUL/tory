@@ -4,11 +4,17 @@ package inu.thebite.tory.screens.education
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
@@ -26,15 +32,21 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import co.yml.charts.common.extensions.isNotNull
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.CenterSelectViewModel
+import inu.thebite.tory.ChildClassSelectViewModel
+import inu.thebite.tory.ChildSelectViewModel
 
 
-import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.screens.education.Compose.DevelopZoneRow
 import inu.thebite.tory.screens.education.Compose.Dialog.AddGameItemsDialog
 import inu.thebite.tory.screens.education.Compose.GraphRow
@@ -63,13 +75,13 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 @Composable
 fun EducationScreen (
     ltoViewModel: LTOViewModel = viewModel(),
-    childViewModel: ChildViewModel = viewModel(),
+    childSelectViewModel: ChildSelectViewModel = viewModel(),
     stoViewModel: STOViewModel = viewModel(),
     gameViewModel: GameViewModel = viewModel(),
     dragAndDropViewModel: DragAndDropViewModel = viewModel(),
-    centerViewModel: CenterViewModel = viewModel(),
-    childClassViewModel : ChildClassViewModel = viewModel(),
-    childInfoViewModel: ChildInfoViewModel = viewModel()
+    centerViewModel: CenterSelectViewModel = viewModel(),
+    childClassViewModel : ChildClassSelectViewModel = viewModel(),
+    childInfoViewModel: ChildSelectViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
@@ -224,7 +236,6 @@ fun EducationScreen (
                     allSTOs = allSTOs,
                     setAddSTOItem = { setAddSTOItem(false) },
                     selectedDevIndex = selectedDEVIndex,
-                    childViewModel = childViewModel,
                     stoViewModel = stoViewModel,
                     selectedLTO = selectedLTO,
                     selectedChildClass = selectedChildClass.className,
@@ -261,6 +272,9 @@ fun EducationScreen (
 
     //게임 Dialog
     if(gameDialog){
+        val (isCardSelectEnd, setIsCardSelectEnd) = rememberSaveable {
+            mutableStateOf(false)
+        }
         Dialog(
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
@@ -269,9 +283,18 @@ fun EducationScreen (
             ),
             onDismissRequest = { setGameDialog(false) }
         ){
+            val windowManager =
+                remember { context.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+
+            val metrics = DisplayMetrics().apply {
+                windowManager.defaultDisplay.getRealMetrics(this)
+            }
+            val (width, height) = with(LocalDensity.current) {
+                Pair(metrics.widthPixels.toDp(), metrics.heightPixels.toDp())
+            }
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .requiredSize(width = width, height = height)
             ){
                 gameResultList?.let {
                     GameTopBar(
@@ -286,12 +309,14 @@ fun EducationScreen (
                         timerRestart = timerRestart,
                         setGameDialog = {setGameDialog(it)},
                         setGameButton1Index = {setGameButton1Index(it)},
-                        setGameButton2Index = {setGameButton2Index(it)}
+                        setGameButton2Index = {setGameButton2Index(it)},
+                        setIsCardSelectEnd = {setIsCardSelectEnd(it)}
                     )
                 }
                 Column(modifier = Modifier
                     .fillMaxSize()
                     .background(Color.White)
+
                 ) {
                     GameScreen(
                         context = context,
@@ -303,7 +328,9 @@ fun EducationScreen (
                         timerStart = timerStart,
                         timerRestart = timerRestart,
                         resetGameButtonIndex = {setGameButton1Index(-1)},
-                        setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it}
+                        setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
+                        setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                        isCardSelectEnd = isCardSelectEnd
                     )
                 }
             }
