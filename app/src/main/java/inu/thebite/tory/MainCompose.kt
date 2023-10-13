@@ -48,7 +48,7 @@ import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.screens.DataScreen.DataScreen
 import inu.thebite.tory.screens.DataScreen.GraphViewModel
 import inu.thebite.tory.screens.GameScreen
-import inu.thebite.tory.screens.HomeScreen
+import inu.thebite.tory.screens.homescreen.HomeScreen
 import inu.thebite.tory.screens.DataScreen.LTOViewModel
 import inu.thebite.tory.screens.DataScreen.STODetailViewModel
 import inu.thebite.tory.screens.DataScreen.STOViewModel
