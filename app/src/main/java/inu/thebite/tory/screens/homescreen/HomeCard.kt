@@ -46,6 +46,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.R
 import inu.thebite.tory.SegmentedControl
+import inu.thebite.tory.screens.homescreen.dialog.SuccessDialog
 
 @Composable
 fun ChainCard(){
@@ -218,7 +219,7 @@ fun ChildrenCard(){
                         textAlign = TextAlign.Center)
                 )
 
-                ConfigDialog(
+                SuccessDialog(
                     showDialog = isDialogVisible,
                     onDismiss = { isDialogVisible = false },
                     onConfirm = { configText ->
@@ -293,7 +294,8 @@ fun ConfigDialog(
                             onClick = { onDismiss() },
                             modifier = Modifier
                                 .height(50.dp)
-                                .weight(1f)
+                                .weight(1f),
+                            shape = RoundedCornerShape(5.dp),
                         ) {
                             Text(text = "취소")
                         }
