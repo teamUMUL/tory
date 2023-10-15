@@ -22,7 +22,7 @@ fun Timer(timerStart: MutableState<Boolean>, timerRestart: MutableState<Boolean>
     var progress by remember { mutableStateOf(1f) }
     val currentState = LocalDragTargetInfo.current
 
-    LaunchedEffect(timerStart.value, timerRestart.value) {
+    LaunchedEffect(timerStart.value) {
         if(gameButtonIndex == -1){
             if(timerStart.value){
                 val startTime = System.currentTimeMillis()
@@ -44,13 +44,16 @@ fun Timer(timerStart: MutableState<Boolean>, timerRestart: MutableState<Boolean>
                 timerRestart.value = true
                 timerStart.value = false
                 setIsCardSelectEnd(true)
+
             }
-            if(timerRestart.value){
-                progress = 1f
-            }
+
         }
+    }
 
-
+    LaunchedEffect(timerRestart.value){
+        if(timerRestart.value){
+            progress = 1f
+        }
     }
 
     LinearProgressIndicator(

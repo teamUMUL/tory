@@ -4,11 +4,8 @@ package inu.thebite.tory.screens.education
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -33,18 +30,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
 import co.yml.charts.common.extensions.isNotNull
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.CenterSelectViewModel
 import inu.thebite.tory.ChildClassSelectViewModel
 import inu.thebite.tory.ChildSelectViewModel
+import inu.thebite.tory.database.STO.STOEntity
 
 
 import inu.thebite.tory.screens.education.Compose.DevelopZoneRow
@@ -65,23 +59,21 @@ import inu.thebite.tory.screens.game.DragAndDropViewModel
 import inu.thebite.tory.screens.game.GameItem
 import inu.thebite.tory.screens.game.GameScreen
 import inu.thebite.tory.screens.game.GameTopBar
-import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
-import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
-import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
+import kotlin.random.Random
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("MutableCollectionMutableState", "CheckResult")
 @Composable
 fun EducationScreen (
-    ltoViewModel: LTOViewModel = viewModel(),
-    childSelectViewModel: ChildSelectViewModel = viewModel(),
-    stoViewModel: STOViewModel = viewModel(),
-    gameViewModel: GameViewModel = viewModel(),
-    dragAndDropViewModel: DragAndDropViewModel = viewModel(),
-    centerViewModel: CenterSelectViewModel = viewModel(),
-    childClassViewModel : ChildClassSelectViewModel = viewModel(),
-    childInfoViewModel: ChildSelectViewModel = viewModel()
+    ltoViewModel: LTOViewModel,
+    childSelectViewModel: ChildSelectViewModel,
+    stoViewModel: STOViewModel,
+    gameViewModel: GameViewModel,
+    dragAndDropViewModel: DragAndDropViewModel,
+    centerViewModel: CenterSelectViewModel,
+    childClassViewModel : ChildClassSelectViewModel,
+    childInfoViewModel: ChildSelectViewModel
 ) {
 
     val context = LocalContext.current
@@ -422,11 +414,22 @@ fun EducationScreen (
                     dragAndDropViewModel.setTargetItems(targetItems)
                     Log.e("게임아이템들", dragAndDropViewModel.targetItems.value.toString()+dragAndDropViewModel.mainItem.value.toString())
                     //타겟아이템과 메인아이템이 null이 아닌 경우에만 게임 시작
-                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.mainItem.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<GameItem>()){
+                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<GameItem>()){
+                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                            dragAndDropViewModel.isNotRandomGame()
+                        } else{
+                            dragAndDropViewModel.setMainItem(
+                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!)]
+                            )
+                            Log.e("메인아이템", dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!)].toString())
+                            dragAndDropViewModel.isRandomGame()
+                        }
                         gameViewModel.setGameResultList(it.gameResult)
                         setGameDialog(true)
                         val targetElement = "n"
                         val firstNIndex = it.gameResult.indexOf(targetElement)
+
+
                         //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
                         if(firstNIndex != -1){
                             selectedSTODetailGameDataIndex.intValue = firstNIndex
@@ -434,8 +437,20 @@ fun EducationScreen (
                             selectedSTODetailGameDataIndex.intValue = 0
 
                         }
+                        selectedSTO?.let{
+                            selectedSTO!!.stoDescription =
+                                getSTODescription(
+                                    dragAndDropViewModel = dragAndDropViewModel,
+                                    selectedSTO = selectedSTO!!,
+                                    isRandom = dragAndDropViewModel.isRandomGame
+                                )
+                            stoViewModel.updateSTO(
+                                selectedSTO!!
+                            )
+                            stoViewModel.setSelectedSTO(selectedSTO!!)
+                        }
                     } else{
-                        Toasty.warning(context, "게임아이템을 설정하고 메인아이템을 선택해주세요", Toast.LENGTH_SHORT, true).show()
+                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
                     }
 
                 },
@@ -474,9 +489,39 @@ fun EducationScreen (
     }
 }
 
+fun getRandomIndex(itemList: List<GameItem>): Int {
+    return Random.nextInt(0, itemList.size)
+}
+
+@SuppressLint("SuspiciousIndentation")
+fun getSTODescription(selectedSTO : STOEntity, isRandom : Boolean, dragAndDropViewModel: DragAndDropViewModel): String {
 
 
+    var gameItemsByKorean = ""
+        selectedSTO.gameItems.forEachIndexed { index, gameItem ->
+            gameItemsByKorean += if(index == 0){
+                englishToKorean(extractWord(gameItem))
+            } else {
+                ", ${englishToKorean(extractWord(gameItem))}"
+            }
+    }
 
+    val description =
+        if (isRandom){
+            "${selectedSTO.gameItems.size} Array\n목표아이템 : 랜덤\n예시아이템 : $gameItemsByKorean "
+        } else {
+            "${selectedSTO.gameItems.size} Array\n목표아이템 :${englishToKorean(extractWord(dragAndDropViewModel.mainItem.value!!.name))}\n예시아이템 : $gameItemsByKorean"
+
+        }
+
+    return description
+}
+fun extractWord(input: String): String {
+    val regex = "([a-zA-Z]+)_\\d+".toRegex()
+    val matchResult = input.let { regex.find(it) }
+
+    return matchResult?.groups?.get(1)?.value ?: input
+}
 
 @SuppressLint("DiscouragedApi")
 fun getResourceIdByName(imageName: String, context: Context): Int {
@@ -485,4 +530,41 @@ fun getResourceIdByName(imageName: String, context: Context): Int {
     return context.resources.getIdentifier(imageName, "drawable", packageName)
 }
 
+fun englishToKorean(english : String):String{
+    var korean = ""
+    when(english){
+        "ball" -> {
+            korean = "공"
+        }
+        "block" -> {
+            korean = "블록"
+        }
+        "clock" -> {
+            korean = "시계"
+        }
+        "colorpencil" -> {
+            korean = "색연필"
+        }
+        "cup" -> {
+            korean = "컵"
+        }
+        "doll" -> {
+            korean = "인형"
+        }
+        "scissor" -> {
+            korean = "가위"
+        }
+        "socks" -> {
+            korean = "양말"
+        }
+        "spoon" -> {
+            korean = "숫가락"
+        }
+        "toothbrush" -> {
+            korean = "칫솔"
+        }
+        else -> korean = english
+    }
+    return korean
+}
 

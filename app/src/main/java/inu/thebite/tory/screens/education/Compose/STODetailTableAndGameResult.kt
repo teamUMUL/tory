@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.STOViewModel
+import org.koin.core.component.getScopeId
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -91,7 +93,17 @@ fun STODetailTableAndGameResult(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .height(if (STODetailTitles.indexOf(stoDetailItem) != 6) 40.dp else 300.dp)
+                                .height(
+                                    if (STODetailTitles.indexOf(stoDetailItem) != 6){
+                                        if(STODetailTitles.indexOf(stoDetailItem) == 1){
+                                            120.dp
+                                        } else {
+                                            40.dp
+                                        }
+                                    } else {
+                                        300.dp
+                                    }
+                                )
                         ) {
                             val selectedSTODetail = listOf(
                                 selectedSTO.stoName,
@@ -202,7 +214,7 @@ fun STODetailTableAndGameResult(
                             .padding(10.dp)
                     ) {
                         Log.e("selectedSTOTryNum", selectedSTOTryNum.toString())
-                        items(selectedSTOTryNum / 5) { verticalIndex ->
+                        items(selectedSTO.gameResult.size / 5) { verticalIndex ->
                             LazyRow(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -226,19 +238,19 @@ fun STODetailTableAndGameResult(
                                         colors = CardDefaults.cardColors(
                                             containerColor = when (stoGameData) {
                                                 "+" -> {
-                                                    Color.Green.copy(alpha = 0.85f)
+                                                    Color.Green.copy(alpha = 0.55f)
                                                 }
 
                                                 "-" -> {
-                                                    Color.Red.copy(alpha = 0.85f)
+                                                    Color.Red.copy(alpha = 0.55f)
                                                 }
 
                                                 "P" -> {
-                                                    Color.Yellow.copy(alpha = 0.85f)
+                                                    Color.Yellow.copy(alpha = 0.55f)
                                                 }
 
                                                 else -> {
-                                                    Color.Gray.copy(alpha = 0.85f)
+                                                    Color.Gray.copy(alpha = 0.55f)
                                                 }
                                             }
                                         ),
@@ -361,7 +373,6 @@ fun STODetailTableAndGameResult(
                                         selectedSTO.gameResult = changeList
                                         stoViewModel.updateSTO(selectedSTO)
                                         setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
-//                                        stoViewModel.getSTOsByCriteria(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDEVIndex], selectedLTO)
                                     }
 
                                 }

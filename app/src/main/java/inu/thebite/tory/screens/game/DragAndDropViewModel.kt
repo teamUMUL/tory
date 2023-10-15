@@ -16,6 +16,8 @@ class DragAndDropViewModel :ViewModel() {
         private set
 
 
+    var isRandomGame by mutableStateOf(false)
+        private set
 
     //타겟아이템
     private val _targetItems = MutableStateFlow<List<GameItem>?>(null)
@@ -44,7 +46,6 @@ class DragAndDropViewModel :ViewModel() {
 
 
 
-
     init {
 
     }
@@ -59,7 +60,13 @@ class DragAndDropViewModel :ViewModel() {
         return context.resources.getIdentifier(imageName, "drawable", packageName)
     }
 
+    fun isRandomGame(){
+        isRandomGame = true
+    }
 
+    fun isNotRandomGame(){
+        isRandomGame = false
+    }
 
     fun startDragging(context: Context) {
         isCurrentlyDragging = true

@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.game
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,6 +39,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import inu.thebite.tory.R
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.GameViewModel
+import inu.thebite.tory.screens.education.STOViewModel
 
 @Composable
 fun GameTopBar(
@@ -69,7 +71,7 @@ fun GameTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.05f)
+            .fillMaxHeight(0.065f)
             .background(Color(0xFFF5F5F5)),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -80,6 +82,9 @@ fun GameTopBar(
                 .clickable {
                     setGameDialog(false)
                     dragAndDropViewModel.isWrong()
+                    if (dragAndDropViewModel.isRandomGame) {
+                        dragAndDropViewModel.clearMainItem()
+                    }
                     setGameButton1Index(-1)
                     setGameButton2Index(-1)
                 },
@@ -124,6 +129,21 @@ fun GameTopBar(
                         }
                     }
                 }
+
+            }
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .padding(3.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text(
+                    text = gameResultList.count{it == "n"}.toString(),
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.secondary
+                )
 
             }
             Row(

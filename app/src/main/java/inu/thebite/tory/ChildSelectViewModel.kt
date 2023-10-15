@@ -67,4 +67,18 @@ class ChildSelectViewModel : ViewModel(), KoinComponent {
             }
         }
     }
+
+
+    fun getChildInfoByCriterias(
+        selectedCenterName: String?,
+        selectedClassName: String?,
+        selectedChildName: String?,
+    ): List<ChildInfoEntity> {
+            val filteredChildInfo = allChildInfos.value.filter {
+                it.centerName == selectedCenterName &&
+                it.className == selectedClassName &&
+                it.className == selectedChildName
+            }
+        return filteredChildInfo
+    }
 }

@@ -2,11 +2,7 @@ package inu.thebite.tory.screens.game
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.util.Log
-import android.view.View
-import android.view.WindowInsetsController
-import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,23 +14,19 @@ import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import com.google.accompanist.systemuicontroller.SystemUiController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import inu.thebite.tory.R
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.GameViewModel
 import inu.thebite.tory.screens.education.STOViewModel
+import inu.thebite.tory.screens.education.getRandomIndex
+import inu.thebite.tory.screens.education.getResourceIdByName
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -53,6 +45,7 @@ fun GameScreen(
     isCardSelectEnd : Boolean
 ) {
 
+    val mainItem by dragAndDropViewModel.mainItem.collectAsState()
 
     LaunchedEffect(isCardSelectEnd){
         if(isCardSelectEnd){
@@ -63,12 +56,21 @@ fun GameScreen(
                 stoViewModel.updateSTO(selectedSTO)
                 gameViewModel.setGameResultList(changeList)
                 setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
+                if(dragAndDropViewModel.isRandomGame){
+                    val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!)]
+                    dragAndDropViewModel.setMainItem(
+                        randomMainItem.copy(
+                            image = getResourceIdByName(randomMainItem.name, context)
+                        )
+                    )
+                }
             }
             gameViewModel.clearOneGameResult()
         }
     }
-
+    val oneGameResult by gameViewModel.oneGameResult.collectAsState()
     val targetItems by dragAndDropViewModel.targetItems.collectAsState()
+
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val cardSize = Dp(screenWidth / 6.5f)
     val group1Size = (targetItems!!.size + 1) / 2
@@ -111,12 +113,12 @@ fun GameScreen(
                                             )
                                         )
                                         dragAndDropViewModel.isCorrect()
-                                        when (gameViewModel.oneGameResult.value) {
+                                        when (oneGameResult) {
                                             "P" -> {
                                                 gameViewModel.setOneGameResult("P")
                                             }
-                                            "-" -> {
-                                                gameViewModel.setOneGameResult("-")
+                                            "C" -> {
+                                                gameViewModel.setOneGameResult("C")
                                             }
                                             else -> {
                                                 gameViewModel.setOneGameResult("+")
@@ -125,25 +127,30 @@ fun GameScreen(
                                     }
                                     //여기는 틀린 경우에 들어갈 행동
                                     else{
-                                        when (gameViewModel.oneGameResult.value) {
+
+                                        when (oneGameResult) {
+
                                             "P" -> {
                                                 gameViewModel.setOneGameResult("P")
                                             }
-                                            "-" -> {
-                                                gameViewModel.setOneGameResult("-")
+                                            "C" -> {
+                                                gameViewModel.setOneGameResult("C")
                                             }
                                             else -> {
                                                 gameViewModel.setOneGameResult("-")
                                             }
                                         }
-                                        Log.e("정답 틀림", gameViewModel.oneGameResult.value.toString())
 
                                     }
                                     timerRestart.value = true
                                     timerStart.value = false
                                     resetGameButtonIndex()
-                                    if(gameViewModel.oneGameResult.value == "C")
-                                    setIsCardSelectEnd(true)
+                                    if(gameViewModel.oneGameResult.value == "C"){
+                                        gameViewModel.setOneGameResult("+")
+                                    } else {
+                                        setIsCardSelectEnd(true)
+
+                                    }
 
 
                                 }
@@ -194,12 +201,12 @@ fun GameScreen(
                                                 )
                                             )
                                             dragAndDropViewModel.isCorrect()
-                                            when (gameViewModel.oneGameResult.value) {
+                                            when (oneGameResult) {
                                                 "P" -> {
                                                     gameViewModel.setOneGameResult("P")
                                                 }
-                                                "-" -> {
-                                                    gameViewModel.setOneGameResult("-")
+                                                "C" -> {
+                                                    gameViewModel.setOneGameResult("C")
                                                 }
                                                 else -> {
                                                     gameViewModel.setOneGameResult("+")
@@ -208,25 +215,30 @@ fun GameScreen(
                                         }
                                         //여기는 틀린 경우에 들어갈 행동
                                         else{
-                                            when (gameViewModel.oneGameResult.value) {
+
+                                            when (oneGameResult) {
+
                                                 "P" -> {
                                                     gameViewModel.setOneGameResult("P")
                                                 }
-                                                "-" -> {
-                                                    gameViewModel.setOneGameResult("-")
+                                                "C" -> {
+                                                    gameViewModel.setOneGameResult("C")
                                                 }
                                                 else -> {
                                                     gameViewModel.setOneGameResult("-")
                                                 }
                                             }
-                                            Log.e("정답 틀림", gameViewModel.oneGameResult.value.toString())
 
                                         }
                                         timerRestart.value = true
                                         timerStart.value = false
                                         resetGameButtonIndex()
-                                        setIsCardSelectEnd(true)
+                                        if(gameViewModel.oneGameResult.value == "C"){
+                                            gameViewModel.setOneGameResult("+")
+                                        } else {
+                                            setIsCardSelectEnd(true)
 
+                                        }
 
                                     }
                                 }
@@ -255,6 +267,7 @@ fun GameScreen(
                                     .size(cardSize)
                             ) { isInBound, dragInGameItem ->
                                 if(dragInGameItem != null){
+                                    Log.e("dragInGameItem", dragInGameItem.name)
                                     LaunchedEffect(key1 = dragInGameItem){
                                         //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                         if(dragInGameItem.name == gameItem.name){
@@ -265,12 +278,12 @@ fun GameScreen(
                                                 )
                                             )
                                             dragAndDropViewModel.isCorrect()
-                                            when (gameViewModel.oneGameResult.value) {
+                                            when (oneGameResult) {
                                                 "P" -> {
                                                     gameViewModel.setOneGameResult("P")
                                                 }
-                                                "-" -> {
-                                                    gameViewModel.setOneGameResult("-")
+                                                "C" -> {
+                                                    gameViewModel.setOneGameResult("C")
                                                 }
                                                 else -> {
                                                     gameViewModel.setOneGameResult("+")
@@ -279,24 +292,31 @@ fun GameScreen(
                                         }
                                         //여기는 틀린 경우에 들어갈 행동
                                         else{
-                                            when (gameViewModel.oneGameResult.value) {
+
+                                            when (oneGameResult) {
+
                                                 "P" -> {
                                                     gameViewModel.setOneGameResult("P")
                                                 }
-                                                "-" -> {
-                                                    gameViewModel.setOneGameResult("-")
+                                                "C" -> {
+                                                    gameViewModel.setOneGameResult("C")
                                                 }
                                                 else -> {
                                                     gameViewModel.setOneGameResult("-")
                                                 }
                                             }
-                                            Log.e("정답 틀림", gameViewModel.oneGameResult.value.toString())
 
                                         }
                                         timerRestart.value = true
                                         timerStart.value = false
                                         resetGameButtonIndex()
-                                        setIsCardSelectEnd(true)
+                                        if(gameViewModel.oneGameResult.value == "C"){
+                                            gameViewModel.setOneGameResult("+")
+                                        } else {
+                                            setIsCardSelectEnd(true)
+
+                                        }
+
 
 
                                     }

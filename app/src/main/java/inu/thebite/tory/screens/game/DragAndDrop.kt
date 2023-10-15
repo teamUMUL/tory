@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +19,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
-import inu.thebite.tory.R
 
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 
@@ -74,18 +72,16 @@ fun <T> DragTarget(
     modifier: Modifier = Modifier,
     dataToDrop: T,
     viewModel: DragAndDropViewModel,
-    timerStart : MutableState<Boolean>,
-    timerRestart : MutableState<Boolean>,
-    isCardSelectEnd : Boolean,
-    setIsCardSelectEnd : (Boolean) -> Unit,
+    timerStart: MutableState<Boolean>,
+    timerRestart: MutableState<Boolean>,
+    isCardSelectEnd: Boolean,
+    setIsCardSelectEnd: (Boolean) -> Unit,
     resetGameButtonIndex:() -> Unit,
     content: @Composable (() -> Unit)
 ) {
     val context = LocalContext.current
-
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
     val currentState = LocalDragTargetInfo.current
-    val copiedContent = content
     Box(modifier = modifier
         .onGloballyPositioned {
             currentPosition = it.localToWindow(
@@ -97,13 +93,12 @@ fun <T> DragTarget(
                 //드래그 시작 시 타이머 시작 및 카드 선택 상태 false로 설정
                 setIsCardSelectEnd(false)
                 timerRestart.value = false
-
-
+                Log.e("랜덤게임", dataToDrop.toString())
                 viewModel.startDragging(context = context)
-                currentState.dataToDrop = dataToDrop
+                currentState.dataToDrop = viewModel.mainItem.value
                 currentState.isDragging = true
                 currentState.dragPosition = currentPosition + it
-                currentState.draggableComposable = copiedContent
+                currentState.draggableComposable = content
             }, onDrag = { change, dragAmount ->
                 change.consumeAllChanges()
                 currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)

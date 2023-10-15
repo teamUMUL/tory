@@ -29,6 +29,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,19 +38,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.Center.CenterEntity
 import inu.thebite.tory.database.ChildClass.ChildClassEntity
 import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import inu.thebite.tory.prefdatastore.DataStoreManager
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CENTER
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CHILD
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CLASS
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.dataStore
 import inu.thebite.tory.screens.HomeScreen
 import inu.thebite.tory.screens.education.EducationScreen
+import inu.thebite.tory.screens.education.GameViewModel
 import inu.thebite.tory.screens.education.LTOViewModel
 import inu.thebite.tory.screens.education.STOViewModel
+import inu.thebite.tory.screens.game.DragAndDropViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
@@ -60,6 +70,8 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 import inu.thebite.tory.screens.setting.SettingScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+
 
 
 
@@ -70,16 +82,20 @@ fun MainCompose(
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
+    ltoViewModel : LTOViewModel,
+    centerSelectViewModel : CenterSelectViewModel,
+    childClassSelectViewModel : ChildClassSelectViewModel,
+    childSelectViewModel : ChildSelectViewModel,
+    stoViewModel : STOViewModel,
+    centerViewModel : CenterViewModel,
+    childClassViewModel : ChildClassViewModel,
+    childInfoViewModel : ChildInfoViewModel,
+    dragAndDropViewModel : DragAndDropViewModel,
+    gameViewModel : GameViewModel
 ) {
-    val ltoViewModel : LTOViewModel = viewModel()
-    val centerSelectViewModel : CenterSelectViewModel = viewModel()
-    val childClassSelectViewModel : ChildClassSelectViewModel = viewModel()
-    val childSelectViewModel : ChildSelectViewModel = viewModel()
-    val stoViewModel : STOViewModel = viewModel()
-    val centerViewModel : CenterViewModel = viewModel()
-    val childClassViewModel : ChildClassViewModel = viewModel()
-    val childInfoViewModel : ChildInfoViewModel = viewModel()
 
+
+    val dataStore = (LocalContext.current).dataStore
 
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
@@ -346,7 +362,9 @@ fun MainCompose(
                         stoViewModel = stoViewModel,
                         centerViewModel = centerSelectViewModel,
                         childInfoViewModel = childSelectViewModel,
-                        childClassViewModel = childClassSelectViewModel
+                        childClassViewModel = childClassSelectViewModel,
+                        dragAndDropViewModel = dragAndDropViewModel,
+                        gameViewModel = gameViewModel
                     )
                 }
 

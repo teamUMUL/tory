@@ -28,9 +28,9 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 
 @Composable
 fun SettingScreen(
-    centerViewModel: CenterViewModel = viewModel(),
-    childClassViewModel: ChildClassViewModel = viewModel(),
-    childInfoViewModel: ChildInfoViewModel = viewModel(),
+    centerViewModel: CenterViewModel,
+    childClassViewModel: ChildClassViewModel,
+    childInfoViewModel: ChildInfoViewModel,
 
 ){
     val context = LocalContext.current

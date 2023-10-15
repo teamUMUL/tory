@@ -12,9 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import inu.thebite.tory.screens.HomeScreen
+import inu.thebite.tory.screens.education.GameViewModel
+import inu.thebite.tory.screens.education.LTOViewModel
+import inu.thebite.tory.screens.education.STOViewModel
+import inu.thebite.tory.screens.game.DragAndDropViewModel
+import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 import inu.thebite.tory.ui.theme.ToryTheme
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +35,28 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainCompose()
+                    val ltoViewModel : LTOViewModel = koinViewModel()
+                    val centerSelectViewModel : CenterSelectViewModel = koinViewModel()
+                    val childClassSelectViewModel : ChildClassSelectViewModel = koinViewModel()
+                    val childSelectViewModel : ChildSelectViewModel = koinViewModel()
+                    val stoViewModel : STOViewModel = koinViewModel()
+                    val centerViewModel : CenterViewModel = koinViewModel()
+                    val childClassViewModel : ChildClassViewModel = koinViewModel()
+                    val childInfoViewModel : ChildInfoViewModel = koinViewModel()
+                    val dragAndDropViewModel : DragAndDropViewModel = koinViewModel()
+                    val gameViewModel : GameViewModel = koinViewModel()
+                    MainCompose(
+                        ltoViewModel = ltoViewModel,
+                        centerSelectViewModel = centerSelectViewModel,
+                        childClassSelectViewModel = childClassSelectViewModel,
+                        childSelectViewModel = childSelectViewModel,
+                        stoViewModel = stoViewModel,
+                        centerViewModel = centerViewModel,
+                        childClassViewModel = childClassViewModel,
+                        childInfoViewModel = childInfoViewModel,
+                        dragAndDropViewModel = dragAndDropViewModel,
+                        gameViewModel = gameViewModel
+                    )
                 }
             }
         }
