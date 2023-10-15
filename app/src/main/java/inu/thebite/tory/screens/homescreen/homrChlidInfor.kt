@@ -94,11 +94,11 @@ fun childInfor(){
             )
             Spacer(modifier = Modifier.size(23.dp))
             Text(
-                text = "2023-01-01~2023-01-01",
+                text = "특징",
                 style = TextStyle(
                     fontSize = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF000000),
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF0E4B32),
                 )
             )
             Spacer(modifier = Modifier.size(23.dp))
