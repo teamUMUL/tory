@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.setting.dialog
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -46,9 +47,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.database.Center.CenterEntity
 import inu.thebite.tory.database.ChildClass.ChildClassEntity
+import inu.thebite.tory.model.Center
+import inu.thebite.tory.retrofit.RetrofitApi
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
+import retrofit2.Call
+import retrofit2.Response
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +72,8 @@ fun AddCenterDialog(
     var centerNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(defaultCenterValue))
     }
+
+    val service = RetrofitApi.apiService
 
     Dialog(
         onDismissRequest = {setAddCenterDialog(false)}
@@ -153,6 +160,7 @@ fun AddCenterDialog(
                                     centerName = centerNameInputValue.text
                                 )
                             }
+
                             centerNameInputValue = TextFieldValue("")
                             setAddCenterDialog(false)
                         },
