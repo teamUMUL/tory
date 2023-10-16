@@ -64,7 +64,7 @@ import java.sql.Date
 @Composable
 fun AddSTOItemDialog(
     context : Context,
-    allSTOs : List<STOEntity>,
+    stos : List<STOEntity>?,
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
     selectedLTO : LTOEntity?,
@@ -154,38 +154,40 @@ fun AddSTOItemDialog(
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
                     if(stoNameInputValue.text.isNotEmpty()){
-                        if(!allSTOs.any { it.stoName == stoNameInputValue.text }){
-                            stoViewModel.createSTO(
-                                className = selectedChildClass,
-                                childName = selectedChildName,
-                                selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
-                                selectedLTO = selectedLTO!!.ltoName,
-                                stoName = stoNameInputValue.text,
-                                stoDescription = stoDetailInputValue.text,
-                                stoTryNum = stoTryNum.value,
-                                stoSuccessStandard = stoSuccessStandardInputValue.text,
-                                stoMethod = stoMethodInputValue.text,
-                                stoSchedule = stoScheduleInputValue.text,
-                                stoMemo = stoMemoInputValue.text,
-                                stoState = -1,
-                                gameResult = List(stoTryNum.value) { "n" },
-                                gameItems = mutableListOf<String>(),
-                                date = mutableListOf<Date>(),
-                                plusRatio = mutableListOf<Float>(),
-                                minusRatio =mutableListOf<Float>()
-                            )
+                        if (stos != null) {
+                            if(!stos.any { it.stoName == stoNameInputValue.text }){
+                                stoViewModel.createSTO(
+                                    className = selectedChildClass,
+                                    childName = selectedChildName,
+                                    selectedDEV = stoViewModel.developZoneItems[selectedDevIndex],
+                                    selectedLTO = selectedLTO!!.ltoName,
+                                    stoName = stoNameInputValue.text,
+                                    stoDescription = stoDetailInputValue.text,
+                                    stoTryNum = stoTryNum.value,
+                                    stoSuccessStandard = stoSuccessStandardInputValue.text,
+                                    stoMethod = stoMethodInputValue.text,
+                                    stoSchedule = stoScheduleInputValue.text,
+                                    stoMemo = stoMemoInputValue.text,
+                                    stoState = -1,
+                                    gameResult = List(stoTryNum.value) { "n" },
+                                    gameItems = mutableListOf<String>(),
+                                    date = mutableListOf<Date>(),
+                                    plusRatio = mutableListOf<Float>(),
+                                    minusRatio =mutableListOf<Float>()
+                                )
 
 
-                            setAddSTOItem(false)
-                            stoNameInputValue = TextFieldValue("")
-                            stoDetailInputValue = TextFieldValue("")
-                            stoTryNumInputValue = TextFieldValue("")
-                            stoSuccessStandardInputValue = TextFieldValue("")
-                            stoMethodInputValue = TextFieldValue("")
-                            stoScheduleInputValue = TextFieldValue("")
-                            stoMemoInputValue = TextFieldValue("")
-                        }else{
-                            Toasty.warning(context, "동일한 이름의 STO가 존재합니다", Toast.LENGTH_SHORT, true).show()
+                                setAddSTOItem(false)
+                                stoNameInputValue = TextFieldValue("")
+                                stoDetailInputValue = TextFieldValue("")
+                                stoTryNumInputValue = TextFieldValue("")
+                                stoSuccessStandardInputValue = TextFieldValue("")
+                                stoMethodInputValue = TextFieldValue("")
+                                stoScheduleInputValue = TextFieldValue("")
+                                stoMemoInputValue = TextFieldValue("")
+                            }else{
+                                Toasty.warning(context, "동일한 이름의 STO가 존재합니다", Toast.LENGTH_SHORT, true).show()
+                            }
                         }
                     } else{
                         Toasty.warning(context, "STO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()

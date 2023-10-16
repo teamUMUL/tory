@@ -49,11 +49,6 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.Center.CenterEntity
 import inu.thebite.tory.database.ChildClass.ChildClassEntity
 import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
-import inu.thebite.tory.prefdatastore.DataStoreManager
-import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CENTER
-import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CHILD
-import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CLASS
-import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.dataStore
 import inu.thebite.tory.screens.HomeScreen
 import inu.thebite.tory.screens.education.EducationScreen
 import inu.thebite.tory.screens.education.GameViewModel
@@ -95,7 +90,6 @@ fun MainCompose(
 ) {
 
 
-    val dataStore = (LocalContext.current).dataStore
 
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)

@@ -238,19 +238,35 @@ fun STODetailTableAndGameResult(
                                         colors = CardDefaults.cardColors(
                                             containerColor = when (stoGameData) {
                                                 "+" -> {
-                                                    Color.Green.copy(alpha = 0.55f)
+                                                    if(selectedSTODetailGameDataIndex == (5 * verticalIndex) + horizonIndex){
+                                                        Color.Green.copy(alpha = 0.75f)
+                                                    } else {
+                                                        Color.Green.copy(alpha = 0.55f)
+                                                    }
                                                 }
 
                                                 "-" -> {
-                                                    Color.Red.copy(alpha = 0.55f)
+                                                    if(selectedSTODetailGameDataIndex == (5 * verticalIndex) + horizonIndex){
+                                                        Color.Red.copy(alpha = 0.75f)
+                                                    } else {
+                                                        Color.Red.copy(alpha = 0.55f)
+                                                    }
                                                 }
 
                                                 "P" -> {
-                                                    Color.Yellow.copy(alpha = 0.55f)
+                                                    if(selectedSTODetailGameDataIndex == (5 * verticalIndex) + horizonIndex){
+                                                        Color.Yellow.copy(alpha = 0.75f)
+                                                    } else {
+                                                        Color.Yellow.copy(alpha = 0.55f)
+                                                    }
                                                 }
 
                                                 else -> {
-                                                    Color.Gray.copy(alpha = 0.55f)
+                                                    if(selectedSTODetailGameDataIndex == (5 * verticalIndex) + horizonIndex){
+                                                        Color.Gray.copy(alpha = 0.75f)
+                                                    } else {
+                                                        Color.Gray.copy(alpha = 0.55f)
+                                                    }
                                                 }
                                             }
                                         ),

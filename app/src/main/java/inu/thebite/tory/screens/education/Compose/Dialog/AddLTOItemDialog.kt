@@ -3,6 +3,7 @@ package inu.thebite.tory.screens.education.Compose.Dialog
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,10 +16,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -61,12 +65,12 @@ fun AddLTOItemDialog(
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
-//    var isExpanded by remember {
-//        mutableStateOf(false)
-//    }
-//    var gameMode by remember {
-//        mutableStateOf("")
-//    }
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    var gameMode by remember {
+        mutableStateOf("게임 선택 안함")
+    }
     // AddLTOItemDialog 내용
     Dialog(
         onDismissRequest = {setAddLTOItem(false)},
@@ -74,7 +78,6 @@ fun AddLTOItemDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
                 .clip(RoundedCornerShape(6.dp))
                 .background(Color.White)
                 .padding(
@@ -111,9 +114,68 @@ fun AddLTOItemDialog(
                 )
             )
             Spacer(modifier = Modifier.height(10.dp))
-//            ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = {isExpanded = it}) {
-//
-//            }
+            ExposedDropdownMenuBox(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                expanded = isExpanded,
+                onExpandedChange = {isExpanded = !isExpanded}
+            ){
+                TextField(
+
+                    value = gameMode,
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                        unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                        disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                    ),
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = {isExpanded = false},
+                    modifier = Modifier
+                        .exposedDropdownSize(),
+                ){
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = "게임 선택 안함")
+                       },
+                        onClick = {
+                            gameMode = "게임 선택 안함"
+                            isExpanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = "같은 사진 매칭")
+                        },
+                        onClick = {
+                            gameMode = "같은 사진 매칭"
+                            isExpanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = "일반화 매칭")
+                        },
+                        onClick = {
+                            gameMode = "일반화 매칭"
+                            isExpanded = false
+                        }
+                    )
+                }
+
+            }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 modifier = Modifier
@@ -129,7 +191,7 @@ fun AddLTOItemDialog(
                                 stoViewModel.developZoneItems[selectedDevIndex],
                                 ltoInputValue.text,
                                 -1,
-                                "matching"
+                                gameMode
                             )
                             setAddLTOItem(false)
                             ltoInputValue = TextFieldValue("")

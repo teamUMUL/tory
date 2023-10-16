@@ -38,11 +38,12 @@ import es.dmoral.toasty.Toasty
 import inu.thebite.tory.CenterSelectViewModel
 import inu.thebite.tory.ChildClassSelectViewModel
 import inu.thebite.tory.ChildSelectViewModel
+import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.database.STO.STOEntity
 
 
 import inu.thebite.tory.screens.education.Compose.DevelopZoneRow
-import inu.thebite.tory.screens.education.Compose.Dialog.AddGameItemsDialog
+import inu.thebite.tory.screens.education.Compose.Dialog.AddGeneralGameItem
 import inu.thebite.tory.screens.education.Compose.GraphRow
 import inu.thebite.tory.screens.education.Compose.LTODetailsRow
 import inu.thebite.tory.screens.education.Compose.LTOItemsRow
@@ -51,6 +52,7 @@ import inu.thebite.tory.screens.education.Compose.STODetailsRow
 import inu.thebite.tory.screens.education.Compose.STOItemsRow
 import inu.thebite.tory.screens.education.Compose.Dialog.AddLTOItemDialog
 import inu.thebite.tory.screens.education.Compose.Dialog.AddSTOItemDialog
+import inu.thebite.tory.screens.education.Compose.Dialog.AddSameGameItemsDialog
 import inu.thebite.tory.screens.education.Compose.Dialog.UpdateLTOItemDialog
 import inu.thebite.tory.screens.education.Compose.Dialog.UpdateSTOItemDialog
 import inu.thebite.tory.screens.education.Compose.gameReadyRow
@@ -225,7 +227,7 @@ fun EducationScreen (
             selectedChildInfo?.let { selectedChildInfo ->
                 AddSTOItemDialog(
                     context = context,
-                    allSTOs = allSTOs,
+                    stos = stos,
                     setAddSTOItem = { setAddSTOItem(false) },
                     selectedDevIndex = selectedDEVIndex,
                     stoViewModel = stoViewModel,
@@ -251,15 +253,29 @@ fun EducationScreen (
 
     //게임아이템 추가, 제거 Dialog
     if(addGameItem){
-        selectedSTO?.let {
-            AddGameItemsDialog(
-                context = context,
-                selectedSTO = it,
-                setMainItem = {setMainGameItem(it)},
-                setAddGameItem = {setAddGameItem(it)},
-                stoViewModel = stoViewModel
-            )
+        selectedLTO?.let { selectedLTO ->
+            selectedSTO?.let { selectedSTO ->
+                if(selectedLTO.gameMode == "같은 사진 매칭"){
+                    AddSameGameItemsDialog(
+                        context = context,
+                        selectedSTO = selectedSTO,
+                        setMainItem = {setMainGameItem(it)},
+                        setAddGameItem = {setAddGameItem(it)},
+                        stoViewModel = stoViewModel
+                    )
+                }
+                if(selectedLTO.gameMode == "일반화 매칭"){
+                    AddGeneralGameItem(
+                        context = context,
+                        selectedSTO = selectedSTO,
+                        setMainItem = {setMainGameItem(it)},
+                        setAddGameItem = {setAddGameItem(it)},
+                        stoViewModel = stoViewModel
+                    )
+                }
+            }
         }
+
     }
 
     //게임 Dialog
@@ -294,6 +310,7 @@ fun EducationScreen (
                         dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel,
                         selectedSTO = selectedSTO,
+                        selectedLTO = selectedLTO,
                         gameResultList = it,
                         gameButton1Index = gameButton1Index,
                         gameButton2Index = gameButton2Index,
@@ -310,20 +327,23 @@ fun EducationScreen (
                     .background(Color.White)
 
                 ) {
-                    GameScreen(
-                        context = context,
-                        dragAndDropViewModel = dragAndDropViewModel,
-                        gameViewModel = gameViewModel,
-                        stoViewModel = stoViewModel,
-                        selectedSTO = selectedSTO,
-                        selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-                        timerStart = timerStart,
-                        timerRestart = timerRestart,
-                        resetGameButtonIndex = {setGameButton1Index(-1)},
-                        setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
-                        setIsCardSelectEnd = {setIsCardSelectEnd(it)},
-                        isCardSelectEnd = isCardSelectEnd
-                    )
+                    selectedLTO?.let {
+                        GameScreen(
+                            context = context,
+                            dragAndDropViewModel = dragAndDropViewModel,
+                            gameViewModel = gameViewModel,
+                            stoViewModel = stoViewModel,
+                            selectedSTO = selectedSTO,
+                            selectedLTO = it,
+                            selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                            timerStart = timerStart,
+                            timerRestart = timerRestart,
+                            resetGameButtonIndex = {setGameButton1Index(-1)},
+                            setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
+                            setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                            isCardSelectEnd = isCardSelectEnd
+                        )
+                    }
                 }
             }
         }
@@ -402,56 +422,133 @@ fun EducationScreen (
                 setSTODetailIndex = { it -> setSTODetailListIndex(it) },
                 setUpdateSTOItem = { it -> setUpdateSTOItem(it)},
                 gameStart = {
-                    val targetItems = mutableListOf<GameItem>()
-                    selectedSTO!!.gameItems.forEach { itemName ->
-                        targetItems.add(
-                            GameItem(
-                                name = itemName,
-                                image = getResourceIdByName(itemName,context)
-                            )
-                        )
-                    }
-                    dragAndDropViewModel.setTargetItems(targetItems)
-                    Log.e("게임아이템들", dragAndDropViewModel.targetItems.value.toString()+dragAndDropViewModel.mainItem.value.toString())
-                    //타겟아이템과 메인아이템이 null이 아닌 경우에만 게임 시작
-                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<GameItem>()){
-                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
-                            dragAndDropViewModel.isNotRandomGame()
-                        } else{
-                            dragAndDropViewModel.setMainItem(
-                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!)]
-                            )
-                            Log.e("메인아이템", dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!)].toString())
-                            dragAndDropViewModel.isRandomGame()
-                        }
-                        gameViewModel.setGameResultList(it.gameResult)
-                        setGameDialog(true)
-                        val targetElement = "n"
-                        val firstNIndex = it.gameResult.indexOf(targetElement)
+                    Log.e("게임모드",selectedLTO!!.gameMode )
+                    when(selectedLTO!!.gameMode){
+                        "같은 사진 매칭" -> {
+                            val targetItems = mutableListOf<GameItem>()
 
-
-                        //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
-                        if(firstNIndex != -1){
-                            selectedSTODetailGameDataIndex.intValue = firstNIndex
-                        }else {
-                            selectedSTODetailGameDataIndex.intValue = 0
-
-                        }
-                        selectedSTO?.let{
-                            selectedSTO!!.stoDescription =
-                                getSTODescription(
-                                    dragAndDropViewModel = dragAndDropViewModel,
-                                    selectedSTO = selectedSTO!!,
-                                    isRandom = dragAndDropViewModel.isRandomGame
+                            selectedSTO!!.gameItems.forEach { itemName ->
+                                targetItems.add(
+                                    GameItem(
+                                        name = itemName,
+                                        image = getResourceIdByName(itemName,context)
+                                    )
                                 )
-                            stoViewModel.updateSTO(
-                                selectedSTO!!
-                            )
-                            stoViewModel.setSelectedSTO(selectedSTO!!)
+                            }
+
+                            dragAndDropViewModel.setTargetItems(targetItems)
+
+                            if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<GameItem>()){
+                                if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                                    dragAndDropViewModel.isNotRandomGame()
+                                } else{
+                                    dragAndDropViewModel.setMainItem(
+                                        dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                    )
+                                    dragAndDropViewModel.isRandomGame()
+                                }
+
+
+
+
+                                gameViewModel.setGameResultList(it.gameResult)
+                                setGameDialog(true)
+                                val targetElement = "n"
+                                val firstNIndex = it.gameResult.indexOf(targetElement)
+
+
+                                //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
+                                if(firstNIndex != -1){
+                                    selectedSTODetailGameDataIndex.intValue = firstNIndex
+                                }else {
+                                    selectedSTODetailGameDataIndex.intValue = 0
+
+                                }
+                                selectedSTO?.let{
+                                    selectedSTO!!.stoDescription =
+                                        getSTODescription(
+                                            dragAndDropViewModel = dragAndDropViewModel,
+                                            selectedSTO = selectedSTO!!,
+                                            isRandom = dragAndDropViewModel.isRandomGame,
+                                            selectedLTO = selectedLTO!!
+                                        )
+                                    stoViewModel.updateSTO(
+                                        selectedSTO!!
+                                    )
+                                    stoViewModel.setSelectedSTO(selectedSTO!!)
+                                }
+                            } else{
+                                Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                            }
                         }
-                    } else{
-                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                        "일반화 매칭" -> {
+                            val targetCategory = mutableListOf<String>()
+
+                            selectedSTO!!.gameItems.forEach { categoryName ->
+                                targetCategory.add(categoryName.substringBefore("_"))
+                            }
+
+                            dragAndDropViewModel.setTargetCategory(targetCategory)
+
+                            if(dragAndDropViewModel.targetCategory.value.isNotNull() && dragAndDropViewModel.targetCategory.value != emptyList<String>()){
+                                if(dragAndDropViewModel.mainCategory.value.isNotNull()){
+                                    dragAndDropViewModel.isNotRandomGame()
+                                } else{
+                                    dragAndDropViewModel.setMainCategory(
+                                        dragAndDropViewModel.targetCategory.value!![getRandomIndex(dragAndDropViewModel.targetCategory.value!!.size)]
+                                    )
+                                    dragAndDropViewModel.isRandomGame()
+                                }
+
+
+                                dragAndDropViewModel.mainCategory.value?.let { mainCategory ->
+                                    dragAndDropViewModel.setTwoMainDifferentImageInCategory(context = context,
+                                        mainCategory
+                                    )
+                                    dragAndDropViewModel.setMainItem(
+                                        GameItem(
+                                            name = mainCategory,
+                                            image = dragAndDropViewModel.firstMainImage.value!!
+                                        )
+                                    )
+                                }
+
+                                gameViewModel.setGameResultList(it.gameResult)
+                                setGameDialog(true)
+                                val targetElement = "n"
+                                val firstNIndex = it.gameResult.indexOf(targetElement)
+
+
+                                //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
+                                if(firstNIndex != -1){
+                                    selectedSTODetailGameDataIndex.intValue = firstNIndex
+                                }else {
+                                    selectedSTODetailGameDataIndex.intValue = 0
+
+                                }
+                                selectedSTO?.let{
+                                    selectedSTO!!.stoDescription =
+                                        getSTODescription(
+                                            dragAndDropViewModel = dragAndDropViewModel,
+                                            selectedSTO = selectedSTO!!,
+                                            isRandom = dragAndDropViewModel.isRandomGame,
+                                            selectedLTO = selectedLTO!!
+                                        )
+                                    stoViewModel.updateSTO(
+                                        selectedSTO!!
+                                    )
+                                    stoViewModel.setSelectedSTO(selectedSTO!!)
+                                }
+                            } else{
+                                Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                            }
+                            dragAndDropViewModel.setTargetCategory(targetCategory)
+                        }
                     }
+                    Log.e("게임아이템들", dragAndDropViewModel.targetItems.value.toString()+dragAndDropViewModel.mainItem.value.toString())
+                    Log.e("gameStart-MainCategory", dragAndDropViewModel.mainCategory.value.toString())
+                    Log.e("gameStart-TargetCategory", dragAndDropViewModel.targetCategory.value.toString())
+
 
                 },
                 stoViewModel = stoViewModel
@@ -469,15 +566,18 @@ fun EducationScreen (
             )
         }
         //게임준비
-        selectedSTO?.let {
-            gameReadyRow(
-                context = context,
-                dragAndDropViewModel = dragAndDropViewModel,
-                selectedSTO = it,
-                mainGameItem = mainGameItem,
-                setAddGameItem = { it -> setAddGameItem(it)},
-                setMainGameItem = { it -> setMainGameItem(it)}
-            )
+        selectedSTO?.let { selectedSTO ->
+            selectedLTO?.let { selectedLTO ->
+                gameReadyRow(
+                    context = context,
+                    dragAndDropViewModel = dragAndDropViewModel,
+                    selectedSTO = selectedSTO,
+                    selectedLTO = selectedLTO,
+                    mainGameItem = mainGameItem,
+                    setAddGameItem = { it -> setAddGameItem(it)},
+                    setMainGameItem = { it -> setMainGameItem(it)}
+                )
+            }
         }
 
         //그래프
@@ -489,12 +589,12 @@ fun EducationScreen (
     }
 }
 
-fun getRandomIndex(itemList: List<GameItem>): Int {
-    return Random.nextInt(0, itemList.size)
+fun getRandomIndex(itemSize: Int): Int {
+    return Random.nextInt(0, itemSize)
 }
 
 @SuppressLint("SuspiciousIndentation")
-fun getSTODescription(selectedSTO : STOEntity, isRandom : Boolean, dragAndDropViewModel: DragAndDropViewModel): String {
+fun getSTODescription(selectedSTO : STOEntity,selectedLTO: LTOEntity, isRandom : Boolean, dragAndDropViewModel: DragAndDropViewModel): String {
 
 
     var gameItemsByKorean = ""
@@ -507,12 +607,20 @@ fun getSTODescription(selectedSTO : STOEntity, isRandom : Boolean, dragAndDropVi
     }
 
     val description =
-        if (isRandom){
-            "${selectedSTO.gameItems.size} Array\n목표아이템 : 랜덤\n예시아이템 : $gameItemsByKorean "
+        if(selectedLTO.gameMode == "같은 사진 매칭"){
+            if (isRandom){
+                "${selectedSTO.gameItems.size} Array\n목표아이템 : 랜덤\n예시아이템 : $gameItemsByKorean "
+            } else {
+                "${selectedSTO.gameItems.size} Array\n목표아이템 :${englishToKorean(extractWord(dragAndDropViewModel.mainItem.value!!.name))}\n예시아이템 : $gameItemsByKorean"
+            }
         } else {
-            "${selectedSTO.gameItems.size} Array\n목표아이템 :${englishToKorean(extractWord(dragAndDropViewModel.mainItem.value!!.name))}\n예시아이템 : $gameItemsByKorean"
-
+            if (isRandom){
+                "${selectedSTO.gameItems.size} Array\n목표아이템 : 랜덤\n예시아이템 : $gameItemsByKorean "
+            } else {
+                "${selectedSTO.gameItems.size} Array\n목표아이템 :${englishToKorean(dragAndDropViewModel.mainCategory.value!!)}\n예시아이템 : $gameItemsByKorean"
+            }
         }
+
 
     return description
 }

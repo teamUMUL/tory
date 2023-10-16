@@ -1,6 +1,8 @@
 package inu.thebite.tory.screens.education.Compose.Dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.text.TextUtils.split
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +45,11 @@ import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.GameViewModel
 import inu.thebite.tory.screens.education.STOViewModel
 import inu.thebite.tory.screens.education.getResourceIdByName
+import inu.thebite.tory.screens.game.GameItem
 
 
 @Composable
-fun AddGameItemsDialog(
+fun AddSameGameItemsDialog(
     context : Context,
     selectedSTO : STOEntity,
     setAddGameItem : (Boolean) -> Unit,
@@ -209,6 +213,175 @@ fun AddGameItemsDialog(
                     )
                 }
             }
+        }
+    }
+}
+
+@SuppressLint("MutableCollectionMutableState")
+@Composable
+fun AddGeneralGameItem(
+    context : Context,
+    selectedSTO : STOEntity,
+    setAddGameItem : (Boolean) -> Unit,
+    setMainItem : (String) -> Unit,
+    stoViewModel : STOViewModel,
+){
+    val selectedGameCategory by remember {
+        mutableStateOf(selectedSTO.gameItems.toMutableList())
+    }
+    val selectedCategoryList = remember {
+        mutableStateListOf<String>()
+    }
+//    for (gameCategory in selectedSTO.gameItems){
+//        selectedCategoryList.add(gameCategory)
+//    }
+
+    Dialog(
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        ),
+        onDismissRequest = {
+            setAddGameItem(false)
+        }
+    ){
+        Surface(
+            modifier = Modifier
+                .fillMaxSize(),
+            shape = RoundedCornerShape(10.dp),
+            color = Color.White
+        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+
+            ){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.1f),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 20.dp),
+                        text = "교육준비",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    IconButton(
+                        modifier = Modifier
+                            .padding(end = 20.dp),
+                        onClick ={
+                            setAddGameItem(false)
+                        }
+                    ){
+                        Icon(
+                            modifier = Modifier
+                                .size(40.dp),
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null
+                        )
+                    }
+                }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.9f)
+                ) {
+                    items(
+                        listOf(
+                            "spoon",
+                            "cup",
+                            "ball",
+                            "block",
+                            "clock",
+                            "colorpencil",
+                            "doll",
+                            "scissor",
+                            "socks",
+                            "toothbrush"
+                        )
+                    ) { GameItemCategory ->
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                modifier = Modifier.padding(start = 10.dp),
+                                text = GameItemCategory,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            LazyRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                            ) {
+                                items(3){ i ->
+                                    val i = i + 1
+                                    val imageName = "${GameItemCategory}_${i}"
+                                    val imageResource = getResourceIdByName(imageName, context)
+                                    val isSelected = selectedCategoryList.contains(GameItemCategory)
+                                    Image(
+                                        modifier = Modifier
+                                            .weight(1.0f)
+                                            .padding(10.dp)
+                                            .clickable {
+                                                if (isSelected) {
+                                                    selectedGameCategory.remove(imageName)
+                                                    selectedCategoryList.remove(imageName)
+                                                } else {
+                                                    selectedGameCategory.add(imageName)
+                                                    selectedCategoryList.add(imageName)
+                                                }
+                                                Log.e("selectedCategoryList", selectedCategoryList.toString())
+                                                selectedSTO.gameItems = selectedGameCategory
+                                                stoViewModel.updateSTO(selectedSTO)
+                                            },
+                                        painter = painterResource(id = imageResource),
+                                        contentDescription = null,
+                                        alpha =  if (isSelected) 1.0f else 0.5f
+                                    )
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    onClick = {
+
+                        selectedSTO.gameItems = selectedCategoryList
+                        setMainItem("")
+                        stoViewModel.updateSTO(selectedSTO)
+                        setAddGameItem(false)
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ){
+                    Text(
+                        text = "카드 준비",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun extractItemsFromList(inputList: List<String>): List<String> {
+    return inputList.mapNotNull { item ->
+        val parts = item.split("_")
+        if (parts.isNotEmpty()) {
+            parts[0]
+        } else {
+            null
         }
     }
 }

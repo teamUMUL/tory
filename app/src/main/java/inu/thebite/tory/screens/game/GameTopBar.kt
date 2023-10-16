@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import inu.thebite.tory.R
+import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.GameViewModel
 import inu.thebite.tory.screens.education.STOViewModel
@@ -47,6 +48,7 @@ fun GameTopBar(
     dragAndDropViewModel: DragAndDropViewModel,
     gameViewModel : GameViewModel,
     selectedSTO : STOEntity?,
+    selectedLTO : LTOEntity?,
     gameResultList : List<String>,
     gameButton1Index : Int,
     gameButton2Index : Int,
@@ -259,7 +261,13 @@ fun GameTopBar(
                     OutlinedButton(
                         onClick = {
                             if(item == "M"){
-                                dragAndDropViewModel.restart(context = context)
+                                if(selectedLTO!!.gameMode == "같은 사진 매칭"){
+                                    dragAndDropViewModel.restartSameMode(context = context)
+                                }
+                                else{
+                                    dragAndDropViewModel.restartGeneralMode(context = context)
+
+                                }
                             }else{
                                 if(gameButton1Index == -1) {
                                     timerStart.value = true

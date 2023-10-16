@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
+import inu.thebite.tory.database.LTO.LTOEntity
 
 internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 
@@ -26,6 +27,7 @@ internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 @Composable
 fun DragableScreen(
     modifier: Modifier = Modifier,
+    selectedLTO : LTOEntity,
     dragAndDropViewModel: DragAndDropViewModel,
     timerRestart : MutableState<Boolean>,
     content: @Composable BoxScope.() -> Unit,
@@ -58,7 +60,11 @@ fun DragableScreen(
                             targetSize = it.size
                         }
                     ) {
-                        Image(painter = painterResource(id = dragAndDropViewModel.mainItem.value!!.image), contentDescription = null)
+                        if(selectedLTO.gameMode == "같은 사진 매칭"){
+                            Image(painter = painterResource(id = dragAndDropViewModel.mainItem.value!!.image), contentDescription = null)
+                        } else if(selectedLTO.gameMode == "일반화 매칭") {
+                            Image(painter = painterResource(id = dragAndDropViewModel.firstMainImage.value!!), contentDescription = null)
+                        }
 //                    state.draggableComposable?.invoke()
                     }
                 }
@@ -68,10 +74,10 @@ fun DragableScreen(
 }
 
 @Composable
-fun <T> DragTarget(
+fun<T> DragTarget(
     modifier: Modifier = Modifier,
-    dataToDrop: T,
     viewModel: DragAndDropViewModel,
+    data: T,
     timerStart: MutableState<Boolean>,
     timerRestart: MutableState<Boolean>,
     isCardSelectEnd: Boolean,
@@ -93,7 +99,6 @@ fun <T> DragTarget(
                 //드래그 시작 시 타이머 시작 및 카드 선택 상태 false로 설정
                 setIsCardSelectEnd(false)
                 timerRestart.value = false
-                Log.e("랜덤게임", dataToDrop.toString())
                 viewModel.startDragging(context = context)
                 currentState.dataToDrop = viewModel.mainItem.value
                 currentState.isDragging = true
@@ -117,6 +122,8 @@ fun <T> DragTarget(
         content()
     }
 }
+
+
 
 @Composable
 fun <T> DropItem(
