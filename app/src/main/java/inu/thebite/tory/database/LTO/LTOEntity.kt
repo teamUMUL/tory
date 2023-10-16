@@ -18,6 +18,8 @@ data class LTOEntity(
     var ltoName: String,
     @ColumnInfo("ltoState")
     var ltoState: Int,
+    @ColumnInfo("gameMode")
+    var gameMode: String,
 )
 
 

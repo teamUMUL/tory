@@ -57,6 +57,7 @@ class LTOViewModel: ViewModel(), KoinComponent {
         selectedDEV: String,
         ltoName: String,
         ltoState: Int,
+        gameMode: String,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val newLTOEntity = LTOEntity(
@@ -64,7 +65,8 @@ class LTOViewModel: ViewModel(), KoinComponent {
                 childName = childName,
                 selectedDEV = selectedDEV,
                 ltoName = ltoName,
-                ltoState = ltoState
+                ltoState = ltoState,
+                gameMode = gameMode
             )
             repo.createLTO(newLTOEntity)
         }

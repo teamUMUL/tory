@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +25,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -59,6 +61,12 @@ fun AddLTOItemDialog(
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
+//    var isExpanded by remember {
+//        mutableStateOf(false)
+//    }
+//    var gameMode by remember {
+//        mutableStateOf("")
+//    }
     // AddLTOItemDialog 내용
     Dialog(
         onDismissRequest = {setAddLTOItem(false)},
@@ -103,6 +111,10 @@ fun AddLTOItemDialog(
                 )
             )
             Spacer(modifier = Modifier.height(10.dp))
+//            ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = {isExpanded = it}) {
+//
+//            }
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,7 +123,14 @@ fun AddLTOItemDialog(
                 onClick = {
                     if(ltoInputValue.text.isNotEmpty()){
                         if(!allLTOs.any { it.ltoName == ltoInputValue.text}){
-                            ltoViewModel.createLTO(selectedChildClass, selectedChildName, stoViewModel.developZoneItems[selectedDevIndex], ltoInputValue.text, -1)
+                            ltoViewModel.createLTO(
+                                selectedChildClass,
+                                selectedChildName,
+                                stoViewModel.developZoneItems[selectedDevIndex],
+                                ltoInputValue.text,
+                                -1,
+                                "matching"
+                            )
                             setAddLTOItem(false)
                             ltoInputValue = TextFieldValue("")
                             stoViewModel.clearSelectedSTO()

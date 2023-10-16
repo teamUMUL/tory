@@ -42,6 +42,7 @@ class KoinApp : Application() {
                 single {
                     Room
                         .databaseBuilder(this@KoinApp, LTODatabase::class.java, "lto")
+                        .fallbackToDestructiveMigration()
                         .build()
                 }
                 single {
