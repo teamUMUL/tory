@@ -1,8 +1,7 @@
 package inu.thebite.tory.screens.homescreen.dialog
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,18 +9,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,18 +23,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotApplyResult
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import inu.thebite.tory.R
 import kotlinx.coroutines.delay
@@ -74,29 +64,6 @@ fun SuccessDialog(
                         SuccessAnimation()
                     }
 
-
-
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-
-                        Button(
-                            onClick = {
-
-                                onDismiss()
-                            },
-                            modifier = Modifier
-                                .height(50.dp)
-                                .weight(1f)
-                        ) {
-                            Text(text = "Confirm")
-                        }
-                    }
                 }
             }
         )
@@ -106,41 +73,51 @@ fun SuccessDialog(
 @Composable
 fun SuccessAnimation(
 
-){var slideOffset by remember { mutableStateOf(0f) }
 
-    val animatable = remember { Animatable(0f) }
-    val targetValue = 300f // Adjust this value to control the distance of the slide
+){
+    val animatable1 = remember { Animatable(450f) }
+    val animatable2 = remember { Animatable(-200f) } //처음 시작 위치 지정
 
+    val targetValue1 = 250f // 멈추는 위치 지정
+    val targetValue2 = 0f
     LaunchedEffect(Unit) {
-        delay(500) // Delay to start the animation after 1 second
-        animatable.animateTo(
-            targetValue,
-            animationSpec = tween(durationMillis = 2000)
+//        delay(500) // Delay to start the animation after 0.5 second
+
+        animatable2.animateTo(
+            targetValue2,
+            animationSpec = tween(durationMillis = 1000)   //처음 지정한 위치에서 타겟 위치로 변경
         )
+        animatable1.animateTo(
+            targetValue1,
+            animationSpec = tween(durationMillis = 1000)   //애니매이션 지속시간
+        )
+
     }
 
-    val modifier: Modifier = Modifier
+    val modifier1: Modifier = Modifier
 
-        .offset { IntOffset(animatable.value.roundToInt(), 0) }
+        .offset { IntOffset(animatable1.value.roundToInt(), 0) }
 
+    val modifier2: Modifier = Modifier
+        .offset { IntOffset(animatable2.value.roundToInt(), 0) }
+
+    
     Box(
         modifier = Modifier
-            .padding(bottom = 20.dp, end = 50.dp)
-
+            .padding(bottom = 20.dp, end = 100.dp)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.spoon_1), // Replace with your image
+            painter = painterResource(id = R.drawable.spoon_1), // 다른 사진 대체하는 곳
             contentDescription = null,
-            modifier = modifier
+            modifier = modifier2
         )
 
         Image(
-            painter = painterResource(id = R.drawable.spoon_1), // Replace with your image
+            painter = painterResource(id = R.drawable.spoon_1), // 다른 움직이는 사진 대체하는 곳
             contentDescription = null,
-            modifier = Modifier
-                .offset(x = slideOffset.dp)
+            modifier = modifier1
         )
     }
 }
