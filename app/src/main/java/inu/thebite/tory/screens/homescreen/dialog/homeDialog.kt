@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,14 +37,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
+import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
 import inu.thebite.tory.SegmentedControl
 
 @Composable
 fun ChainDialog(
+    modifier: Modifier = Modifier,
+    viewModel: ChildViewModel = viewModel(),
     showDialog: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String) -> Unit,
+    centerName : String,
+    setCenterName : (String) -> Unit
 ) {
     val classList = listOf<String>(
         "강남점",
@@ -60,7 +67,7 @@ fun ChainDialog(
         Dialog(
             onDismissRequest = { onDismiss() },
             content = {
-                var configText by remember { mutableStateOf("") }
+                var chainText by remember { mutableStateOf("") }
 
                 Column(modifier = Modifier
                     .fillMaxWidth()
@@ -118,7 +125,9 @@ fun ChainDialog(
                             ),
                             onClick = {
                                 setSelectedChildClass(classList[selectedChildClassIndex])
-                                onConfirm(configText)
+                                onConfirm(chainText)
+                                setCenterName(classList[selectedChildClassIndex])
+                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },
 
@@ -133,9 +142,13 @@ fun ChainDialog(
 }
 @Composable
 fun ClassDialog(
+    modifier: Modifier = Modifier,
+    viewModel: ChildViewModel = viewModel(),
     showDialog: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String) -> Unit,
+    className : String,
+    setClassName : (String) -> Unit
 ) {
     val classList = listOf<String>(
         "오전반(월수금)",
@@ -154,7 +167,7 @@ fun ClassDialog(
         Dialog(
             onDismissRequest = { onDismiss() },
             content = {
-                var configText by remember { mutableStateOf("") }
+                var classText by remember { mutableStateOf("") }
 
                 Column(modifier = Modifier
                     .fillMaxWidth()
@@ -212,7 +225,9 @@ fun ClassDialog(
                             ),
                             onClick = {
                                 setSelectedChildClass(classList[selectedChildClassIndex])
-                                onConfirm(configText)
+                                onConfirm(classText)
+                                setClassName(classList[selectedChildClassIndex])
+                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },
 
@@ -225,6 +240,107 @@ fun ClassDialog(
         )
     }
 }
+@Composable
+fun ChildDialog(
+    modifier: Modifier = Modifier,
+    viewModel: ChildViewModel = viewModel(),
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+    childName : String,
+    setChildName : (String) -> Unit
+) {
+    val classList = listOf<String>(
+        "김토리",
+        "양토리",
+        "안토리",
+        "차토리"
+    )
+    val (selectedChildClass, setSelectedChildClass) = rememberSaveable {
+        mutableStateOf(classList[0])
+    }
+    val (selectedChildClassIndex, setSelectedChildClassIndex) = rememberSaveable {
+        mutableStateOf(0)
+    }
+
+    if (showDialog) {
+        Dialog(
+            onDismissRequest = { onDismiss() },
+            content = {
+
+
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(Color.White)
+                    .padding(
+                        horizontal = 8.dp,
+                        vertical = 16.dp
+                    )
+                ) {
+
+                    Text(
+                        text = "아이선택",
+                        fontSize = 32.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    SegmentedControl(
+                        items = classList,
+                        defaultSelectedItemIndex = selectedChildClassIndex,
+                        useFixedWidth = true,
+                        itemWidth = 140.dp
+                    ){
+                        Log.e("CustomToggle", "Selected item : ${classList[it]}")
+                        setSelectedChildClassIndex(it)
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            onClick = { onDismiss() },
+                            modifier = Modifier
+                                .height(50.dp)
+                                .weight(1f),
+                            shape = RoundedCornerShape(5.dp),
+                        ) {
+                            Text(text = "취소")
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Button(modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.light_gray)
+                            ),
+                            onClick = {
+                                setSelectedChildClass(classList[selectedChildClassIndex])
+
+                                setChildName(classList[selectedChildClassIndex])
+                                viewModel.selectedChildClass = selectedChildClass
+                                onDismiss()
+                            },
+
+                            ) {
+                            Text(text = "선택")
+                        }
+                    }
+                }
+            }
+        )
+    }
+}
+
 @Composable
 fun SegmentedControl(
     items: List<String>,

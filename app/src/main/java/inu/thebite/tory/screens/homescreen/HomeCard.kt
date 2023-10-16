@@ -44,15 +44,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
+import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
 import inu.thebite.tory.SegmentedControl
 import inu.thebite.tory.screens.homescreen.dialog.ChainDialog
+import inu.thebite.tory.screens.homescreen.dialog.ChildDialog
 import inu.thebite.tory.screens.homescreen.dialog.ClassDialog
 import inu.thebite.tory.screens.homescreen.dialog.SuccessDialog
 
 @Composable
-fun ChainCard(){
+fun ChainCard(
+    modifier: Modifier = Modifier,
+    viewModel: ChildViewModel = viewModel()
+){
+    val (centerName, setCenterName) = remember {
+        mutableStateOf("")
+    }
     var isDialogVisible by remember { mutableStateOf(false) }
+
+    if(isDialogVisible){
+        ChainDialog(
+            showDialog = isDialogVisible,
+            onDismiss = { isDialogVisible = false },
+            onConfirm = { configText ->
+                // Handle dialog confirmation here
+                // configText contains the user input
+                isDialogVisible = false},
+            centerName = centerName,
+            setCenterName = {setCenterName(it)}
+        )
+    }
     Card(
         modifier = Modifier
             .width(280.dp)
@@ -67,6 +89,7 @@ fun ChainCard(){
         ) {
 
 
+
         Column(modifier = Modifier
             .padding(top = 5.dp)
             .width(250.dp)
@@ -77,42 +100,49 @@ fun ChainCard(){
             ) {
             Row(
                 modifier = Modifier
-                    .width(200.dp)
+                    .width(230.dp)
                     .height(70.dp)
-                    .padding(top = 10.dp, start = 20.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(top = 10.dp, start = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Chain",
+                    text = "Center"+"  "+centerName,
                     style = TextStyle(
-                        fontSize = 33.sp,
+                        fontSize = 26.sp,
                         fontWeight = FontWeight(400),
                         color = Color(0xFF000000),
                         textAlign = TextAlign.Center)
                 )
-                Spacer(modifier = Modifier.size(80.dp))
-                Text(
-                    text = "2",
-                    style = TextStyle(
-                        fontSize = 33.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                        textAlign = TextAlign.Center)
-                )
-                ChainDialog(
-                    showDialog = isDialogVisible,
-                    onDismiss = { isDialogVisible = false },
-                    onConfirm = { configText ->
-                        // Handle dialog confirmation here
-                        // configText contains the user input
-                        isDialogVisible = false})
+
+
+
             }
         }
     }
 }
 @Composable
-fun ClassCard(){
+fun ClassCard(
+    modifier: Modifier = Modifier,
+    viewModel: ChildViewModel = viewModel()
+){
+    val (className, setClassName) = remember {
+        mutableStateOf("")
+    }
     var isDialogVisible by remember { mutableStateOf(false) }
+
+    if(isDialogVisible){
+        ClassDialog(
+            showDialog = isDialogVisible,
+            onDismiss = { isDialogVisible = false },
+            onConfirm = { configText ->
+                // Handle dialog confirmation here
+                // configText contains the user input
+                isDialogVisible = false},
+            className = className,
+            setClassName = {setClassName(it)}
+        )
+    }
     Card(
         modifier = Modifier
             .width(280.dp)
@@ -127,57 +157,66 @@ fun ClassCard(){
         ) {
 
 
+
         Column(modifier = Modifier
             .padding(top = 5.dp)
             .width(250.dp)
-            .clickable { isDialogVisible = true }
             .height(92.dp)
+            .clickable { isDialogVisible = true }
             .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp)),
+
 
             ) {
             Row(
                 modifier = Modifier
-                    .width(200.dp)
+                    .width(250.dp)
                     .height(70.dp)
-                    .padding(top = 10.dp, start = 20.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(top = 10.dp, start = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+
             ) {
                 Text(
-                    text = "Class",
+                    text = "Class "+className,
                     style = TextStyle(
-                        fontSize = 33.sp,
+                        fontSize = 26.sp,
                         fontWeight = FontWeight(400),
                         color = Color(0xFF000000),
                         textAlign = TextAlign.Center)
                 )
-                Spacer(modifier = Modifier.size(80.dp))
-                Text(
-                    text = "2",
-                    style = TextStyle(
-                        fontSize = 33.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                        textAlign = TextAlign.Center)
-                )
-                ClassDialog(
-                    showDialog = isDialogVisible,
-                    onDismiss = { isDialogVisible = false },
-                    onConfirm = { configText ->
-                        // Handle dialog confirmation here
-                        // configText contains the user input
-                        isDialogVisible = false})
+
+
+
             }
         }
     }
 }
 @Composable
-fun ChildrenCard(){
+fun ChildrenCard(
+    modifier: Modifier = Modifier,
+    viewModel: ChildViewModel = viewModel()
+){
+    val (childName, setChildName) = remember {
+        mutableStateOf("")
+    }
     var isDialogVisible by remember { mutableStateOf(false) }
+
+    if(isDialogVisible){
+        ChildDialog(
+            showDialog = isDialogVisible,
+            onDismiss = { isDialogVisible = false },
+            onConfirm = { configText ->
+                // Handle dialog confirmation here
+                // configText contains the user input
+                isDialogVisible = false},
+            childName = childName,
+            setChildName = {setChildName(it)}
+        )
+    }
     Card(
         modifier = Modifier
             .width(280.dp)
             .height(120.dp)
-
             .padding(8.dp)
             .background(
                 color = Color(0xFF59B791),
@@ -186,6 +225,7 @@ fun ChildrenCard(){
 
 
         ) {
+
 
 
         Column(modifier = Modifier
@@ -198,106 +238,25 @@ fun ChildrenCard(){
             ) {
             Row(
                 modifier = Modifier
-                    .width(200.dp)
+                    .width(250.dp)
                     .height(70.dp)
-                    .padding(top = 10.dp, start = 20.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(top = 10.dp, start = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Children",
+                    text = "Child    "+childName,
                     style = TextStyle(
-                        fontSize = 33.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                        textAlign = TextAlign.Center)
-                )
-                Spacer(modifier = Modifier.size(40.dp))
-                Text(
-                    text = "2",
-                    style = TextStyle(
-                        fontSize = 33.sp,
+                        fontSize = 26.sp,
                         fontWeight = FontWeight(400),
                         color = Color(0xFF000000),
                         textAlign = TextAlign.Center)
                 )
 
-                SuccessDialog(
-                    showDialog = isDialogVisible,
-                    onDismiss = { isDialogVisible = false },
-                    onConfirm = { configText ->
-                        // Handle dialog confirmation here
-                        // configText contains the user input
-                        isDialogVisible = false})
+
+
             }
         }
     }
 }
 
-
-//@Composable
-//fun ConfigDialog(
-//    showDialog: Boolean,
-//    onDismiss: () -> Unit,
-//    onConfirm: (String) -> Unit
-//) {
-//    if (showDialog) {
-//        Dialog(
-//            onDismissRequest = { onDismiss() },
-//            content = {
-//                var configText by remember { mutableStateOf("") }
-//
-//                Column(
-//                    modifier = Modifier
-//                        .padding(16.dp)
-//                ) {
-//                    Text(
-//                        text = "Configure the box",
-//                        fontSize = 20.sp,
-//                        color = MaterialTheme.colorScheme.primary,
-//                        modifier = Modifier.padding(bottom = 16.dp)
-//                    )
-//
-//                    BasicTextField(
-//                        value = configText,
-//                        onValueChange = { configText = it },
-//                        textStyle = TextStyle(fontSize = 16.sp),
-//                        singleLine = true,
-//                        modifier = Modifier.fillMaxWidth()
-//                    )
-//
-//                    Spacer(modifier = Modifier.height(16.dp))
-//
-//                    Row(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(top = 16.dp),
-//                        horizontalArrangement = Arrangement.SpaceBetween
-//                    ) {
-//                        Button(
-//                            onClick = { onDismiss() },
-//                            modifier = Modifier
-//                                .height(50.dp)
-//                                .weight(1f)
-//                        ) {
-//                            Text(text = "Cancel")
-//                        }
-//
-//                        Spacer(modifier = Modifier.width(16.dp))
-//
-//                        Button(
-//                            onClick = {
-//                                onConfirm(configText)
-//                                onDismiss()
-//                            },
-//                            modifier = Modifier
-//                                .height(50.dp)
-//                                .weight(1f)
-//                        ) {
-//                            Text(text = "Confirm")
-//                        }
-//                    }
-//                }
-//            }
-//        )
-//    }
-//}

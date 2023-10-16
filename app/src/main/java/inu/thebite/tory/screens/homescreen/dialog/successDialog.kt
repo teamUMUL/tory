@@ -28,10 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import inu.thebite.tory.R
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
@@ -39,6 +41,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SuccessDialog(
+
     showDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
@@ -46,22 +49,30 @@ fun SuccessDialog(
     if (showDialog) {
         Dialog(
             onDismissRequest = { onDismiss() },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             content = {
 
 
                 Column(
                     modifier = Modifier
                         .padding(16.dp)
+
                 ) {
                     Box(
-                        modifier = Modifier,
+                        modifier = Modifier.size(1000.dp),
                         contentAlignment = Alignment.Center
                     ) {
+                        val imageModifier = Modifier
+                            .size(1000.dp)
                         Image(
                             painter = painterResource(id = R.drawable.success),
-                            contentDescription = "null"
+                            contentDescription = "null",
+                            contentScale = ContentScale.Fit,
+                            modifier = imageModifier
                         )
-                        SuccessAnimation()
+                        SuccessAnimation(
+
+                        )
                     }
 
                 }
@@ -73,13 +84,12 @@ fun SuccessDialog(
 @Composable
 fun SuccessAnimation(
 
-
 ){
-    val animatable1 = remember { Animatable(450f) }
-    val animatable2 = remember { Animatable(-200f) } //처음 시작 위치 지정
+    val animatable1 = remember { Animatable(750f) }
+    val animatable2 = remember { Animatable(-300f) } //처음 시작 위치 지정
 
-    val targetValue1 = 250f // 멈추는 위치 지정
-    val targetValue2 = 0f
+    val targetValue1 = 450f // 멈추는 위치 지정
+    val targetValue2 = -100f
     LaunchedEffect(Unit) {
 //        delay(500) // Delay to start the animation after 0.5 second
 
@@ -95,16 +105,17 @@ fun SuccessAnimation(
     }
 
     val modifier1: Modifier = Modifier
-
+        .size(300.dp)
         .offset { IntOffset(animatable1.value.roundToInt(), 0) }
 
     val modifier2: Modifier = Modifier
         .offset { IntOffset(animatable2.value.roundToInt(), 0) }
+        .size(300.dp)
 
-    
     Box(
         modifier = Modifier
-            .padding(bottom = 20.dp, end = 100.dp)
+            .padding(bottom = 20.dp, end = 150.dp)
+
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
@@ -115,7 +126,7 @@ fun SuccessAnimation(
         )
 
         Image(
-            painter = painterResource(id = R.drawable.spoon_1), // 다른 움직이는 사진 대체하는 곳
+            painter = painterResource(id =  R.drawable.spoon_1), // 다른 움직이는 사진 대체하는 곳
             contentDescription = null,
             modifier = modifier1
         )
