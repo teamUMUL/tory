@@ -1,15 +1,14 @@
 package inu.thebite.tory
 
-import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -27,10 +24,12 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,24 +38,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import inu.thebite.tory.screens.DataScreen.DataScreen
-import inu.thebite.tory.screens.DataScreen.GraphViewModel
-import inu.thebite.tory.screens.GameScreen
+import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.database.Center.CenterEntity
+import inu.thebite.tory.database.ChildClass.ChildClassEntity
+import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import inu.thebite.tory.prefdatastore.DataStoreManager
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CENTER
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CHILD
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.CLASS
+import inu.thebite.tory.prefdatastore.DataStoreManager.Companion.dataStore
 import inu.thebite.tory.screens.HomeScreen
-import inu.thebite.tory.screens.DataScreen.LTOViewModel
-import inu.thebite.tory.screens.DataScreen.STODetailViewModel
-import inu.thebite.tory.screens.DataScreen.STOViewModel
+import inu.thebite.tory.screens.education.EducationScreen
+import inu.thebite.tory.screens.education.GameViewModel
+import inu.thebite.tory.screens.education.LTOViewModel
+import inu.thebite.tory.screens.education.STOViewModel
+import inu.thebite.tory.screens.game.DragAndDropViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
+import inu.thebite.tory.screens.ready.ReadyScreen
+import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
+import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
+import inu.thebite.tory.screens.setting.SettingScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+
 
 
 
@@ -64,57 +79,77 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainCompose(
     modifier: Modifier = Modifier,
-    viewModel: ChildViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
+    ltoViewModel : LTOViewModel,
+    centerSelectViewModel : CenterSelectViewModel,
+    childClassSelectViewModel : ChildClassSelectViewModel,
+    childSelectViewModel : ChildSelectViewModel,
+    stoViewModel : STOViewModel,
+    centerViewModel : CenterViewModel,
+    childClassViewModel : ChildClassViewModel,
+    childInfoViewModel : ChildInfoViewModel,
+    dragAndDropViewModel : DragAndDropViewModel,
+    gameViewModel : GameViewModel
 ) {
-    val ltoViewModel : LTOViewModel = viewModel()
-    val stoViewModel : STOViewModel = viewModel()
-    val stoDetailViewModel : STODetailViewModel = viewModel()
-    val graphViewModel : GraphViewModel = viewModel()
-    val childViewModel : ChildViewModel = viewModel()
+
+
+    val dataStore = (LocalContext.current).dataStore
 
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
     }
+    val allCenters by centerSelectViewModel.allCenters.collectAsState()
+    val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
 
-    val (isFirst, setIsFirst) = rememberSaveable {
-        mutableStateOf(true)
+    val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
+    val childClasses by childClassSelectViewModel.childClasses.collectAsState()
+    val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
+
+    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
+    val childInfos by childSelectViewModel.childInfos.collectAsState()
+    val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
+
+    var _selectedCenter by rememberSaveable{
+        mutableStateOf<CenterEntity?>(null)
+
     }
-    val childList = arrayOf(
-        listOf("오전1", "오전2", "오전3", "오전4", "오전5"),
-        listOf("오전6", "오전7", "오전8", "오전9"),
-        listOf("오후1", "오후2", "오후3", "오후4", "오후5"),
-        listOf("오후6", "오후7", "오후8", "오후9", "오후10", "오후11")
+    var _selectedChildClass by rememberSaveable{
+        mutableStateOf<ChildClassEntity?>(null)
 
-    )
-
-    val classList = listOf<String>(
-        "오전반(월수금)",
-        "오후반(월수금)",
-        "오전반(화목)",
-        "오후반(화목)"
-    )
-    val (selectedChildClass, setSelectedChildClass) = rememberSaveable {
-        mutableStateOf(classList[0])
     }
-
-    val (selectedChildName, setSelectedChildName) = rememberSaveable {
-        mutableStateOf(childList[0][0])
+    var _selectedChildInfo by rememberSaveable{
+        mutableStateOf<ChildInfoEntity?>(null)
     }
 
-    val (selectedChildClassIndex, setSelectedChildClassIndex) = rememberSaveable {
-        mutableStateOf(0)
+    LaunchedEffect(_selectedCenter, allCenters){
+        _selectedCenter?.let {
+            childClassSelectViewModel.getChildClassesByCenterName(
+                it.centerName
+            )
+        }
     }
 
-    val (selectedChildrenIndex, setSelectedChildrenIndex) = rememberSaveable {
-        mutableStateOf(0)
+    LaunchedEffect(_selectedChildClass, allChildClasses){
+        _selectedChildClass?.let { selectedChildClass ->
+            childSelectViewModel.getChildInfosByCenterNameAndClassName(
+                selectedChildClass.centerName,
+                selectedChildClass.className
+            )
+        }
     }
 
-
-
-
+    LaunchedEffect(allChildInfos){
+        _selectedCenter?.let {selectedCenter ->
+            _selectedChildClass?.let{selectedChildClass ->
+                childSelectViewModel.getChildInfosByCenterNameAndClassName(
+                    selectedCenter.centerName,
+                    selectedChildClass.className
+                )
+            }
+        }
+    }
 
     if(childDialogOpen){
         Dialog(
@@ -123,7 +158,6 @@ fun MainCompose(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(Color.White)
                     .padding(
@@ -142,63 +176,94 @@ fun MainCompose(
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
                 )
-
-                SegmentedControl(
-                    items = classList,
-                    defaultSelectedItemIndex = selectedChildClassIndex,
-                    useFixedWidth = true,
-                    itemWidth = 140.dp,
-                ){
-                    Log.e("CustomToggle", "Selected item : ${classList[it]}")
-                    setSelectedChildClassIndex(it)
-                }
-                Spacer(modifier = Modifier.height(30.dp))
-                LaunchedEffect(selectedChildrenIndex){
-
-                }
-                SegmentedControl(
-                    items = childList[selectedChildClassIndex],
-                    defaultSelectedItemIndex = selectedChildrenIndex,
-                    useFixedWidth = true,
-                    itemWidth = (560/childList[selectedChildClassIndex].size).dp,
-                ){
-                    Log.e("CustomToggle", "Selected item : ${childList[selectedChildClassIndex][it]}")
-                    setSelectedChildrenIndex(it)
-                }
-                Spacer(modifier = Modifier.height(30.dp))
-                Button(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.light_gray)
-                    ),
-                    onClick = {
-                        setSelectedChildName(childList[selectedChildClassIndex][selectedChildrenIndex])
-                        setSelectedChildClass(classList[selectedChildClassIndex])
-                        Log.e("아이 선택", "selectedChildName : ${childList[selectedChildClassIndex][selectedChildrenIndex]}")
-                        viewModel.selectedChildName = selectedChildName
-                        viewModel.selectedChildClass = selectedChildClass
-                        setChildDialogOpen(false)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+
+                ) {
+                    allCenters.let{
+                        Text(
+                            text = "센터",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 22.sp,
+                            modifier = Modifier
+                                .padding(10.dp)
+                        )
+                        CenterControl(
+                            items = allCenters,
+                            selectedCenter = _selectedCenter,
+                            childClassSelectViewModel = childClassSelectViewModel,
+                            childSelectViewModel = childSelectViewModel,
+                            setSelectedCenter = {_selectedCenter = it},
+                            setSelectedChildClass =  {_selectedChildClass = it},
+                            setSelectedChildInfo = {_selectedChildInfo = it}
+                        )
+
                     }
-                ){
-                    Text(
-                        text = "선택하기",
-                        fontSize = 20.sp
-                    )
-                }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    childClasses?.let{ childClasses ->
+                        Text(
+                            text = "반",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 22.sp,
+                            modifier = Modifier
+                                .padding(start = 10.dp, bottom = 10.dp)
+                        )
+                        ChildClassControl(
+                            items = childClasses,
+                            selectedChildClass = _selectedChildClass,
+                            childSelectViewModel = childSelectViewModel,
+                            setSelectedChildClass = {_selectedChildClass = it},
+                            setSelectedChildInfo = {_selectedChildInfo = it}
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
 
-
-
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    columns = GridCells.Fixed(count = 4),
-                    verticalArrangement = Arrangement.spacedBy(space = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
-                    contentPadding = PaddingValues(all = 10.dp)
-                ){
+                    childInfos?.let { childInfos ->
+                        Text(
+                            text = "아이",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 22.sp,
+                            modifier = Modifier
+                                .padding(start = 10.dp, bottom = 10.dp)
+                        )
+                        ChildInfoControl(
+                            items = childInfos,
+                            selectedChildInfo = _selectedChildInfo,
+                            setSelectedChildInfo = {_selectedChildInfo = it}
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    _selectedCenter?.let { selectedCenter ->
+                        _selectedChildInfo?.let { selectedChildInfo ->
+                            _selectedChildClass?.let{selectedChildClass ->
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(55.dp),
+                                    shape = RoundedCornerShape(5.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = colorResource(id = R.color.light_gray)
+                                    ),
+                                    onClick = {
+                                        centerSelectViewModel.setSelectedCenter(selectedCenter)
+                                        childClassSelectViewModel.setSelectedChildClass(selectedChildClass)
+                                        childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
+                                        ltoViewModel.clearSelectedLTO()
+                                        stoViewModel.clearSelectedSTO()
+                                        setChildDialogOpen(false)
+                                    }
+                                ){
+                                    Text(
+                                        text = "선택하기",
+                                        fontSize = 20.sp
+                                    )
+                                }
+                            }
+                        }
+                    }
 
                 }
 
@@ -211,13 +276,30 @@ fun MainCompose(
     val navigationActions = remember(navController){
         AppNavigationActions(navController)
     }
-
+    val currentRouteToKorean = when(currentRoute){
+        "Home" -> {
+            "홈"
+        }
+        "Education" -> {
+            "교육"
+        }
+        "READY" -> {
+            "수업준비"
+        }
+        "Setting" -> {
+            "관리"
+        }
+        else -> {
+            currentRoute
+        }
+    }
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(
             route = currentRoute,
             navigateToHome = { navigationActions.navigateToHome()},
-            navigateToGame = { navigationActions.navigateToGame()},
-            navigateToData = { navigationActions.navigateToData()},
+            navigateToSetting = { navigationActions.navigateToSetting()},
+            navigateToEducation = { navigationActions.navigateToEducation()},
+            navigateToReady = { navigationActions.navigateToReady()},
             closeDrawer = { coroutineScope.launch { drawerState.close() }},
             modifier = Modifier
         )
@@ -225,7 +307,7 @@ fun MainCompose(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = currentRoute) },
+                    title = { Text(text = currentRouteToKorean) },
                     modifier = Modifier.fillMaxWidth(),
                     navigationIcon = {
                         IconButton(onClick = {
@@ -239,20 +321,28 @@ fun MainCompose(
                     },
                     actions = {
                         Box(modifier = Modifier
-                            .width(100.dp)
                             .height(50.dp)
                         ){
-                            Column(modifier = Modifier.fillMaxSize()) {
-                                Text(text = selectedChildClass)
-                                Text(text = selectedChildName)
+                            Row(
+                                modifier = Modifier.fillMaxHeight(),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                                    selectedCenter?.let { Text(text = it.centerName) }
+                                    selectedChildClass?.let { Text(text = " > "+it.className) }
+                                    selectedChildInfo?.let { Text(text = " > "+it.childName) }
+                                }
+                                IconButton(onClick = {
+                                    setChildDialogOpen(true)
+                                }) {
+                                    Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
+                                }
                             }
 
+
                         }
-                        IconButton(onClick = {
-                            setChildDialogOpen(true)
-                        }) {
-                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
-                        }
+
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent))
             }, modifier = Modifier
@@ -265,18 +355,29 @@ fun MainCompose(
                     HomeScreen()
                 }
 
-                composable(AllDestinations.DATA) {
-                    DataScreen(
+                composable(AllDestinations.EDUCATION) {
+                    EducationScreen(
                         ltoViewModel = ltoViewModel,
+                        childSelectViewModel = childSelectViewModel,
                         stoViewModel = stoViewModel,
-                        stoDetailViewModel = stoDetailViewModel,
-                        graphViewModel = graphViewModel,
-                        childViewModel = childViewModel
+                        centerViewModel = centerSelectViewModel,
+                        childInfoViewModel = childSelectViewModel,
+                        childClassViewModel = childClassSelectViewModel,
+                        dragAndDropViewModel = dragAndDropViewModel,
+                        gameViewModel = gameViewModel
                     )
                 }
 
-                composable(AllDestinations.GAME) {
-                    GameScreen()
+                composable(AllDestinations.SETTING) {
+                    SettingScreen(
+                        centerViewModel = centerViewModel,
+                        childClassViewModel = childClassViewModel,
+                        childInfoViewModel = childInfoViewModel
+                    )
+                }
+
+                composable(AllDestinations.READY){
+                    ReadyScreen()
                 }
             }
         }
@@ -284,19 +385,19 @@ fun MainCompose(
 }
 
 @Composable
-fun SegmentedControl(
-    items: List<String>,
-    defaultSelectedItemIndex: Int = 0,
+fun CenterControl(
+    items: List<CenterEntity>,
+    selectedCenter: CenterEntity?,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel,
+    setSelectedCenter : (CenterEntity?) -> Unit,
+    setSelectedChildClass : (ChildClassEntity?) -> Unit,
+    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
     @ColorRes color: Int = R.color.light_gray,
-    onItemSelection: (selectedItemIndex: Int) -> Unit
 ){
-    var selectedIndex by rememberSaveable {
-        mutableStateOf(defaultSelectedItemIndex)
-    }
-
     Row(
         modifier = Modifier
     ) {
@@ -308,12 +409,12 @@ fun SegmentedControl(
                             Modifier
                                 .width(itemWidth)
                                 .offset(0.dp, 0.dp)
-                                .zIndex(if (selectedIndex == index) 1f else 0f)
+                                .zIndex(if (selectedCenter == item) 1f else 0f)
                         } else {
                             Modifier
                                 .wrapContentSize()
                                 .offset(0.dp, 0.dp)
-                                .zIndex(if (selectedIndex == index) 1f else 0f)
+                                .zIndex(if (selectedCenter == item) 1f else 0f)
                         }
                     }
                     else -> {
@@ -321,18 +422,27 @@ fun SegmentedControl(
                             Modifier
                                 .width(itemWidth)
                                 .offset((-1 * index).dp, 0.dp)
-                                .zIndex(if (selectedIndex == index) 1f else 0f)
+                                .zIndex(if (selectedCenter == item) 1f else 0f)
                         } else {
                             Modifier
                                 .wrapContentSize()
                                 .offset((-1 * index).dp, 0.dp)
-                                .zIndex(if (selectedIndex == index) 1f else 0f)
+                                .zIndex(if (selectedCenter == item) 1f else 0f)
                         }
                     }
                 },
                 onClick = {
-                    selectedIndex = index
-                    onItemSelection(selectedIndex)
+                    if(selectedCenter == item){
+                        setSelectedCenter(null)
+                        childClassSelectViewModel.clearChildClasses()
+                    } else {
+                        setSelectedCenter(item)
+                        childClassSelectViewModel.getChildClassesByCenterName(item.centerName)
+                    }
+                    childSelectViewModel.clearChildInfos()
+                    setSelectedChildClass(null)
+                    setSelectedChildInfo(null)
+
                 },
                 shape = when(index) {
                     //왼쪽 바깥
@@ -358,13 +468,13 @@ fun SegmentedControl(
                     )
                 },
                 border = BorderStroke(
-                    1.dp, if(selectedIndex == index) {
+                    1.dp, if (selectedCenter == item){
                         colorResource(id = color)
                     } else {
                         colorResource(id = color).copy(alpha = 0.75f)
                     }
                 ),
-                colors = if (selectedIndex == index){
+                colors = if (selectedCenter == item) {
                     ButtonDefaults.outlinedButtonColors(
                         //선택된 경우 색
                         containerColor = colorResource(id = color)
@@ -377,9 +487,232 @@ fun SegmentedControl(
                 },
             ) {
                 Text(
-                    text = item,
+                    text = item.centerName,
                     fontWeight = FontWeight.Normal,
-                    color = if (selectedIndex == index){
+                    color = if (selectedCenter == item) {
+                        Color.White
+                    } else {
+                        colorResource(id = color).copy(alpha = 0.9f)
+                    }
+                )
+            }
+
+        }
+    }
+}
+@Composable
+fun ChildClassControl(
+    items: List<ChildClassEntity>,
+    selectedChildClass: ChildClassEntity?,
+    childSelectViewModel: ChildSelectViewModel,
+    setSelectedChildClass : (ChildClassEntity?) -> Unit,
+    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
+    useFixedWidth: Boolean = false,
+    itemWidth: Dp = 120.dp,
+    cornerRadius: Int = 10,
+    @ColorRes color: Int = R.color.light_gray,
+){
+    Row(
+        modifier = Modifier
+    ) {
+        items.forEachIndexed{ index, item ->
+            OutlinedButton(
+                modifier = when(index){
+                    0 -> {
+                        if (useFixedWidth) {
+                            Modifier
+                                .width(itemWidth)
+                                .offset(0.dp, 0.dp)
+                                .zIndex(if (selectedChildClass == item) 1f else 0f)
+                        } else {
+                            Modifier
+                                .wrapContentSize()
+                                .offset(0.dp, 0.dp)
+                                .zIndex(if (selectedChildClass == item) 1f else 0f)
+                        }
+                    }
+                    else -> {
+                        if(useFixedWidth){
+                            Modifier
+                                .width(itemWidth)
+                                .offset((-1 * index).dp, 0.dp)
+                                .zIndex(if (selectedChildClass == item) 1f else 0f)
+                        } else {
+                            Modifier
+                                .wrapContentSize()
+                                .offset((-1 * index).dp, 0.dp)
+                                .zIndex(if (selectedChildClass == item) 1f else 0f)
+                        }
+                    }
+                },
+                onClick = {
+                    if(selectedChildClass == item){
+                        setSelectedChildClass(null)
+
+                    } else {
+                        setSelectedChildClass(item)
+
+                        childSelectViewModel.getChildInfosByCenterNameAndClassName(
+                            item.centerName,
+                            item.className
+                        )
+                    }
+                    setSelectedChildInfo(null)
+                    childSelectViewModel.clearChildInfos()
+                },
+                shape = when(index) {
+                    //왼쪽 바깥
+                    0 -> RoundedCornerShape(
+                        topStartPercent = cornerRadius,
+                        topEndPercent = 0,
+                        bottomStartPercent = cornerRadius,
+                        bottomEndPercent = 0
+                    )
+                    //오른쪽 끝
+                    items.size - 1 -> RoundedCornerShape(
+                        topStartPercent = 0,
+                        topEndPercent = cornerRadius,
+                        bottomStartPercent = 0,
+                        bottomEndPercent = cornerRadius
+                    )
+                    //가운데 버튼들
+                    else -> RoundedCornerShape(
+                        topStartPercent = 0,
+                        topEndPercent = 0,
+                        bottomStartPercent = 0,
+                        bottomEndPercent = 0
+                    )
+                },
+                border = BorderStroke(
+                    1.dp, if (selectedChildClass == item){
+                        colorResource(id = color)
+                    } else {
+                        colorResource(id = color).copy(alpha = 0.75f)
+                    }
+                ),
+                colors = if (selectedChildClass == item) {
+                    ButtonDefaults.outlinedButtonColors(
+                        //선택된 경우 색
+                        containerColor = colorResource(id = color)
+                    )
+                } else {
+                    ButtonDefaults.outlinedButtonColors(
+                        //선택 안된 경우 색
+                        containerColor = Color.Transparent
+                    )
+                },
+            ) {
+                Text(
+                    text = item.className,
+                    fontWeight = FontWeight.Normal,
+                    color = if (selectedChildClass == item) {
+                        Color.White
+                    } else {
+                        colorResource(id = color).copy(alpha = 0.9f)
+                    }
+                )
+            }
+
+        }
+    }
+}
+
+@Composable
+fun ChildInfoControl(
+    items: List<ChildInfoEntity>,
+    selectedChildInfo: ChildInfoEntity?,
+    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
+    useFixedWidth: Boolean = false,
+    itemWidth: Dp = 120.dp,
+    cornerRadius: Int = 10,
+    @ColorRes color: Int = R.color.light_gray,
+){
+    Row(
+        modifier = Modifier
+    ) {
+        items.forEachIndexed{ index, item ->
+            OutlinedButton(
+                modifier = when(index){
+                    0 -> {
+                        if (useFixedWidth) {
+                            Modifier
+                                .width(itemWidth)
+                                .offset(0.dp, 0.dp)
+                                .zIndex(if (selectedChildInfo == item) 1f else 0f)
+                        } else {
+                            Modifier
+                                .wrapContentSize()
+                                .offset(0.dp, 0.dp)
+                                .zIndex(if (selectedChildInfo == item) 1f else 0f)
+                        }
+                    }
+                    else -> {
+                        if(useFixedWidth){
+                            Modifier
+                                .width(itemWidth)
+                                .offset((-1 * index).dp, 0.dp)
+                                .zIndex(if (selectedChildInfo == item) 1f else 0f)
+                        } else {
+                            Modifier
+                                .wrapContentSize()
+                                .offset((-1 * index).dp, 0.dp)
+                                .zIndex(if (selectedChildInfo == item) 1f else 0f)
+                        }
+                    }
+                },
+                onClick = {
+                    if(selectedChildInfo == item){
+                        setSelectedChildInfo(null)
+                    } else {
+                        setSelectedChildInfo(item)
+                    }
+                },
+                shape = when(index) {
+                    //왼쪽 바깥
+                    0 -> RoundedCornerShape(
+                        topStartPercent = cornerRadius,
+                        topEndPercent = 0,
+                        bottomStartPercent = cornerRadius,
+                        bottomEndPercent = 0
+                    )
+                    //오른쪽 끝
+                    items.size - 1 -> RoundedCornerShape(
+                        topStartPercent = 0,
+                        topEndPercent = cornerRadius,
+                        bottomStartPercent = 0,
+                        bottomEndPercent = cornerRadius
+                    )
+                    //가운데 버튼들
+                    else -> RoundedCornerShape(
+                        topStartPercent = 0,
+                        topEndPercent = 0,
+                        bottomStartPercent = 0,
+                        bottomEndPercent = 0
+                    )
+                },
+                border = BorderStroke(
+                    1.dp, if (selectedChildInfo == item){
+                        colorResource(id = color)
+                    } else {
+                        colorResource(id = color).copy(alpha = 0.75f)
+                    }
+                ),
+                colors = if (selectedChildInfo == item) {
+                    ButtonDefaults.outlinedButtonColors(
+                        //선택된 경우 색
+                        containerColor = colorResource(id = color)
+                    )
+                } else {
+                    ButtonDefaults.outlinedButtonColors(
+                        //선택 안된 경우 색
+                        containerColor = Color.Transparent
+                    )
+                },
+            ) {
+                Text(
+                    text = item.childName,
+                    fontWeight = FontWeight.Normal,
+                    color = if (selectedChildInfo == item) {
                         Color.White
                     } else {
                         colorResource(id = color).copy(alpha = 0.9f)

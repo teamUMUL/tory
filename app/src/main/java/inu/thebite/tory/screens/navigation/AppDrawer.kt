@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,8 +37,9 @@ fun AppDrawer(
     route: String,
     modifier: Modifier = Modifier,
     navigateToHome: () -> Unit = {},
-    navigateToGame: () -> Unit = {},
-    navigateToData: () -> Unit = {},
+    navigateToSetting: () -> Unit = {},
+    navigateToEducation: () -> Unit = {},
+    navigateToReady: () -> Unit = {},
     closeDrawer: () -> Unit = {}
 ) {
     ModalDrawerSheet(modifier = Modifier) {
@@ -59,29 +62,43 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = {
                 Text(
-                    text = stringResource(id = R.string.data),
+                    text = stringResource(id = R.string.education),
                 )
             },
-            selected = route == AllDestinations.DATA,
+            selected = route == AllDestinations.EDUCATION,
             onClick = {
-                navigateToData()
+                navigateToEducation()
                 closeDrawer()
             },
-            icon = { Icon(painter = painterResource(id = R.drawable.icon_chart), contentDescription = null)},
+            icon = { Icon(painter = painterResource(id = R.drawable.icon_book), contentDescription = null)},
             shape = MaterialTheme.shapes.small
         )
         NavigationDrawerItem(
             label = {
                 Text(
-                    text = stringResource(id = R.string.games),
+                    text = stringResource(id = R.string.ready),
                 )
             },
-            selected = route == AllDestinations.GAME,
+            selected = route == AllDestinations.READY,
             onClick = {
-                navigateToGame()
+                navigateToReady()
                 closeDrawer()
             },
-            icon = { Icon(painter = painterResource(id = R.drawable.icon_game), contentDescription = null)},
+            icon = { Icon(painter = painterResource(id = R.drawable.icon_photo), contentDescription = null)},
+            shape = MaterialTheme.shapes.small
+        )
+        NavigationDrawerItem(
+            label = {
+                Text(
+                    text = stringResource(id = R.string.setting),
+                )
+            },
+            selected = route == AllDestinations.SETTING,
+            onClick = {
+                navigateToSetting()
+                closeDrawer()
+            },
+            icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = null)},
             shape = MaterialTheme.shapes.small
         )
 
