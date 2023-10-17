@@ -112,6 +112,10 @@ fun GameScreen(
                     setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
 
                     if(dragAndDropViewModel.isRandomGame){
+                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                        dragAndDropViewModel.setMainItem(randomMainItem)
+                        dragAndDropViewModel.setTwoMainDifferentImageInCategory(context, randomMainItem.name)
+
                     }
                     //이미지 변경(target에 있는 동일한 카테고리)
                     gameViewModel.clearOneGameResult()
