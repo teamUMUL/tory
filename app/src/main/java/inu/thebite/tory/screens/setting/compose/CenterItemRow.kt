@@ -40,7 +40,7 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 @Composable
 fun CenterItemRow(
     settingType : String,
-    allCenters : List<CenterResponse>,
+    allCenters : List<CenterResponse>?,
     selectedCenter : CenterResponse?,
     centerViewModel: CenterViewModel,
     childClassViewModel : ChildClassViewModel,
@@ -160,54 +160,57 @@ fun CenterItemRow(
             Divider(
                 thickness = 2.dp, color = MaterialTheme.colorScheme.primary
             )
-            LazyRow{
-                items(allCenters){center ->
-                    Card(
-                        modifier = Modifier
-                            .padding(14.dp)
-                            .widthIn(min = 80.dp)
-                            .height(70.dp)
-                            .border(
-                                width = 2.dp,
-                                color = MaterialTheme.colorScheme.tertiary,
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .clickable {
-                                if (selectedCenter == center) {
-                                    centerViewModel.clearSelectedCenter()
-                                } else {
-                                    centerViewModel.setSelectedCenter(center)
-                                }
-                                childClassViewModel.clearSelectedChildClass()
-                                childInfoViewModel.clearSelectedChildInfo()
-                                childClassViewModel.getChildClassesByCenter(
-                                    center
+            allCenters?.let {
+                LazyRow{
+                    items(allCenters){center ->
+                        Card(
+                            modifier = Modifier
+                                .padding(14.dp)
+                                .widthIn(min = 80.dp)
+                                .height(70.dp)
+                                .border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    shape = RoundedCornerShape(8.dp)
                                 )
-                            },
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = if(selectedCenter == center) MaterialTheme.colorScheme.secondary  else Color.Transparent
-                        )
-                    ) {
-                        Row(modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ){
-                            Text(
-                                text = center.name,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                color = Color.Black
+                                .clickable {
+                                    if (selectedCenter == center) {
+                                        centerViewModel.clearSelectedCenter()
+                                    } else {
+                                        centerViewModel.setSelectedCenter(center)
+                                    }
+                                    childClassViewModel.clearSelectedChildClass()
+                                    childInfoViewModel.clearSelectedChildInfo()
+                                    childClassViewModel.getChildClassesByCenter(
+                                        center
+                                    )
+                                },
+                            shape = RoundedCornerShape(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if(selectedCenter == center) MaterialTheme.colorScheme.secondary  else Color.Transparent
                             )
+                        ) {
+                            Row(modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ){
+                                Text(
+                                    text = center.name,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black
+                                )
+                            }
                         }
                     }
-                }
 
+                }
             }
+
 
         }
     }

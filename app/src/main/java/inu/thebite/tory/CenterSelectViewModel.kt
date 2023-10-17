@@ -28,8 +28,8 @@ class CenterSelectViewModel : ViewModel() {
     private val repo: CenterRepoImpl = CenterRepoImpl()
 
 
-    private val _allCenters = MutableLiveData<List<CenterResponse>>()
-    val allCenters: LiveData<List<CenterResponse>> = _allCenters
+    private val _allCenters: MutableStateFlow<List<CenterResponse>?> = MutableStateFlow(null)
+    val allCenters = _allCenters.asStateFlow()
 
     private val _centers: MutableStateFlow<List<CenterResponse>?> = MutableStateFlow(null)
     val centers = _centers.asStateFlow()

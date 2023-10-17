@@ -93,7 +93,7 @@ fun MainCompose(
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
     }
-    val allCenters by centerSelectViewModel.allCenters.observeAsState(emptyList())
+    val allCenters by centerSelectViewModel.allCenters.collectAsState()
     val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
 
     val allChildClasses by childClassSelectViewModel.allChildClasses.observeAsState(emptyList())
@@ -172,7 +172,7 @@ fun MainCompose(
                     verticalArrangement = Arrangement.Top
 
                 ) {
-                    allCenters.let{
+                    allCenters?.let{
                         Text(
                             text = "센터",
                             fontWeight = FontWeight.SemiBold,
@@ -181,7 +181,7 @@ fun MainCompose(
                                 .padding(10.dp)
                         )
                         CenterControl(
-                            items = allCenters,
+                            items = allCenters!!,
                             selectedCenter = _selectedCenter,
                             childClassSelectViewModel = childClassSelectViewModel,
                             childSelectViewModel = childSelectViewModel,

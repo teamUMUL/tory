@@ -38,7 +38,7 @@ fun SettingScreen(
 
     val centers by centerViewModel.centers.collectAsState()
     val selectedCenter by centerViewModel.selectedCenter.collectAsState()
-    val allCenters by centerViewModel.allCenters.observeAsState(emptyList())
+    val allCenters by centerViewModel.allCenters.collectAsState()
 
     val childClasses by childClassViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassViewModel.selectedChildClass.collectAsState()
