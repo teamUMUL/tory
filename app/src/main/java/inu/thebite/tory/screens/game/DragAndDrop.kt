@@ -63,7 +63,7 @@ fun DragableScreen(
                         if(selectedLTO.gameMode == "같은 사진 매칭"){
                             Image(painter = painterResource(id = dragAndDropViewModel.mainItem.value!!.image), contentDescription = null)
                         } else if(selectedLTO.gameMode == "일반화 매칭") {
-                            Image(painter = painterResource(id = dragAndDropViewModel.firstMainImage.value!!), contentDescription = null)
+                            Image(painter = painterResource(id = dragAndDropViewModel.firstMainItem.value!!.image), contentDescription = null)
                         }
 //                    state.draggableComposable?.invoke()
                     }

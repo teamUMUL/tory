@@ -101,6 +101,7 @@ fun SuccessAnimation(
             dragAndDropViewModel.restartSameMode(context = context)
         } else {
             dragAndDropViewModel.restartGeneralMode(context = context)
+            dragAndDropViewModel.setTwoMainDifferentImageInCategory(context,dragAndDropViewModel.mainItem.value!!.name)
         }
         setSuccessDialog(false)
     }

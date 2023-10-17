@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
+import inu.thebite.tory.screens.education.getResourceIdByName
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.random.Random
@@ -18,47 +19,47 @@ class DragAndDropViewModel :ViewModel() {
         private set
 
 
-    //타겟카테고리
-    private val _targetCategory = MutableStateFlow<List<String>?>(null)
-    val targetCategory = _targetCategory.asStateFlow()
-
-    fun setTargetCategory(targetCategory: List<String>){
-        _targetCategory.value = targetCategory
-    }
-    fun clearTargetCategory() {
-        _targetCategory.value = null
-    }
+//    //타겟카테고리
+//    private val _targetCategory = MutableStateFlow<List<String>?>(null)
+//    val targetCategory = _targetCategory.asStateFlow()
+//
+//    fun setTargetCategory(targetCategory: List<String>){
+//        _targetCategory.value = targetCategory
+//    }
+//    fun clearTargetCategory() {
+//        _targetCategory.value = null
+//    }
     //메인카테고리
-    private val _mainCategory = MutableStateFlow<String?>(null)
-    val mainCategory = _mainCategory.asStateFlow()
-
-    fun setMainCategory(targetCategory: String){
-        _mainCategory.value = targetCategory
-    }
-    fun clearMainCategory() {
-        _mainCategory.value = null
-    }
+//    private val _mainCategory = MutableStateFlow<String?>(null)
+//    val mainCategory = _mainCategory.asStateFlow()
+//
+//    fun setMainCategory(targetCategory: String){
+//        _mainCategory.value = targetCategory
+//    }
+//    fun clearMainCategory() {
+//        _mainCategory.value = null
+//    }
 
     //첫번째 메인 카테고리 이미지
-    private val _firstMainImage = MutableStateFlow<Int?>(null)
-    val firstMainImage = _firstMainImage.asStateFlow()
+    private val _firstMainItem = MutableStateFlow<GameItem?>(null)
+    val firstMainItem = _firstMainItem.asStateFlow()
 
-    fun setFirstMainImage(mainImage: Int){
-        _firstMainImage.value = mainImage
+    fun setFirstMainItem(mainItem: GameItem){
+        _firstMainItem.value = mainItem
     }
-    fun clearFirstMainImage() {
-        _firstMainImage.value = null
+    fun clearFirstMainItem() {
+        _firstMainItem.value = null
     }
 
     //두번째 메인 카테고리 이미지
-    private val _secondMainImage = MutableStateFlow<Int?>(null)
-    val secondMainImage = _secondMainImage.asStateFlow()
+    private val _secondMainItem = MutableStateFlow<GameItem?>(null)
+    val secondMainItem = _secondMainItem.asStateFlow()
 
-    fun setSecondMainImage(mainImage: Int){
-        _secondMainImage.value = mainImage
+    fun setSecondMainItem(mainItem: GameItem){
+        _secondMainItem.value = mainItem
     }
-    fun clearSecondMainImage() {
-        _secondMainImage.value = null
+    fun clearSecondMainItem() {
+        _secondMainItem.value = null
     }
 
     //타겟아이템
@@ -130,7 +131,10 @@ class DragAndDropViewModel :ViewModel() {
     }
 
     fun restartGeneralMode(context: Context){
-        _targetCategory.value = _targetCategory.value!!.shuffled(Random(System.currentTimeMillis()))
+        _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
+//        _secondMainItem.value = _secondMainItem.value.copy(
+//            image =
+//        )
 
         isCorrect = false
     }
@@ -160,6 +164,11 @@ class DragAndDropViewModel :ViewModel() {
         _targetItems.value = updatedList
     }
 
+    fun updateGameItemGeneralMode(updatedItem: GameItem) {
+
+        _secondMainItem.value = updatedItem
+    }
+
 
     fun getRandomImageInCategory(context: Context,category: String): Int {
         val random = Random.nextInt(1, 4)
@@ -171,9 +180,19 @@ class DragAndDropViewModel :ViewModel() {
 
     fun setTwoMainDifferentImageInCategory(context: Context, category: String){
         val (firstIndex, secondIndex) = generateRandomNumbers()
-        Log.e("인덱스", firstIndex.toString()+"_"+secondIndex.toString())
-        setFirstMainImage(getResourceIdByName(imageName = category+"_"+firstIndex.toString(), context = context))
-        setSecondMainImage(getResourceIdByName(imageName = category+"_"+secondIndex.toString(), context = context))
+
+        setFirstMainItem(
+            GameItem(
+                name = category,
+                image = getResourceIdByName(imageName = category+"_"+firstIndex.toString(), context = context)
+            )
+        )
+        setSecondMainItem(
+            GameItem(
+                name = category,
+                image = getResourceIdByName(imageName = category+"_"+secondIndex.toString(), context = context)
+            )
+        )
     }
 }
 

@@ -42,15 +42,19 @@ fun GameScreen(
         mutableStateOf(false)
     }
 
-    val (successImage, setSuccessImage) = remember{
+    val (firstSuccessImage, setFirstSuccessImage) = remember{
+        mutableIntStateOf(0)
+    }
+
+    val (secondSuccessImage, setSecondSuccessImage) = remember{
         mutableIntStateOf(0)
     }
 
     if(successDialog){
         SuccessDialog(
             context = context,
-            image1 = successImage,
-            image2 = successImage,
+            image1 = firstSuccessImage,
+            image2 = secondSuccessImage,
             setSuccessDialog = {setSuccessDialog(it)},
             dragAndDropViewModel = dragAndDropViewModel,
             selectedLTO = selectedLTO
@@ -63,7 +67,8 @@ fun GameScreen(
             if(isCardSelectEnd){
                 if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
                     if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-                        setSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
+                        setFirstSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
+                        setSecondSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
                         setSuccessDialog(true)
                     }
                     val changeList = selectedSTO.gameResult.toMutableList()
@@ -85,14 +90,17 @@ fun GameScreen(
             }
         }
     }
-
+    val (beforeCircleImage , setBeforeCircleImage) = remember {
+        mutableIntStateOf(0)
+    }
     if(selectedLTO.gameMode == "일반화 매칭"){
         LaunchedEffect(isCardSelectEnd){
             if(isCardSelectEnd){
                 if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
                     //축하 이팩트
                     if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-                        setSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
+                        setFirstSuccessImage(dragAndDropViewModel.firstMainItem.value!!.image)
+                        setSecondSuccessImage(beforeCircleImage)
                         setSuccessDialog(true)
                     }
                     //+,-,P 저장
@@ -106,7 +114,6 @@ fun GameScreen(
                     if(dragAndDropViewModel.isRandomGame){
                     }
                     //이미지 변경(target에 있는 동일한 카테고리)
-                    dragAndDropViewModel.setTwoMainDifferentImageInCategory(context,dragAndDropViewModel.mainCategory.value!!)
                     gameViewModel.clearOneGameResult()
                 }
             }
@@ -115,7 +122,6 @@ fun GameScreen(
 
     val oneGameResult by gameViewModel.oneGameResult.collectAsState()
     val targetItems by dragAndDropViewModel.targetItems.collectAsState()
-    val targetCategory by dragAndDropViewModel.targetCategory.collectAsState()
 
 
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -141,20 +147,21 @@ fun GameScreen(
                 }
             }
             "일반화 매칭" -> {
-                targetCategory?.let {targetCategory ->
+                targetItems?.let {targetItems ->
                     GeneralGameScreen(
                         selectedLTO = selectedLTO,
                         context = context,
                         timerStart = timerStart,
                         timerRestart = timerRestart,
-                        targetCategory = targetCategory,
+                        targetItems = targetItems,
                         cardSize = cardSize,
                         oneGameResult = oneGameResult,
                         isCardSelectEnd = isCardSelectEnd,
                         dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel,
                         resetGameButtonIndex = {resetGameButtonIndex()},
-                        setIsCardSelectEnd = {setIsCardSelectEnd(it)}
+                        setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                        setBeforeCircleImage = {setBeforeCircleImage(it)}
                     )
                 }
             }

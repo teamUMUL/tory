@@ -266,6 +266,7 @@ fun GameTopBar(
                                 }
                                 else{
                                     dragAndDropViewModel.restartGeneralMode(context = context)
+                                    dragAndDropViewModel.setTwoMainDifferentImageInCategory(context,dragAndDropViewModel.mainItem.value!!.name)
 
                                 }
                             }else{

@@ -37,7 +37,7 @@ fun GeneralGameScreen(
     selectedLTO : LTOEntity,
     timerStart : MutableState<Boolean>,
     timerRestart : MutableState<Boolean>,
-    targetCategory : List<String>,
+    targetItems : List<GameItem>,
     cardSize : Dp,
     oneGameResult : String?,
     isCardSelectEnd : Boolean,
@@ -45,10 +45,11 @@ fun GeneralGameScreen(
     gameViewModel : GameViewModel,
     resetGameButtonIndex : () -> Unit,
     setIsCardSelectEnd : (Boolean) -> Unit,
+    setBeforeCircleImage : (Int) -> Unit
 ){
-    val group1Size = (targetCategory.size + 1) / 2
-    val group1 = targetCategory.subList(0, group1Size)
-    val group2 = targetCategory.subList(group1Size, targetCategory.size)
+    val group1Size = (targetItems.size + 1) / 2
+    val group1 = targetItems.subList(0, group1Size)
+    val group2 = targetItems.subList(group1Size, targetItems.size)
     DragableScreen(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +63,7 @@ fun GeneralGameScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            if(targetCategory.size <= 3){
+            if(targetItems.size <= 3){
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -70,17 +71,18 @@ fun GeneralGameScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                 ){
-                    targetCategory.forEach { gameCategory ->
+                    targetItems.forEach { gameCategory ->
                         DropItem<GameItem>(
                             modifier = Modifier
                                 .weight(1f)
                                 .size(cardSize)
                         ) { isInBound, dragInGameItem ->
                             if(dragInGameItem != null){
+                                setBeforeCircleImage(dragAndDropViewModel.secondMainItem.value!!.image)
                                 LaunchedEffect(key1 = dragInGameItem){
                                     //드래그해서 들어온 아이템의 이름과 드래그한 곳의 카테고리가 같은 경우에 맞다는 판정
-                                    if(dragInGameItem.name == gameCategory){
-                                        dragAndDropViewModel.updateGameItem(
+                                    if(dragInGameItem.name == gameCategory.name){
+                                        dragAndDropViewModel.updateGameItemGeneralMode(
                                             GameItem(
                                                 dragInGameItem.name,
                                                 R.drawable.ellipse
@@ -129,15 +131,16 @@ fun GeneralGameScreen(
 
                                 }
                             }
+                            Log.e("게임 카테고리", gameCategory.name)
                             Image(
                                 modifier = Modifier
                                     .size(cardSize),
                                 painter = painterResource(id =
-                                if(gameCategory == dragAndDropViewModel.mainCategory.value) {
-                                    dragAndDropViewModel.secondMainImage.value!!
+                                if(gameCategory.name == dragAndDropViewModel.mainItem.value!!.name) {
+                                    dragAndDropViewModel.secondMainItem.value!!.image
                                 }
                                 else{
-                                    getResourceIdByName(context = context, imageName = gameCategory+"_1")
+                                    getResourceIdByName(context = context, imageName = gameCategory.name+"_1")
                                 }
                                 ),
                                 contentDescription = null,
@@ -171,10 +174,11 @@ fun GeneralGameScreen(
                                     .size(cardSize)
                             ) { isInBound, dragInGameItem ->
                                 if(dragInGameItem != null){
+                                    setBeforeCircleImage(dragAndDropViewModel.secondMainItem.value!!.image)
                                     LaunchedEffect(key1 = dragInGameItem){
-                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
-                                        if(dragInGameItem.name.substringBefore("_") == gameCategory){
-                                            dragAndDropViewModel.updateGameItem(
+                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 카테고리가 같은 경우에 맞다는 판정
+                                        if(dragInGameItem.name == gameCategory.name){
+                                            dragAndDropViewModel.updateGameItemGeneralMode(
                                                 GameItem(
                                                     dragInGameItem.name,
                                                     R.drawable.ellipse
@@ -220,6 +224,7 @@ fun GeneralGameScreen(
 
                                         }
 
+
                                     }
                                 }
 
@@ -227,10 +232,10 @@ fun GeneralGameScreen(
                                     modifier = Modifier
                                         .size(cardSize),
                                     painter = painterResource(id =
-                                    if(gameCategory == dragAndDropViewModel.mainCategory.value)
-                                        dragAndDropViewModel.secondMainImage.value!!
+                                    if(gameCategory.name == dragAndDropViewModel.mainItem.value!!.name)
+                                        dragAndDropViewModel.secondMainItem.value!!.image
                                     else
-                                        dragAndDropViewModel.getRandomImageInCategory(context = context, category = gameCategory)
+                                        getResourceIdByName(context = context, imageName = gameCategory.name+"_1")
                                     ),
                                     contentDescription = null,
                                     alpha = if(isInBound) 0.5f else 1f
@@ -252,11 +257,11 @@ fun GeneralGameScreen(
                                     .size(cardSize)
                             ) { isInBound, dragInGameItem ->
                                 if(dragInGameItem != null){
-                                    Log.e("dragInGameItem", dragInGameItem.name)
+                                    setBeforeCircleImage(dragAndDropViewModel.secondMainItem.value!!.image)
                                     LaunchedEffect(key1 = dragInGameItem){
-                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
-                                        if(dragInGameItem.name.substringBefore("_") == gameCategory){
-                                            dragAndDropViewModel.updateGameItem(
+                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 카테고리가 같은 경우에 맞다는 판정
+                                        if(dragInGameItem.name == gameCategory.name){
+                                            dragAndDropViewModel.updateGameItemGeneralMode(
                                                 GameItem(
                                                     dragInGameItem.name,
                                                     R.drawable.ellipse
@@ -303,7 +308,6 @@ fun GeneralGameScreen(
                                         }
 
 
-
                                     }
                                 }
 
@@ -311,10 +315,11 @@ fun GeneralGameScreen(
                                     modifier = Modifier
                                         .size(cardSize),
                                     painter = painterResource(id =
-                                    if(gameCategory == dragAndDropViewModel.mainCategory.value)
-                                        dragAndDropViewModel.secondMainImage.value!!
+                                    if(gameCategory.name == dragAndDropViewModel.mainItem.value!!.name)
+                                        dragAndDropViewModel.secondMainItem.value!!.image
                                     else
-                                        dragAndDropViewModel.getRandomImageInCategory(context = context, category = gameCategory)
+                                        getResourceIdByName(context = context, imageName = gameCategory.name+"_1")
+
                                     ),
                                     contentDescription = null,
                                     alpha = if(isInBound) 0.5f else 1f
@@ -356,7 +361,7 @@ fun GeneralGameScreen(
                         Image(
                             modifier = Modifier
                                 .size(cardSize),
-                            painter = painterResource(id = dragAndDropViewModel.firstMainImage.value!!),
+                            painter = painterResource(id = dragAndDropViewModel.firstMainItem.value!!.image),
                             contentDescription = null
                         )
                     }

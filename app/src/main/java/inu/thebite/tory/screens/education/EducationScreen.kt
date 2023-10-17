@@ -482,34 +482,34 @@ fun EducationScreen (
                             }
                         }
                         "일반화 매칭" -> {
-                            val targetCategory = mutableListOf<String>()
+                            val targetItems = mutableListOf<GameItem>()
+
 
                             selectedSTO!!.gameItems.forEach { categoryName ->
-                                targetCategory.add(categoryName.substringBefore("_"))
+                                targetItems.add(
+                                    GameItem(
+                                        name = categoryName.substringBefore("_"),
+                                        image = dragAndDropViewModel.getRandomImageInCategory(context, categoryName.substringBefore("_"))
+                                    )
+                                )
                             }
 
-                            dragAndDropViewModel.setTargetCategory(targetCategory)
+                            dragAndDropViewModel.setTargetItems(targetItems)
 
-                            if(dragAndDropViewModel.targetCategory.value.isNotNull() && dragAndDropViewModel.targetCategory.value != emptyList<String>()){
-                                if(dragAndDropViewModel.mainCategory.value.isNotNull()){
+                            if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<GameItem>()){
+                                if(dragAndDropViewModel.mainItem.value.isNotNull()){
                                     dragAndDropViewModel.isNotRandomGame()
                                 } else{
-                                    dragAndDropViewModel.setMainCategory(
-                                        dragAndDropViewModel.targetCategory.value!![getRandomIndex(dragAndDropViewModel.targetCategory.value!!.size)]
+                                    dragAndDropViewModel.setMainItem(
+                                        dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
                                     )
                                     dragAndDropViewModel.isRandomGame()
                                 }
 
 
-                                dragAndDropViewModel.mainCategory.value?.let { mainCategory ->
+                                dragAndDropViewModel.mainItem.value?.let { mainItem ->
                                     dragAndDropViewModel.setTwoMainDifferentImageInCategory(context = context,
-                                        mainCategory
-                                    )
-                                    dragAndDropViewModel.setMainItem(
-                                        GameItem(
-                                            name = mainCategory,
-                                            image = dragAndDropViewModel.firstMainImage.value!!
-                                        )
+                                        mainItem.name
                                     )
                                 }
 
@@ -542,12 +542,9 @@ fun EducationScreen (
                             } else{
                                 Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
                             }
-                            dragAndDropViewModel.setTargetCategory(targetCategory)
                         }
                     }
                     Log.e("게임아이템들", dragAndDropViewModel.targetItems.value.toString()+dragAndDropViewModel.mainItem.value.toString())
-                    Log.e("gameStart-MainCategory", dragAndDropViewModel.mainCategory.value.toString())
-                    Log.e("gameStart-TargetCategory", dragAndDropViewModel.targetCategory.value.toString())
 
 
                 },
@@ -617,7 +614,7 @@ fun getSTODescription(selectedSTO : STOEntity,selectedLTO: LTOEntity, isRandom :
             if (isRandom){
                 "${selectedSTO.gameItems.size} Array\n목표아이템 : 랜덤\n예시아이템 : $gameItemsByKorean "
             } else {
-                "${selectedSTO.gameItems.size} Array\n목표아이템 :${englishToKorean(dragAndDropViewModel.mainCategory.value!!)}\n예시아이템 : $gameItemsByKorean"
+                "${selectedSTO.gameItems.size} Array\n목표아이템 :${englishToKorean(extractWord(dragAndDropViewModel.mainItem.value!!.name))}\n예시아이템 : $gameItemsByKorean"
             }
         }
 

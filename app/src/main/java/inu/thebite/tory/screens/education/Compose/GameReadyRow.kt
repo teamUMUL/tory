@@ -159,13 +159,16 @@ fun gameReadyRow(
                                 .clickable {
                                     if (isSelected) {
                                         setMainGameItem("")
-                                        dragAndDropViewModel.clearMainCategory()
+                                        dragAndDropViewModel.clearMainItem()
 
                                     } else {
                                         setMainGameItem(selectedGameItem)
 
-                                        dragAndDropViewModel.setMainCategory(
-                                            selectedGameItem.substringBefore("_")
+                                        dragAndDropViewModel.setMainItem(
+                                            GameItem(
+                                                name = selectedGameItem.substringBefore("_"),
+                                                image = imageResource
+                                            )
                                         )
 
                                     }
