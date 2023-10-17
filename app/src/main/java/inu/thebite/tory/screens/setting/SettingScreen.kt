@@ -82,6 +82,9 @@ fun SettingScreen(
         childInfoViewModel.getAllChildInfos()
     }
 
+    LaunchedEffect(allCenters){
+        centerViewModel.getAllCenters()
+    }
 
     LaunchedEffect(selectedCenter, allChildClasses){
         selectedCenter?.let {
