@@ -9,4 +9,4 @@ data class CenterResponse (
 
     @SerializedName("center_name")
     var name: String
-        )
+)
