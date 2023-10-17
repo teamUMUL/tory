@@ -177,9 +177,9 @@ fun AddSameGameItemsDialog(
                                                     selectedGameItems.add(imageName)
                                                     selectedIdxMap[GameItemCategory] = i - 1
                                                 }
-
-                                                selectedSTO.gameItems = selectedGameItems
-                                                stoViewModel.updateSTO(selectedSTO)
+//
+//                                                selectedSTO.gameItems = selectedGameItems
+//                                                stoViewModel.updateSTO(selectedSTO)
                                             },
                                         painter = painterResource(id = imageResource),
                                         contentDescription = null,
@@ -226,15 +226,19 @@ fun AddGeneralGameItem(
     setMainItem : (String) -> Unit,
     stoViewModel : STOViewModel,
 ){
-    val selectedGameCategory by remember {
+    val selectedGameItems by remember {
         mutableStateOf(selectedSTO.gameItems.toMutableList())
     }
-    val selectedCategoryList = remember {
-        mutableStateListOf<String>()
+    val selectedIdxMap = remember {
+        mutableStateMapOf<String, Boolean>()
     }
-//    for (gameCategory in selectedSTO.gameItems){
-//        selectedCategoryList.add(gameCategory)
-//    }
+    for (selectedGameItem in selectedSTO!!.gameItems) {
+        val parts = selectedGameItem.split("_")
+        if (parts.size == 2) {
+            val category = parts[0]
+            selectedIdxMap[category] = true
+        }
+    }
 
     Dialog(
         properties = DialogProperties(
@@ -322,22 +326,22 @@ fun AddGeneralGameItem(
                                     val i = i + 1
                                     val imageName = "${GameItemCategory}_${i}"
                                     val imageResource = getResourceIdByName(imageName, context)
-                                    val isSelected = selectedCategoryList.contains(GameItemCategory)
+                                    val isSelected = selectedIdxMap[GameItemCategory] ?: false
                                     Image(
                                         modifier = Modifier
                                             .weight(1.0f)
                                             .padding(10.dp)
                                             .clickable {
                                                 if (isSelected) {
-                                                    selectedGameCategory.remove(imageName)
-                                                    selectedCategoryList.remove(imageName)
+                                                    selectedGameItems.removeIf { it.contains(GameItemCategory) }
+                                                    selectedIdxMap[GameItemCategory] = false
                                                 } else {
-                                                    selectedGameCategory.add(imageName)
-                                                    selectedCategoryList.add(imageName)
+                                                    selectedGameItems.add(imageName)
+                                                    selectedIdxMap[GameItemCategory] = true
                                                 }
-                                                Log.e("selectedCategoryList", selectedCategoryList.toString())
-                                                selectedSTO.gameItems = selectedGameCategory
-                                                stoViewModel.updateSTO(selectedSTO)
+//                                                Log.e("추가된 게임아이템", selectedGameCategory.toString())
+//                                                selectedSTO.gameItems = selectedGameCategory
+//                                                stoViewModel.updateSTO(selectedSTO)
                                             },
                                         painter = painterResource(id = imageResource),
                                         contentDescription = null,
@@ -357,7 +361,7 @@ fun AddGeneralGameItem(
                         .padding(10.dp),
                     onClick = {
 
-                        selectedSTO.gameItems = selectedCategoryList
+                        selectedSTO.gameItems = selectedGameItems
                         setMainItem("")
                         stoViewModel.updateSTO(selectedSTO)
                         setAddGameItem(false)
