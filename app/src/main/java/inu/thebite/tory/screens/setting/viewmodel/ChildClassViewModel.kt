@@ -49,7 +49,7 @@ class ChildClassViewModel : ViewModel() {
         getAllChildClasses()
     }
 
-    private fun getAllChildClasses(){
+    fun getAllChildClasses(){
         viewModelScope.launch{
             try {
                 val allChildClasses = repo.getAllChildClasses()

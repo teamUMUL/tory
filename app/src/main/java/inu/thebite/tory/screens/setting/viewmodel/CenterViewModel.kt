@@ -43,7 +43,7 @@ class CenterViewModel : ViewModel() {
         getAllCenters()
     }
 
-    private fun getAllCenters(){
+    fun getAllCenters(){
         viewModelScope.launch {
             try {
                 val allCenters = repo.getAllCenters()
