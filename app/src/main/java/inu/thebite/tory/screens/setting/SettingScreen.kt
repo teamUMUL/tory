@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.CenterSelectViewModel
 import inu.thebite.tory.ChildClassSelectViewModel
 import inu.thebite.tory.ChildSelectViewModel
@@ -171,16 +172,18 @@ fun SettingScreen(
             items(settingTypeList){settingType ->
                 when(settingType){
                     "센터" -> {
-                        CenterItemRow(
-                            settingType = settingType,
-                            allCenters = allCenters,
-                            selectedCenter = selectedCenter,
-                            centerViewModel = centerViewModel,
-                            childClassViewModel = childClassViewModel,
-                            childInfoViewModel = childInfoViewModel,
-                            setAddCenterDialog = {setAddCenterDialog(it)},
-                            setUpdateCenterDialg = {setUpdateCenterDialog(it)}
-                        )
+                        if(allCenters.isNotNull()){
+                            CenterItemRow(
+                                settingType = settingType,
+                                allCenters = allCenters,
+                                selectedCenter = selectedCenter,
+                                centerViewModel = centerViewModel,
+                                childClassViewModel = childClassViewModel,
+                                childInfoViewModel = childInfoViewModel,
+                                setAddCenterDialog = {setAddCenterDialog(it)},
+                                setUpdateCenterDialg = {setUpdateCenterDialog(it)}
+                            )
+                        }
                     }
                     "반" -> {
                         ChildClassItemRow(
