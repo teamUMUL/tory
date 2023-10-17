@@ -31,17 +31,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.database.Center.CenterEntity
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 
 @Composable
 fun ChildClassItemRow(
     settingType : String,
-    childClasses : List<ChildClassEntity>?,
-    selectedChildClass : ChildClassEntity?,
-    selectedCenter : CenterEntity?,
+    childClasses : List<ChildClassResponse>?,
+    selectedChildClass : ChildClassResponse?,
+    selectedCenter : CenterResponse?,
     childClassViewModel: ChildClassViewModel,
     childInfoViewModel: ChildInfoViewModel,
     setAddChildClassDialog : (Boolean) -> Unit,
@@ -84,7 +84,7 @@ fun ChildClassItemRow(
                         Text(
                             modifier = Modifier
                                 .padding(start = 10.dp),
-                            text = it.className,
+                            text = it.name,
                             fontWeight = FontWeight.Bold,
                             fontSize = 40.sp
                         )
@@ -121,11 +121,8 @@ fun ChildClassItemRow(
                                 border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.secondary),
                                 onClick = {
                                     childClassViewModel.deleteChildClass(
+                                        selectedCenter = selectedCenter,
                                         selectedChildClass
-                                    )
-                                    childInfoViewModel.deleteChildInfosByCenterNameAndClassName(
-                                        selectedCenter.centerName,
-                                        selectedChildClass.className
                                     )
                                     childClassViewModel.clearSelectedChildClass()
                                     childInfoViewModel.clearSelectedChildInfo()
@@ -197,7 +194,7 @@ fun ChildClassItemRow(
                                     horizontalArrangement = Arrangement.Center
                                 ){
                                     Text(
-                                        text = childClass.className,
+                                        text = childClass.name,
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.fillMaxWidth(),

@@ -52,8 +52,8 @@ data class StoResponse(
     @SerializedName("del_yn")
     var delYN: String,
 
-    @SerializedName("sto_image_list")
-    var imageList: List<ImageResponse>,
+//    @SerializedName("sto_image_list")
+//    var imageList: List<ImageResponse>,
 
     @SerializedName("name")
     var ltoId: Long,

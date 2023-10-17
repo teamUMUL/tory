@@ -1,11 +1,11 @@
 package inu.thebite.tory.repositories.Center
 
-import inu.thebite.tory.database.Center.CenterEntity
-import kotlinx.coroutines.flow.Flow
+import inu.thebite.tory.model.center.CenterRequest
+import inu.thebite.tory.model.center.CenterResponse
 
 interface CenterRepo {
-    suspend fun createCenter(center: CenterEntity)
-    suspend fun getAllCenters(): Flow<List<CenterEntity>>
-    suspend fun updateCenter(updatedCenter: CenterEntity)
-    suspend fun deleteCenter(center: CenterEntity)
+    suspend fun createCenter(center: CenterRequest)
+    suspend fun getAllCenters(): List<CenterResponse>
+//    suspend fun updateCenter(updatedCenter: CenterRequest)
+    suspend fun deleteCenter(center: CenterResponse)
 }

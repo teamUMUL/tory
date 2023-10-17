@@ -1,9 +1,16 @@
 package inu.thebite.tory.screens.setting.viewmodel
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.AddStudentRequest
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepo
+import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,20 +18,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.inject
+import java.lang.Exception
 
-class ChildInfoViewModel : ViewModel(), KoinComponent {
-    private val repo: ChildInfoRepo by inject()
+class ChildInfoViewModel : ViewModel(){
+    private val repo: ChildInfoRepoImpl = ChildInfoRepoImpl()
 
-    private val _allChildInfos : MutableStateFlow<List<ChildInfoEntity>> = MutableStateFlow(emptyList())
-    val allChildInfos = _allChildInfos.asStateFlow()
+    private val _allChildInfos = MutableLiveData<List<StudentResponse>>()
+    val allChildInfos: LiveData<List<StudentResponse>> = _allChildInfos
 
-    private val _childInfos: MutableStateFlow<List<ChildInfoEntity>?> = MutableStateFlow(null)
+    private val _childInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
     val childInfos = _childInfos.asStateFlow()
 
-    private val _selectedChildInfo = MutableStateFlow<ChildInfoEntity?>(null)
+    private val _selectedChildInfo = MutableStateFlow<StudentResponse?>(null)
     val selectedChildInfo = _selectedChildInfo.asStateFlow()
 
-    fun setSelectedChildInfo(childInfoEntity: ChildInfoEntity) {
+    fun setSelectedChildInfo(childInfoEntity: StudentResponse) {
 
         _selectedChildInfo.value = childInfoEntity
     }
@@ -41,94 +50,87 @@ class ChildInfoViewModel : ViewModel(), KoinComponent {
     }
 
     private fun getAllChildInfos(){
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.getAllChildInfos().collect{data ->
-                _allChildInfos.update { data }
+        viewModelScope.launch{
+            try {
+                val allChildInfos = repo.getAllChildInfos()
+                _allChildInfos.value = allChildInfos
+            } catch (e: Exception) {
+                Log.e("forEach문", e.message.toString())
             }
         }
     }
 
-    fun getChildInfosByCenterNameAndClassName(
-        selectedCenterName: String,
-        selectedClassName: String?,
+    fun getChildInfosByClass(
+        selectedClass: ChildClassResponse,
     ){
-        if(selectedClassName == null ){
-            _childInfos.update { null }
-        }else{
+        if(selectedClass.isNotNull()){
             _childInfos.update {
-                val filteredChildClasses = allChildInfos.value.filter {
-                    it.centerName == selectedCenterName &&
-                    it.className == selectedClassName
+                val filteredChildInfos = allChildInfos.value!!.filter {
+                    it.id == selectedClass.id
                 }
-                filteredChildClasses
+                filteredChildInfos
             }
+        }else{
+            _childInfos.update { null }
         }
     }
 
     fun createChildInfo(
-        centerName: String,
-        childClassName: String,
         childName: String,
         childBirth: String,
         childEtc: String,
         parentName: String,
         startDate: String,
-        endDate: String,
-        registerDate: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val newChildClassEntity = ChildInfoEntity(
-                centerName = centerName,
-                className = childClassName,
-                childName = childName,
-                child_birth = childBirth,
-                child_etc = childEtc,
-                parent_name = parentName,
-                child_startDate = startDate,
-                child_endDate = endDate,
-                child_registerDate = registerDate
+            val newStudentRequest = AddStudentRequest(
+                name = childName,
+                birth = childBirth,
+                etc = childEtc,
+                parentName = parentName,
+                startDate = startDate
             )
-            repo.createChildInfo(newChildClassEntity)
+            repo.createChildInfo(newStudentRequest)
         }
     }
 
-    fun updateChildInfo(updatedChildInfoEntity: ChildInfoEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.updateChildInfo(updatedChildInfoEntity)
-        }
-
-    }
-
-    fun deleteChildInfo(childInfoEntity: ChildInfoEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteChildInfo(childInfoEntity)
-        }
-    }
-
-
-    fun deleteChildInfosByCenterName(centerName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val childInfosToDelete = allChildInfos.value.filter {
-                it.centerName == centerName
-            }
-
-            childInfosToDelete.forEach { childInfoEntity ->
-                repo.deleteChildInfo(childInfoEntity)
-            }
-        }
-    }
-
-
-    fun deleteChildInfosByCenterNameAndClassName(centerName: String, className: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val childInfosToDelete = allChildInfos.value.filter {
-                it.centerName == centerName &&
-                it.className == className
-            }
-
-            childInfosToDelete.forEach { childInfoEntity ->
-                repo.deleteChildInfo(childInfoEntity)
-            }
-        }
-    }
+//    fun updateChildInfo(updatedChildInfoEntity: ChildInfoEntity) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.updateChildInfo(updatedChildInfoEntity)
+//        }
+//
+//    }
+//
+//    fun deleteChildInfo(childInfoEntity: ChildInfoEntity) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.deleteChildInfo(childInfoEntity)
+//        }
+//    }
+//
+//
+//    fun deleteChildInfosByCenterName(centerName: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val childInfosToDelete = allChildInfos.value.filter {
+//                it.centerName == centerName
+//            }
+//
+//            childInfosToDelete.forEach { childInfoEntity ->
+//                repo.deleteChildInfo(childInfoEntity)
+//            }
+//        }
+//    }
+//
+//
+//    fun deleteChildInfosByCenterNameAndClassName(centerName: String, className: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val childInfosToDelete = allChildInfos.value.filter {
+//                it.centerName == centerName &&
+//                it.className == className
+//            }
+//
+//            childInfosToDelete.forEach { childInfoEntity ->
+//                repo.deleteChildInfo(childInfoEntity)
+//            }
+//        }
+//    }
 }

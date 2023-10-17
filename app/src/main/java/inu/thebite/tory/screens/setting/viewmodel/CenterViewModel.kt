@@ -1,37 +1,37 @@
 package inu.thebite.tory.screens.setting.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.database.Center.CenterEntity
 import inu.thebite.tory.model.center.CenterRequest
+import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.repositories.Center.CenterRepo
-import inu.thebite.tory.retrofit.RetrofitApi
-import kotlinx.coroutines.Dispatchers
+import inu.thebite.tory.repositories.Center.CenterRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.inject
 import java.lang.Exception
 
-class CenterViewModel : ViewModel(), KoinComponent {
-    private val repo: CenterRepo by inject()
+class CenterViewModel : ViewModel() {
+    private val repo: CenterRepoImpl = CenterRepoImpl()
 
 
-    private val _allCenters : MutableStateFlow<List<CenterEntity>> = MutableStateFlow(emptyList())
-    val allCenters = _allCenters.asStateFlow()
+    private val _allCenters = MutableLiveData<List<CenterResponse>>()
+    val allCenters: LiveData<List<CenterResponse>> = _allCenters
 
-    private val _centers: MutableStateFlow<List<CenterEntity>?> = MutableStateFlow(null)
+    private val _centers: MutableStateFlow<List<CenterResponse>?> = MutableStateFlow(null)
     val centers = _centers.asStateFlow()
 
-    private val _selectedCenter = MutableStateFlow<CenterEntity?>(null)
+    private val _selectedCenter = MutableStateFlow<CenterResponse?>(null)
     val selectedCenter = _selectedCenter.asStateFlow()
 
-    private val service = RetrofitApi.apiService
 
-    fun setSelectedCenter(centerEntity: CenterEntity) {
+    fun setSelectedCenter(centerEntity: CenterResponse) {
 
         _selectedCenter.value = centerEntity
     }
@@ -46,16 +46,8 @@ class CenterViewModel : ViewModel(), KoinComponent {
     private fun getAllCenters(){
         viewModelScope.launch {
             try {
-                val returnList = mutableListOf<CenterEntity>()
-                val response = service.getCenterList()
-                response.forEach {
-                    returnList.add(
-                        CenterEntity(
-                            centerName = it.name
-                        )
-                    )
-                }
-                _allCenters.update { returnList }
+                val allCenters = repo.getAllCenters()
+                _allCenters.value = allCenters
             } catch (e: Exception) {
                 Log.e("forEach문", e.message.toString())
             }
@@ -72,11 +64,12 @@ class CenterViewModel : ViewModel(), KoinComponent {
     fun createCenter(
         centerName: String,
     ) {
-
         viewModelScope.launch {
             try {
-                val addCenterRequest = CenterRequest(centerName)
-                service.addCenter(addCenterRequest)
+                val newCenterRequest = CenterRequest(
+                    name = centerName
+                )
+                repo.createCenter(newCenterRequest)
             } catch(e : Exception) {
                 Log.e("addCenter", e.message.toString())
             }
@@ -89,18 +82,16 @@ class CenterViewModel : ViewModel(), KoinComponent {
 //        }
     }
 
-    fun updateCenter(updatedCenterEntity: CenterEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.updateCenter(updatedCenterEntity)
-        }
+//    fun updateCenter(updatedCenterEntity: CenterEntity) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.updateCenter(updatedCenterEntity)
+//        }
+//    }
 
-
-    }
-
-    fun deleteCenter(centerEntity: CenterEntity) {
+    fun deleteCenter(centerEntity: CenterResponse) {
         viewModelScope.launch {
             try {
-                service.deleteCenter(centerEntity.centerName)
+                repo.deleteCenter(centerEntity)
             } catch (e: Exception) {
                 Log.e("deleteCenter", e.message.toString())
             }

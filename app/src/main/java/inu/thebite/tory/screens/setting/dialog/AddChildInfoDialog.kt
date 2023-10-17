@@ -53,17 +53,17 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
-import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 import java.time.LocalDate
 
 @Composable
 fun AddChildInfoDialog(
     context : Context,
-    childInfos : List<ChildInfoEntity>?,
-    selectedChildClass : ChildClassEntity?,
-    selectedChildInfo : ChildInfoEntity?,
+    childInfos : List<StudentResponse>?,
+    selectedChildClass : ChildClassResponse?,
+    selectedChildInfo : StudentResponse?,
     childInfoViewModel: ChildInfoViewModel,
     setAddChildInfoDialog : (Boolean) -> Unit,
     isUpdate : Boolean,
@@ -71,23 +71,23 @@ fun AddChildInfoDialog(
 ){
 
     var childInfoNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.childName else ""))
+        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.name else ""))
     }
     var childInfoBirthInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.child_birth else ""))
+        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.birth else ""))
     }
     var childInfoEtcInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.child_etc else ""))
+        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.etc else ""))
     }
     var childInfoParentNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.parent_name else ""))
+        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.parentName else ""))
     }
     var childInfoStartDateInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.child_startDate else ""))
+        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.startDate else ""))
     }
-    var childInfoEndDateInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.child_endDate else ""))
-    }
+//    var childInfoEndDateInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+//        mutableStateOf(TextFieldValue(if(isUpdate) selectedChildInfo!!.child_endDate else ""))
+//    }
 
 
 
@@ -157,15 +157,15 @@ fun AddChildInfoDialog(
                             isReadOnly = true,
                             isSingleLine = true
                         )
-                        SettingTextField(
-                            modifier = Modifier
-                                .weight(1f),
-                            inputValue = childInfoEndDateInputValue,
-                            setInputValue = {childInfoEndDateInputValue = it},
-                            labelText = "종료 날짜",
-                            isReadOnly = true,
-                            isSingleLine = true
-                        )
+//                        SettingTextField(
+//                            modifier = Modifier
+//                                .weight(1f),
+//                            inputValue = childInfoEndDateInputValue,
+//                            setInputValue = {childInfoEndDateInputValue = it},
+//                            labelText = "종료 날짜",
+//                            isReadOnly = true,
+//                            isSingleLine = true
+//                        )
 
                     }
                     childInfoDialogRow{
@@ -189,88 +189,23 @@ fun AddChildInfoDialog(
                             onClick = {
                                 if(
                                     childInfoNameInputValue.text.isNotEmpty() &&
-                                    childInfoNameInputValue.text.isNotEmpty() &&
-                                    childInfoNameInputValue.text.isNotEmpty() &&
-                                    childInfoNameInputValue.text.isNotEmpty() &&
-                                    childInfoNameInputValue.text.isNotEmpty() &&
-                                    childInfoNameInputValue.text.isNotEmpty() &&
-                                    childInfoNameInputValue.text.isNotEmpty()
-                                ){
-                                    if (childInfos != null) {
-                                        if(!childInfos.any { it.childName ==  selectedChildClass.centerName}){
-                                            if(isUpdate){
-                                                selectedChildInfo?.let {selectedChildInfo ->
-                                                    childInfoViewModel.updateChildInfo(
-                                                        selectedChildInfo.copy(
-                                                            childName = childInfoNameInputValue.text,
-                                                            parent_name = childInfoParentNameInputValue.text,
-                                                            child_birth = childInfoBirthInputValue.text,
-                                                            child_startDate = childInfoStartDateInputValue.text,
-                                                            child_endDate = childInfoEndDateInputValue.text,
-                                                            child_etc = childInfoEtcInputValue.text
-                                                        )
-                                                    )
-                                                }
-                                                childInfoViewModel.clearSelectedChildInfo()
-                                            } else {
-                                                childInfoViewModel.createChildInfo(
-                                                    centerName = selectedChildClass.centerName,
-                                                    childClassName = selectedChildClass.className,
-                                                    childName = childInfoNameInputValue.text,
-                                                    parentName = childInfoParentNameInputValue.text,
-                                                    childBirth = childInfoBirthInputValue.text,
-                                                    childEtc = childInfoEtcInputValue.text,
-                                                    startDate = childInfoStartDateInputValue.text,
-                                                    endDate = childInfoEndDateInputValue.text,
-                                                    registerDate = LocalDate.now().toString(),
-                                                )
+                                    childInfoBirthInputValue.text.isNotEmpty() &&
+                                    childInfoParentNameInputValue.text.isNotEmpty() &&
+                                    childInfoStartDateInputValue.text.isNotEmpty()
+                                ) {
+                                    childInfoViewModel.createChildInfo(
+                                        childName = childInfoNameInputValue.text,
+                                        childBirth = childInfoBirthInputValue.text,
+                                        parentName = childInfoParentNameInputValue.text,
+                                        childEtc = childInfoEtcInputValue.text,
+                                        startDate = childInfoStartDateInputValue.text
+                                    )
+                                    childInfoNameInputValue = TextFieldValue("")
+                                    childInfoBirthInputValue = TextFieldValue("")
+                                    childInfoParentNameInputValue = TextFieldValue("")
+                                    childInfoEtcInputValue = TextFieldValue("")
+                                    childInfoStartDateInputValue = TextFieldValue("")
 
-                                            }
-                                            childInfoNameInputValue = TextFieldValue("")
-                                            setAddChildInfoDialog(false)
-                                        } else {
-                                            if (selectedChildInfo != null) {
-                                                if(childInfoNameInputValue.text == selectedChildInfo.childName){
-                                                    if(isUpdate){
-                                                        selectedChildInfo.let { selectedChildInfo ->
-                                                            childInfoViewModel.updateChildInfo(
-                                                                selectedChildInfo.copy(
-                                                                    childName = childInfoNameInputValue.text,
-                                                                    parent_name = childInfoParentNameInputValue.text,
-                                                                    child_birth = childInfoBirthInputValue.text,
-                                                                    child_startDate = childInfoStartDateInputValue.text,
-                                                                    child_endDate = childInfoEndDateInputValue.text,
-                                                                    child_etc = childInfoEtcInputValue.text
-                                                                )
-                                                            )
-                                                        }
-                                                        childInfoViewModel.clearSelectedChildInfo()
-                                                    } else {
-                                                        childInfoViewModel.createChildInfo(
-                                                            centerName = selectedChildClass.centerName,
-                                                            childClassName = selectedChildClass.className,
-                                                            childName = childInfoNameInputValue.text,
-                                                            parentName = childInfoParentNameInputValue.text,
-                                                            childBirth = childInfoBirthInputValue.text,
-                                                            childEtc = childInfoEtcInputValue.text,
-                                                            startDate = childInfoStartDateInputValue.text,
-                                                            endDate = childInfoEndDateInputValue.text,
-                                                            registerDate = LocalDate.now().toString(),
-                                                        )
-
-                                                    }
-                                                    childInfoNameInputValue = TextFieldValue("")
-                                                    setAddChildInfoDialog(false)
-                                                }
-                                            } else {
-                                                Toasty.warning(context, "이미 동일한 이름의 아이가 존재합니다", Toast.LENGTH_SHORT, true).show()
-                                            }
-                                        }
-                                    } else{
-                                        Toasty.warning(context, "선택된 반이 없습니다", Toast.LENGTH_SHORT, true).show()
-                                    }
-                                } else {
-                                    Toasty.warning(context, "아이 정보를 제외한 모든 내용을 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                 }
 
 

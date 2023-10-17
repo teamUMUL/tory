@@ -1,9 +1,9 @@
 package inu.thebite.tory
 
-import inu.thebite.tory.screens.education.GameViewModel
-import inu.thebite.tory.screens.education.LTOViewModel
-import inu.thebite.tory.screens.education.STOViewModel
-import inu.thebite.tory.screens.game.DragAndDropViewModel
+//import inu.thebite.tory.screens.education.GameViewModel
+//import inu.thebite.tory.screens.education.LTOViewModel
+//import inu.thebite.tory.screens.education.STOViewModel
+//import inu.thebite.tory.screens.game.DragAndDropViewModel
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
@@ -29,18 +29,18 @@ val viewModelModule = module {
     viewModel<ChildInfoViewModel> {
         ChildInfoViewModel()
     }
-    viewModel<GameViewModel> {
-        GameViewModel()
-    }
-    viewModel<LTOViewModel> {
-        LTOViewModel()
-    }
-    viewModel<STOViewModel> {
-        STOViewModel()
-    }
-    viewModel<DragAndDropViewModel> {
-        DragAndDropViewModel()
-    }
+//    viewModel<GameViewModel> {
+//        GameViewModel()
+//    }
+//    viewModel<LTOViewModel> {
+//        LTOViewModel()
+//    }
+//    viewModel<STOViewModel> {
+//        STOViewModel()
+//    }
+//    viewModel<DragAndDropViewModel> {
+//        DragAndDropViewModel()
+//    }
 
 
 }

@@ -38,24 +38,24 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import inu.thebite.tory.database.Center.CenterEntity
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
-import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddChildClassDialog(
-    selectedCenter : CenterEntity?,
+    selectedCenter : CenterResponse?,
     childClassViewModel : ChildClassViewModel,
     setAddChildClassDialog : (Boolean) -> Unit,
     isUpdate : Boolean,
-    selectedChildClass : ChildClassEntity?,
-    childInfos : List<ChildInfoEntity>?,
+    selectedChildClass : ChildClassResponse?,
+    childInfos : List<StudentResponse>?,
     childInfoViewModel : ChildInfoViewModel,
 ){
-    val defaultChildClassValue = if(isUpdate) selectedChildClass!!.className else ""
+    val defaultChildClassValue = if(isUpdate) selectedChildClass!!.name else ""
 
     var childClassNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(defaultChildClassValue))
@@ -124,24 +124,24 @@ fun AddChildClassDialog(
                                 if(isUpdate){
                                     if (childInfos != null) {
                                         selectedChildClass?.let {selectedChildClass ->
-                                            childClassViewModel.updateChildClass(
-                                                selectedChildClass.copy(
-                                                    className = childClassNameInputValue.text
-                                                )
-                                            )
-                                            childInfos.map { childInfo ->
-                                                childInfoViewModel.updateChildInfo(
-                                                    childInfo.copy(
-                                                        className = childClassNameInputValue.text
-                                                    )
-                                                )
-                                            }
+//                                            childClassViewModel.updateChildClass(
+//                                                selectedChildClass.copy(
+//                                                    className = childClassNameInputValue.text
+//                                                )
+//                                            )
+//                                            childInfos.map { childInfo ->
+//                                                childInfoViewModel.updateChildInfo(
+//                                                    childInfo.copy(
+//                                                        className = childClassNameInputValue.text
+//                                                    )
+//                                                )
+//                                            }
                                         }
                                     }
                                     childClassViewModel.clearSelectedChildClass()
                                 } else {
                                     childClassViewModel.createChildClass(
-                                        centerName = selectedCenter.centerName,
+                                        selectedCenter = selectedCenter,
                                         childClassName = childClassNameInputValue.text
                                     )
                                 }
@@ -162,3 +162,4 @@ fun AddChildClassDialog(
         }
     }
 }
+

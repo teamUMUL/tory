@@ -44,8 +44,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import inu.thebite.tory.database.Center.CenterEntity
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.retrofit.RetrofitApi
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
@@ -59,11 +59,11 @@ fun AddCenterDialog(
     childClassViewModel : ChildClassViewModel,
     childInfoViewModel : ChildInfoViewModel,
     setAddCenterDialog : (Boolean) -> Unit,
-    selectedCenter : CenterEntity?,
-    childClasses : List<ChildClassEntity>?,
+    selectedCenter : CenterResponse?,
+    childClasses : List<ChildClassResponse>?,
     isUpdate : Boolean
 ){
-    val defaultCenterValue = if(isUpdate) selectedCenter!!.centerName else ""
+    val defaultCenterValue = if(isUpdate) selectedCenter!!.name else ""
 
     var centerNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(defaultCenterValue))
@@ -133,17 +133,17 @@ fun AddCenterDialog(
                             if(isUpdate){
                                 if (childClasses != null) {
                                     selectedCenter?.let {selectedCenter ->
-                                        centerViewModel.updateCenter(
-                                            selectedCenter.copy(
-                                                centerName = centerNameInputValue.text
-                                            )
-                                        )
+//                                        centerViewModel.updateCenter(
+//                                            selectedCenter.copy(
+//                                                centerName = centerNameInputValue.text
+//                                            )
+//                                        )
                                         childClasses.map { childClass ->
-                                            childClassViewModel.updateChildClass(
-                                                childClass.copy(
-                                                    centerName = centerNameInputValue.text
-                                                )
-                                            )
+//                                            childClassViewModel.updateChildClass(
+//                                                childClass.copy(
+//                                                    centerName = centerNameInputValue.text
+//                                                )
+//                                            )
                                         }
                                     }
                                 }

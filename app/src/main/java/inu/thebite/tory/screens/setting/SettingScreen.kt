@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -37,15 +38,15 @@ fun SettingScreen(
 
     val centers by centerViewModel.centers.collectAsState()
     val selectedCenter by centerViewModel.selectedCenter.collectAsState()
-    val allCenters by centerViewModel.allCenters.collectAsState()
+    val allCenters by centerViewModel.allCenters.observeAsState(emptyList())
 
     val childClasses by childClassViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassViewModel.selectedChildClass.collectAsState()
-    val allChildClasses by childClassViewModel.allChildClasses.collectAsState()
+    val allChildClasses by childClassViewModel.allChildClasses.observeAsState(emptyList())
 
     val childInfos by childInfoViewModel.childInfos.collectAsState()
     val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
-    val allChildInfos by childInfoViewModel.allChildInfos.collectAsState()
+    val allChildInfos by childInfoViewModel.allChildInfos.observeAsState(emptyList())
 
     val settingTypeList = listOf(
         "센터",
@@ -74,19 +75,20 @@ fun SettingScreen(
     }
 
 
+
+
     LaunchedEffect(selectedCenter, allChildClasses){
         selectedCenter?.let {
-            childClassViewModel.getChildClassesByCenterName(
-                it.centerName
+            childClassViewModel.getChildClassesByCenter(
+                it
             )
         }
     }
 
     LaunchedEffect(selectedChildClass, allChildInfos){
         selectedChildClass?.let { selectedChildClass ->
-                childInfoViewModel.getChildInfosByCenterNameAndClassName(
-                    selectedChildClass.centerName,
-                    selectedChildClass.className
+                childInfoViewModel.getChildInfosByClass(
+                    selectedChildClass
                 )
         }
     }

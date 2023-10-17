@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.database.Center.CenterEntity
+import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.retrofit.RetrofitApi
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
@@ -40,8 +40,8 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 @Composable
 fun CenterItemRow(
     settingType : String,
-    allCenters : List<CenterEntity>,
-    selectedCenter : CenterEntity?,
+    allCenters : List<CenterResponse>,
+    selectedCenter : CenterResponse?,
     centerViewModel: CenterViewModel,
     childClassViewModel : ChildClassViewModel,
     childInfoViewModel : ChildInfoViewModel,
@@ -86,7 +86,7 @@ fun CenterItemRow(
                         Text(
                             modifier = Modifier
                                 .padding(start = 10.dp),
-                            text = it.centerName,
+                            text = it.name,
                             fontWeight = FontWeight.Bold,
                             fontSize = 40.sp
                         )
@@ -125,8 +125,6 @@ fun CenterItemRow(
                                 centerViewModel.deleteCenter(
                                     selectedCenter
                                 )
-                                childClassViewModel.deleteChildClassesByCenterName(selectedCenter.centerName)
-                                childInfoViewModel.deleteChildInfosByCenterName(selectedCenter.centerName)
                                 centerViewModel.clearSelectedCenter()
                                 childClassViewModel.clearSelectedChildClass()
                                 childInfoViewModel.clearSelectedChildInfo()
@@ -182,12 +180,8 @@ fun CenterItemRow(
                                 }
                                 childClassViewModel.clearSelectedChildClass()
                                 childInfoViewModel.clearSelectedChildInfo()
-                                childClassViewModel.getChildClassesByCenterName(
-                                    center.centerName
-                                )
-                                childInfoViewModel.getChildInfosByCenterNameAndClassName(
-                                    center.centerName,
-                                    null
+                                childClassViewModel.getChildClassesByCenter(
+                                    center
                                 )
                             },
                         shape = RoundedCornerShape(8.dp),
@@ -202,7 +196,7 @@ fun CenterItemRow(
                             horizontalArrangement = Arrangement.Center
                         ){
                             Text(
-                                text = center.centerName,
+                                text = center.name,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.fillMaxWidth(),
