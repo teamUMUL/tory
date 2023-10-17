@@ -5,6 +5,7 @@ import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.retrofit.RetrofitApi
 import inu.thebite.tory.retrofit.RetrofitService
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 class CenterRepoImpl: CenterRepo {
     private val centerRetrofit = RetrofitApi.apiService

@@ -160,7 +160,7 @@ fun CenterItemRow(
             Divider(
                 thickness = 2.dp, color = MaterialTheme.colorScheme.primary
             )
-            allCenters?.let {
+            allCenters?.let {allCenters->
                 LazyRow{
                     items(allCenters){center ->
                         Card(

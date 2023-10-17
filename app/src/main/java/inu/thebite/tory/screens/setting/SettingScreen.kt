@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.setting
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -173,6 +174,7 @@ fun SettingScreen(
                 when(settingType){
                     "센터" -> {
                         if(allCenters.isNotNull()){
+                            Log.e("allCenters", allCenters.toString())
                             CenterItemRow(
                                 settingType = settingType,
                                 allCenters = allCenters,

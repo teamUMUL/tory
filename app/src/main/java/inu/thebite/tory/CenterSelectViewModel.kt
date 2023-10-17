@@ -54,6 +54,7 @@ class CenterSelectViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val allCenters = repo.getAllCenters()
+                Log.e("가지고 온 센터", allCenters.toString())
                 _allCenters.value = allCenters
             } catch (e: Exception) {
                 Log.e("forEach문", e.message.toString())
