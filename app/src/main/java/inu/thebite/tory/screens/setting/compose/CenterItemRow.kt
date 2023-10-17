@@ -1,6 +1,5 @@
 package inu.thebite.tory.screens.setting.compose
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,8 +36,6 @@ import inu.thebite.tory.retrofit.RetrofitApi
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
-import retrofit2.Call
-import retrofit2.Response
 
 @Composable
 fun CenterItemRow(

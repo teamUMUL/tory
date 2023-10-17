@@ -3,22 +3,17 @@ package inu.thebite.tory.screens.setting.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.CenterSelectViewModel
 import inu.thebite.tory.database.Center.CenterEntity
-import inu.thebite.tory.model.Center
+import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.repositories.Center.CenterRepo
 import inu.thebite.tory.retrofit.RetrofitApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
-import retrofit2.Call
-import retrofit2.Response
 import java.lang.Exception
 
 class CenterViewModel : ViewModel(), KoinComponent {
@@ -80,8 +75,8 @@ class CenterViewModel : ViewModel(), KoinComponent {
 
         viewModelScope.launch {
             try {
-                val center = Center(centerName)
-                service.addCenter(center)
+                val addCenterRequest = CenterRequest(centerName)
+                service.addCenter(addCenterRequest)
             } catch(e : Exception) {
                 Log.e("addCenter", e.message.toString())
             }
