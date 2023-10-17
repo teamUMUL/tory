@@ -73,6 +73,7 @@ class CenterViewModel : ViewModel() {
             } catch(e : Exception) {
                 Log.e("addCenter", e.message.toString())
             }
+//            getAllCenters()
         }
 //        viewModelScope.launch(Dispatchers.IO) {
 //            val newCenterEntity = CenterEntity(
@@ -95,6 +96,7 @@ class CenterViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("deleteCenter", e.message.toString())
             }
+//            getAllCenters()
         }
 //        viewModelScope.launch(Dispatchers.IO) {
 //            repo.deleteCenter(centerEntity)
