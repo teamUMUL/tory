@@ -1,5 +1,6 @@
 package inu.thebite.tory.retrofit
 
+import androidx.room.Delete
 import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
@@ -9,6 +10,9 @@ import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.AddLtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.sto.AddStoRequest
+import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
@@ -90,4 +94,23 @@ interface RetrofitService {
 
     @DELETE("/lto/{ltoId}/delete")
     suspend fun deleteLto(@Path("ltoId") ltoId: Long): Response<Void>
+
+    // sto
+    @POST("/{ltoId}/sto/add")
+    suspend fun addSto(@Path("ltoId") ltoId: Long, addStoRequest: AddStoRequest): Response<StoResponse>
+
+    @PATCH("/sto/{stoId}/status/update")
+    suspend fun updateStoStatus(@Path("stoId") stoId: Long, updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
+
+    @PATCH("/sto/{stoId}/hit/status/update")
+    suspend fun updateStoHitStatus(@Path("stoId") stoId: Long, updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
+
+    // need a code to update image url list
+
+    @GET("/sto/list")
+    suspend fun getStoList(): List<StoResponse>
+
+    @DELETE("/sto/{stoId}/delete")
+    suspend fun deleteSto(@Path("stoId") stoId: Long): Response<Void>
+
 }
