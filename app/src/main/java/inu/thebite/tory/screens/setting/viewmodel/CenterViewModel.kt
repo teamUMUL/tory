@@ -78,8 +78,8 @@ class CenterViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to update center", e.message.toString())
             }
+            getAllCenters()
         }
-        getAllCenters()
     }
 
     fun deleteCenter(centerEntity: CenterResponse) {

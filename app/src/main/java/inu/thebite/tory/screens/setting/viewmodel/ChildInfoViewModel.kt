@@ -107,6 +107,7 @@ class ChildInfoViewModel : ViewModel(){
             } catch (e: Exception) {
                 Log.e("failed to delete student", e.message.toString())
             }
+            getAllChildInfos()
         }
     }
 

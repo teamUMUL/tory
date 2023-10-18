@@ -76,11 +76,11 @@ fun SettingScreen(
         mutableStateOf(false)
     }
 
-//    LaunchedEffect(Unit){
-//        centerViewModel.getAllCenters()
-//        childClassViewModel.getAllChildClasses()
-//        childInfoViewModel.getAllChildInfos()
-//    }
+    LaunchedEffect(Unit){
+        centerViewModel.getAllCenters()
+        childClassViewModel.getAllChildClasses()
+        childInfoViewModel.getAllChildInfos()
+    }
 
     LaunchedEffect(selectedCenter, allChildClasses){
         selectedCenter?.let {

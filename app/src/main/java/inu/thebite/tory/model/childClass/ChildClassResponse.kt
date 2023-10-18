@@ -1,15 +1,16 @@
 package inu.thebite.tory.model.childClass
 
 import com.google.gson.annotations.SerializedName
+import inu.thebite.tory.model.center.CenterResponse
 
 data class ChildClassResponse (
 
-    @SerializedName("class_seq")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("class_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("center_seq")
-    var centerId: Long
+    @SerializedName("center")
+    var center: CenterResponse
 )
