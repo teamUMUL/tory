@@ -77,16 +77,13 @@ fun LTOItemColumn(
     }
 
     if(addLTODialog){
-        selectedLTO?.let {selectedLTO->
-            selectedDEV?.let {selectedDEV ->
-                AddLTODialog(
-                    context = context,
-                    selectedDEV = selectedDEV,
-                    selectedLTO = selectedLTO,
-                    ltoViewModel = ltoViewModel,
-                    setAddLTOItem = {setAddLTODialog(it)}
-                )
-            }
+        selectedDEV?.let {selectedDEV ->
+            AddLTODialog(
+                context = context,
+                selectedDEV = selectedDEV,
+                ltoViewModel = ltoViewModel,
+                setAddLTOItem = {setAddLTODialog(it)}
+            )
         }
     }
     if(updateLTODialog){

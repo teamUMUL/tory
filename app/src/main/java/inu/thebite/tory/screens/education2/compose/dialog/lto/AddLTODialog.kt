@@ -53,7 +53,6 @@ import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 fun AddLTODialog(
     context : Context,
     setAddLTOItem: (Boolean) -> Unit,
-    selectedLTO : LtoResponse,
     selectedDEV : DomainResponse,
     ltoViewModel: LTOViewModel
 ) {
