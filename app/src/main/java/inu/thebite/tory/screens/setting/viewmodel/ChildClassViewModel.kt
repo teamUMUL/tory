@@ -57,8 +57,6 @@ class ChildClassViewModel : ViewModel() {
     fun getChildClassesByCenter(
         selectedCenter: CenterResponse,
     ){
-        Log.e("failed to get child classes", selectedCenter.toString())
-
         if(selectedCenter.isNotNull()){
             _childClasses.update {
                 val filteredChildClasses = allChildClasses.value!!.filter {
