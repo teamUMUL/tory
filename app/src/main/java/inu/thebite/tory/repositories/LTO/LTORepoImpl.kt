@@ -28,7 +28,7 @@ class LTORepoImpl: LTORepo {
         ltoInfo: LtoResponse,
         updateLtoStatusRequest: UpdateLtoStatusRequest
     ) {
-        ltoRetrofit.updateLtoStatus(ltoId = ltoInfo.id, updateLtoStatusRequest = updateLtoStatusRequest)
+        ltoRetrofit.updateLtoHitStatus(ltoId = ltoInfo.id, updateLtoStatusRequest = updateLtoStatusRequest)
     }
 
     override suspend fun getAllLTOs(): List<LtoResponse> {
