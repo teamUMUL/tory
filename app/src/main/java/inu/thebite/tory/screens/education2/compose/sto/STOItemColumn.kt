@@ -33,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -155,15 +157,21 @@ fun STOItemColumn(
                                 modifier = Modifier
                                     .weight(6f)
                             )
-                            IconButton(
-                                onClick = {isExpanded = !isExpanded},
-                                modifier = Modifier
-                                    .weight(1f)
-                            ){
-                                Icon(
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = null
-                                )
+                            if(selectedSTO == sto){
+                                IconButton(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .alpha(0.2f)
+                                        .rotate(rotationState),
+                                    onClick = {
+                                        isExpanded = !isExpanded
+                                    }
+                                ){
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowDropDown,
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
 
