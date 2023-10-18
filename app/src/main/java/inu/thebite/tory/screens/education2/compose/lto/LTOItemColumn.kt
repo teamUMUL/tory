@@ -75,6 +75,12 @@ fun LTOItemColumn(
             )
         }
     }
+    LaunchedEffect(allLTOs){
+        selectedDEV?.let {selectedDEV ->
+            ltoViewModel.getLTOsByDEV(selectedDEV)
+        }
+    }
+
 
     if(addLTODialog){
         selectedDEV?.let {selectedDEV ->

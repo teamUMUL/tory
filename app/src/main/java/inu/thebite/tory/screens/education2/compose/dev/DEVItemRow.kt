@@ -25,12 +25,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DEVItemRow(
-    devViewModel: DEVViewModel
+    devViewModel: DEVViewModel,
+    ltoViewModel: LTOViewModel
 ){
 
 
@@ -104,6 +106,7 @@ fun DEVItemRow(
                             onClick = {
                                 devViewModel.setSelectedCenter(dev)
                                 isExpanded = false
+                                ltoViewModel.getLTOsByDEV(dev)
                             }
                         )
                     }

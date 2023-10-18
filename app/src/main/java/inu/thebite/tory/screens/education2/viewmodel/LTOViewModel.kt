@@ -58,8 +58,9 @@ class LTOViewModel: ViewModel() {
         if(selectedDEV.isNotNull()){
             _ltos.update {
                 val filteredChildClasses = allLTOs.value!!.filter {
-                    it.id == selectedDEV.id
+                    it.domain.id == selectedDEV.id
                 }
+                Log.d("allLTOs", allLTOs.toString())
                 filteredChildClasses
             }
         }else{
@@ -73,6 +74,8 @@ class LTOViewModel: ViewModel() {
     ){
         viewModelScope.launch {
             try {
+                Log.d("selectedDEV", selectedDEV.toString())
+                Log.d("newLTO", newLTO.toString())
                 repo.createLTO(
                     selectedDEV = selectedDEV,
                     newLTO = newLTO

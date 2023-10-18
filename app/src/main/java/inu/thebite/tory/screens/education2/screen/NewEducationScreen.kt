@@ -22,7 +22,8 @@ fun NewEducationScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         DEVItemRow(
-            devViewModel = devViewModel
+            devViewModel = devViewModel,
+            ltoViewModel = ltoViewModel
         )
         Divider(thickness = 4.dp, color = MaterialTheme.colorScheme.tertiary)
         LTOAndSTOContainer(

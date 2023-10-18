@@ -59,13 +59,13 @@ interface RetrofitService {
     suspend fun addStudent(@Path("classId") classId: Long, @Body addStudentRequest: AddStudentRequest) : Response<StudentResponse>
 
     @PATCH("/student/{studentId}/update")
-    suspend fun updateStudent(@Path("studentId") studentId: Long, updateStudentRequest: UpdateStudentRequest): Response<StudentResponse>
+    suspend fun updateStudent(@Path("studentId") studentId: Long, @Body updateStudentRequest: UpdateStudentRequest): Response<StudentResponse>
 
     @PATCH("/student/{studentId}/startDate/update")
-    suspend fun updateStudentStartDate(@Path("studentId") studentId: Long, updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
+    suspend fun updateStudentStartDate(@Path("studentId") studentId: Long, @Body updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
 
     @PATCH("/student/{studentId}/endDate/update")
-    suspend fun updateStudentEndDate(@Path("studentId") studentId: Long, updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
+    suspend fun updateStudentEndDate(@Path("studentId") studentId: Long, @Body updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
 
     @GET("/student/list")
     suspend fun getStudentList() : List<StudentResponse>
@@ -75,7 +75,7 @@ interface RetrofitService {
 
     // domain
     @POST("/domain/add")
-    suspend fun addDomain(addDomainRequest: AddDomainRequest) : Response<DomainResponse>
+    suspend fun addDomain(@Body addDomainRequest: AddDomainRequest) : Response<DomainResponse>
 
     @GET("/domain/list")
     suspend fun getDomainList() : List<DomainResponse>
@@ -85,13 +85,13 @@ interface RetrofitService {
 
     // lto
     @POST("/{domainId}/lto/add")
-    suspend fun addLto(@Path("domainId") domainId: Long, addLtoRequest: AddLtoRequest): Response<LtoResponse>
+    suspend fun addLto(@Path("domainId") domainId: Long, @Body addLtoRequest: AddLtoRequest): Response<LtoResponse>
 
     @PATCH("/lto/{ltoId}/status/update")
-    suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
+    suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
 
     @PATCH("/lto/{ltoId}/hit/status/update")
-    suspend fun updateLtoHitStatus(@Path("ltoId") ltoId: Long, updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
+    suspend fun updateLtoHitStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
 
     @GET("/lto/list")
     suspend fun getLtoList(): List<LtoResponse>
@@ -101,13 +101,13 @@ interface RetrofitService {
 
     // sto
     @POST("/{ltoId}/sto/add")
-    suspend fun addSto(@Path("ltoId") ltoId: Long, addStoRequest: AddStoRequest): Response<StoResponse>
+    suspend fun addSto(@Path("ltoId") ltoId: Long, @Body addStoRequest: AddStoRequest): Response<StoResponse>
 
     @PATCH("/sto/{stoId}/status/update")
-    suspend fun updateStoStatus(@Path("stoId") stoId: Long, updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
+    suspend fun updateStoStatus(@Path("stoId") stoId: Long, @Body updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
 
     @PATCH("/sto/{stoId}/hit/status/update")
-    suspend fun updateStoHitStatus(@Path("stoId") stoId: Long, updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
+    suspend fun updateStoHitStatus(@Path("stoId") stoId: Long, @Body updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
 
     // need a code to update image url list
 

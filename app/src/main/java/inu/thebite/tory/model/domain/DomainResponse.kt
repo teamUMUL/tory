@@ -26,7 +26,7 @@ data class DomainResponse(
     var useYN: String,
 
     @SerializedName("delYN")
-    var deleteYN: String,
+    var delYN: String,
 
     @SerializedName("registerDate")
     var registerDate: String

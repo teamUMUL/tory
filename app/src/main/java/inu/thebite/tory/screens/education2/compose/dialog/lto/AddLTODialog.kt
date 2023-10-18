@@ -190,6 +190,7 @@ fun AddLTODialog(
                     } else{
                         Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
                     }
+                    setAddLTOItem(false)
                     ltoInputValue = TextFieldValue("")
                     gameMode = ""
                 },
