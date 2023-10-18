@@ -5,6 +5,7 @@ import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.retrofit.RetrofitApi
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 class ChildClassRepoImpl: ChildClassRepo {
 
@@ -13,7 +14,7 @@ class ChildClassRepoImpl: ChildClassRepo {
     override suspend fun createChildClass(selectedCenter: CenterResponse,childClass: ChildClassRequest) {
         childClassRetrofit.addClass(
             centerId = selectedCenter.id,
-            AddChildClassRequest = childClass)
+            addChildClassRequest = childClass)
     }
 
     override suspend fun getAllChildClasses(): List<ChildClassResponse> {
@@ -21,18 +22,15 @@ class ChildClassRepoImpl: ChildClassRepo {
     }
 
 
-//    override suspend fun updateChildClass(updatedChildClass: ChildClassEntity) {
-//        childClassDao.updateChildClass(updatedChildClass)
-//
-//    }
-
-    override suspend fun deleteChildClass(selectedCenter: CenterResponse,childClass: ChildClassResponse) {
-        childClassRetrofit.deleteClass(
-            centerId = selectedCenter.id,
-            classId = childClass.id
-        )
-
+    override suspend fun updateChildClass(
+        childClass: ChildClassResponse,
+        request: ChildClassRequest
+    ) {
+        childClassRetrofit.updateChildClass(classId = childClass.id, updateChildClass = request)
     }
 
+    override suspend fun deleteChildClass(childClass: ChildClassResponse) {
+        childClassRetrofit.deleteClass(classId = childClass.id)
+    }
 
 }

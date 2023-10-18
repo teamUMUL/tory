@@ -7,7 +7,6 @@ import retrofit2.Response
 interface CenterRepo {
     suspend fun createCenter(center: CenterRequest)
     suspend fun getAllCenters(): List<CenterResponse>
-
-    //    suspend fun updateCenter(updatedCenter: CenterRequest)
+    suspend fun updateCenter(centerResponse: CenterResponse, center: CenterRequest)
     suspend fun deleteCenter(center: CenterResponse)
 }

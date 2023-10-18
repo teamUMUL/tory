@@ -74,7 +74,7 @@ class CenterViewModel : ViewModel() {
             } catch(e : Exception) {
                 Log.e("addCenter", e.message.toString())
             }
-//            getAllCenters()
+            getAllCenters()
         }
 //        viewModelScope.launch(Dispatchers.IO) {
 //            val newCenterEntity = CenterEntity(
@@ -84,11 +84,22 @@ class CenterViewModel : ViewModel() {
 //        }
     }
 
-//    fun updateCenter(updatedCenterEntity: CenterEntity) {
+    fun updateCenter(centerEntity: CenterResponse, centerName: String) {
+        viewModelScope.launch {
+            try {
+                val updateCenterRequest = CenterRequest(
+                    name = centerName
+                )
+                repo.updateCenter(centerEntity, updateCenterRequest)
+            } catch (e: Exception) {
+                Log.e("updateCenter", e.message.toString())
+            }
+        }
+
 //        viewModelScope.launch(Dispatchers.IO) {
 //            repo.updateCenter(updatedCenterEntity)
 //        }
-//    }
+    }
 
     fun deleteCenter(centerEntity: CenterResponse) {
         viewModelScope.launch {
@@ -97,7 +108,7 @@ class CenterViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("deleteCenter", e.message.toString())
             }
-//            getAllCenters()
+            getAllCenters()
         }
 //        viewModelScope.launch(Dispatchers.IO) {
 //            repo.deleteCenter(centerEntity)

@@ -75,6 +75,7 @@ class ChildInfoViewModel : ViewModel(){
         }
     }
 
+    // 학생 추가할 때 반 번호도 필요합니다. 추가해주시면 될 듯 해요.
     fun createChildInfo(
         childName: String,
         childBirth: String,

@@ -4,18 +4,26 @@ import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.AddStudentRequest
+import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.model.student.UpdateStudentDateRequest
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface RetrofitService {
 
+    // center
     @POST("/center/add")
-    suspend fun addCenter(@Body addCenterRequest: CenterRequest): Call<CenterRequest>
+    suspend fun addCenter(@Body addCenterRequest: CenterRequest): Response<CenterResponse>
+
+    @PATCH("/center/{centerId}/update")
+    suspend fun updateCenter(@Path("centerId")  centerId: Long, @Body updateCenterRequest: CenterRequest): Response<CenterResponse>
 
     @GET("/center/list")
     suspend fun getCenterList(): List<CenterResponse>
@@ -23,12 +31,33 @@ interface RetrofitService {
     @DELETE("/center/{centerId}/delete")
     suspend fun deleteCenter(@Path("centerId") centerId: Long): Response<Void>
 
+    // class
     @POST("/{centerId}/class/add")
-    suspend fun addClass(@Path("centerId") centerId: Long, @Body AddChildClassRequest: ChildClassRequest): Call<ChildClassRequest>
+    suspend fun addClass(@Path("centerId") centerId: Long, @Body addChildClassRequest: ChildClassRequest): Response<ChildClassResponse>
+
+    @PATCH("/class/{classId}/update")
+    suspend fun updateChildClass(@Path("classId") classId: Long, @Body updateChildClass: ChildClassRequest): Response<ChildClassResponse>
 
     @GET("/class/list")
     suspend fun getAllClassList(): List<ChildClassResponse>
 
-    @DELETE("/{centerId}/class/{classId}/delete")
-    suspend fun deleteClass(@Path("centerId") centerId: Long, @Path("classId") classId: Long): Response<Void>
+    @DELETE("/class/{classId}/delete")
+    suspend fun deleteClass(@Path("classId") classId: Long): Response<Void>
+
+    // student
+    @POST("/{classId}/student/add")
+    suspend fun addStudent(@Path("classId") classId: Long, @Body addStudentRequest: AddStudentRequest) : Response<StudentResponse>
+
+    @PATCH("/student/{studentId}/startDate/update")
+    suspend fun updateStudentStartDate(@Path("studentId") studentId: Long, updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
+
+    @PATCH("/student/{studentId}/endDate/update")
+    suspend fun updateStudentEndDate(@Path("studentId") studentId: Long, updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
+
+    @GET("/student/list")
+    suspend fun getStudentList() : List<StudentResponse>
+
+    @DELETE("/student/{studentId}/delete")
+    suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Void>
+
 }

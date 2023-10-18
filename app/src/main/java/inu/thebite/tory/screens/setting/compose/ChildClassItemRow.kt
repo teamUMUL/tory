@@ -121,7 +121,6 @@ fun ChildClassItemRow(
                                 border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.secondary),
                                 onClick = {
                                     childClassViewModel.deleteChildClass(
-                                        selectedCenter = selectedCenter,
                                         selectedChildClass
                                     )
                                     childClassViewModel.clearSelectedChildClass()

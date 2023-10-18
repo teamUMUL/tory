@@ -11,7 +11,11 @@ class CenterRepoImpl: CenterRepo {
     private val centerRetrofit = RetrofitApi.apiService
 
     override suspend fun createCenter(center: CenterRequest) {
-        centerRetrofit.addCenter(center)
+        centerRetrofit.addCenter(addCenterRequest = center)
+    }
+
+    override suspend fun updateCenter(centerResponse: CenterResponse, center: CenterRequest) {
+        centerRetrofit.updateCenter(centerId = centerResponse.id, updateCenterRequest = center)
     }
 
     override suspend fun getAllCenters(): List<CenterResponse> {
@@ -19,6 +23,6 @@ class CenterRepoImpl: CenterRepo {
     }
 
     override suspend fun deleteCenter(center: CenterResponse) {
-        centerRetrofit.deleteCenter(center.id)
+        centerRetrofit.deleteCenter(centerId = center.id)
     }
 }

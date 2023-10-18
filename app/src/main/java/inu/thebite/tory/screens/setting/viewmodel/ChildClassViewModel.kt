@@ -89,27 +89,32 @@ class ChildClassViewModel : ViewModel() {
                     childClass = newChildClassRequest
                 )
             } catch(e : Exception) {
-                Log.e("addCenter", e.message.toString())
+                Log.e("addClass", e.message.toString())
             }
         }
 
     }
 
-//    fun updateChildClass(updatedChildClassEntity: ChildClassEntity) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.updateChildClass(updatedChildClassEntity)
-//
-//        }
-//
-//    }
+    fun updateChildClass(updatedChildClassEntity: ChildClassResponse, childClassName: String) {
+        viewModelScope.launch() {
+            try {
+                val updateChildClass = ChildClassRequest(
+                    name = childClassName
+                )
+                repo.updateChildClass(updatedChildClassEntity, updateChildClass)
+            } catch (e: Exception) {
+                Log.e("updateClass", e.message.toString())
+            }
+
+        }
+
+    }
 
     fun deleteChildClass(
-        selectedCenter: CenterResponse,
         selectedChildClass: ChildClassResponse
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteChildClass(
-                selectedCenter = selectedCenter,
                 childClass = selectedChildClass
             )
 

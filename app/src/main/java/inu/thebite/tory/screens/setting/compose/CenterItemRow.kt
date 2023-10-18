@@ -49,7 +49,6 @@ fun CenterItemRow(
     setUpdateCenterDialg : (Boolean) -> Unit
 ){
     val rowHeight = LocalConfiguration.current.screenHeightDp
-    val service = RetrofitApi.apiService
 
     Row(
         modifier = Modifier
