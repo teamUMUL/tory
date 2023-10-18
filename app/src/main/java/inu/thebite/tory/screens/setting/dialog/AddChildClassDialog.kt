@@ -1,5 +1,7 @@
 package inu.thebite.tory.screens.setting.dialog
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +40,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
@@ -47,13 +51,12 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddChildClassDialog(
+    context : Context,
     selectedCenter : CenterResponse?,
     childClassViewModel : ChildClassViewModel,
     setAddChildClassDialog : (Boolean) -> Unit,
     isUpdate : Boolean,
     selectedChildClass : ChildClassResponse?,
-    childInfos : List<StudentResponse>?,
-    childInfoViewModel : ChildInfoViewModel,
 ){
     val defaultChildClassValue = if(isUpdate) selectedChildClass!!.name else ""
 
@@ -121,32 +124,32 @@ fun AddChildClassDialog(
                                 .height(70.dp)
                                 .padding(vertical = 10.dp),
                             onClick = {
-                                if(isUpdate){
-                                    if (childInfos != null) {
+                                if(childClassNameInputValue.text.isNotEmpty()){
+                                    if(isUpdate){
                                         selectedChildClass?.let {selectedChildClass ->
-//                                            childClassViewModel.updateChildClass(
-//                                                selectedChildClass.copy(
-//                                                    className = childClassNameInputValue.text
-//                                                )
-//                                            )
-//                                            childInfos.map { childInfo ->
-//                                                childInfoViewModel.updateChildInfo(
-//                                                    childInfo.copy(
-//                                                        className = childClassNameInputValue.text
-//                                                    )
-//                                                )
-//                                            }
+                                            childClassViewModel.updateChildClass(
+                                                selectedChildClass = selectedChildClass,
+                                                updateChildClass = ChildClassRequest(
+                                                    name = childClassNameInputValue.text
+                                                )
+                                            )
                                         }
+                                        childClassViewModel.clearSelectedChildClass()
+                                    } else {
+                                        childClassViewModel.createChildClass(
+                                            selectedCenter = selectedCenter,
+                                            newChildClass = ChildClassRequest(
+                                                name = childClassNameInputValue.text
+                                            )
+                                        )
                                     }
-                                    childClassViewModel.clearSelectedChildClass()
+                                    childClassNameInputValue = TextFieldValue("")
+                                    setAddChildClassDialog(false)
                                 } else {
-                                    childClassViewModel.createChildClass(
-                                        selectedCenter = selectedCenter,
-                                        childClassName = childClassNameInputValue.text
-                                    )
+                                    Toasty.warning(context, "반의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                 }
-                                childClassNameInputValue = TextFieldValue("")
-                                setAddChildClassDialog(false)
+
+
                             },
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(

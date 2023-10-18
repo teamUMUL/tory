@@ -51,6 +51,7 @@ import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.HomeScreen
+import inu.thebite.tory.screens.education2.screen.NewEducationScreen
 //import inu.thebite.tory.screens.education.EducationScreen
 //import inu.thebite.tory.screens.education.GameViewModel
 //import inu.thebite.tory.screens.education.LTOViewModel
@@ -96,11 +97,11 @@ fun MainCompose(
     val allCenters by centerSelectViewModel.allCenters.collectAsState()
     val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
 
-    val allChildClasses by childClassSelectViewModel.allChildClasses.observeAsState(emptyList())
+    val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
     val childClasses by childClassSelectViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
 
-    val allChildInfos by childSelectViewModel.allChildInfos.observeAsState(emptyList())
+    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
     val childInfos by childSelectViewModel.childInfos.collectAsState()
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
 
@@ -345,6 +346,7 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.EDUCATION) {
+                    NewEducationScreen()
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,
 //                        childSelectViewModel = childSelectViewModel,

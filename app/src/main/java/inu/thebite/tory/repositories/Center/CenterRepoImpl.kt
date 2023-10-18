@@ -14,8 +14,8 @@ class CenterRepoImpl: CenterRepo {
         centerRetrofit.addCenter(addCenterRequest = center)
     }
 
-    override suspend fun updateCenter(centerResponse: CenterResponse, center: CenterRequest) {
-        centerRetrofit.updateCenter(centerId = centerResponse.id, updateCenterRequest = center)
+    override suspend fun updateCenter(selectedCenter: CenterResponse, updateCenter: CenterRequest) {
+        centerRetrofit.updateCenter(centerId = selectedCenter.id, updateCenterRequest = updateCenter)
     }
 
     override suspend fun getAllCenters(): List<CenterResponse> {

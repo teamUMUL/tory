@@ -119,9 +119,9 @@ fun ChildInfoItemRow(
                                 shape = RoundedCornerShape(8.dp),
                                 border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.secondary),
                                 onClick = {
-//                                    childInfoViewModel.deleteChildInfo(
-//                                        selectedChildInfo
-//                                    )
+                                    childInfoViewModel.deleteChildInfo(
+                                        selectedChildInfo
+                                    )
                                     childInfoViewModel.clearSelectedChildInfo()
                                 }
                             ){

@@ -54,6 +54,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
 import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 import java.time.LocalDate
@@ -193,22 +194,30 @@ fun AddChildInfoDialog(
                                     childInfoParentNameInputValue.text.isNotEmpty() &&
                                     childInfoStartDateInputValue.text.isNotEmpty()
                                 ) {
-                                    childInfoViewModel.createChildInfo(
-                                        childName = childInfoNameInputValue.text,
-                                        childBirth = childInfoBirthInputValue.text,
-                                        parentName = childInfoParentNameInputValue.text,
-                                        childEtc = childInfoEtcInputValue.text,
-                                        startDate = childInfoStartDateInputValue.text
-                                    )
+                                    if(isUpdate){
+                                        //업데이트
+                                    }else{
+                                        childInfoViewModel.createChildInfo(
+                                            selectedChildClass = selectedChildClass,
+                                            newChildInfo = AddStudentRequest(
+                                                name = childInfoNameInputValue.text,
+                                                birth = childInfoBirthInputValue.text,
+                                                etc = childInfoEtcInputValue.text,
+                                                parentName = childInfoParentNameInputValue.text,
+                                                startDate = childInfoStartDateInputValue.text
+                                            )
+                                        )
+                                    }
+
                                     childInfoNameInputValue = TextFieldValue("")
                                     childInfoBirthInputValue = TextFieldValue("")
                                     childInfoParentNameInputValue = TextFieldValue("")
                                     childInfoEtcInputValue = TextFieldValue("")
                                     childInfoStartDateInputValue = TextFieldValue("")
-
+                                    setAddChildInfoDialog(false)
+                                } else {
+                                    Toasty.warning(context, "학생의 정보를 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                 }
-
-
                             },
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.buttonColors(
