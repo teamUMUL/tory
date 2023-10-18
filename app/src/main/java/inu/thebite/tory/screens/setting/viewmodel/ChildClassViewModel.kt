@@ -9,16 +9,12 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
-import inu.thebite.tory.repositories.ChildClass.ChildClassRepo
 import inu.thebite.tory.repositories.ChildClass.ChildClassRepoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.java.KoinJavaComponent.inject
 import java.lang.Exception
 
 class ChildClassViewModel : ViewModel() {
@@ -66,7 +62,7 @@ class ChildClassViewModel : ViewModel() {
         if(selectedCenter.isNotNull()){
             _childClasses.update {
                 val filteredChildClasses = allChildClasses.value!!.filter {
-                    it.centerId == selectedCenter.id
+                    it.center == selectedCenter.id
                 }
                 filteredChildClasses
             }
