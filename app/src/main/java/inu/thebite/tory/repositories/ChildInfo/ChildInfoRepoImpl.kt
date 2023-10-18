@@ -4,6 +4,7 @@ import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
+import inu.thebite.tory.model.student.UpdateStudentRequest
 import inu.thebite.tory.retrofit.RetrofitApi
 import kotlinx.coroutines.flow.Flow
 
@@ -22,6 +23,13 @@ class ChildInfoRepoImpl : ChildInfoRepo {
 
     override suspend fun getAllChildInfos(): List<StudentResponse> {
         return childRetrofit.getStudentList()
+    }
+
+    override suspend fun updateStudent(
+        childInfo: StudentResponse,
+        updateStudentRequest: UpdateStudentRequest
+    ) {
+        childRetrofit.updateStudent(studentId = childInfo.id, updateStudentRequest = updateStudentRequest)
     }
 
     override suspend fun updateStudentStartDate(

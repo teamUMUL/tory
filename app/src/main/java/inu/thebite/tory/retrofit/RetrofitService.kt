@@ -16,6 +16,7 @@ import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
+import inu.thebite.tory.model.student.UpdateStudentRequest
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -56,6 +57,9 @@ interface RetrofitService {
     // student
     @POST("/{classId}/student/add")
     suspend fun addStudent(@Path("classId") classId: Long, @Body addStudentRequest: AddStudentRequest) : Response<StudentResponse>
+
+    @PATCH("/student/{studentId}/update")
+    suspend fun updateStudent(@Path("studentId") studentId: Long, updateStudentRequest: UpdateStudentRequest): Response<StudentResponse>
 
     @PATCH("/student/{studentId}/startDate/update")
     suspend fun updateStudentStartDate(@Path("studentId") studentId: Long, updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
