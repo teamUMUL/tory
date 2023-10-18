@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName
 
 data class AddStudentRequest(
 
-    @SerializedName("student_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("student_birth")
+    @SerializedName("birth")
     var birth: String,
 
-    @SerializedName("student_etc")
+    @SerializedName("etc")
     var etc: String,
 
     @SerializedName("parentName")
