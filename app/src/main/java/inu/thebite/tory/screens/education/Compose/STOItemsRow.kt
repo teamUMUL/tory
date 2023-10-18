@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +46,8 @@ fun STOItemsRow(
     allSTOs: List<STOEntity>,
     setAddSTOItem: (Boolean) -> Unit,
     selectSTOItem: (it:String, progressState:Int) -> Unit,
-    setSelectedSTOTryNum: (Int) -> Unit
+    setSelectedSTOTryNum: (Int) -> Unit,
+    selectedSTODetailGameDataIndex : MutableIntState
 ) {
     // STOItemsRow 내용
     var selectedSTOName : String = ""
@@ -131,6 +133,18 @@ fun STOItemsRow(
                             setSelectedSTOTryNum(stoItem.stoTryNum)
                             selectSTOItem(it, progressState)
                             stoViewModel.setSelectedSTO(stoItem)
+
+
+                            val targetElement = "n"
+                            val firstNIndex = stoItem.gameResult.indexOf(targetElement)
+
+
+                            //n이 없는 경우에는 0으로 n이 있는 경우에는 처음으로 n이 있는 인덱스로 설정
+                            if(firstNIndex != -1){
+                                selectedSTODetailGameDataIndex.intValue = firstNIndex
+                            }else {
+                                selectedSTODetailGameDataIndex.intValue = 0
+                            }
                         },
                         listOf(Color.Blue, Color.Green, Color.Red)
                     )

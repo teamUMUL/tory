@@ -411,7 +411,8 @@ fun EducationScreen (
                 setSTODetailListIndex(progressState)
                 selectedSTODetailGameDataIndex.intValue = 0
             },
-            setSelectedSTOTryNum = {setSelectedSTOTryNum(it)}
+            setSelectedSTOTryNum = {setSelectedSTOTryNum(it)},
+            selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex
         )
         Divider(color = MaterialTheme.colorScheme.tertiary, thickness = 4.dp)
         //STO Details Row---------------------------------------------------------------------------
@@ -453,6 +454,7 @@ fun EducationScreen (
 
                                 gameViewModel.setGameResultList(it.gameResult)
                                 setGameDialog(true)
+
                                 val targetElement = "n"
                                 val firstNIndex = it.gameResult.indexOf(targetElement)
 
