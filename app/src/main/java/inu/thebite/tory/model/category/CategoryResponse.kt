@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class CategoryResponse(
 
-    @SerializedName("category_seq")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("category_name")
+    @SerializedName("name")
     var name: String
 )
