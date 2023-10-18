@@ -38,7 +38,7 @@ class ChildInfoRepoImpl : ChildInfoRepo {
         childInfo: StudentResponse,
         studentDateRequest: UpdateStudentDateRequest
     ) {
-        childRetrofit.updateStudentStartDate(
+        childRetrofit.updateStudentEndDate(
             studentId = childInfo.id,
             updateStudentDateRequest = studentDateRequest
         )

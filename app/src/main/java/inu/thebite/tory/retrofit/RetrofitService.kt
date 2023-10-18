@@ -4,6 +4,10 @@ import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.domain.AddDomainRequest
+import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.AddLtoRequest
+import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
@@ -59,5 +63,18 @@ interface RetrofitService {
 
     @DELETE("/student/{studentId}/delete")
     suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Void>
+
+    // domain
+    @POST("/domain/add")
+    suspend fun addDomain(addDomainRequest: AddDomainRequest) : Response<DomainResponse>
+
+    @GET("/domain/list")
+    suspend fun getDomainList() : List<DomainResponse>
+
+    @DELETE("/{domainId}/delete")
+    suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>
+
+
+
 
 }
