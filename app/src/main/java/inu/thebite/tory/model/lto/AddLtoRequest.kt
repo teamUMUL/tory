@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 data class AddLtoRequest(
 
-    @SerializedName("lto_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("lto_content")
+    @SerializedName("contents")
     var contents: String,
 
     @SerializedName("game")
