@@ -1,24 +1,26 @@
 package inu.thebite.tory.model.point
 
 import com.google.gson.annotations.SerializedName
+import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.student.StudentResponse
 
 data class PointResponse(
 
-    @SerializedName("point_seq")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("point_round")
+    @SerializedName("round")
     var round: Int,
 
-    @SerializedName("point_reg_mbr_seq")
+    @SerializedName("registerant")
     var registrant: String,
 
-    @SerializedName("point_reg_dt")
+    @SerializedName("registerDate")
     var registerDate: String,
 
-    @SerializedName("sto_seq")
-    var stoId: Long,
+    @SerializedName("sto")
+    var sto: StoResponse,
 
-    @SerializedName("student_seq")
-    var studentId: Long
+    @SerializedName("student")
+    var student: StudentResponse
 )

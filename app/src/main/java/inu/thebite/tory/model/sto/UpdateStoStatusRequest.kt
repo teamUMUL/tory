@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class UpdateStoStatusRequest(
 
-    @SerializedName("sto_status")
+    @SerializedName("status")
     var status: String
 )

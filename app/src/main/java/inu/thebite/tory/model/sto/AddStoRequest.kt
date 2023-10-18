@@ -4,27 +4,27 @@ import com.google.gson.annotations.SerializedName
 
 data class AddStoRequest(
 
-    @SerializedName("sto_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("sto_contents")
+    @SerializedName("contents")
     var contents: String,
 
-    @SerializedName("sto_count")
+    @SerializedName("count")
     var count: Int,
 
-    @SerializedName("sto_goal")
+    @SerializedName("goal")
     var goal: Int,
 
-    @SerializedName("sto_urgeType")
+    @SerializedName("urgeType")
     var urgeType: String,
 
-    @SerializedName("sto_urgeContent")
+    @SerializedName("urgeContent")
     var urgeContent: String,
 
-    @SerializedName("sto_enforceContent")
+    @SerializedName("enforceContent")
     var enforceContent: String,
 
-    @SerializedName("sto_memo")
+    @SerializedName("memo")
     var memo: String,
 )

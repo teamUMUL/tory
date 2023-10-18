@@ -1,12 +1,22 @@
 package inu.thebite.tory.retrofit
 
+import androidx.room.Delete
 import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.domain.AddDomainRequest
+import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.AddLtoRequest
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.sto.AddStoRequest
+import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
+import inu.thebite.tory.model.student.UpdateStudentRequest
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -48,6 +58,9 @@ interface RetrofitService {
     @POST("/{classId}/student/add")
     suspend fun addStudent(@Path("classId") classId: Long, @Body addStudentRequest: AddStudentRequest) : Response<StudentResponse>
 
+    @PATCH("/student/{studentId}/update")
+    suspend fun updateStudent(@Path("studentId") studentId: Long, updateStudentRequest: UpdateStudentRequest): Response<StudentResponse>
+
     @PATCH("/student/{studentId}/startDate/update")
     suspend fun updateStudentStartDate(@Path("studentId") studentId: Long, updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
 
@@ -59,5 +72,49 @@ interface RetrofitService {
 
     @DELETE("/student/{studentId}/delete")
     suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Void>
+
+    // domain
+    @POST("/domain/add")
+    suspend fun addDomain(addDomainRequest: AddDomainRequest) : Response<DomainResponse>
+
+    @GET("/domain/list")
+    suspend fun getDomainList() : List<DomainResponse>
+
+    @DELETE("/{domainId}/delete")
+    suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>
+
+    // lto
+    @POST("/{domainId}/lto/add")
+    suspend fun addLto(@Path("domainId") domainId: Long, addLtoRequest: AddLtoRequest): Response<LtoResponse>
+
+    @PATCH("/lto/{ltoId}/status/update")
+    suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
+
+    @PATCH("/lto/{ltoId}/hit/status/update")
+    suspend fun updateLtoHitStatus(@Path("ltoId") ltoId: Long, updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
+
+    @GET("/lto/list")
+    suspend fun getLtoList(): List<LtoResponse>
+
+    @DELETE("/lto/{ltoId}/delete")
+    suspend fun deleteLto(@Path("ltoId") ltoId: Long): Response<Void>
+
+    // sto
+    @POST("/{ltoId}/sto/add")
+    suspend fun addSto(@Path("ltoId") ltoId: Long, addStoRequest: AddStoRequest): Response<StoResponse>
+
+    @PATCH("/sto/{stoId}/status/update")
+    suspend fun updateStoStatus(@Path("stoId") stoId: Long, updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
+
+    @PATCH("/sto/{stoId}/hit/status/update")
+    suspend fun updateStoHitStatus(@Path("stoId") stoId: Long, updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
+
+    // need a code to update image url list
+
+    @GET("/sto/list")
+    suspend fun getStoList(): List<StoResponse>
+
+    @DELETE("/sto/{stoId}/delete")
+    suspend fun deleteSto(@Path("stoId") stoId: Long): Response<Void>
 
 }

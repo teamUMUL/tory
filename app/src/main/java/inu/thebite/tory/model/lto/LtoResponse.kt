@@ -1,36 +1,37 @@
 package inu.thebite.tory.model.lto
 
 import com.google.gson.annotations.SerializedName
+import inu.thebite.tory.model.domain.DomainResponse
 
 data class LtoResponse(
 
-    @SerializedName("lto_seq")
-    var id: String,
+    @SerializedName("id")
+    var id: Long,
 
-    @SerializedName("tmpl_seq")
+    @SerializedName("templateNum")
     var templateNum: Int,
 
-    @SerializedName("lto_status")
+    @SerializedName("status")
     var status: String,
 
-    @SerializedName("lto_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("lto_contents")
+    @SerializedName("contents")
     var contents: String,
 
     @SerializedName("game")
     var game: String,
 
-    @SerializedName("lto_arr_dt")
+    @SerializedName("achieveDate")
     var achieveDate: String,
 
-    @SerializedName("lto_reg_dt")
+    @SerializedName("registerDate")
     var registerDate: String,
 
-    @SerializedName("del_yn")
+    @SerializedName("delYN")
     var delYN: String,
 
-    @SerializedName("domain_seq")
-    var domainId: Int
+    @SerializedName("domain")
+    var domain: DomainResponse
 )

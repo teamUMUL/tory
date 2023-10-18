@@ -1,60 +1,61 @@
 package inu.thebite.tory.model.sto
 
 import com.google.gson.annotations.SerializedName
+import inu.thebite.tory.model.lto.LtoResponse
 
 data class StoResponse(
 
-    @SerializedName("sto_seq")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("tmpl_seq")
+    @SerializedName("templateNum")
     var templateNum: Int,
 
-    @SerializedName("sto_status")
+    @SerializedName("status")
     var status: String,
 
-    @SerializedName("sto_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("sto_contents")
+    @SerializedName("contents")
     var contents: String,
 
-    @SerializedName("sto_trial_cnt")
+    @SerializedName("count")
     var count: Int,
 
-    @SerializedName("sto_arr_std_cnt")
+    @SerializedName("goal")
     var goal: Int,
 
-    @SerializedName("sto_arr_std_pst")
+    @SerializedName("goalPercent")
     var goalPercent: Int,
 
-    @SerializedName("sto_arr_yn")
+    @SerializedName("achievementOrNot")
     var achievementOrNot: String,
 
-    @SerializedName("sto_urge_tp_cd")
+    @SerializedName("urgeType")
     var urgeType: String,
 
-    @SerializedName("sto_urge_contents")
+    @SerializedName("urgeContent")
     var urgeContent: String,
 
-    @SerializedName("sto_enforce_contents")
+    @SerializedName("enforceContent")
     var enforceContent: String,
 
-    @SerializedName("sto_memo_contents")
+    @SerializedName("memo")
     var memo: String,
 
-    @SerializedName("sto_arr_dt")
+    @SerializedName("hitGoalDate")
     var hitGoalDate: String,
 
-    @SerializedName("sto_reg_dt")
+    @SerializedName("registerDate")
     var registerDate: String,
 
-    @SerializedName("del_yn")
+    @SerializedName("delYN")
     var delYN: String,
 
 //    @SerializedName("sto_image_list")
 //    var imageList: List<ImageResponse>,
 
-    @SerializedName("name")
-    var ltoId: Long,
+    @SerializedName("lto")
+    var lto: LtoResponse,
 )
