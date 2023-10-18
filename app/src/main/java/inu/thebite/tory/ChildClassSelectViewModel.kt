@@ -25,8 +25,8 @@ import java.lang.Exception
 class ChildClassSelectViewModel : ViewModel() {
     private val repo: ChildClassRepoImpl = ChildClassRepoImpl()
 
-    private val _allChildClasses = MutableLiveData<List<ChildClassResponse>>()
-    val allChildClasses: LiveData<List<ChildClassResponse>> = _allChildClasses
+    private val _allChildClasses: MutableStateFlow<List<ChildClassResponse>?> = MutableStateFlow(null)
+    val allChildClasses = _allChildClasses.asStateFlow()
 
     private val _childClasses: MutableStateFlow<List<ChildClassResponse>?> = MutableStateFlow(null)
     val childClasses = _childClasses.asStateFlow()
@@ -50,13 +50,13 @@ class ChildClassSelectViewModel : ViewModel() {
         getAllChildClasses()
     }
 
-    private fun getAllChildClasses(){
+    fun getAllChildClasses(){
         viewModelScope.launch{
             try {
                 val allChildClasses = repo.getAllChildClasses()
                 _allChildClasses.value = allChildClasses
             } catch (e: Exception) {
-                Log.e("forEach문", e.message.toString())
+                Log.e("failed to get all child classes", e.message.toString())
             }
         }
     }

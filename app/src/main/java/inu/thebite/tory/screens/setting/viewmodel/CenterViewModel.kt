@@ -39,9 +39,9 @@ class CenterViewModel : ViewModel() {
     fun clearSelectedCenter() {
         _selectedCenter.value = null
     }
-//    init {
-//        getAllCenters()
-//    }
+    init {
+        getAllCenters()
+    }
 
     fun getAllCenters(){
         viewModelScope.launch {
@@ -50,55 +50,36 @@ class CenterViewModel : ViewModel() {
                 Log.e("가지고 온 센터", allCenters.toString())
                 _allCenters.value = allCenters
             } catch (e: Exception) {
-                Log.e("forEach문", e.message.toString())
+                Log.e("failed to get all centers", e.message.toString())
             }
         }
 
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.getAllCenters().collect{data ->
-//                _allCenters.update { data }
-//            }
-//        }
     }
 
 
     fun createCenter(
-        centerName: String,
+        newCenter: CenterRequest,
     ) {
         viewModelScope.launch {
             try {
-                val newCenterRequest = CenterRequest(
-                    name = centerName
-                )
-                repo.createCenter(newCenterRequest)
+                repo.createCenter(newCenter)
             } catch(e : Exception) {
-                Log.e("addCenter", e.message.toString())
+                Log.e("failed to create center", e.message.toString())
             }
             getAllCenters()
         }
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val newCenterEntity = CenterEntity(
-//                centerName = centerName,
-//            )
-//            repo.createCenter(newCenterEntity)
-//        }
+
     }
 
-    fun updateCenter(centerEntity: CenterResponse, centerName: String) {
+    fun updateCenter(selectedCenter: CenterResponse, updateCenter: CenterRequest) {
         viewModelScope.launch {
             try {
-                val updateCenterRequest = CenterRequest(
-                    name = centerName
-                )
-                repo.updateCenter(centerEntity, updateCenterRequest)
+                repo.updateCenter(selectedCenter, updateCenter)
             } catch (e: Exception) {
-                Log.e("updateCenter", e.message.toString())
+                Log.e("failed to update center", e.message.toString())
             }
         }
-
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.updateCenter(updatedCenterEntity)
-//        }
+        getAllCenters()
     }
 
     fun deleteCenter(centerEntity: CenterResponse) {
@@ -106,12 +87,10 @@ class CenterViewModel : ViewModel() {
             try {
                 repo.deleteCenter(centerEntity)
             } catch (e: Exception) {
-                Log.e("deleteCenter", e.message.toString())
+                Log.e("failed to delete center", e.message.toString())
             }
             getAllCenters()
         }
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.deleteCenter(centerEntity)
-//        }
+
     }
 }

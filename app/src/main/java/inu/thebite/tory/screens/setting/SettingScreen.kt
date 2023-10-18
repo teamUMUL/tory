@@ -44,11 +44,11 @@ fun SettingScreen(
 
     val childClasses by childClassViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassViewModel.selectedChildClass.collectAsState()
-    val allChildClasses by childClassViewModel.allChildClasses.observeAsState(emptyList())
+    val allChildClasses by childClassViewModel.allChildClasses.collectAsState()
 
     val childInfos by childInfoViewModel.childInfos.collectAsState()
     val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
-    val allChildInfos by childInfoViewModel.allChildInfos.observeAsState(emptyList())
+    val allChildInfos by childInfoViewModel.allChildInfos.collectAsState()
 
     val settingTypeList = listOf(
         "센터",
@@ -76,11 +76,11 @@ fun SettingScreen(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(Unit){
-        centerViewModel.getAllCenters()
-        childClassViewModel.getAllChildClasses()
-        childInfoViewModel.getAllChildInfos()
-    }
+//    LaunchedEffect(Unit){
+//        centerViewModel.getAllCenters()
+//        childClassViewModel.getAllChildClasses()
+//        childInfoViewModel.getAllChildInfos()
+//    }
 
     LaunchedEffect(selectedCenter, allChildClasses){
         selectedCenter?.let {
@@ -100,45 +100,43 @@ fun SettingScreen(
 
     if(addCenterDialog){
         AddCenterDialog(
+            context = context,
             centerViewModel = centerViewModel,
             childClassViewModel = childClassViewModel,
             childInfoViewModel = childInfoViewModel,
             setAddCenterDialog = {setAddCenterDialog(it)},
             isUpdate = false,
             selectedCenter = selectedCenter,
-            childClasses = childClasses
         )
     }
     if(updateCenterDialog){
         AddCenterDialog(
+            context = context,
             centerViewModel = centerViewModel,
             childClassViewModel = childClassViewModel,
             childInfoViewModel = childInfoViewModel,
             setAddCenterDialog = {setUpdateCenterDialog(it)},
             isUpdate = true,
             selectedCenter = selectedCenter,
-            childClasses = childClasses
         )
     }
     if(addChildClassDialog){
         AddChildClassDialog(
+            context = context,
             selectedCenter = selectedCenter,
             childClassViewModel = childClassViewModel,
             setAddChildClassDialog = {setAddChildClassDialog(it)},
             selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            childInfos = childInfos,
             isUpdate = false
         )
     }
     if(updateChildClassDialog){
         AddChildClassDialog(
+            context = context,
             selectedCenter = selectedCenter,
             childClassViewModel = childClassViewModel,
             setAddChildClassDialog = {setUpdateChildClassDialog(it)},
             selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            childInfos = childInfos,
             isUpdate = true
         )
     }

@@ -12,12 +12,12 @@ class ChildInfoRepoImpl : ChildInfoRepo {
     private val childRetrofit = RetrofitApi.apiService
 
     override suspend fun createChildInfo(
-        childClass: ChildClassResponse,
-        childInfo: AddStudentRequest
+        selectedChildClass: ChildClassResponse,
+        newChildInfo: AddStudentRequest
     ) {
         childRetrofit.addStudent(
-            classId = childClass.id,
-            addStudentRequest = childInfo)
+            classId = selectedChildClass.id,
+            addStudentRequest = newChildInfo)
     }
 
     override suspend fun getAllChildInfos(): List<StudentResponse> {
@@ -38,7 +38,7 @@ class ChildInfoRepoImpl : ChildInfoRepo {
         childInfo: StudentResponse,
         studentDateRequest: UpdateStudentDateRequest
     ) {
-        childRetrofit.updateStudentStartDate(
+        childRetrofit.updateStudentEndDate(
             studentId = childInfo.id,
             updateStudentDateRequest = studentDateRequest
         )

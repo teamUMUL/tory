@@ -1,45 +1,45 @@
-//@file:Suppress("NAME_SHADOWING")
-//
-//package inu.thebite.tory.screens.education
-//
-//import android.annotation.SuppressLint
-//import android.content.Context
-//import android.util.DisplayMetrics
-//import android.util.Log
-//import android.view.WindowManager
-//import android.widget.Toast
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.foundation.layout.requiredSize
-//import androidx.compose.foundation.rememberScrollState
-//import androidx.compose.foundation.verticalScroll
-//import androidx.compose.material3.Divider
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.LaunchedEffect
-//import androidx.compose.runtime.collectAsState
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.livedata.observeAsState
-//import androidx.compose.runtime.mutableIntStateOf
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.saveable.rememberSaveable
-//import androidx.compose.ui.ExperimentalComposeUiApi
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.platform.LocalContext
-//import androidx.compose.ui.platform.LocalDensity
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.ui.window.Dialog
-//import androidx.compose.ui.window.DialogProperties
-//import co.yml.charts.common.extensions.isNotNull
-//import es.dmoral.toasty.Toasty
-//import inu.thebite.tory.CenterSelectViewModel
-//import inu.thebite.tory.ChildClassSelectViewModel
-//import inu.thebite.tory.ChildSelectViewModel
-//
-//
+@file:Suppress("NAME_SHADOWING")
+
+package inu.thebite.tory.screens.education
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.DisplayMetrics
+import android.util.Log
+import android.view.WindowManager
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import co.yml.charts.common.extensions.isNotNull
+import es.dmoral.toasty.Toasty
+import inu.thebite.tory.CenterSelectViewModel
+import inu.thebite.tory.ChildClassSelectViewModel
+import inu.thebite.tory.ChildSelectViewModel
+
+
 //import inu.thebite.tory.screens.education.Compose.DevelopZoneRow
 //import inu.thebite.tory.screens.education.Compose.Dialog.AddGameItemsDialog
 //import inu.thebite.tory.screens.education.Compose.GraphRow
@@ -58,18 +58,18 @@
 //import inu.thebite.tory.screens.game.GameItem
 //import inu.thebite.tory.screens.game.GameScreen
 //import inu.thebite.tory.screens.game.GameTopBar
-//import kotlin.random.Random
-//
-//
+import kotlin.random.Random
+
+
 //@OptIn(ExperimentalComposeUiApi::class)
 //@SuppressLint("MutableCollectionMutableState", "CheckResult")
 //@Composable
 //fun EducationScreen (
-//    ltoViewModel: LTOViewModel,
+////    ltoViewModel: LTOViewModel,
 //    childSelectViewModel: ChildSelectViewModel,
-//    stoViewModel: STOViewModel,
-//    gameViewModel: GameViewModel,
-//    dragAndDropViewModel: DragAndDropViewModel,
+////    stoViewModel: STOViewModel,
+////    gameViewModel: GameViewModel,
+////    dragAndDropViewModel: DragAndDropViewModel,
 //    centerViewModel: CenterSelectViewModel,
 //    childClassViewModel : ChildClassSelectViewModel,
 //    childInfoViewModel: ChildSelectViewModel
@@ -83,15 +83,15 @@
 //
 //    val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
 //
-//    val gameResultList by gameViewModel.gameResultList.observeAsState()
+////    val gameResultList by gameViewModel.gameResultList.observeAsState()
 //
-//    val stos by stoViewModel.stos.collectAsState()
-//    val selectedSTO by stoViewModel.selectedSTO.collectAsState()
-//    val allSTOs by stoViewModel.allSTOs.collectAsState()
+////    val stos by stoViewModel.stos.collectAsState()
+////    val selectedSTO by stoViewModel.selectedSTO.collectAsState()
+////    val allSTOs by stoViewModel.allSTOs.collectAsState()
 //
-//    val ltos by ltoViewModel.ltos.collectAsState()
-//    val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
-//    val allLTOs by ltoViewModel.allLTOs.observeAsState(emptyList())
+////    val ltos by ltoViewModel.ltos.collectAsState()
+////    val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
+////    val allLTOs by ltoViewModel.allLTOs.observeAsState(emptyList())
 //
 //
 //    val (updateLTOItem, setUpdateLTOItem) = rememberSaveable {
@@ -159,8 +159,8 @@
 //    val (mainGameItem, setMainGameItem) = rememberSaveable {
 //        mutableStateOf("")
 //    }
-//
-//
+
+
 //    LaunchedEffect(selectedLTO, selectedDEVIndex, selectedChildClass, selectedChildInfo, addSTOItem, allSTOs, selectedSTO){
 //        selectedLTO?.let {
 //            selectedChildInfo?.let { selectedChildInfo ->
@@ -566,4 +566,4 @@
 //    }
 //    return korean
 //}
-//
+

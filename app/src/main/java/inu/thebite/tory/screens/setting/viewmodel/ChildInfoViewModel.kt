@@ -24,8 +24,9 @@ import java.lang.Exception
 class ChildInfoViewModel : ViewModel(){
     private val repo: ChildInfoRepoImpl = ChildInfoRepoImpl()
 
-    private val _allChildInfos = MutableLiveData<List<StudentResponse>>()
-    val allChildInfos: LiveData<List<StudentResponse>> = _allChildInfos
+    private val _allChildInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
+    val allChildInfos = _allChildInfos.asStateFlow()
+
 
     private val _childInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
     val childInfos = _childInfos.asStateFlow()
@@ -55,7 +56,7 @@ class ChildInfoViewModel : ViewModel(){
                 val allChildInfos = repo.getAllChildInfos()
                 _allChildInfos.value = allChildInfos
             } catch (e: Exception) {
-                Log.e("forEach문", e.message.toString())
+                Log.e("failed to get all students", e.message.toString())
             }
         }
     }
@@ -75,63 +76,40 @@ class ChildInfoViewModel : ViewModel(){
         }
     }
 
-    // 학생 추가할 때 반 번호도 필요합니다. 추가해주시면 될 듯 해요.
     fun createChildInfo(
-        childName: String,
-        childBirth: String,
-        childEtc: String,
-        parentName: String,
-        startDate: String,
+        selectedChildClass : ChildClassResponse,
+        newChildInfo : AddStudentRequest
     ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val newStudentRequest = AddStudentRequest(
-                name = childName,
-                birth = childBirth,
-                etc = childEtc,
-                parentName = parentName,
-                startDate = startDate
-            )
-            repo.createChildInfo(newStudentRequest)
+        viewModelScope.launch{
+            try {
+                repo.createChildInfo(
+                    selectedChildClass,
+                    newChildInfo
+                )
+            } catch (e: Exception) {
+                Log.e("failed to create student", e.message.toString())
+            }
+            getAllChildInfos()
         }
     }
 
 //    fun updateChildInfo(updatedChildInfoEntity: ChildInfoEntity) {
 //        viewModelScope.launch(Dispatchers.IO) {
-//            repo.updateChildInfo(updatedChildInfoEntity)
+//            repo.upda(updatedChildInfoEntity)
 //        }
 //
 //    }
-//
-//    fun deleteChildInfo(childInfoEntity: ChildInfoEntity) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.deleteChildInfo(childInfoEntity)
-//        }
-//    }
-//
-//
-//    fun deleteChildInfosByCenterName(centerName: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val childInfosToDelete = allChildInfos.value.filter {
-//                it.centerName == centerName
-//            }
-//
-//            childInfosToDelete.forEach { childInfoEntity ->
-//                repo.deleteChildInfo(childInfoEntity)
-//            }
-//        }
-//    }
-//
-//
-//    fun deleteChildInfosByCenterNameAndClassName(centerName: String, className: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val childInfosToDelete = allChildInfos.value.filter {
-//                it.centerName == centerName &&
-//                it.className == className
-//            }
-//
-//            childInfosToDelete.forEach { childInfoEntity ->
-//                repo.deleteChildInfo(childInfoEntity)
-//            }
-//        }
-//    }
+
+    fun deleteChildInfo(selectedChildInfo: StudentResponse) {
+        viewModelScope.launch {
+            try {
+                repo.deleteChildInfo(selectedChildInfo)
+            } catch (e: Exception) {
+                Log.e("failed to delete student", e.message.toString())
+            }
+        }
+    }
+
+
+
 }
