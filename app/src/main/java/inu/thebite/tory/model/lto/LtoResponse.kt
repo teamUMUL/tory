@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class LtoResponse(
 
     @SerializedName("lto_seq")
-    var id: String,
+    var id: Long,
 
     @SerializedName("tmpl_seq")
     var templateNum: Int,

@@ -8,6 +8,7 @@ import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.AddLtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
@@ -74,7 +75,19 @@ interface RetrofitService {
     @DELETE("/{domainId}/delete")
     suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>
 
+    // lto
+    @POST("/{domainId}/lto/add")
+    suspend fun addLto(@Path("domainId") domainId: Long, addLtoRequest: AddLtoRequest): Response<LtoResponse>
 
+    @PATCH("/lto/{ltoId}/status/update")
+    suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
 
+    @PATCH("/lto/{ltoId}/hit/status/update")
+    suspend fun updateLtoHitStatus(@Path("ltoId") ltoId: Long, updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
 
+    @GET("/lto/list")
+    suspend fun getLtoList(): List<LtoResponse>
+
+    @DELETE("/lto/{ltoId}/delete")
+    suspend fun deleteLto(@Path("ltoId") ltoId: Long): Response<Void>
 }
