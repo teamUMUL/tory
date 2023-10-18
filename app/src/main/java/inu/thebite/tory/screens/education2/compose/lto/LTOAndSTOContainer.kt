@@ -21,6 +21,8 @@ fun LTOAndSTOContainer(
             devViewModel = devViewModel,
             ltoViewModel = ltoViewModel
         )
-        STOItemColumn()
+        STOItemColumn(
+            ltoViewModel = ltoViewModel
+        )
     }
 }
