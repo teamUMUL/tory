@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +24,9 @@ import java.lang.Exception
 class ChildSelectViewModel : ViewModel() {
     private val repo: ChildInfoRepoImpl = ChildInfoRepoImpl()
 
-    private val _allChildInfos = MutableLiveData<List<StudentResponse>>()
-    val allChildInfos: LiveData<List<StudentResponse>> = _allChildInfos
+    private val _allChildInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
+    val allChildInfos = _allChildInfos.asStateFlow()
+
 
     private val _childInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
     val childInfos = _childInfos.asStateFlow()
@@ -48,13 +50,13 @@ class ChildSelectViewModel : ViewModel() {
         getAllChildInfos()
     }
 
-    private fun getAllChildInfos(){
+    fun getAllChildInfos(){
         viewModelScope.launch{
             try {
                 val allChildInfos = repo.getAllChildInfos()
                 _allChildInfos.value = allChildInfos
             } catch (e: Exception) {
-                Log.e("forEach문", e.message.toString())
+                Log.e("failed to get all students", e.message.toString())
             }
         }
     }

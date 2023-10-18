@@ -23,10 +23,10 @@ class ChildClassRepoImpl: ChildClassRepo {
 
 
     override suspend fun updateChildClass(
-        childClass: ChildClassResponse,
-        request: ChildClassRequest
+        selectedChildClass: ChildClassResponse,
+        updateChildClass: ChildClassRequest
     ) {
-        childClassRetrofit.updateChildClass(classId = childClass.id, updateChildClass = request)
+        childClassRetrofit.updateChildClass(classId = selectedChildClass.id, updateChildClass = updateChildClass)
     }
 
     override suspend fun deleteChildClass(childClass: ChildClassResponse) {
