@@ -4,30 +4,30 @@ import com.google.gson.annotations.SerializedName
 
 data class DomainResponse(
 
-    @SerializedName("domain_seq")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("tmpl_seq")
+    @SerializedName("templateNum")
     var templateNum: Int,
 
-    @SerializedName("domain_tp_cd")
+    @SerializedName("type")
     var type: String,
 
-    @SerializedName("domain_status")
+    @SerializedName("status")
     var status: String,
 
-    @SerializedName("domain_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("domain_content")
+    @SerializedName("contents")
     var contents: String,
 
-    @SerializedName("domain_use_yn")
+    @SerializedName("useYN")
     var useYN: String,
 
-    @SerializedName("del_yn")
+    @SerializedName("delYN")
     var deleteYN: String,
 
-    @SerializedName("domain_reg_Dt")
+    @SerializedName("registerDate")
     var registerDate: String
 )
