@@ -10,18 +10,25 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.screens.education2.compose.dev.DEVItemRow
 import inu.thebite.tory.screens.education2.compose.lto.LTOAndSTOContainer
+import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
 @Composable
 fun NewEducationScreen(
-
+    devViewModel: DEVViewModel,
+    ltoViewModel: LTOViewModel
 ){
     val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()) {
-        DEVItemRow()
+        DEVItemRow(
+            devViewModel = devViewModel
+        )
         Divider(thickness = 4.dp, color = MaterialTheme.colorScheme.tertiary)
         LTOAndSTOContainer(
-            context = context
+            context = context,
+            devViewModel = devViewModel,
+            ltoViewModel = ltoViewModel
         )
     }
 

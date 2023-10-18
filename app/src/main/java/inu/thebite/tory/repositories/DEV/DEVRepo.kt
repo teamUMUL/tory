@@ -6,8 +6,7 @@ import inu.thebite.tory.model.lto.AddLtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 
 interface DEVRepo {
-    suspend fun createLTO(dev: AddDomainRequest)
-    suspend fun getAllLTOs(): List<DomainResponse>
-//    suspend fun updateLTO(updatedLTO: LTOEntity)
-//    suspend fun deleteLTO(lto: LTOEntity)
+    suspend fun createDEV(newDEV: AddDomainRequest)
+    suspend fun getAllDEVs(): List<DomainResponse>
+    suspend fun deleteDEV(selectedDEV: DomainResponse)
 }

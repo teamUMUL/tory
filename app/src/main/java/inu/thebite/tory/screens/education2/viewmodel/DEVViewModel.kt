@@ -1,19 +1,16 @@
-package inu.thebite.tory.screens.education
+package inu.thebite.tory.screens.education2.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.repositories.Center.CenterRepoImpl
+import inu.thebite.tory.repositories.DEV.DEVRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
-class DEVViewModel: ViewModel() {
-
-//    private val repo: CenterRepoImpl = CenterRepoImpl()
+class DEVViewModel : ViewModel() {
+    private val repo: DEVRepoImpl = DEVRepoImpl()
 
 
     private val _allDEVs: MutableStateFlow<List<DomainResponse>?> = MutableStateFlow(null)
@@ -35,24 +32,18 @@ class DEVViewModel: ViewModel() {
         _selectedDEV.value = null
     }
     init {
-//        getAllDEVs()
+        getAllDEVs()
     }
 
-//    fun getAllDEVs(){
-//        viewModelScope.launch {
-//            try {
-//                val allCenters = repo.getAllCenters()
-//                _allCenters.value = allCenters
-//            } catch (e: Exception) {
-//                Log.e("forEach문", e.message.toString())
-//            }
-//        }
-//
-////        viewModelScope.launch(Dispatchers.IO) {
-////            repo.getAllCenters().collect{data ->
-////                _allCenters.update { data }
-////            }
-////        }
-//    }
+    fun getAllDEVs(){
+        viewModelScope.launch {
+            try {
+                val allDEVs = repo.getAllDEVs()
+                _allDEVs.value = allDEVs
+            } catch (e: Exception) {
+                Log.e("failed to get all DEVs", e.message.toString())
+            }
+        }
+    }
 
 }

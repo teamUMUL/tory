@@ -52,6 +52,8 @@ import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.HomeScreen
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
+import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 //import inu.thebite.tory.screens.education.EducationScreen
 //import inu.thebite.tory.screens.education.GameViewModel
 //import inu.thebite.tory.screens.education.LTOViewModel
@@ -87,6 +89,9 @@ fun MainCompose(
     centerViewModel : CenterViewModel,
     childClassViewModel : ChildClassViewModel,
     childInfoViewModel : ChildInfoViewModel,
+    devViewModel: DEVViewModel,
+    ltoViewModel: LTOViewModel
+
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
 ) {
@@ -346,7 +351,10 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.EDUCATION) {
-                    NewEducationScreen()
+                    NewEducationScreen(
+                        devViewModel = devViewModel,
+                        ltoViewModel = ltoViewModel
+                    )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,
 //                        childSelectViewModel = childSelectViewModel,

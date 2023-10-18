@@ -43,12 +43,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.AddLtoRequest
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLTODialog(
     context : Context,
-    setAddLTOItem: (Boolean) -> Unit
+    setAddLTOItem: (Boolean) -> Unit,
+    selectedLTO : LtoResponse,
+    selectedDEV : DomainResponse,
+    ltoViewModel: LTOViewModel
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
@@ -173,10 +180,19 @@ fun AddLTODialog(
                 onClick = {
                     if(ltoInputValue.text.isNotEmpty()){
                         //LTO 추가 코드
+                        ltoViewModel.createLTO(
+                            selectedDEV = selectedDEV,
+                            newLTO = AddLtoRequest(
+                                name = ltoInputValue.text,
+                                contents = "",
+                                game = gameMode
+                            )
+                        )
                     } else{
                         Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
                     }
-
+                    ltoInputValue = TextFieldValue("")
+                    gameMode = ""
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
             ){

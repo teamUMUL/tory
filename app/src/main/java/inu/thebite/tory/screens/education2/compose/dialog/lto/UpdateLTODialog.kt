@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +52,8 @@ import inu.thebite.tory.model.lto.LtoResponse
 fun UpdateLTOItemDialog(
     context : Context,
     setUpdateLTOItem: (Boolean) -> Unit,
-    selectedLTO : LtoResponse
+    selectedLTO : LtoResponse,
+    ltoViewModel: LTOViewModel
 ) {
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(selectedLTO.name))

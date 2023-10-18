@@ -13,29 +13,29 @@ class LTORepoImpl: LTORepo {
 
     private val ltoRetrofit = RetrofitApi.apiService
 
-    override suspend fun createLTO(domain: DomainResponse, lto: AddLtoRequest) {
-        ltoRetrofit.addLto(domainId = domain.id, addLtoRequest = lto)
+    override suspend fun createLTO(selectedDEV: DomainResponse, newLTO: AddLtoRequest) {
+        ltoRetrofit.addLto(domainId = selectedDEV.id, addLtoRequest = newLTO)
     }
 
     override suspend fun updateLTOStatus(
-        ltoInfo: LtoResponse,
+        selectedLTO: LtoResponse,
         updateLtoStatusRequest: UpdateLtoStatusRequest
     ) {
-        ltoRetrofit.updateLtoStatus(ltoId = ltoInfo.id, updateLtoStatusRequest = updateLtoStatusRequest)
+        ltoRetrofit.updateLtoStatus(ltoId = selectedLTO.id, updateLtoStatusRequest = updateLtoStatusRequest)
     }
 
     override suspend fun updateLtoHitStatus(
-        ltoInfo: LtoResponse,
+        selectedLTO: LtoResponse,
         updateLtoStatusRequest: UpdateLtoStatusRequest
     ) {
-        ltoRetrofit.updateLtoHitStatus(ltoId = ltoInfo.id, updateLtoStatusRequest = updateLtoStatusRequest)
+        ltoRetrofit.updateLtoHitStatus(ltoId = selectedLTO.id, updateLtoStatusRequest = updateLtoStatusRequest)
     }
 
     override suspend fun getAllLTOs(): List<LtoResponse> {
         return ltoRetrofit.getLtoList()
     }
 
-    override suspend fun deleteLTO(ltoInfo: LtoResponse) {
-        ltoRetrofit.deleteLto(ltoId = ltoInfo.id)
+    override suspend fun deleteLTO(selectedLTO: LtoResponse) {
+        ltoRetrofit.deleteLto(ltoId = selectedLTO.id)
     }
 }

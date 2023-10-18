@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.Flow
 interface LTORepo {
     suspend fun createLTO(domain: DomainResponse, lto: AddLtoRequest)
 
-    suspend fun updateLTOStatus(ltoInfo: LtoResponse, updateLtoStatusRequest: UpdateLtoStatusRequest)
+    suspend fun updateLTOStatus(selectedLTO: LtoResponse, updateLtoStatusRequest: UpdateLtoStatusRequest)
 
-    suspend fun updateLtoHitStatus(ltoInfo: LtoResponse, updateLtoStatusRequest: UpdateLtoStatusRequest)
+    suspend fun updateLtoHitStatus(selectedLTO: LtoResponse, updateLtoStatusRequest: UpdateLtoStatusRequest)
 
     suspend fun getAllLTOs(): List<LtoResponse>
 
-    suspend fun deleteLTO(ltoInfo: LtoResponse)
+    suspend fun deleteLTO(selectedLTO: LtoResponse)
 
 }

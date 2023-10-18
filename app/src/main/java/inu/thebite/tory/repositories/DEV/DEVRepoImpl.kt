@@ -11,19 +11,19 @@ class DEVRepoImpl: DEVRepo {
 
     private val devRetrofit = RetrofitApi.apiService
 
-    override suspend fun createLTO(dev: AddDomainRequest) {
-        TODO("Not yet implemented")
+    override suspend fun createDEV(newDEV: AddDomainRequest) {
+        devRetrofit.addDomain(addDomainRequest = newDEV)
     }
 
-    override suspend fun getAllLTOs(): List<DomainResponse> {
-        TODO("Not yet implemented")
+    override suspend fun getAllDEVs(): List<DomainResponse> {
+        return devRetrofit.getDomainList()
     }
 
-//    override suspend fun updateLTO(updatedLTO: LTOEntity) {
-//        ltoDao.updateLTO(updatedLTO)
+//    override suspend fun updateDEV(updatedLTO: LTOEntity) {
+//        devRetrofit.updateD(updatedLTO)
 //    }
-//
-//    override suspend fun deleteLTO(lto: LTOEntity) {
-//        ltoDao.deleteLTO(lto)
-//    }
+
+    override suspend fun deleteDEV(selectedDEV: DomainResponse) {
+        devRetrofit.deleteDomain(selectedDEV.id)
+    }
 }

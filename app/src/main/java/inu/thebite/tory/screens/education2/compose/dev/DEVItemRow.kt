@@ -12,6 +12,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,47 +24,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DEVItemRow(
+    devViewModel: DEVViewModel
 ){
-    val developZoneItems = listOf<String>(
-        "학습준비",
-        "매칭",
-        "동작모방",
-        "언어모방",
-        "변별",
-        "지시따라하기",
-        "요구하기",
-        "명명하기",
-        "인트라",
-        "가나다"
-    )
-    val allDEVs = mutableListOf<DomainResponse>()
-    for (i in 1..10){
-        allDEVs.add(
-            DomainResponse(
-                id = i.toString(),
-                name = "$i. ${developZoneItems[i-1]}",
-                contents = "",
-                type = "",
-                status = "",
-                useYN = "",
-                deleteYN = "",
-                registerDate = "",
-                templateNum = 0,
-            )
-        )
-    }
+
+
+    val selectedDEV by devViewModel.selectedDEV.collectAsState()
+    val allDEVs by devViewModel.allDEVs.collectAsState()
+
     var isExpanded by remember {
         mutableStateOf(false)
     }
-    var selectedDEV by remember {
-        mutableStateOf<DomainResponse?>(null)
-    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,17 +95,20 @@ fun DEVItemRow(
                     .fillMaxWidth()
                     .exposedDropdownSize(),
             ){
-                allDEVs.forEach { dev ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = dev.name)
-                        },
-                        onClick = {
-                            selectedDEV = dev
-                            isExpanded = false
-                        }
-                    )
+                allDEVs?.let {allDEVs ->
+                    allDEVs.forEach { dev ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = dev.name)
+                            },
+                            onClick = {
+                                devViewModel.setSelectedCenter(dev)
+                                isExpanded = false
+                            }
+                        )
+                    }
                 }
+
             }
         }
 
