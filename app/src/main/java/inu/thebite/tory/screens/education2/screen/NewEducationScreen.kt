@@ -11,12 +11,14 @@ import androidx.compose.ui.unit.dp
 import inu.thebite.tory.screens.education2.compose.dev.DEVItemRow
 import inu.thebite.tory.screens.education2.compose.lto.LTOAndSTOContainer
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
 @Composable
 fun NewEducationScreen(
     devViewModel: DEVViewModel,
-    ltoViewModel: LTOViewModel
+    ltoViewModel: LTOViewModel,
+    educationViewModel : EducationViewModel
 ){
     val context = LocalContext.current
 
@@ -29,7 +31,8 @@ fun NewEducationScreen(
         LTOAndSTOContainer(
             context = context,
             devViewModel = devViewModel,
-            ltoViewModel = ltoViewModel
+            ltoViewModel = ltoViewModel,
+            educationViewModel = educationViewModel
         )
     }
 

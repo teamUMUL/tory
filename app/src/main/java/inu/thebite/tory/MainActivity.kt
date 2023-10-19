@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import inu.thebite.tory.screens.HomeScreen
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 //import inu.thebite.tory.screens.education.GameViewModel
 //import inu.thebite.tory.screens.education.LTOViewModel
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
                     val childInfoViewModel : ChildInfoViewModel = koinViewModel()
                     val devViewModel : DEVViewModel = koinViewModel()
                     val ltoViewModel : LTOViewModel = koinViewModel()
+                    val educationViewModel : EducationViewModel = koinViewModel()
 //                    val dragAndDropViewModel : DragAndDropViewModel = koinViewModel()
 //                    val gameViewModel : GameViewModel = koinViewModel()
                     MainCompose(
@@ -59,7 +61,8 @@ class MainActivity : ComponentActivity() {
                         childClassViewModel = childClassViewModel,
                         childInfoViewModel = childInfoViewModel,
                         devViewModel = devViewModel,
-                        ltoViewModel = ltoViewModel
+                        ltoViewModel = ltoViewModel,
+                        educationViewModel = educationViewModel
 //                        dragAndDropViewModel = dragAndDropViewModel,
 //                        gameViewModel = gameViewModel
                     )

@@ -7,13 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import inu.thebite.tory.screens.education2.compose.sto.STOItemColumn
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
 @Composable
 fun LTOAndSTOContainer(
     context : Context,
     devViewModel: DEVViewModel,
-    ltoViewModel: LTOViewModel
+    ltoViewModel: LTOViewModel,
+    educationViewModel : EducationViewModel
 ){
     Row(modifier = Modifier.fillMaxSize()) {
         LTOItemColumn(
@@ -22,7 +24,8 @@ fun LTOAndSTOContainer(
             ltoViewModel = ltoViewModel
         )
         STOItemColumn(
-            ltoViewModel = ltoViewModel
+            ltoViewModel = ltoViewModel,
+            educationViewModel = educationViewModel
         )
     }
 }

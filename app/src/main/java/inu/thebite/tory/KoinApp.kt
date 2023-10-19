@@ -1,15 +1,32 @@
 package inu.thebite.tory
 
 import android.app.Application
+import androidx.room.Room
+import inu.thebite.tory.database.education.EducationDatabase
+import inu.thebite.tory.repositories.education.EducationRepo
+import inu.thebite.tory.repositories.education.EducationRepoImpl
 
 import org.koin.core.context.startKoin
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
 class KoinApp : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
             modules(viewModelModule)
-//            modules(module {
+            modules(module {
+                    //교육 기록
+                single {
+                    Room
+                        .databaseBuilder(this@KoinApp, EducationDatabase::class.java, "education")
+                        .fallbackToDestructiveMigration()
+                        .build()
+                }
+                single {
+                    EducationRepoImpl(database = get())
+                } bind EducationRepo::class
+
 //                //STO
 //                single {
 //                    Room
@@ -61,7 +78,7 @@ class KoinApp : Application() {
 //                single {
 //                    ChildInfoRepoImpl(database = get())
 //                } bind ChildInfoRepo::class
-//            })
+            })
         }
     }
 
