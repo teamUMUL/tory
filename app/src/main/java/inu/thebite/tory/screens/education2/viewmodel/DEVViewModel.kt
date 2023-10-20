@@ -33,7 +33,28 @@ class DEVViewModel : ViewModel() {
     }
     init {
         getAllDEVs()
+        setDummyDEVData()
     }
+
+    fun setDummyDEVData(){
+        val dummyDataList = mutableListOf<DomainResponse>()
+        for(i in 1..10){
+            val dummyData = DomainResponse(
+                id = i.toLong(),
+                templateNum = i,
+                type = "",
+                status = "",
+                name = "$i. 예시 데이터 DEV",
+                contents = "",
+                useYN = "",
+                delYN = "",
+                registerDate = ""
+            )
+            dummyDataList.add(dummyData)
+        }
+        _allDEVs.value = dummyDataList
+    }
+
 
     fun getAllDEVs(){
         viewModelScope.launch {

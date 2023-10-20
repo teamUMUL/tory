@@ -1,6 +1,8 @@
 package inu.thebite.tory.screens.education2.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.database.education.EducationEntity
@@ -28,17 +30,46 @@ class EducationViewModel : ViewModel(), KoinComponent {
     val selectedEducation = _selectedEducation.asStateFlow()
 
     fun setSelectedEducation(selectedSTO: StoResponse) {
-        _selectedEducation.value = allEducations.value!!.find {
+        Log.d("selectedEducation",allEducations.value.toString())
+        val foundEducation = allEducations.value!!.find {
             it.stoId == selectedSTO.id
         }
+        _selectedEducation.value = foundEducation
     }
+
 
     fun clearSelectedEducation() {
         _selectedEducation.value = null
     }
 
+    private val _educationList = MutableLiveData<List<String>>(null)
+
+    val educationList: LiveData<List<String>>
+        get() = _educationList
+
+    fun setEducationList(gameResultList: List<String>) {
+        _educationList.value = gameResultList
+    }
+
     init {
-        getAllEducations()
+//        getAllEducations()
+        setDummyEducationData()
+    }
+
+    fun setDummyEducationData(){
+        val dummyEducationDataList = mutableListOf<EducationEntity>()
+        for (i in 1..10){
+            val dummyEducationData = EducationEntity(
+                stoId = i.toLong(),
+                roundNum = 1,
+                educationResult = listOf(
+                    "n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"
+                )
+            )
+            dummyEducationDataList.add(dummyEducationData)
+        }
+        _allEducations.value = dummyEducationDataList
+        Log.d("allEducations", allEducations.value.toString())
     }
 
     private fun getAllEducations(){
@@ -61,6 +92,35 @@ class EducationViewModel : ViewModel(), KoinComponent {
                 roundNum = roundNum
             )
             repo.createEducation(newEducation)
+        }
+    }
+
+    fun updateSelectedEducationList(selectedEducation: EducationEntity, newEducationList: List<String>){
+        viewModelScope.launch(Dispatchers.IO) {
+            _selectedEducation.value = selectedEducation.copy(
+                educationResult = newEducationList
+            )
+        }
+    }
+
+    fun addEducationRound(selectedEducation: EducationEntity){
+        viewModelScope.launch(Dispatchers.IO) {
+            val beforeRound = selectedEducation.roundNum
+            val beforeEducationList = selectedEducation.educationResult
+
+            repo.updateEducation(
+                selectedEducation.copy(
+                    roundNum = beforeRound+1,
+                    educationResult = List(beforeEducationList.size){"n"}
+                )
+            )
+            val foundEducation = allEducations.value!!.find {
+                it.stoId == selectedEducation.stoId
+            }
+            foundEducation?.roundNum = beforeRound+1
+            foundEducation?.educationResult = List(beforeEducationList.size){"n"}
+
+            _selectedEducation.value = foundEducation
         }
     }
 

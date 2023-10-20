@@ -10,6 +10,7 @@ import inu.thebite.tory.model.lto.AddLtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.repositories.DEV.DEVRepoImpl
 import inu.thebite.tory.repositories.LTO.LTORepoImpl
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -34,13 +35,56 @@ class LTOViewModel: ViewModel() {
         _selectedLTO.value = ltoEntity
     }
 
+    fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val foundLTO = _ltos.value!!.find {
+                it.id == selectedLTO.id
+            }
+            foundLTO?.status = changeState
+            _selectedLTO.value = foundLTO
+        }
+    }
+
     fun clearSelectedCenter() {
         _selectedLTO.value = null
     }
     init {
         getAllLTOs()
+        setLTODummyData()
     }
 
+    fun setLTODummyData(){
+        _ltos.update {
+            val filteredChildClasses = mutableListOf<LtoResponse>()
+            for(i in 1..10){
+                filteredChildClasses.add(
+                    LtoResponse(
+                        id = i.toLong(),
+                        templateNum = i,
+                        status = "",
+                        name = "$i. 예시 데이터 LTO",
+                        contents = i.toString(),
+                        game = "",
+                        achieveDate = "",
+                        registerDate = "",
+                        delYN = "",
+                        domain = DomainResponse(
+                            id = i.toLong(),
+                            templateNum = i,
+                            type = "",
+                            status = "",
+                            name = i.toString(),
+                            contents = "",
+                            useYN = "",
+                            delYN = "",
+                            registerDate = ""
+                        )
+                    )
+                )
+            }
+            filteredChildClasses
+        }
+    }
     fun getAllLTOs(){
         viewModelScope.launch {
             try {

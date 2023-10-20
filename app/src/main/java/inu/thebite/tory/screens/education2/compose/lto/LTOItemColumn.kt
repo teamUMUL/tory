@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,8 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
@@ -51,6 +54,7 @@ import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 @Composable
 fun LTOItemColumn(
     context: Context,
+    selectedLTOStatus : MutableState<String>,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
 ){
@@ -68,16 +72,23 @@ fun LTOItemColumn(
         mutableStateOf(false)
     }
 
+    LaunchedEffect(selectedLTO){
+        selectedLTO?.let { selectedLTO ->
+            selectedLTOStatus.value = selectedLTO.status
+        }
+    }
+
+
     LaunchedEffect(allDEVs, selectedDEV){
         selectedDEV?.let {selectedDEV ->
-            ltoViewModel.getLTOsByDEV(
-                selectedDEV
-            )
+//            ltoViewModel.getLTOsByDEV(
+//                selectedDEV
+//            )
         }
     }
     LaunchedEffect(allLTOs){
         selectedDEV?.let {selectedDEV ->
-            ltoViewModel.getLTOsByDEV(selectedDEV)
+//            ltoViewModel.getLTOsByDEV(selectedDEV)
         }
     }
 
@@ -126,7 +137,44 @@ fun LTOItemColumn(
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .background(
-                                color = if (selectedLTO == lto) MaterialTheme.colorScheme.tertiary else Color.Transparent,
+                                color =
+                                if (selectedLTO == lto) {
+                                    when (selectedLTOStatus.value) {
+                                        "진행중" -> {
+                                            Color.Blue.copy(alpha = 0.2f)
+                                        }
+
+                                        "중지" -> {
+                                            Color.Red.copy(alpha = 0.2f)
+                                        }
+
+                                        "완료" -> {
+                                            Color.Green.copy(alpha = 0.2f)
+                                        }
+
+                                        else -> {
+                                            Color.Gray.copy(alpha = 0.2f)
+                                        }
+                                    }
+                                } else {
+                                    when (lto.status) {
+                                        "진행중" -> {
+                                            Color.Blue.copy(alpha = 0.2f)
+                                        }
+
+                                        "중지" -> {
+                                            Color.Red.copy(alpha = 0.2f)
+                                        }
+
+                                        "완료" -> {
+                                            Color.Green.copy(alpha = 0.2f)
+                                        }
+
+                                        else -> {
+                                            Color.Gray.copy(alpha = 0.2f)
+                                        }
+                                    }
+                                },
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable(
@@ -135,10 +183,10 @@ fun LTOItemColumn(
                             ) {
                                 if (selectedLTO == lto) {
                                     ltoViewModel.clearSelectedCenter()
+                                    selectedLTOStatus.value = ""
                                 } else {
                                     ltoViewModel.setSelectedLTO(lto)
                                 }
-
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
@@ -164,7 +212,9 @@ fun LTOItemColumn(
                                     Text(
                                         text = "${lto.name}",
                                         fontWeight = FontWeight.SemiBold,
-                                        fontSize = 22.sp
+                                        fontSize = 22.sp,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
                                     )
                                     Text(
                                         text = "등록날짜 : ${lto.registerDate}",
