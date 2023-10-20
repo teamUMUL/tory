@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,187 +44,47 @@ import inu.thebite.tory.screens.HomeViewModel
 fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(),
 ){
-    val ltoViewModel : LTOViewModel = viewModel()
-//    val stoViewModel : STOViewModel = viewModel()
-
-    val (dialogOpen, setDialogOpen) = remember {
-        mutableStateOf(false)
-    }
-    var isDialogVisible by remember { mutableStateOf(false) }
-
     Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Color(0xFFF1F1F1))
-        , verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+        .fillMaxWidth()
+        .fillMaxHeight()
+        .background(color = Color(0xFFEFEFEF))
 
+    ) {
+        Text(
+            text = "Dash board",
+            modifier = Modifier.fillMaxWidth().height(50.dp).padding(start = 16.dp),
+            style = TextStyle(
+                fontSize = 33.sp,
+                fontWeight = FontWeight(400),
+                color = Color(0xFF000000),
+
+                textAlign = TextAlign.Start,
+            )
+        )
         Row(
             modifier = Modifier
-                .padding(top = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(44.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
+                .fillMaxWidth()
+                .height(120.dp)
+                .padding(start = 16.dp)
+
         ) {
             ChainCard()
+            Spacer(modifier = Modifier.width(32.dp))
             ClassCard()
+            Spacer(modifier = Modifier.width(32.dp))
             ChildrenCard()
 
         }
-        Box(
-            modifier = Modifier
-                .border(
-                    width = 3.dp,
-                    color = Color(0x33000000),
-                    shape = RoundedCornerShape(size = 20.dp)
-                )
-                .width(1000.dp)
-                .height(708.dp)
-                .background(color = Color(0xFFF4F4F4), shape = RoundedCornerShape(size = 20.dp))
-                .align(Alignment.CenterHorizontally)
-                .padding(8.dp)
 
-
-
-        ) {
             Row (modifier = Modifier
                 .padding(16.dp),
                 horizontalArrangement = Arrangement.Center){
                 childInfor()
                 editProgram()
                 reportList()
-//                Column (modifier = Modifier
-//                    .padding(start = 12.dp, top = 16.dp)
-//                    .width(132.dp)
-//                    .height(405.dp)
-//
-//                ){
-//                    Box(modifier = Modifier
-//                        .width(131.dp)
-//                        .height(124.dp)
-//                        .padding(8.dp)
-//                        .background(color = Color(0xFF13A694), shape = RoundedCornerShape(size = 20.dp))
-//                        ){
-//                        Text(modifier = Modifier
-//                            .width(67.dp)
-//                            .height(22.dp)
-//                            .align(Alignment.Center),
-//                            text = "상담일지",
-//                            style = TextStyle(
-//                                fontSize = 18.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFFFFFFFF),
-//
-//                                )
-//                        )
-//                    }
-//                    Box(modifier = Modifier
-//                        .width(131.dp)
-//                        .height(124.dp)
-//                        .padding(8.dp)
-//                        .background(color = Color(0xFF13A694), shape = RoundedCornerShape(size = 20.dp))
-//                    ){
-//                        Text(modifier = Modifier
-//                            .width(67.dp)
-//                            .height(22.dp)
-//                            .align(Alignment.Center),
-//                            text = "아동영상",
-//                            style = TextStyle(
-//                                fontSize = 18.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFFFFFFFF),
-//
-//                                )
-//                        )
-//                    }
-//                    Box(modifier = Modifier
-//                        .width(131.dp)
-//                        .height(124.dp)
-//                        .padding(8.dp)
-//                        .background(color = Color(0xFF636363), shape = RoundedCornerShape(size = 20.dp))
-//                    ){
-//                        Text(modifier = Modifier
-//                            .width(50.dp)
-//                            .height(22.dp)
-//                            .align(Alignment.Center),
-//                            text = "보고서",
-//                            style = TextStyle(
-//                                fontSize = 18.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFFFFFFFF),
-//
-//                                )
-//                        )
-//                    }
-//
-//                }
-//                Column (modifier = Modifier
-//                    .padding(start = 12.dp, top = 16.dp)
-//                    .width(132.dp)
-//                    .height(405.dp)
-//
-//                ){
-//                    Box(modifier = Modifier
-//                        .width(131.dp)
-//                        .height(124.dp)
-//                        .padding(8.dp)
-//                        .background(color = Color(0xFF00CD6B), shape = RoundedCornerShape(size = 20.dp))
-//                    ){
-//                        Text(modifier = Modifier
-//                            .width(67.dp)
-//                            .height(22.dp)
-//                            .align(Alignment.Center),
-//                            text = "완료목록",
-//                            style = TextStyle(
-//                                fontSize = 18.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFFFFFFFF),
-//
-//                                )
-//                        )
-//                    }
-//                    Box(modifier = Modifier
-//                        .width(131.dp)
-//                        .height(124.dp)
-//                        .padding(8.dp)
-//                        .background(color = Color(0xFF636363), shape = RoundedCornerShape(size = 20.dp))
-//                    ){
-//                        Text(modifier = Modifier
-//                            .width(50.dp)
-//                            .height(22.dp)
-//                            .align(Alignment.Center),
-//                            text = "그래프",
-//                            style = TextStyle(
-//                                fontSize = 18.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFFFFFFFF),
-//
-//                                )
-//                        )
-//                    }
-//                    Box(modifier = Modifier
-//                        .width(131.dp)
-//                        .height(124.dp)
-//                        .padding(8.dp)
-//                        .background(color = Color(0xFF636363), shape = RoundedCornerShape(size = 20.dp))
-//                    ){
-//                        Text(modifier = Modifier
-//                            .width(83.dp)
-//                            .height(44.dp)
-//                            .align(Alignment.Center),
-//                            text = "크리테리아\n그래프",
-//                            style = TextStyle(
-//                                fontSize = 18.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFFFFFFFF),
-//                                textAlign = TextAlign.Center
-//
-//                                )
-//                        )
-//                    }
-//
-//                }
+
             }
-        }
+
     }
 
 }

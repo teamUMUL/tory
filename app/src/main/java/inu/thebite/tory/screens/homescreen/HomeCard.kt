@@ -3,9 +3,11 @@ package inu.thebite.tory.screens.homescreen
 import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,44 +80,73 @@ fun ChainCard(
         )
     }
     Card(
-        modifier = Modifier
-            .width(280.dp)
-            .height(120.dp)
-            .padding(8.dp)
-            .background(
-                color = Color(0xFF59B791),
-                shape = RoundedCornerShape(size = 20.dp)
-            ),
-
+        modifier = Modifier     //카드 그림자
+            .width(311.dp)
+            .height(105.dp)
+            .background(color = Color(0xFFC7C7C7), shape = RoundedCornerShape(size = 10.dp))
+            .clickable { isDialogVisible = true }
 
         ) {
 
 
 
-        Column(modifier = Modifier
-            .padding(top = 5.dp)
-            .width(250.dp)
-            .height(92.dp)
-            .clickable { isDialogVisible = true }
+        Box(modifier = Modifier   //카드 하얀 배경
+            .width(309.dp)
+            .height(103.dp)
             .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp)),
 
             ) {
+
             Row(
                 modifier = Modifier
-                    .width(230.dp)
-                    .height(70.dp)
-                    .padding(top = 10.dp, start = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .padding(4.dp)
+                    .width(200.dp)
+                    .height(102.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Center"+"  "+centerName,
-                    style = TextStyle(
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                        textAlign = TextAlign.Center)
-                )
+                Image(modifier= Modifier
+                    .padding(16.dp)
+                    .width(32.dp)
+                    .align(Alignment.CenterVertically)
+                    .height(36.dp),
+                    painter = painterResource(id = R.drawable.center_icon),
+                    contentDescription = "null",
+                    contentScale = ContentScale.Crop)
+
+                Column (modifier =Modifier
+                    .padding(start = 40.dp, top = 20.dp)
+                    .width(150.dp)
+                    .height(100.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        modifier = Modifier
+                            .width(140.dp)
+                            .height(40.dp),
+                        text = centerName,
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF0047B3),
+                            letterSpacing = 0.28.sp,
+                            textAlign = TextAlign.Center)
+                        )
+                    Text(modifier = Modifier
+                        .width(53.dp)
+                        .height(30.dp),
+                        text = "Center",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFA6ACBE),
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 0.14.sp,
+                        )
+                    )
+                }
+
 
 
 
@@ -144,46 +177,73 @@ fun ClassCard(
         )
     }
     Card(
-        modifier = Modifier
-            .width(280.dp)
-            .height(120.dp)
-            .padding(8.dp)
-            .background(
-                color = Color(0xFF59B791),
-                shape = RoundedCornerShape(size = 20.dp)
-            ),
-
-
-        ) {
-
-
-
-        Column(modifier = Modifier
-            .padding(top = 5.dp)
-            .width(250.dp)
-            .height(92.dp)
+        modifier = Modifier     //카드 그림자
+            .width(311.dp)
+            .height(105.dp)
+            .background(color = Color(0xFFC7C7C7), shape = RoundedCornerShape(size = 10.dp))
             .clickable { isDialogVisible = true }
+
+    ) {
+
+
+
+        Box(modifier = Modifier   //카드 하얀 배경
+            .width(309.dp)
+            .height(103.dp)
             .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp)),
 
-
             ) {
+
             Row(
                 modifier = Modifier
+                    .padding(4.dp)
                     .width(250.dp)
-                    .height(70.dp)
-                    .padding(top = 10.dp, start = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-
+                    .height(102.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Class "+className,
-                    style = TextStyle(
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                        textAlign = TextAlign.Center)
-                )
+                Image(modifier= Modifier
+                    .padding(16.dp)
+                    .width(32.dp)
+                    .align(Alignment.CenterVertically)
+                    .height(36.dp),
+                    painter = painterResource(id = R.drawable.class_icon),
+                    contentDescription = "null",
+                    contentScale = ContentScale.Fit)
+
+                Column (modifier =Modifier
+                    .padding(top = 20.dp)
+                    .width(250.dp)
+                    .height(100.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        modifier = Modifier
+                            .width(250.dp)
+                            .height(40.dp),
+                        text = className,
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF6100FF),
+                            letterSpacing = 0.28.sp,
+                            textAlign = TextAlign.Center)
+                    )
+                    Text(modifier = Modifier
+                        .width(53.dp)
+                        .height(30.dp),
+                        text = "Class",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFA6ACBE),
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 0.14.sp,
+                        )
+                    )
+                }
+
 
 
 
@@ -214,44 +274,73 @@ fun ChildrenCard(
         )
     }
     Card(
-        modifier = Modifier
-            .width(280.dp)
-            .height(120.dp)
-            .padding(8.dp)
-            .background(
-                color = Color(0xFF59B791),
-                shape = RoundedCornerShape(size = 20.dp)
-            ),
-
-
-        ) {
-
-
-
-        Column(modifier = Modifier
-            .padding(top = 5.dp)
-            .width(250.dp)
-            .height(92.dp)
+        modifier = Modifier     //카드 그림자
+            .width(311.dp)
+            .height(105.dp)
+            .background(color = Color(0xFFC7C7C7), shape = RoundedCornerShape(size = 10.dp))
             .clickable { isDialogVisible = true }
+
+    ) {
+
+
+
+        Box(modifier = Modifier   //카드 하얀 배경
+            .width(309.dp)
+            .height(103.dp)
             .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp)),
 
             ) {
+
             Row(
                 modifier = Modifier
+                    .padding(4.dp)
                     .width(250.dp)
-                    .height(70.dp)
-                    .padding(top = 10.dp, start = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .height(102.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Child    "+childName,
-                    style = TextStyle(
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
-                        textAlign = TextAlign.Center)
-                )
+                Image(modifier= Modifier
+                    .padding(16.dp)
+                    .width(32.dp)
+                    .align(Alignment.CenterVertically)
+                    .height(36.dp),
+                    painter = painterResource(id = R.drawable.child_icon),
+                    contentDescription = "null",
+                    contentScale = ContentScale.Fit)
+
+                Column (modifier =Modifier
+                    .padding(top = 20.dp)
+                    .width(250.dp)
+                    .height(100.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        modifier = Modifier
+                            .width(250.dp)
+                            .height(40.dp),
+                        text = childName,
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF009733),
+                            letterSpacing = 0.28.sp,
+                            textAlign = TextAlign.Center)
+                    )
+                    Text(modifier = Modifier
+                        .width(53.dp)
+                        .height(30.dp),
+                        text = "Child",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFA6ACBE),
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 0.14.sp,
+                        )
+                    )
+                }
+
 
 
 
