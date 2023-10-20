@@ -1,10 +1,14 @@
 package inu.thebite.tory.screens.homescreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,260 +18,213 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.R
 
 @Composable
-fun childInfor(){
-    Box(
-        modifier = Modifier
-            .width(309.dp)
-            .height(426.dp)
-            .padding(12.dp)
-            .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 20.dp))
-    ) {
-        Column(modifier = Modifier
-            .padding(start = 24.dp, top = 4.dp)
+fun childInfor() {
 
-
-
+        Row(modifier= Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
+            .width(241.dp)
+            .height(440.dp)
+            .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
+            .padding(start = 25.dp, top = 15.dp, end = 25.dp, bottom = 15.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = "이름",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF0E4B32),
+            Column(modifier= Modifier
+                .width(191.dp)
+                .height(414.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                Image(modifier = Modifier
+                    .width(180.dp)
+                    .height(180.dp),
+                    painter = painterResource(id = R.drawable.chart_round),
+                    contentDescription ="null",
+                    contentScale = ContentScale.Fit)
+                Text(
+                    text = "이름",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF0047B3))
                 )
-            )
-            Spacer(modifier = Modifier.size(23.dp))
-            Text(
-                text = "김토리",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF000000),
+                Text(
+                    text = "김토리",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF000000),
 
-                    )
-            )
-            Spacer(modifier = Modifier.size(23.dp))
-            Text(
-                text = "생년월일",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF0E4B32),
+                        )
+                )
+                Text(
+                    text = "생년월일",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF0047B3),
 
-                    )
-            )
-            Spacer(modifier = Modifier.size(23.dp))
-            Text(
-                text = "2020-01-10",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF000000),
+                        )
+                )
+                Text(
+                    text = "2020-01-10",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF000000),
 
+                        )
+                )
+                Text(
+                    text = "프로그램 기간",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF0047B3),
                     )
-            )
-            Spacer(modifier = Modifier.size(23.dp))
-            Text(
-                text = "프로그램 기간",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF0E4B32),
                 )
-            )
-            Spacer(modifier = Modifier.size(23.dp))
-            Text(
-                text = "2023-01-01~2023-01-01",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF000000),
+                Text(
+                    text = "2023-01-01~2023-01-01",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF000000),
+                    )
                 )
-            )
-            Spacer(modifier = Modifier.size(23.dp))
-            Text(
-                text = "특징",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF0E4B32),
+                Text(
+                    text = "특징",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF0047B3),
+                    )
                 )
-            )
-            Spacer(modifier = Modifier.size(23.dp))
-            Text(
-                text = "발달지연",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF000000),
+                Text(
+                    text = "발달지연",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFF000000),
+                    )
                 )
-            )
+            }
         }
-    }
-}
-@Composable
-fun editProgram(){
-    Box(modifier = Modifier
-        .width(309.dp)
-        .height(426.dp)
-        .padding(12.dp)
-        .background(color = Color(0xFF59B791), shape = RoundedCornerShape(size = 20.dp))
-        .clickable {  },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(modifier = Modifier
-            .background(color = Color(0xFF59B791)),
-            text = "프로그램 편집\n&데일리",
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight(400),
-                color = Color(0xFFFFFFFF),
-                textAlign = TextAlign.Center,
-            )
-        )
 
-    }
 }
-
 @Composable
 fun reportList(){
-    Column (modifier = Modifier
-        .padding(start = 12.dp, top = 16.dp)
-        .width(132.dp)
-        .height(405.dp)
-
+    Row (
+        Modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+            .height(70.dp)
     ){
-        Box(modifier = Modifier
-            .width(131.dp)
-            .height(124.dp)
-            .padding(8.dp)
-            .background(color = Color(0xFF13A694), shape = RoundedCornerShape(size = 20.dp))
-        ){
-            Text(modifier = Modifier
-                .width(67.dp)
-                .height(22.dp)
-                .align(Alignment.Center),
-                text = "상담일지",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-
-                    )
+        Row(modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
             )
+            .width(144.dp)
+            .height(55.dp)
+            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp)),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "상담일지")
         }
-        Box(modifier = Modifier
-            .width(131.dp)
-            .height(124.dp)
-            .padding(8.dp)
-            .background(color = Color(0xFF13A694), shape = RoundedCornerShape(size = 20.dp))
-        ){
-            Text(modifier = Modifier
-                .width(67.dp)
-                .height(22.dp)
-                .align(Alignment.Center),
-                text = "아동영상",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-
-                    )
+        Spacer(modifier = Modifier.width(30.dp))
+        Row(modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
             )
+            .width(144.dp)
+            .height(55.dp)
+            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp)),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "아동영상")
         }
-        Box(modifier = Modifier
-            .width(131.dp)
-            .height(124.dp)
-            .padding(8.dp)
-            .background(color = Color(0xFF636363), shape = RoundedCornerShape(size = 20.dp))
-        ){
-            Text(modifier = Modifier
-                .width(50.dp)
-                .height(22.dp)
-                .align(Alignment.Center),
-                text = "보고서",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-
-                    )
+        Spacer(modifier = Modifier.width(30.dp))
+        Row(modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
             )
+            .width(144.dp)
+            .height(55.dp)
+            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp)),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "보고서")
+        }
+        Spacer(modifier = Modifier.width(30.dp))
+        Row(modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
+            .width(144.dp)
+            .height(55.dp)
+            .background(color = Color(0xFF00D696), shape = RoundedCornerShape(size = 10.dp)),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "완료목록")
+        }
+        Spacer(modifier = Modifier.width(30.dp))
+        Row(modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
+            .width(144.dp)
+            .height(55.dp)
+            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp)),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "그래프")
+        }
+        Spacer(modifier = Modifier.width(30.dp))
+        Row(modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
+            .width(144.dp)
+            .height(55.dp)
+            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp)),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), textAlign = TextAlign.Center, fontWeight = FontWeight(400),text = "크리테리아\n그래프")
         }
 
     }
-    Column (modifier = Modifier
-        .padding(start = 12.dp, top = 16.dp)
-        .width(132.dp)
-        .height(405.dp)
 
-    ){
-        Box(modifier = Modifier
-            .width(131.dp)
-            .height(124.dp)
-            .padding(8.dp)
-            .background(color = Color(0xFF00CD6B), shape = RoundedCornerShape(size = 20.dp))
-        ){
-            Text(modifier = Modifier
-                .width(67.dp)
-                .height(22.dp)
-                .align(Alignment.Center),
-                text = "완료목록",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-
-                    )
-            )
-        }
-        Box(modifier = Modifier
-            .width(131.dp)
-            .height(124.dp)
-            .padding(8.dp)
-            .background(color = Color(0xFF636363), shape = RoundedCornerShape(size = 20.dp))
-        ){
-            Text(modifier = Modifier
-                .width(50.dp)
-                .height(22.dp)
-                .align(Alignment.Center),
-                text = "그래프",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-
-                    )
-            )
-        }
-        Box(modifier = Modifier
-            .width(131.dp)
-            .height(124.dp)
-            .padding(8.dp)
-            .background(color = Color(0xFF636363), shape = RoundedCornerShape(size = 20.dp))
-        ){
-            Text(modifier = Modifier
-                .width(83.dp)
-                .height(44.dp)
-                .align(Alignment.Center),
-                text = "크리테리아\n그래프",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-                    textAlign = TextAlign.Center
-
-                )
-            )
-        }
-
-    }
 }
