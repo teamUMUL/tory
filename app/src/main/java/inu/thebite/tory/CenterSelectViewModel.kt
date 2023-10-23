@@ -1,6 +1,7 @@
 package inu.thebite.tory
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -38,6 +39,21 @@ class CenterSelectViewModel : ViewModel(), KoinComponent {
     fun clearSelectedCenter() {
         _selectedCenter.value = null
     }
+
+
+    private val _tempSelectedCenter = MutableStateFlow<CenterEntity?>(null)
+    val tempSelectedCenter = _tempSelectedCenter.asStateFlow()
+
+    fun setTempSelectedCenter(centerEntity: CenterEntity) {
+
+        _tempSelectedCenter.value = centerEntity
+    }
+
+    fun clearTempSelectedCenter() {
+        _tempSelectedCenter.value = null
+    }
+
+
     init {
         getAllCenters()
     }

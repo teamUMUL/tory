@@ -2,6 +2,7 @@ package inu.thebite.tory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import inu.thebite.tory.database.ChildClass.ChildClassEntity
 import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
 import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepo
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +36,23 @@ class ChildSelectViewModel : ViewModel(), KoinComponent {
     fun clearSelectedChildInfo() {
         _selectedChildInfo.value = null
     }
+
+
+    //임시로 선택된 아이
+    private val _tempSelectedChildInfo = MutableStateFlow<ChildInfoEntity?>(null)
+    val tempSelectedChildInfo = _tempSelectedChildInfo.asStateFlow()
+
+    fun setTempSelectedChildInfo(childInfoEntity: ChildInfoEntity) {
+
+        _tempSelectedChildInfo.value = childInfoEntity
+    }
+
+    fun clearTempSelectedChildInfo() {
+        _tempSelectedChildInfo.value = null
+    }
+
+
+
 
     fun clearChildInfos(){
         _childInfos.value = null

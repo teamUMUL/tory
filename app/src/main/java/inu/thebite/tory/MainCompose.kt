@@ -96,26 +96,19 @@ fun MainCompose(
     }
     val allCenters by centerSelectViewModel.allCenters.collectAsState()
     val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
+    val _selectedCenter by centerSelectViewModel.tempSelectedCenter.collectAsState()
+
 
     val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
     val childClasses by childClassSelectViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
+    val _selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
 
     val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
     val childInfos by childSelectViewModel.childInfos.collectAsState()
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
+    val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
 
-    var _selectedCenter by rememberSaveable{
-        mutableStateOf<CenterEntity?>(null)
-
-    }
-    var _selectedChildClass by rememberSaveable{
-        mutableStateOf<ChildClassEntity?>(null)
-
-    }
-    var _selectedChildInfo by rememberSaveable{
-        mutableStateOf<ChildInfoEntity?>(null)
-    }
 
     LaunchedEffect(_selectedCenter, allCenters){
         _selectedCenter?.let {
@@ -189,10 +182,8 @@ fun MainCompose(
                             items = allCenters,
                             selectedCenter = _selectedCenter,
                             childClassSelectViewModel = childClassSelectViewModel,
+                            centerSelectViewModel = centerSelectViewModel,
                             childSelectViewModel = childSelectViewModel,
-                            setSelectedCenter = {_selectedCenter = it},
-                            setSelectedChildClass =  {_selectedChildClass = it},
-                            setSelectedChildInfo = {_selectedChildInfo = it}
                         )
 
                     }
@@ -209,8 +200,7 @@ fun MainCompose(
                             items = childClasses,
                             selectedChildClass = _selectedChildClass,
                             childSelectViewModel = childSelectViewModel,
-                            setSelectedChildClass = {_selectedChildClass = it},
-                            setSelectedChildInfo = {_selectedChildInfo = it}
+                            childClassSelectViewModel = childClassSelectViewModel,
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
@@ -226,7 +216,7 @@ fun MainCompose(
                         ChildInfoControl(
                             items = childInfos,
                             selectedChildInfo = _selectedChildInfo,
-                            setSelectedChildInfo = {_selectedChildInfo = it}
+                            childSelectViewModel = childSelectViewModel
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
@@ -382,11 +372,9 @@ fun MainCompose(
 fun CenterControl(
     items: List<CenterEntity>,
     selectedCenter: CenterEntity?,
+    centerSelectViewModel: CenterSelectViewModel,
     childClassSelectViewModel: ChildClassSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
-    setSelectedCenter : (CenterEntity?) -> Unit,
-    setSelectedChildClass : (ChildClassEntity?) -> Unit,
-    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -427,16 +415,15 @@ fun CenterControl(
                 },
                 onClick = {
                     if(selectedCenter == item){
-                        setSelectedCenter(null)
+                        centerSelectViewModel.clearTempSelectedCenter()
                         childClassSelectViewModel.clearChildClasses()
                     } else {
-                        setSelectedCenter(item)
+                        centerSelectViewModel.setTempSelectedCenter(item)
                         childClassSelectViewModel.getChildClassesByCenterName(item.centerName)
                     }
                     childSelectViewModel.clearChildInfos()
-                    setSelectedChildClass(null)
-                    setSelectedChildInfo(null)
-
+                    childClassSelectViewModel.clearTempSelectedChildClass()
+                    childSelectViewModel.clearTempSelectedChildInfo()
                 },
                 shape = when(index) {
                     //왼쪽 바깥
@@ -499,8 +486,7 @@ fun ChildClassControl(
     items: List<ChildClassEntity>,
     selectedChildClass: ChildClassEntity?,
     childSelectViewModel: ChildSelectViewModel,
-    setSelectedChildClass : (ChildClassEntity?) -> Unit,
-    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
+    childClassSelectViewModel: ChildClassSelectViewModel,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -541,17 +527,16 @@ fun ChildClassControl(
                 },
                 onClick = {
                     if(selectedChildClass == item){
-                        setSelectedChildClass(null)
+                        childClassSelectViewModel.clearTempSelectedChildClass()
 
                     } else {
-                        setSelectedChildClass(item)
-
+                        childClassSelectViewModel.setTempSelectedChildClass(item)
                         childSelectViewModel.getChildInfosByCenterNameAndClassName(
                             item.centerName,
                             item.className
                         )
                     }
-                    setSelectedChildInfo(null)
+                    childSelectViewModel.clearTempSelectedChildInfo()
                     childSelectViewModel.clearChildInfos()
                 },
                 shape = when(index) {
@@ -615,7 +600,7 @@ fun ChildClassControl(
 fun ChildInfoControl(
     items: List<ChildInfoEntity>,
     selectedChildInfo: ChildInfoEntity?,
-    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
+    childSelectViewModel: ChildSelectViewModel,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -656,9 +641,9 @@ fun ChildInfoControl(
                 },
                 onClick = {
                     if(selectedChildInfo == item){
-                        setSelectedChildInfo(null)
+                        childSelectViewModel.clearTempSelectedChildInfo()
                     } else {
-                        setSelectedChildInfo(item)
+                        childSelectViewModel.setTempSelectedChildInfo(item)
                     }
                 },
                 shape = when(index) {
