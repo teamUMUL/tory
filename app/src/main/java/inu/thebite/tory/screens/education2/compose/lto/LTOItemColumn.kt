@@ -80,6 +80,11 @@ fun LTOItemColumn(
         }
     }
 
+    LaunchedEffect(selectedLTOStatus.value){
+        selectedDEV?.let {selectedDEV ->
+            ltoViewModel.getLTOsByDEV(selectedDEV)
+        }
+    }
 
     LaunchedEffect(allDEVs, selectedDEV){
         selectedDEV?.let {selectedDEV ->
@@ -140,22 +145,22 @@ fun LTOItemColumn(
                             )
                             .background(
                                 color =
-                                    when (lto.status) {
-                                        "진행중" -> {
-                                            Color.Blue.copy(alpha = 0.2f)
-                                        }
+                                when (lto.status) {
+                                    "진행중" -> {
+                                        Color.Blue.copy(alpha = 0.2f)
+                                    }
 
-                                        "중지" -> {
-                                            Color.Red.copy(alpha = 0.2f)
-                                        }
+                                    "중지" -> {
+                                        Color.Red.copy(alpha = 0.2f)
+                                    }
 
-                                        "완료" -> {
-                                            Color.Green.copy(alpha = 0.2f)
-                                        }
+                                    "완료" -> {
+                                        Color.Green.copy(alpha = 0.2f)
+                                    }
 
-                                        else -> {
-                                            Color.Gray.copy(alpha = 0.2f)
-                                        }
+                                    else -> {
+                                        Color.Gray.copy(alpha = 0.2f)
+                                    }
                                 },
                                 shape = RoundedCornerShape(8.dp)
                             )
