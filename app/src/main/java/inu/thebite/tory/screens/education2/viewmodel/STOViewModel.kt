@@ -59,6 +59,7 @@ class STOViewModel : ViewModel() {
             )
             repo.updateStoStatus(selectedSTO, updateSTOStatus)
             getAllLTOs()
+            getSTOsByLTO(selectedSTO.lto)
         }
     }
     fun getSTOsByLTO(
