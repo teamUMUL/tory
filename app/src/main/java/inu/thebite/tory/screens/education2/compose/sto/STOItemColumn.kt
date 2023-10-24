@@ -90,6 +90,7 @@ fun STOItemColumn(
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val stos by stoViewModel.stos.collectAsState()
+    val allSTOs by stoViewModel.allSTOs.collectAsState()
 
     val (updateSTODialog, setUpdateSTODialog) = remember {
         mutableStateOf(false)
@@ -119,6 +120,12 @@ fun STOItemColumn(
     LaunchedEffect(selectedLTO){
         selectedLTO?.let { selectedLTO ->
             stoViewModel.getSTOsByLTO(selectedLTO)
+        }
+    }
+
+    LaunchedEffect(allSTOs){
+        selectedLTO?.let {selectedLTO ->
+            stoViewModel.getSTOsByLTO(selectedLTO = selectedLTO)
         }
     }
 

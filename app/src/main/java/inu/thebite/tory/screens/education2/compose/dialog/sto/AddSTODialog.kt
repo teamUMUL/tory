@@ -159,6 +159,13 @@ fun AddSTODialog(
                                 memo = stoMemoInputValue.text
                             )
                         )
+                        stoNameInputValue = TextFieldValue("")
+                        stoContentInputValue = TextFieldValue("")
+                        stoSuccessStandardInputValue = TextFieldValue("")
+                        stoMethodInputValue = TextFieldValue("")
+                        stoScheduleInputValue = TextFieldValue("")
+                        stoMemoInputValue = TextFieldValue("")
+                        setAddSTOItem(false)
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
