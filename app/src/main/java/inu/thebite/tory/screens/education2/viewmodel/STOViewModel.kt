@@ -8,6 +8,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.repositories.STO.STORepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,20 +100,22 @@ class STOViewModel : ViewModel() {
         }
     }
 
-//    fun updateLTO(
-//        selectedLTO : LtoResponse
-//    ){
-//        viewModelScope.launch {
-//            try {
-//                repo.updateLTOStatus(
-//                    selectedLTO = selectedLTO,
-//                )
-//            } catch (e: Exception) {
-//                Log.e("failed to delete LTO", e.message.toString())
-//            }
-//            getAllLTOs()
-//        }
-//    }
+    fun updateSTO(
+        selectedSTO: StoResponse,
+        updateSTO : UpdateStoRequest
+    ){
+        viewModelScope.launch {
+            try {
+                repo.updateSto(
+                    stoInfo = selectedSTO,
+                    updateStoRequest = updateSTO
+                )
+            } catch (e: Exception) {
+                Log.e("failed to delete LTO", e.message.toString())
+            }
+            getAllSTOs()
+        }
+    }
 
     fun deleteSTO(
         selectedSTO : StoResponse

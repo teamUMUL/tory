@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 
@@ -141,7 +142,19 @@ fun UpdateSTODialog(
                 onClick = {
                     if(stoNameInputValue.text.isNotEmpty()){
                         //업데이트 코드
-
+                        stoViewModel.updateSTO(
+                            selectedSTO = selectedSTO,
+                            updateSTO = UpdateStoRequest(
+                                name = stoNameInputValue.text,
+                                contents = stoDetailInputValue.text,
+                                count = stoTryNum.value,
+                                goal = stoSuccessStandardInputValue.text.toInt(),
+                                urgeType = "",
+                                urgeContent = stoMethodInputValue.text,
+                                enforceContent = stoScheduleInputValue.text,
+                                memo = stoMemoInputValue.text
+                            )
+                        )
                         //----
                         setUpdateSTOItem(false)
                         stoNameInputValue = TextFieldValue("")
@@ -166,7 +179,7 @@ fun UpdateSTODialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean){
+fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean, isReadOnly : Boolean = false){
     val containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     val containerColor1 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     TextField(
@@ -193,6 +206,6 @@ fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, se
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
-        )
+        ),
     )
 }
