@@ -235,11 +235,14 @@ fun STOItemColumn(
                                 Row(
                                     modifier = Modifier
                                         .weight(
-                                            if(selectedSTO == sto){
-                                                6f
-                                            } else {
-                                                1f
-                                            }
+                                            selectedSTO?.let {selectedSTO ->
+                                                if(selectedSTO.id == sto.id){
+                                                    6f
+                                                } else {
+                                                    1f
+                                                }
+                                            } ?: 1f
+
                                         ),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
