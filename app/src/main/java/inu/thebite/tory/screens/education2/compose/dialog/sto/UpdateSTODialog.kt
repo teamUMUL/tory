@@ -155,6 +155,7 @@ fun UpdateSTODialog(
                                 memo = stoMemoInputValue.text
                             )
                         )
+                        stoViewModel.updateSelectedSTO(selectedSTOId = selectedSTO.id)
                         //----
                         setUpdateSTOItem(false)
                         stoNameInputValue = TextFieldValue("")
