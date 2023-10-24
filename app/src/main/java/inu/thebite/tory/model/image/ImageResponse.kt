@@ -2,18 +2,19 @@ package inu.thebite.tory.model.image
 
 
 import com.google.gson.annotations.SerializedName
+import inu.thebite.tory.model.category.CategoryResponse
 
 data class ImageResponse(
 
-    @SerializedName("image_id")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("image_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("image_url")
+    @SerializedName("url")
     var url: String,
 
-    @SerializedName("category_seq")
-    var categoryId: Long
+    @SerializedName("category")
+    var category: CategoryResponse
 )

@@ -72,10 +72,10 @@ class STOViewModel : ViewModel() {
     ){
         if(selectedLTO.isNotNull()){
             _stos.update {
+
                 val filteredChildClasses = allSTOs.value!!.filter {
                     it.lto.id == selectedLTO.id
                 }
-                Log.d("allSTOs", allSTOs.toString())
                 filteredChildClasses
             }
         }else{

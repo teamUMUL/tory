@@ -96,7 +96,7 @@ fun MainCompose(
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
     educationViewModel : EducationViewModel,
-    stoViewModel : STOViewModel
+    stoViewModel : STOViewModel,
     imageViewModel : ImageViewModel
 
 //    dragAndDropViewModel : DragAndDropViewModel,

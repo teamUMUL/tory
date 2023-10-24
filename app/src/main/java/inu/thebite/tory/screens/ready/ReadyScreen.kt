@@ -37,7 +37,6 @@ fun ReadyScreen(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.size(300.dp),
-                    colorFilter = ColorFilter.tint(Color.Blue)
                 )
             }
         }

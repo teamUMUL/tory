@@ -111,7 +111,7 @@ interface RetrofitService {
     @PATCH("/sto/{stoId}/hit/status/update")
     suspend fun updateStoHitStatus(@Path("stoId") stoId: Long, @Body updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
 
-    @PATCH("sto/{stoId}/update")
+    @PATCH("/sto/{stoId}/update")
     suspend fun updateSto(@Path("stoId") stoId: Long, @Body updateStoRequest: UpdateStoRequest): Response<StoResponse>
 
     // need a code to update image url list

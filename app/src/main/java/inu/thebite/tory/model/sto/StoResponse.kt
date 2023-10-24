@@ -56,9 +56,6 @@ data class StoResponse(
     var delYN: String,
 
     @SerializedName("lto")
-    var lto: LtoResponse,
-
-    @SerializedName("name")
-    var ltoId: Long
+    var lto: LtoResponse
 
 )
