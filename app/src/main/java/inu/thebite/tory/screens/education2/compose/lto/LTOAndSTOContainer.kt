@@ -38,21 +38,27 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
 import inu.thebite.tory.screens.education2.compose.sto.STOItemColumn
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 @Composable
 fun LTOAndSTOContainer(
     context : Context,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
+    stoViewModel: STOViewModel,
     educationViewModel : EducationViewModel
 ){
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
 
-    val selectedLTOStatus = remember { mutableStateOf("") }
+    val selectedLTOStatus = remember { mutableStateOf("")}
+    val (addSTODialog, setAddSTODialog) = remember {
+        mutableStateOf(false)
+    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         LTOItemColumn(
@@ -71,206 +77,31 @@ fun LTOAndSTOContainer(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            LTODetailRow(
-                ltoViewModel = ltoViewModel,
-                selectedLTOStatus = selectedLTOStatus
-            )
-            Divider(
-                thickness = 4.dp,
-                color = MaterialTheme.colorScheme.tertiary
-            )
-            STOItemColumn(
-                ltoViewModel = ltoViewModel,
-                educationViewModel = educationViewModel
-            )
-        }
-
-    }
-}
-
-
-@Composable
-fun LTODetailRow(
-    ltoViewModel : LTOViewModel,
-    selectedLTOStatus : MutableState<String>
-){
-
-    val ltos by ltoViewModel.ltos.collectAsState()
-    val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.1f),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        selectedLTO?.let { selectedLTO ->
-            Text(
-                text = "LTO : ",
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .padding(start = 10.dp)
-            )
-            Text(
-                text = selectedLTO.name,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .weight(7f),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
-            )
-            LTOStatusButtons(
-                modifier = Modifier.weight(3.5f),
-                selectedLTO = selectedLTO,
-                selectedLTOStatus = selectedLTOStatus,
-                setSelectedLTOStatus =  {
-                    selectedLTOStatus.value = it
-                    selectedLTO.status = it
-                    ltoViewModel.setSelectedLTO(selectedLTO)
-                }
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            OutlinedButton(
-                modifier = Modifier
-                    .weight(1.5f)
-                    .height(40.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                shape = RoundedCornerShape(5.dp),
-                onClick = {
-                    //STO 추가 Dialog
-                },
-                contentPadding = PaddingValues(6.dp)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    text = "STO 추가",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black
+            selectedLTO?.let {selectedLTO ->
+                LTODetailRow(
+                    ltoViewModel = ltoViewModel,
+                    selectedLTOStatus = selectedLTOStatus,
+                    selectedLTO = selectedLTO,
+                    setAddSTODialog = {setAddSTODialog(it)}
+                )
+                Divider(
+                    thickness = 4.dp,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+                STOItemColumn(
+                    ltoViewModel = ltoViewModel,
+                    educationViewModel = educationViewModel,
+                    stoViewModel = stoViewModel,
+                    addSTODialog = addSTODialog,
+                    setAddSTODialog = {setAddSTODialog(it)}
                 )
             }
-            Spacer(modifier = Modifier.width(10.dp))
+
 
         }
+
     }
 }
 
 
-@Composable
-fun LTOStatusButtons(
-    modifier : Modifier,
-    selectedLTO : LtoResponse,
-    selectedLTOStatus : MutableState<String>,
-    setSelectedLTOStatus : (String) -> Unit
-){
-    val cornerRadius = 8.dp
-    val ltoStatusList = listOf<String>(
-        "진행중",
-        "중지",
-        "완료"
-    )
-    LaunchedEffect(Unit){
-        selectedLTOStatus.value = selectedLTO.status
-    }
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        ltoStatusList.forEachIndexed { index, item ->
-            OutlinedButton(
-                onClick = {
 
-                    setSelectedLTOStatus(item)
-                },
-                shape = when (index) {
-                    // left outer button
-                    0 -> RoundedCornerShape(
-                        topStart = cornerRadius,
-                        topEnd = 0.dp,
-                        bottomStart = cornerRadius,
-                        bottomEnd = 0.dp
-                    )
-                    // right outer button
-                    ltoStatusList.size - 1 -> RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = cornerRadius,
-                        bottomStart = 0.dp,
-                        bottomEnd = cornerRadius
-                    )
-                    // middle button
-                    else -> RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 0.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
-                    )
-                },
-                border = BorderStroke(
-                    1.dp,
-                    if (selectedLTO.status == item) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(
-                        alpha = 0.75f
-                    )
-                ),
-                modifier = when (index) {
-                    0 ->
-                        Modifier
-                            .offset(0.dp, 0.dp)
-                            .zIndex(if (selectedLTO.status == item) 1f else 0f)
-
-                    else ->
-                        Modifier
-                            .offset((-1 * index).dp, 0.dp)
-                            .zIndex(if (selectedLTO.status == item) 1f else 0f)
-                },
-                colors =
-                if (selectedLTOStatus.value == item) {
-                    ButtonDefaults.outlinedButtonColors(
-                        containerColor =
-                        when (index) {
-                            0 -> {
-                                Color.Blue
-                            }
-
-                            1 -> {
-                                Color.Red
-                            }
-
-                            else -> {
-                                Color.Green
-                            }
-                        },
-                        contentColor = Color.White
-                    )
-                } else {
-                    ButtonDefaults.outlinedButtonColors(
-                        containerColor =
-                        when (index) {
-                            0 -> {
-                                Color.Blue.copy(alpha = 0.2f)
-                            }
-
-                            1 -> {
-                                Color.Red.copy(alpha = 0.2f)
-                            }
-
-                            else -> {
-                                Color.Green.copy(alpha = 0.2f)
-                            }
-                        },
-                        contentColor = Color.Black
-                    )
-                }
-
-            ) {
-                Text(
-                    text = ltoStatusList[index]
-                )
-            }
-        }
-    }
-}

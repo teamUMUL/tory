@@ -35,15 +35,15 @@ class LTOViewModel: ViewModel() {
         _selectedLTO.value = ltoEntity
     }
 
-    fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val foundLTO = _ltos.value!!.find {
-                it.id == selectedLTO.id
-            }
-            foundLTO?.status = changeState
-            _selectedLTO.value = foundLTO
-        }
-    }
+//    fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val foundLTO = _ltos.value!!.find {
+//                it.id == selectedLTO.id
+//            }
+//            foundLTO?.status = changeState
+//            _selectedLTO.value = foundLTO
+//        }
+//    }
 
     fun clearSelectedCenter() {
         _selectedLTO.value = null

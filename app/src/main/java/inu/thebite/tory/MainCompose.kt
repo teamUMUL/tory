@@ -51,10 +51,12 @@ import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.HomeScreen
+import inu.thebite.tory.screens.education2.compose.dev.DEVItemRow
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 //import inu.thebite.tory.screens.education.EducationScreen
 //import inu.thebite.tory.screens.education.GameViewModel
 //import inu.thebite.tory.screens.education.LTOViewModel
@@ -92,7 +94,8 @@ fun MainCompose(
     childInfoViewModel : ChildInfoViewModel,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
-    educationViewModel : EducationViewModel
+    educationViewModel : EducationViewModel,
+    stoViewModel : STOViewModel
 
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
@@ -305,7 +308,9 @@ fun MainCompose(
             topBar = {
                 TopAppBar(
                     title = { Text(text = currentRouteToKorean) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .background(color = Color(0xFFEFEFEF))
+                    ,
                     navigationIcon = {
                         IconButton(onClick = {
                             coroutineScope.launch { drawerState.open() }
@@ -320,6 +325,7 @@ fun MainCompose(
                         Box(modifier = Modifier
                             .height(50.dp)
                         ){
+
                             Row(
                                 modifier = Modifier.fillMaxHeight(),
                                 horizontalArrangement = Arrangement.End,
@@ -336,6 +342,7 @@ fun MainCompose(
                                     Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
                                 }
                             }
+
 
 
                         }
@@ -356,7 +363,8 @@ fun MainCompose(
                     NewEducationScreen(
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,
-                        educationViewModel = educationViewModel
+                        educationViewModel = educationViewModel,
+                        stoViewModel = stoViewModel
                     )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,

@@ -7,6 +7,7 @@ package inu.thebite.tory
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
@@ -40,6 +41,9 @@ val viewModelModule = module {
     }
     viewModel<EducationViewModel>{
         EducationViewModel()
+    }
+    viewModel<STOViewModel>{
+        STOViewModel()
     }
 //    viewModel<GameViewModel> {
 //        GameViewModel()

@@ -49,12 +49,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -68,27 +70,52 @@ import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.Compose.STODetailTableAndGameResult
+import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
+import inu.thebite.tory.screens.education2.compose.dialog.sto.UpdateSTODialog
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 @Composable
 fun STOItemColumn(
     ltoViewModel: LTOViewModel,
-    educationViewModel : EducationViewModel
+    educationViewModel : EducationViewModel,
+    stoViewModel: STOViewModel,
+    addSTODialog : Boolean,
+    setAddSTODialog : (Boolean) -> Unit
 ){
+    val context = LocalContext.current
     val allLTOs by ltoViewModel.allLTOs.collectAsState()
     val ltos by ltoViewModel.ltos.collectAsState()
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
-    var selectedSTO by remember {
-        mutableStateOf<StoResponse?>(null)
+    val selectedSTO by stoViewModel.selectedSTO.collectAsState()
+    val (updateSTODialog, setUpdateSTODialog) = remember {
+        mutableStateOf(false)
     }
-    var isExpanded by remember { mutableStateOf (false) }
-    val rotationState by animateFloatAsState(
-        targetValue = if (isExpanded) 0f else 180f
-    )
+    if(updateSTODialog){
+        selectedSTO?.let {selectedSTO ->
+            UpdateSTODialog(
+                context = context,
+                stoViewModel = stoViewModel,
+                selectedSTO = selectedSTO,
+                setUpdateSTOItem = {setUpdateSTODialog(it)},
+                setSelectedTryNum = {}
+            )
+        }
+    }
+
+    if(addSTODialog){
+        selectedLTO?.let {selectedLTO ->
+            AddSTODialog(
+                setAddSTOItem = {setAddSTODialog(it)},
+                stoViewModel = stoViewModel,
+                selectedLTO = selectedLTO
+            )
+        }
+    }
 
     val selectedSTODetailGameDataIndex = remember { mutableIntStateOf(0) }
-    val selectedSTOStatus = remember { mutableStateOf("") }
+    val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
 
     val selectedEducation by educationViewModel.selectedEducation.collectAsState()
 
@@ -224,13 +251,13 @@ fun STOItemColumn(
                                     indication = null
                                 ) {
                                     if (selectedSTO == sto) {
-                                        selectedSTO = null
+                                        stoViewModel.clearSelectedSTO()
                                         educationViewModel.clearSelectedEducation()
                                         selectedSTOStatus.value = ""
                                     } else {
-                                        selectedSTO = sto
+                                        stoViewModel.setSelectedSTO(sto)
                                         educationViewModel.setSelectedEducation(selectedSTO = sto)
-                                        selectedSTOStatus.value = selectedSTO!!.status
+//                                        selectedSTOStatus.value = selectedSTO!!.status
                                     }
                                 },
                             verticalAlignment = Alignment.CenterVertically,
@@ -270,8 +297,11 @@ fun STOItemColumn(
                                                 Log.d("클릭 감지", selectedSTO.toString())
                                             }
                                         )
-                                        stoSettingButtons(
-                                            modifier = Modifier.weight(2f)
+                                        STOSettingButtons(
+                                            modifier = Modifier.weight(2f),
+                                            setUpdateSTODialog = {
+                                                setUpdateSTODialog(it)
+                                            }
                                         )
                                         Spacer(modifier = Modifier.width(10.dp))
                                     }
@@ -308,7 +338,7 @@ fun STOItemColumn(
                                             }
                                         )
                                     }
-                                    gameReadyRow(
+                                    GameReadyRow(
                                         selectedSTO = selectedSTO,
                                         setAddGameItem = {},
                                     )
@@ -327,246 +357,3 @@ fun STOItemColumn(
 }
 
 
-
-
-@Composable
-fun stoSettingButtons(
-    modifier : Modifier
-){
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedButton(
-            modifier = Modifier
-                .size(40.dp),
-            border = BorderStroke(1.dp, Color.Black),
-            shape = RoundedCornerShape(5.dp),
-            onClick = {
-//                                            setUpdateSTOItem(true)
-            },
-            contentPadding = PaddingValues(2.dp)
-        ){
-            Icon(
-                modifier = Modifier
-                    .size(35.dp),
-                painter = painterResource(id = R.drawable.icon_edit),
-                contentDescription = null,
-                tint = Color.Black)
-        }
-        Spacer(modifier = Modifier.width(10.dp))
-        OutlinedButton(
-            modifier = Modifier
-                .width(100.dp)
-                .height(40.dp),
-            border = BorderStroke(1.dp, Color.Black),
-            shape = RoundedCornerShape(5.dp),
-            onClick = {
-//                                            gameStart()
-            },
-            contentPadding = PaddingValues(6.dp)
-        ){
-            Text(
-                modifier = Modifier
-                    .fillMaxSize(),
-                text = "교육시작",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-                color = Color.Black
-            )
-        }
-    }
-}
-
-@Composable
-fun STOStatusButtons(
-    modifier : Modifier,
-    selectedSTO : StoResponse,
-    setSelectedSTOStatus : (String) -> Unit,
-    selectedSTOStatus : MutableState<String>
-){
-    val cornerRadius = 8.dp
-    val stoStatusList = listOf<String>(
-        "진행중",
-        "준거 도달",
-        "중지"
-    )
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        stoStatusList.forEachIndexed { index, item ->
-            OutlinedButton(
-                onClick = {
-                    if(item == selectedSTOStatus.value){
-                        setSelectedSTOStatus("")
-                    } else {
-                        setSelectedSTOStatus(item)
-                    }
-                },
-                shape = when (index) {
-                    // left outer button
-                    0 -> RoundedCornerShape(
-                        topStart = cornerRadius,
-                        topEnd = 0.dp,
-                        bottomStart = cornerRadius,
-                        bottomEnd = 0.dp
-                    )
-                    // right outer button
-                    stoStatusList.size - 1 -> RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = cornerRadius,
-                        bottomStart = 0.dp,
-                        bottomEnd = cornerRadius
-                    )
-                    // middle button
-                    else -> RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 0.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
-                    )
-                },
-                border = BorderStroke(
-                    1.dp,
-                    if (selectedSTO.status == item) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(
-                        alpha = 0.75f
-                    )
-                ),
-                modifier = when (index) {
-                    0 ->
-                        Modifier
-                            .offset(0.dp, 0.dp)
-                            .zIndex(if (selectedSTO.status == item) 1f else 0f)
-
-                    else ->
-                        Modifier
-                            .offset((-1 * index).dp, 0.dp)
-                            .zIndex(if (selectedSTO.status == item) 1f else 0f)
-                },
-                colors =
-                if (selectedSTO.status == item) {
-                    ButtonDefaults.outlinedButtonColors(
-                        containerColor =
-                        when (index) {
-                            0 -> {
-                                Color.Blue.copy(alpha = 0.5f)
-                            }
-
-                            1 -> {
-                                Color.Green.copy(alpha = 0.5f)
-                            }
-
-                            else -> {
-                                Color.Red.copy(alpha = 0.5f)
-                            }
-                        },
-                        contentColor = Color.White
-                    )
-                } else {
-                    ButtonDefaults.outlinedButtonColors(
-                        containerColor =
-                        when (index) {
-                            0 -> {
-                                Color.Blue.copy(alpha = 0.2f)
-                            }
-
-                            1 -> {
-                                Color.Green.copy(alpha = 0.2f)
-                            }
-
-                            else -> {
-                                Color.Red.copy(alpha = 0.2f)
-                            }
-                        },
-                        contentColor = Color.Black
-                    )
-                }
-
-            ) {
-                Text(
-                    text = stoStatusList[index]
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun gameReadyRow(
-//    dragAndDropViewModel : DragAndDropViewModel,
-    selectedSTO : StoResponse,
-    setAddGameItem : (Boolean) -> Unit,
-){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(10.dp)
-            .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-    ) {
-        if(selectedSTO.isNotNull()){
-            Box(modifier = Modifier
-                .width(100.dp)
-                .fillMaxHeight()
-                .padding(5.dp)
-                .clickable {
-                    setAddGameItem(true)
-
-                },
-                contentAlignment = Alignment.Center
-            ){
-                Column(modifier = Modifier
-                    .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Icon(
-                        modifier = Modifier
-                            .size(80.dp),
-                        painter = painterResource(id = R.drawable.icon_add_square_light),
-                        contentDescription = null
-                    )
-                }
-
-            }
-
-//            LazyRow(
-//            ) {
-//                items(selectedSTO.gameItems ?: emptyList()) { selectedGameItem ->
-//                    val imageResource = getResourceIdByName(selectedGameItem, context)
-//                    val isSelected = selectedGameItem == mainGameItem
-//
-//                    Image(
-//                        modifier = Modifier
-//                            .fillMaxHeight()
-//                            .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
-//                            .clickable {
-//                                // Update the selected item when clicked
-//                                if (isSelected) {
-//                                    setMainGameItem("")
-//                                    dragAndDropViewModel.clearMainItem()
-//                                } else {
-//                                    setMainGameItem(selectedGameItem)
-//                                    dragAndDropViewModel.setMainItem(
-//                                        GameItem(
-//                                            name = selectedGameItem,
-//                                            image = imageResource
-//                                        )
-//                                    )
-//
-//                                }
-//                            },
-//                        painter = painterResource(id = imageResource),
-//                        contentDescription = null,
-//                        alpha = if (isSelected) 1.0f else 0.5f
-//                    )
-//                }
-//            }
-        }
-    }
-}
