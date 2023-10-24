@@ -115,9 +115,24 @@ class STOViewModel : ViewModel() {
             }
             getAllSTOs()
             getSTOsByLTO(selectedSTO.lto)
+            updateSelectedSTO(selectedSTO = selectedSTO)
         }
     }
 
+    fun updateSelectedSTO(
+        selectedSTO: StoResponse
+    ){
+        viewModelScope.launch {
+            val foundSTO = allSTOs.value!!.find {
+                it.id == selectedSTO.id
+            }
+            foundSTO?.let {foundSTO ->
+                setSelectedSTO(
+                    foundSTO
+                )
+            }
+        }
+    }
     fun deleteSTO(
         selectedSTO : StoResponse
     ){
