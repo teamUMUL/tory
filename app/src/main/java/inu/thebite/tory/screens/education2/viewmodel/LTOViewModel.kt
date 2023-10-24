@@ -41,7 +41,12 @@ class LTOViewModel: ViewModel() {
             val updateLTOStatus = UpdateLtoStatusRequest(
                 status = changeState
             )
-            repo.updateLTOStatus(selectedLTO, updateLTOStatus)
+            if(changeState == "완료"){
+                repo.updateLtoHitStatus(selectedLTO, updateLTOStatus)
+            } else {
+                repo.updateLTOStatus(selectedLTO, updateLTOStatus)
+            }
+
             getAllLTOs()
             getLTOsByDEV(selectedLTO.domain)
         }

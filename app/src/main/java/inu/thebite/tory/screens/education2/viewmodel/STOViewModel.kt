@@ -57,7 +57,11 @@ class STOViewModel : ViewModel() {
             val updateSTOStatus = UpdateStoStatusRequest(
                 status = changeState
             )
-            repo.updateStoStatus(selectedSTO, updateSTOStatus)
+            if(changeState == "준거 도달"){
+                repo.updateStoHitStatus(selectedSTO, updateSTOStatus)
+            } else {
+                repo.updateStoStatus(selectedSTO, updateSTOStatus)
+            }
             getAllSTOs()
             getSTOsByLTO(selectedSTO.lto)
         }
