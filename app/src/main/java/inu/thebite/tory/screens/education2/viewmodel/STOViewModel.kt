@@ -116,7 +116,6 @@ class STOViewModel : ViewModel() {
             getAllSTOs()
             getSTOsByLTO(selectedSTO.lto)
         }
-        updateSelectedSTO(selectedSTO.id)
     }
 
     fun updateSelectedSTO(

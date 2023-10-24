@@ -111,6 +111,10 @@ fun STOItemColumn(
                 setSelectedTryNum = {}
             )
         }
+    } else {
+        selectedSTO?.let { selectedSTO ->
+            stoViewModel.updateSelectedSTO(selectedSTOId = selectedSTO.id)
+        }
     }
 
     if(addSTODialog){
