@@ -66,6 +66,7 @@ import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
 import inu.thebite.tory.screens.ready.ReadyScreen
+import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
@@ -96,6 +97,7 @@ fun MainCompose(
     ltoViewModel: LTOViewModel,
     educationViewModel : EducationViewModel,
     stoViewModel : STOViewModel
+    imageViewModel : ImageViewModel
 
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
@@ -387,7 +389,9 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.READY){
-                    ReadyScreen()
+                    ReadyScreen(
+                        imageViewModel = imageViewModel
+                    )
                 }
             }
         }
