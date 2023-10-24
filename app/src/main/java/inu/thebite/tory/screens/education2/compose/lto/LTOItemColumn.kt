@@ -83,14 +83,14 @@ fun LTOItemColumn(
 
     LaunchedEffect(allDEVs, selectedDEV){
         selectedDEV?.let {selectedDEV ->
-//            ltoViewModel.getLTOsByDEV(
-//                selectedDEV
-//            )
+            ltoViewModel.getLTOsByDEV(
+                selectedDEV
+            )
         }
     }
     LaunchedEffect(allLTOs){
         selectedDEV?.let {selectedDEV ->
-//            ltoViewModel.getLTOsByDEV(selectedDEV)
+            ltoViewModel.getLTOsByDEV(selectedDEV)
         }
     }
 
