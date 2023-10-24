@@ -1,5 +1,7 @@
 package inu.thebite.tory.screens.setting.dialog
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -44,8 +46,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import inu.thebite.tory.database.Center.CenterEntity
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
+import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.center.CenterRequest
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.retrofit.RetrofitApi
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
@@ -55,15 +59,15 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCenterDialog(
+    context : Context,
     centerViewModel: CenterViewModel,
     childClassViewModel : ChildClassViewModel,
     childInfoViewModel : ChildInfoViewModel,
     setAddCenterDialog : (Boolean) -> Unit,
-    selectedCenter : CenterEntity?,
-    childClasses : List<ChildClassEntity>?,
+    selectedCenter : CenterResponse?,
     isUpdate : Boolean
 ){
-    val defaultCenterValue = if(isUpdate) selectedCenter!!.centerName else ""
+    val defaultCenterValue = if(isUpdate) selectedCenter!!.name else ""
 
     var centerNameInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(defaultCenterValue))
@@ -130,35 +134,34 @@ fun AddCenterDialog(
                             .height(70.dp)
                             .padding(vertical = 10.dp),
                         onClick = {
-                            if(isUpdate){
-                                if (childClasses != null) {
+                            if(centerNameInputValue.text.isNotEmpty()){
+                                if(isUpdate){
                                     selectedCenter?.let {selectedCenter ->
                                         centerViewModel.updateCenter(
-                                            selectedCenter.copy(
-                                                centerName = centerNameInputValue.text
+                                            selectedCenter,
+                                            CenterRequest(
+                                                name = centerNameInputValue.text
                                             )
                                         )
-                                        childClasses.map { childClass ->
-                                            childClassViewModel.updateChildClass(
-                                                childClass.copy(
-                                                    centerName = centerNameInputValue.text
-                                                )
-                                            )
-                                        }
                                     }
+                                    centerViewModel.clearSelectedCenter()
+                                    childClassViewModel.clearSelectedChildClass()
+                                    childInfoViewModel.clearSelectedChildInfo()
+                                    childInfoViewModel.clearChildInfos()
+                                } else {
+                                    centerViewModel.createCenter(
+                                        newCenter = CenterRequest(
+                                            name = centerNameInputValue.text
+                                        )
+                                    )
                                 }
-                                centerViewModel.clearSelectedCenter()
-                                childClassViewModel.clearSelectedChildClass()
-                                childInfoViewModel.clearSelectedChildInfo()
-                                childInfoViewModel.clearChildInfos()
+                                centerNameInputValue = TextFieldValue("")
+                                setAddCenterDialog(false)
                             } else {
-                                centerViewModel.createCenter(
-                                    centerName = centerNameInputValue.text
-                                )
+                                Toasty.warning(context, "센터의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
                             }
 
-                            centerNameInputValue = TextFieldValue("")
-                            setAddCenterDialog(false)
+
                         },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(

@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class AddDomainRequest(
 
-    @SerializedName("domain_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("domain_type")
+    @SerializedName("type")
     var type: String,
 
-    @SerializedName("domain_content")
+    @SerializedName("contents")
     var contents: String
 )

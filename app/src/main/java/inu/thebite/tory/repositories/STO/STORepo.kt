@@ -1,19 +1,23 @@
 package inu.thebite.tory.repositories.STO
 
-import inu.thebite.tory.database.STO.STOEntity
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.sto.AddStoRequest
+import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoRequest
+import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import kotlinx.coroutines.flow.Flow
 
 interface STORepo {
-    suspend fun createSTO(sto: STOEntity)
-    suspend fun getAllSTOs(): Flow<List<STOEntity>>
-    suspend fun deleteAllData()
-    suspend fun getSTOById(stoId: Int): Flow<STOEntity>
-    suspend fun updateSTO(updatedSTO: STOEntity)
-    suspend fun deleteSTO(sto: STOEntity)
-    suspend fun deleteSTOsByCriteria(
-        childClass: String,
-        childName: String,
-        selectedDEV: String,
-        selectedLTO: String
-    )
+
+    suspend fun addSto(ltoInfo: LtoResponse, addStoRequest: AddStoRequest)
+
+    suspend fun updateStoStatus(stoInfo: StoResponse, updateStoStatusRequest: UpdateStoStatusRequest)
+
+    suspend fun updateStoHitStatus(stoInfo: StoResponse, updateStoStatusRequest: UpdateStoStatusRequest)
+
+    suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest)
+
+    suspend fun getStoList(): List<StoResponse>
+
+    suspend fun deleteSto(stoInfo: StoResponse)
 }

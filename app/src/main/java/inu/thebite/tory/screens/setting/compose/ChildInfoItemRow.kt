@@ -31,17 +31,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
-import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 
 
 @Composable
 fun ChildInfoItemRow(
     settingType : String,
-    childInfos : List<ChildInfoEntity>?,
-    selectedChildInfo : ChildInfoEntity?,
-    selectedChildClass : ChildClassEntity?,
+    childInfos : List<StudentResponse>?,
+    selectedChildInfo : StudentResponse?,
+    selectedChildClass : ChildClassResponse?,
     childInfoViewModel: ChildInfoViewModel,
     setAddChildInfoDialog : (Boolean) -> Unit,
     setUpdateChildInfoDialog : (Boolean) -> Unit
@@ -83,7 +83,7 @@ fun ChildInfoItemRow(
                         Text(
                             modifier = Modifier
                                 .padding(start = 10.dp),
-                            text = it.childName,
+                            text = it.name,
                             fontWeight = FontWeight.Bold,
                             fontSize = 40.sp
                         )
@@ -182,7 +182,7 @@ fun ChildInfoItemRow(
                                 horizontalArrangement = Arrangement.Center
                             ){
                                 Text(
-                                    text = child.childName,
+                                    text = child.name,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.fillMaxWidth(),

@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class CenterResponse (
     
-    @SerializedName("center_seq")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("center_name")
+    @SerializedName("name")
     var name: String
 )

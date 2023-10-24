@@ -1,31 +1,36 @@
 package inu.thebite.tory.repositories.ChildClass
 
-import inu.thebite.tory.database.ChildClass.ChildClassDatabase
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassRequest
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.retrofit.RetrofitApi
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
-class ChildClassRepoImpl(private val database: ChildClassDatabase): ChildClassRepo {
-    private val childClassDao = database.childClassDao()
+class ChildClassRepoImpl: ChildClassRepo {
 
+    private val childClassRetrofit = RetrofitApi.apiService
 
-    override suspend fun createChildClass(childClass: ChildClassEntity) {
-        childClassDao.insertChildClass(childClass)
+    override suspend fun createChildClass(selectedCenter: CenterResponse,childClass: ChildClassRequest) {
+        childClassRetrofit.addClass(
+            centerId = selectedCenter.id,
+            addChildClassRequest = childClass)
     }
 
-    override suspend fun getAllChildClasses(): Flow<List<ChildClassEntity>> {
-        return childClassDao.getAllChildClasses()
+    override suspend fun getAllChildClasses(): List<ChildClassResponse> {
+        return childClassRetrofit.getAllClassList()
     }
 
 
-    override suspend fun updateChildClass(updatedChildClass: ChildClassEntity) {
-        childClassDao.updateChildClass(updatedChildClass)
-
+    override suspend fun updateChildClass(
+        selectedChildClass: ChildClassResponse,
+        updateChildClass: ChildClassRequest
+    ) {
+        childClassRetrofit.updateChildClass(classId = selectedChildClass.id, updateChildClass = updateChildClass)
     }
 
-    override suspend fun deleteChildClass(childClass: ChildClassEntity) {
-        childClassDao.deleteChildClass(childClass)
-
+    override suspend fun deleteChildClass(childClass: ChildClassResponse) {
+        childClassRetrofit.deleteClass(classId = childClass.id)
     }
-
 
 }

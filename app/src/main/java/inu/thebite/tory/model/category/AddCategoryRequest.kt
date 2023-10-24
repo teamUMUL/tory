@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class AddCategoryRequest(
 
-    @SerializedName("category_name")
+    @SerializedName("name")
     var name: String
 )

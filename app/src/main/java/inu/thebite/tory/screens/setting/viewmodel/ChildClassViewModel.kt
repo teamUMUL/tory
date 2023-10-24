@@ -1,33 +1,33 @@
 package inu.thebite.tory.screens.setting.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import inu.thebite.tory.CenterSelectViewModel
-import inu.thebite.tory.ChildClassSelectViewModel
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
-import inu.thebite.tory.repositories.ChildClass.ChildClassRepo
+import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassRequest
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.repositories.ChildClass.ChildClassRepoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import java.lang.Exception
 
-class ChildClassViewModel : ViewModel(), KoinComponent {
-    private val repo: ChildClassRepo by inject()
+class ChildClassViewModel : ViewModel() {
+    private val repo: ChildClassRepoImpl = ChildClassRepoImpl()
 
-    private val _allChildClasses : MutableStateFlow<List<ChildClassEntity>> = MutableStateFlow(emptyList())
+    private val _allChildClasses: MutableStateFlow<List<ChildClassResponse>?> = MutableStateFlow(null)
     val allChildClasses = _allChildClasses.asStateFlow()
 
-    private val _childClasses: MutableStateFlow<List<ChildClassEntity>?> = MutableStateFlow(null)
+    private val _childClasses: MutableStateFlow<List<ChildClassResponse>?> = MutableStateFlow(null)
     val childClasses = _childClasses.asStateFlow()
 
-    private val _selectedChildClass = MutableStateFlow<ChildClassEntity?>(null)
+    private val _selectedChildClass = MutableStateFlow<ChildClassResponse?>(null)
     val selectedChildClass = _selectedChildClass.asStateFlow()
 
-    fun setSelectedChildClass(childClassEntity: ChildClassEntity) {
+    fun setSelectedChildClass(childClassEntity: ChildClassResponse) {
 
         _selectedChildClass.value = childClassEntity
     }
@@ -43,70 +43,76 @@ class ChildClassViewModel : ViewModel(), KoinComponent {
         getAllChildClasses()
     }
 
-    private fun getAllChildClasses(){
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.getAllChildClasses().collect{data ->
-                _allChildClasses.update { data }
+    fun getAllChildClasses(){
+        viewModelScope.launch{
+            try {
+                val allChildClasses = repo.getAllChildClasses()
+                _allChildClasses.value = allChildClasses
+            } catch (e: Exception) {
+                Log.e("failed to get all child classes", e.message.toString())
             }
         }
     }
 
-    fun getChildClassesByCenterName(
-        selectedCenterName: String,
+    fun getChildClassesByCenter(
+        selectedCenter: CenterResponse,
     ){
-        if(selectedCenterName.isEmpty()){
-            _childClasses.update { null }
-        }else{
+        if(selectedCenter.isNotNull()){
             _childClasses.update {
-                val filteredChildClasses = allChildClasses.value.filter {
-                    it.centerName == selectedCenterName
+                val filteredChildClasses = allChildClasses.value!!.filter {
+                    it.center.id == selectedCenter.id
                 }
                 filteredChildClasses
             }
+        }else{
+            _childClasses.update { null }
         }
     }
 
     fun createChildClass(
-        centerName: String,
-        childClassName: String
+        selectedCenter: CenterResponse,
+        newChildClass: ChildClassRequest
+    ) {
+        viewModelScope.launch {
+            try {
+                repo.createChildClass(
+                    selectedCenter = selectedCenter,
+                    childClass = newChildClass
+                )
+            } catch(e : Exception) {
+                Log.e("failed to create child class", e.message.toString())
+            }
+            getAllChildClasses()
+        }
+
+    }
+
+    fun updateChildClass(selectedChildClass: ChildClassResponse, updateChildClass: ChildClassRequest) {
+        viewModelScope.launch() {
+            try {
+                repo.updateChildClass(selectedChildClass, updateChildClass)
+            } catch (e: Exception) {
+                Log.e("failed to update child class", e.message.toString())
+            }
+            getAllChildClasses()
+        }
+
+    }
+
+    fun deleteChildClass(
+        selectedChildClass: ChildClassResponse
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val newChildClassEntity = ChildClassEntity(
-                centerName = centerName,
-                className = childClassName
-            )
-            repo.createChildClass(newChildClassEntity)
-
-        }
-
-    }
-
-    fun updateChildClass(updatedChildClassEntity: ChildClassEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.updateChildClass(updatedChildClassEntity)
-
-        }
-
-    }
-
-    fun deleteChildClass(childClassEntity: ChildClassEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteChildClass(childClassEntity)
-
-        }
-
-    }
-
-    fun deleteChildClassesByCenterName(centerName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val childClassesToDelete = allChildClasses.value.filter {
-                it.centerName == centerName
+            try {
+                repo.deleteChildClass(
+                    childClass = selectedChildClass
+                )
+            } catch (e: Exception) {
+                Log.e("failed to delete child class", e.message.toString())
             }
 
-            childClassesToDelete.forEach { childClassEntity ->
-                repo.deleteChildClass(childClassEntity)
-            }
-
+            getAllChildClasses()
         }
+
     }
 }

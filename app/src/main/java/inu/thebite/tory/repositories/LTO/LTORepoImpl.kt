@@ -1,24 +1,42 @@
 package inu.thebite.tory.repositories.LTO
 
-import inu.thebite.tory.database.LTO.LTODatabase
-import inu.thebite.tory.database.LTO.LTOEntity
+
+import android.util.Log
+import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.AddLtoRequest
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.retrofit.RetrofitApi
 import kotlinx.coroutines.flow.Flow
 
-class LTORepoImpl(private val database: LTODatabase): LTORepo {
-    private val ltoDao = database.ltoDao()
-    override suspend fun createLTO(lto: LTOEntity) {
-        ltoDao.insertLTO(lto)
+class LTORepoImpl: LTORepo {
+
+    private val ltoRetrofit = RetrofitApi.apiService
+
+    override suspend fun createLTO(selectedDEV: DomainResponse, newLTO: AddLtoRequest) {
+        ltoRetrofit.addLto(domainId = selectedDEV.id, addLtoRequest = newLTO)
     }
 
-    override suspend fun getAllLTOs(): Flow<List<LTOEntity>>{
-        return ltoDao.getAllLTOs()
+    override suspend fun updateLTOStatus(
+        selectedLTO: LtoResponse,
+        updateLtoStatusRequest: UpdateLtoStatusRequest
+    ) {
+        ltoRetrofit.updateLtoStatus(ltoId = selectedLTO.id, updateLtoStatusRequest = updateLtoStatusRequest)
     }
 
-    override suspend fun updateLTO(updatedLTO: LTOEntity) {
-        ltoDao.updateLTO(updatedLTO)
+    override suspend fun updateLtoHitStatus(
+        selectedLTO: LtoResponse,
+        updateLtoStatusRequest: UpdateLtoStatusRequest
+    ) {
+        ltoRetrofit.updateLtoHitStatus(ltoId = selectedLTO.id, updateLtoStatusRequest = updateLtoStatusRequest)
     }
 
-    override suspend fun deleteLTO(lto: LTOEntity) {
-        ltoDao.deleteLTO(lto)
+    override suspend fun getAllLTOs(): List<LtoResponse> {
+        return ltoRetrofit.getLtoList()
+    }
+
+    override suspend fun deleteLTO(selectedLTO: LtoResponse) {
+        ltoRetrofit.deleteLto(ltoId = selectedLTO.id)
     }
 }

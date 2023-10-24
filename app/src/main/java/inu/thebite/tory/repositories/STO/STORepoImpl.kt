@@ -1,38 +1,44 @@
 package inu.thebite.tory.repositories.STO
 
-import inu.thebite.tory.database.STO.STODatabase
-import inu.thebite.tory.database.STO.STOEntity
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.sto.AddStoRequest
+import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoRequest
+import inu.thebite.tory.model.sto.UpdateStoStatusRequest
+import inu.thebite.tory.retrofit.RetrofitApi
 import kotlinx.coroutines.flow.Flow
 
-class STORepoImpl(private val database: STODatabase): STORepo {
+class STORepoImpl: STORepo {
 
-    private val stoDao = database.stoDao()
-    override suspend fun createSTO(sto: STOEntity) {
-        stoDao.insertSTO(sto)
-    }
-    override suspend fun getAllSTOs(): Flow<List<STOEntity>>{
-        return stoDao.getAllSTOs()
-    }
-    override suspend fun deleteAllData() {
-        stoDao.deleteAllData()
+    private val stoRetrofit = RetrofitApi.apiService
+
+    override suspend fun addSto(ltoInfo: LtoResponse, addStoRequest: AddStoRequest) {
+        stoRetrofit.addSto(ltoId = ltoInfo.id, addStoRequest = addStoRequest)
     }
 
-    override suspend fun getSTOById(stoId: Int): Flow<STOEntity> {
-        return stoDao.getSTOById(stoId)
-    }
-    override suspend fun updateSTO(updatedSTO: STOEntity) {
-        stoDao.updateSTO(updatedSTO)
-    }
-
-    override suspend fun deleteSTO(sto: STOEntity) {
-        stoDao.deleteSTO(sto)
-    }
-    override suspend fun deleteSTOsByCriteria(
-        childClass: String,
-        childName: String,
-        selectedDEV: String,
-        selectedLTO: String
+    override suspend fun updateStoStatus(
+        stoInfo: StoResponse,
+        updateStoStatusRequest: UpdateStoStatusRequest
     ) {
-        stoDao.deleteSTOsByCriteria(childClass, childName, selectedDEV, selectedLTO)
+        stoRetrofit.updateStoStatus(stoId = stoInfo.id, updateStoStatusRequest = updateStoStatusRequest)
+    }
+
+    override suspend fun updateStoHitStatus(
+        stoInfo: StoResponse,
+        updateStoStatusRequest: UpdateStoStatusRequest
+    ) {
+        stoRetrofit.updateStoHitStatus(stoId = stoInfo.id, updateStoStatusRequest = updateStoStatusRequest)
+    }
+
+    override suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest) {
+        stoRetrofit.updateSto(stoId = stoInfo.id, updateStoRequest = updateStoRequest)
+    }
+
+    override suspend fun getStoList(): List<StoResponse> {
+        return stoRetrofit.getStoList()
+    }
+
+    override suspend fun deleteSto(stoInfo: StoResponse) {
+        stoRetrofit.deleteSto(stoId = stoInfo.id)
     }
 }

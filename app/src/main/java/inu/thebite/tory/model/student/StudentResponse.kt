@@ -1,33 +1,34 @@
 package inu.thebite.tory.model.student
 
 import com.google.gson.annotations.SerializedName
+import inu.thebite.tory.model.childClass.ChildClassResponse
 
 data class StudentResponse(
 
-    @SerializedName("student_seq")
+    @SerializedName("id")
     var id: Long,
 
-    @SerializedName("student_name")
+    @SerializedName("name")
     var name: String,
 
-    @SerializedName("student_birth")
+    @SerializedName("birth")
     var birth: String,
 
-    @SerializedName("student_etc")
+    @SerializedName("etc")
     var etc: String,
 
-    @SerializedName("parent_name")
+    @SerializedName("parentName")
     var parentName: String,
 
-    @SerializedName("student_start_dt")
+    @SerializedName("startDate")
     var startDate: String,
 
-    @SerializedName("student_end_dt")
+    @SerializedName("endDate")
     var endDate: String,
 
-    @SerializedName("student_reg_dt")
+    @SerializedName("registerDate")
     var registerDate: String,
 
-    @SerializedName("class_seq")
-    var toryClass: String
+    @SerializedName("toryClass")
+    var childClass: ChildClassResponse
 )

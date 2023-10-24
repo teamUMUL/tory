@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.setting
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.CenterSelectViewModel
 import inu.thebite.tory.ChildClassSelectViewModel
 import inu.thebite.tory.ChildSelectViewModel
@@ -73,65 +76,67 @@ fun SettingScreen(
         mutableStateOf(false)
     }
 
+    LaunchedEffect(Unit){
+        centerViewModel.getAllCenters()
+        childClassViewModel.getAllChildClasses()
+        childInfoViewModel.getAllChildInfos()
+    }
 
     LaunchedEffect(selectedCenter, allChildClasses){
         selectedCenter?.let {
-            childClassViewModel.getChildClassesByCenterName(
-                it.centerName
+            childClassViewModel.getChildClassesByCenter(
+                it
             )
         }
     }
 
     LaunchedEffect(selectedChildClass, allChildInfos){
         selectedChildClass?.let { selectedChildClass ->
-                childInfoViewModel.getChildInfosByCenterNameAndClassName(
-                    selectedChildClass.centerName,
-                    selectedChildClass.className
+                childInfoViewModel.getChildInfosByClass(
+                    selectedChildClass
                 )
         }
     }
 
     if(addCenterDialog){
         AddCenterDialog(
+            context = context,
             centerViewModel = centerViewModel,
             childClassViewModel = childClassViewModel,
             childInfoViewModel = childInfoViewModel,
             setAddCenterDialog = {setAddCenterDialog(it)},
             isUpdate = false,
             selectedCenter = selectedCenter,
-            childClasses = childClasses
         )
     }
     if(updateCenterDialog){
         AddCenterDialog(
+            context = context,
             centerViewModel = centerViewModel,
             childClassViewModel = childClassViewModel,
             childInfoViewModel = childInfoViewModel,
             setAddCenterDialog = {setUpdateCenterDialog(it)},
             isUpdate = true,
             selectedCenter = selectedCenter,
-            childClasses = childClasses
         )
     }
     if(addChildClassDialog){
         AddChildClassDialog(
+            context = context,
             selectedCenter = selectedCenter,
             childClassViewModel = childClassViewModel,
             setAddChildClassDialog = {setAddChildClassDialog(it)},
             selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            childInfos = childInfos,
             isUpdate = false
         )
     }
     if(updateChildClassDialog){
         AddChildClassDialog(
+            context = context,
             selectedCenter = selectedCenter,
             childClassViewModel = childClassViewModel,
             setAddChildClassDialog = {setUpdateChildClassDialog(it)},
             selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            childInfos = childInfos,
             isUpdate = true
         )
     }
@@ -165,16 +170,19 @@ fun SettingScreen(
             items(settingTypeList){settingType ->
                 when(settingType){
                     "센터" -> {
-                        CenterItemRow(
-                            settingType = settingType,
-                            allCenters = allCenters,
-                            selectedCenter = selectedCenter,
-                            centerViewModel = centerViewModel,
-                            childClassViewModel = childClassViewModel,
-                            childInfoViewModel = childInfoViewModel,
-                            setAddCenterDialog = {setAddCenterDialog(it)},
-                            setUpdateCenterDialg = {setUpdateCenterDialog(it)}
-                        )
+                        if(allCenters.isNotNull()){
+                            Log.e("allCenters", allCenters.toString())
+                            CenterItemRow(
+                                settingType = settingType,
+                                allCenters = allCenters,
+                                selectedCenter = selectedCenter,
+                                centerViewModel = centerViewModel,
+                                childClassViewModel = childClassViewModel,
+                                childInfoViewModel = childInfoViewModel,
+                                setAddCenterDialog = {setAddCenterDialog(it)},
+                                setUpdateCenterDialg = {setUpdateCenterDialog(it)}
+                            )
+                        }
                     }
                     "반" -> {
                         ChildClassItemRow(

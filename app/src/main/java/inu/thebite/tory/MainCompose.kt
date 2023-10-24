@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -46,15 +47,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.database.Center.CenterEntity
-import inu.thebite.tory.database.ChildClass.ChildClassEntity
-import inu.thebite.tory.database.ChildInfo.ChildInfoEntity
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.HomeScreen
-import inu.thebite.tory.screens.education.EducationScreen
-import inu.thebite.tory.screens.education.GameViewModel
-import inu.thebite.tory.screens.education.LTOViewModel
-import inu.thebite.tory.screens.education.STOViewModel
-import inu.thebite.tory.screens.game.DragAndDropViewModel
+import inu.thebite.tory.screens.education2.compose.dev.DEVItemRow
+import inu.thebite.tory.screens.education2.screen.NewEducationScreen
+import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+//import inu.thebite.tory.screens.education.EducationScreen
+//import inu.thebite.tory.screens.education.GameViewModel
+//import inu.thebite.tory.screens.education.LTOViewModel
+//import inu.thebite.tory.screens.education.STOViewModel
+//import inu.thebite.tory.screens.game.DragAndDropViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
@@ -77,16 +84,21 @@ fun MainCompose(
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
-    ltoViewModel : LTOViewModel,
+//    ltoViewModel : LTOViewModel,
     centerSelectViewModel : CenterSelectViewModel,
     childClassSelectViewModel : ChildClassSelectViewModel,
     childSelectViewModel : ChildSelectViewModel,
-    stoViewModel : STOViewModel,
+//    stoViewModel : STOViewModel,
     centerViewModel : CenterViewModel,
     childClassViewModel : ChildClassViewModel,
     childInfoViewModel : ChildInfoViewModel,
-    dragAndDropViewModel : DragAndDropViewModel,
-    gameViewModel : GameViewModel
+    devViewModel: DEVViewModel,
+    ltoViewModel: LTOViewModel,
+    educationViewModel : EducationViewModel,
+    stoViewModel : STOViewModel
+
+//    dragAndDropViewModel : DragAndDropViewModel,
+//    gameViewModel : GameViewModel
 ) {
 
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
@@ -104,42 +116,38 @@ fun MainCompose(
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
 
     var _selectedCenter by rememberSaveable{
-        mutableStateOf<CenterEntity?>(null)
+        mutableStateOf<CenterResponse?>(null)
 
     }
     var _selectedChildClass by rememberSaveable{
-        mutableStateOf<ChildClassEntity?>(null)
+        mutableStateOf<ChildClassResponse?>(null)
 
     }
     var _selectedChildInfo by rememberSaveable{
-        mutableStateOf<ChildInfoEntity?>(null)
+        mutableStateOf<StudentResponse?>(null)
     }
 
     LaunchedEffect(_selectedCenter, allCenters){
         _selectedCenter?.let {
-            childClassSelectViewModel.getChildClassesByCenterName(
-                it.centerName
+            childClassSelectViewModel.getChildClassesByCenter(
+                it
             )
         }
     }
 
     LaunchedEffect(_selectedChildClass, allChildClasses){
         _selectedChildClass?.let { selectedChildClass ->
-            childSelectViewModel.getChildInfosByCenterNameAndClassName(
-                selectedChildClass.centerName,
-                selectedChildClass.className
+            childSelectViewModel.getChildInfosByClass(
+                selectedClass = selectedChildClass
             )
         }
     }
 
     LaunchedEffect(allChildInfos){
-        _selectedCenter?.let {selectedCenter ->
-            _selectedChildClass?.let{selectedChildClass ->
-                childSelectViewModel.getChildInfosByCenterNameAndClassName(
-                    selectedCenter.centerName,
-                    selectedChildClass.className
-                )
-            }
+        _selectedChildClass?.let{selectedChildClass ->
+            childSelectViewModel.getChildInfosByClass(
+                selectedClass = selectedChildClass
+            )
         }
     }
 
@@ -175,7 +183,7 @@ fun MainCompose(
                     verticalArrangement = Arrangement.Top
 
                 ) {
-                    allCenters.let{
+                    allCenters?.let{
                         Text(
                             text = "센터",
                             fontWeight = FontWeight.SemiBold,
@@ -184,7 +192,7 @@ fun MainCompose(
                                 .padding(10.dp)
                         )
                         CenterControl(
-                            items = allCenters,
+                            items = allCenters!!,
                             selectedCenter = _selectedCenter,
                             childClassSelectViewModel = childClassSelectViewModel,
                             childSelectViewModel = childSelectViewModel,
@@ -243,8 +251,8 @@ fun MainCompose(
                                         centerSelectViewModel.setSelectedCenter(selectedCenter)
                                         childClassSelectViewModel.setSelectedChildClass(selectedChildClass)
                                         childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
-                                        ltoViewModel.clearSelectedLTO()
-                                        stoViewModel.clearSelectedSTO()
+//                                        ltoViewModel.clearSelectedLTO()
+//                                        stoViewModel.clearSelectedSTO()
                                         setChildDialogOpen(false)
                                     }
                                 ){
@@ -300,7 +308,9 @@ fun MainCompose(
             topBar = {
                 TopAppBar(
                     title = { Text(text = currentRouteToKorean) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .background(color = Color(0xFFEFEFEF))
+                    ,
                     navigationIcon = {
                         IconButton(onClick = {
                             coroutineScope.launch { drawerState.open() }
@@ -315,15 +325,16 @@ fun MainCompose(
                         Box(modifier = Modifier
                             .height(50.dp)
                         ){
+
                             Row(
                                 modifier = Modifier.fillMaxHeight(),
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                    selectedCenter?.let { Text(text = it.centerName) }
-                                    selectedChildClass?.let { Text(text = " > "+it.className) }
-                                    selectedChildInfo?.let { Text(text = " > "+it.childName) }
+                                    selectedCenter?.let { Text(text = it.name) }
+                                    selectedChildClass?.let { Text(text = " > "+it.name) }
+                                    selectedChildInfo?.let { Text(text = " > "+it.name) }
                                 }
                                 IconButton(onClick = {
                                     setChildDialogOpen(true)
@@ -331,6 +342,7 @@ fun MainCompose(
                                     Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
                                 }
                             }
+
 
 
                         }
@@ -348,16 +360,22 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.EDUCATION) {
-                    EducationScreen(
+                    NewEducationScreen(
+                        devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,
-                        childSelectViewModel = childSelectViewModel,
-                        stoViewModel = stoViewModel,
-                        centerViewModel = centerSelectViewModel,
-                        childInfoViewModel = childSelectViewModel,
-                        childClassViewModel = childClassSelectViewModel,
-                        dragAndDropViewModel = dragAndDropViewModel,
-                        gameViewModel = gameViewModel
+                        educationViewModel = educationViewModel,
+                        stoViewModel = stoViewModel
                     )
+//                    EducationScreen(
+//                        ltoViewModel = ltoViewModel,
+//                        childSelectViewModel = childSelectViewModel,
+//                        stoViewModel = stoViewModel,
+//                        centerViewModel = centerSelectViewModel,
+//                        childInfoViewModel = childSelectViewModel,
+//                        childClassViewModel = childClassSelectViewModel,
+//                        dragAndDropViewModel = dragAndDropViewModel,
+//                        gameViewModel = gameViewModel
+//                    )
                 }
 
                 composable(AllDestinations.SETTING) {
@@ -378,13 +396,13 @@ fun MainCompose(
 
 @Composable
 fun CenterControl(
-    items: List<CenterEntity>,
-    selectedCenter: CenterEntity?,
+    items: List<CenterResponse>,
+    selectedCenter: CenterResponse?,
     childClassSelectViewModel: ChildClassSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
-    setSelectedCenter : (CenterEntity?) -> Unit,
-    setSelectedChildClass : (ChildClassEntity?) -> Unit,
-    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
+    setSelectedCenter : (CenterResponse?) -> Unit,
+    setSelectedChildClass : (ChildClassResponse?) -> Unit,
+    setSelectedChildInfo: (StudentResponse?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -429,7 +447,7 @@ fun CenterControl(
                         childClassSelectViewModel.clearChildClasses()
                     } else {
                         setSelectedCenter(item)
-                        childClassSelectViewModel.getChildClassesByCenterName(item.centerName)
+                        childClassSelectViewModel.getChildClassesByCenter(item)
                     }
                     childSelectViewModel.clearChildInfos()
                     setSelectedChildClass(null)
@@ -479,7 +497,7 @@ fun CenterControl(
                 },
             ) {
                 Text(
-                    text = item.centerName,
+                    text = item.name,
                     fontWeight = FontWeight.Normal,
                     color = if (selectedCenter == item) {
                         Color.White
@@ -494,11 +512,11 @@ fun CenterControl(
 }
 @Composable
 fun ChildClassControl(
-    items: List<ChildClassEntity>,
-    selectedChildClass: ChildClassEntity?,
+    items: List<ChildClassResponse>,
+    selectedChildClass: ChildClassResponse?,
     childSelectViewModel: ChildSelectViewModel,
-    setSelectedChildClass : (ChildClassEntity?) -> Unit,
-    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
+    setSelectedChildClass : (ChildClassResponse?) -> Unit,
+    setSelectedChildInfo: (StudentResponse?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -544,9 +562,8 @@ fun ChildClassControl(
                     } else {
                         setSelectedChildClass(item)
 
-                        childSelectViewModel.getChildInfosByCenterNameAndClassName(
-                            item.centerName,
-                            item.className
+                        childSelectViewModel.getChildInfosByClass(
+                            item
                         )
                     }
                     setSelectedChildInfo(null)
@@ -595,7 +612,7 @@ fun ChildClassControl(
                 },
             ) {
                 Text(
-                    text = item.className,
+                    text = item.name,
                     fontWeight = FontWeight.Normal,
                     color = if (selectedChildClass == item) {
                         Color.White
@@ -611,9 +628,9 @@ fun ChildClassControl(
 
 @Composable
 fun ChildInfoControl(
-    items: List<ChildInfoEntity>,
-    selectedChildInfo: ChildInfoEntity?,
-    setSelectedChildInfo: (ChildInfoEntity?) -> Unit,
+    items: List<StudentResponse>,
+    selectedChildInfo: StudentResponse?,
+    setSelectedChildInfo: (StudentResponse?) -> Unit,
     useFixedWidth: Boolean = false,
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
@@ -702,7 +719,7 @@ fun ChildInfoControl(
                 },
             ) {
                 Text(
-                    text = item.childName,
+                    text = item.name,
                     fontWeight = FontWeight.Normal,
                     color = if (selectedChildInfo == item) {
                         Color.White

@@ -1,27 +1,28 @@
 package inu.thebite.tory.repositories.Center
 
-import inu.thebite.tory.database.Center.CenterDatabase
-import inu.thebite.tory.database.Center.CenterEntity
+import inu.thebite.tory.model.center.CenterRequest
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.retrofit.RetrofitApi
+import inu.thebite.tory.retrofit.RetrofitService
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
-class CenterRepoImpl(private val database: CenterDatabase): CenterRepo {
-    private val centerDao = database.centerDao()
+class CenterRepoImpl: CenterRepo {
+    private val centerRetrofit = RetrofitApi.apiService
 
-    override suspend fun createCenter(center: CenterEntity) {
-        centerDao.insertCenter(center)
+    override suspend fun createCenter(center: CenterRequest) {
+        centerRetrofit.addCenter(addCenterRequest = center)
     }
 
-    override suspend fun getAllCenters(): Flow<List<CenterEntity>> {
-        return centerDao.getAllCenters()
+    override suspend fun updateCenter(selectedCenter: CenterResponse, updateCenter: CenterRequest) {
+        centerRetrofit.updateCenter(centerId = selectedCenter.id, updateCenterRequest = updateCenter)
     }
 
-    override suspend fun updateCenter(updatedCenter: CenterEntity) {
-        centerDao.updateCenter(updatedCenter)
-
+    override suspend fun getAllCenters(): List<CenterResponse> {
+        return centerRetrofit.getCenterList()
     }
 
-    override suspend fun deleteCenter(center: CenterEntity) {
-        centerDao.deleteCenter(center)
-
+    override suspend fun deleteCenter(center: CenterResponse) {
+        centerRetrofit.deleteCenter(centerId = center.id)
     }
 }

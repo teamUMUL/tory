@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,16 +32,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.database.STO.STOEntity
-import inu.thebite.tory.screens.education.STOViewModel
-import org.koin.core.component.getScopeId
+import inu.thebite.tory.database.education.EducationEntity
+import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -47,15 +60,34 @@ import java.time.format.DateTimeFormatter
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun STODetailTableAndGameResult(
-    selectedSTO: STOEntity,
-    setSTODetailListIndex: (Int) -> Unit,
-    selectedSTODetailGameDataIndex: Int,
-    setSelectedSTODetailGameDataIndex: (Int) -> Unit,
-    stoViewModel: STOViewModel,
-    selectedSTOTryNum : Int
+    selectedSTO: StoResponse,
+    selectedEducation : EducationEntity,
+    selectedSTODetailGameDataIndex: MutableIntState,
+//    stoViewModel: STOViewModel,
+    educationViewModel: EducationViewModel,
+    setSelectedSTOStatus : (String) -> Unit
 ){
+    val allEducations by educationViewModel.allEducations.collectAsState()
+
+    var plusNum by remember {
+        mutableIntStateOf(0)
+    }
+
+    var pNum by remember {
+        mutableIntStateOf(0)
+    }
+
+    var minusNum by remember {
+        mutableIntStateOf(0)
+    }
 
 
+
+    LaunchedEffect(Unit){
+        plusNum = selectedEducation.educationResult.count { it == "+" }
+        pNum = selectedEducation.educationResult.count { it == "p" }
+        minusNum = selectedEducation.educationResult.count { it == "-" }
+    }
     val STODetailTitles =
         listOf<String>(
             "STO 이름",
@@ -81,7 +113,7 @@ fun STODetailTableAndGameResult(
                 .fillMaxWidth(0.6f)
                 .height(500.dp)
                 .padding(10.dp)
-                .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
+                .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
         ) {
             if(selectedSTO.isNotNull()){
                 LazyColumn(
@@ -93,39 +125,35 @@ fun STODetailTableAndGameResult(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .height(
-                                    if (STODetailTitles.indexOf(stoDetailItem) != 6){
-                                        if(STODetailTitles.indexOf(stoDetailItem) == 1){
-                                            120.dp
-                                        } else {
-                                            40.dp
-                                        }
-                                    } else {
-                                        300.dp
-                                    }
-                                )
+//                                .height(
+//                                    if (STODetailTitles.indexOf(stoDetailItem) != 6){
+//                                        if(STODetailTitles.indexOf(stoDetailItem) == 1){
+//                                            120.dp
+//                                        } else {
+//                                            40.dp
+//                                        }
+//                                    } else {
+//                                        300.dp
+//                                    }
+//                                )
                         ) {
                             val selectedSTODetail = listOf(
-                                selectedSTO.stoName,
-                                selectedSTO.stoDescription,
-                                selectedSTO.stoTryNum.toString(),
-                                selectedSTO.stoSuccessStandard,
-                                selectedSTO.stoMethod,
-                                selectedSTO.stoSchedule,
-                                selectedSTO.stoMemo,
+                                selectedSTO.name,
+                                selectedSTO.contents,
+                                "${selectedSTO.count}회",
+                                "${selectedSTO.goalPercent}%",
+                                selectedSTO.urgeContent,
+                                selectedSTO.enforceContent,
+                                selectedSTO.memo,
                             )
                             TableCell(text = stoDetailItem, weight = 0.3f)
-                            Divider(
-                                color = MaterialTheme.colorScheme.tertiary, modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(2.dp)
-                            )
-                            TableCell(
+
+                            TableCellWithLeftLine(
                                 text = selectedSTODetail[STODetailTitles.indexOf(stoDetailItem)], weight = 0.7f
                             )
 
                         }
-                        Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.tertiary)
+                        Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
@@ -136,11 +164,12 @@ fun STODetailTableAndGameResult(
                     .fillMaxWidth()
                     .height(500.dp)
                     .padding(start = 0.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
-                    .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp)),
+                    .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                if(selectedSTO.isNotNull()){
+
+                selectedEducation?.let { selectedEducation->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -148,7 +177,7 @@ fun STODetailTableAndGameResult(
                             .padding(10.dp)
                             .border(
                                 2.dp,
-                                MaterialTheme.colorScheme.tertiary,
+                                MaterialTheme.colorScheme.primary,
                                 RoundedCornerShape(8.dp)
                             ),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -161,28 +190,28 @@ fun STODetailTableAndGameResult(
                         ) {
                             Text(text = "정반응 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = selectedSTO.gameResult.count { it == "+" }.toString(),
+                                text = plusNum.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
                             Divider(
-                                color = MaterialTheme.colorScheme.tertiary, modifier = Modifier
+                                color = MaterialTheme.colorScheme.primary, modifier = Modifier
                                     .fillMaxHeight()
                                     .width(1.dp)
                             )
                             Text(text = "촉구 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = selectedSTO.gameResult.count { it == "P" }.toString(),
+                                text = pNum.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
 
                             Divider(
-                                color = MaterialTheme.colorScheme.tertiary, modifier = Modifier
+                                color = MaterialTheme.colorScheme.primary, modifier = Modifier
                                     .fillMaxHeight()
                                     .width(1.dp)
                             )
                             Text(text = "미반응 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = selectedSTO.gameResult.count { it == "-" }.toString(),
+                                text = minusNum.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
                         }
@@ -193,66 +222,79 @@ fun STODetailTableAndGameResult(
                         ) {
                             Text(text = "회차 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text =
-                                if(
-                                    selectedSTO.plusRatio.isNotNull()
-                                ){
-                                    (selectedSTO.plusRatio.size+1).toString()
-                                } else
-                                {
-                                    "1"
-                                },
+                                text = selectedEducation.roundNum.toString(),
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp))
                         }
                     }
-                    Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.tertiary)
+                    Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.8f)
                             .padding(10.dp)
                     ) {
-                        Log.e("selectedSTOTryNum", selectedSTOTryNum.toString())
-                        items(selectedSTO.gameResult.size / 5) { verticalIndex ->
+                        items(selectedEducation.educationResult.size / 5) { verticalIndex ->
                             LazyRow(
                                 modifier = Modifier
-                                    .fillMaxSize()
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
                                     .padding(2.dp),
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 items(5) { horizonIndex ->
                                     val stoGameData =
-                                        selectedSTO.gameResult[(5 * verticalIndex) + horizonIndex]
+                                        selectedEducation.educationResult[(5 * verticalIndex) + horizonIndex]
                                     Card(
                                         modifier = Modifier
                                             .padding(2.dp)
-                                            .width(85.dp)
+                                            .width(65.dp)
                                             .fillMaxHeight(0.3f)
                                             .clickable {
-                                                setSelectedSTODetailGameDataIndex(
+                                                selectedSTODetailGameDataIndex.intValue =
                                                     (5 * verticalIndex) + horizonIndex
-                                                )
                                             },
                                         shape = RoundedCornerShape(16.dp),
                                         colors = CardDefaults.cardColors(
-                                            containerColor = when (stoGameData) {
-                                                "+" -> {
-                                                    Color.Green.copy(alpha = 0.55f)
-                                                }
+                                            containerColor =
+                                            if(selectedSTODetailGameDataIndex.intValue == (5 * verticalIndex) + horizonIndex){
+                                                when (stoGameData) {
+                                                    "+" -> {
+                                                        Color.Green.copy(alpha = 0.85f)
+                                                    }
 
-                                                "-" -> {
-                                                    Color.Red.copy(alpha = 0.55f)
-                                                }
+                                                    "-" -> {
+                                                        Color.Red.copy(alpha = 0.85f)
+                                                    }
 
-                                                "P" -> {
-                                                    Color.Yellow.copy(alpha = 0.55f)
-                                                }
+                                                    "P" -> {
+                                                        Color.Yellow.copy(alpha = 0.85f)
+                                                    }
 
-                                                else -> {
-                                                    Color.Gray.copy(alpha = 0.55f)
+                                                    else -> {
+                                                        Color.Gray.copy(alpha = 0.85f)
+                                                    }
+                                                }
+                                            } else {
+                                                when (stoGameData) {
+                                                    "+" -> {
+                                                        Color.Green.copy(alpha = 0.55f)
+                                                    }
+
+                                                    "-" -> {
+                                                        Color.Red.copy(alpha = 0.55f)
+                                                    }
+
+                                                    "P" -> {
+                                                        Color.Yellow.copy(alpha = 0.55f)
+                                                    }
+
+                                                    else -> {
+                                                        Color.Gray.copy(alpha = 0.55f)
+                                                    }
                                                 }
                                             }
+
                                         ),
                                     ) {
                                         Box(
@@ -272,37 +314,37 @@ fun STODetailTableAndGameResult(
                             }
                         }
                         item {
-                            if(!selectedSTO.gameResult.contains("n")) {
+                            if(!selectedEducation.educationResult.contains("n")) {
                                 Button(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .fillMaxHeight()
-                                        .padding(horizontal = 20.dp, vertical = 5.dp),
+                                        .padding(vertical = 5.dp),
                                     onClick = {
                                         //+비율이 90%이상인 경우 자동으로 준거완료 설정
-                                        if((selectedSTO.gameResult.count { it == "+" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100 >= 90f){
-                                            selectedSTO.stoState= 1
-                                            setSTODetailListIndex(1)
+                                        if((selectedEducation.educationResult.count { it == "+" }.toFloat()/selectedEducation.educationResult.size.toFloat())*100 >= 90f){
+                                            setSelectedSTOStatus("준거 도달")
                                         }else{
-                                            selectedSTO.stoState= 0
-                                            setSTODetailListIndex(0)
-
+                                            setSelectedSTOStatus("진행중")
                                             //--------------
                                         }
-                                        setSelectedSTODetailGameDataIndex(0)
-
-
-                                        selectedSTO.minusRatio += (selectedSTO.gameResult.count { it == "-" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
-                                        selectedSTO.plusRatio += (selectedSTO.gameResult.count { it == "+" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
-                                        val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                                        val date = SimpleDateFormat("yyyy-MM-dd").parse(formattedDate)
-                                        selectedSTO.date += (date)
-                                        selectedSTO.gameResult = List(selectedSTO.gameResult.size){"n"}
-
-                                        stoViewModel.updateSTO(selectedSTO)
+                                        selectedSTODetailGameDataIndex.intValue = 0
+                                        educationViewModel.addEducationRound(selectedEducation)
+                                        plusNum = 0
+                                        pNum = 0
+                                        minusNum = 0
+//
+//                                        selectedSTO. += (selectedSTO.gameResult.count { it == "-" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
+//                                        selectedSTO.plusRatio += (selectedSTO.gameResult.count { it == "+" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
+//                                        val formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+//                                        val date = SimpleDateFormat("yyyy-MM-dd").parse(formattedDate)
+//                                        selectedSTO.date += (date)
+//                                        selectedSTO.gameResult = List(selectedSTO.gameResult.size){"n"}
+//
+//                                        stoViewModel.updateSTO(selectedSTO)
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Cyan.copy(alpha = 0.2f)
+                                        containerColor = Color.Cyan.copy(alpha = 0.4f)
                                     ),
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
@@ -317,7 +359,7 @@ fun STODetailTableAndGameResult(
 
                     }
 
-                    Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.tertiary)
+                    Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
 
                     LazyRow(
                         modifier = Modifier.fillMaxSize(),
@@ -328,7 +370,7 @@ fun STODetailTableAndGameResult(
                         items(buttonList) { buttonItem ->
                             OutlinedButton(
                                 modifier = Modifier
-                                    .weight(1f)
+                                    .width(85.dp)
                                     .fillMaxHeight()
                                     .padding(vertical = 5.dp, horizontal = 2.dp),
                                 shape = RoundedCornerShape(16.dp),
@@ -353,29 +395,35 @@ fun STODetailTableAndGameResult(
                                     }
                                 ),
                                 onClick = {
-                                    if(selectedSTODetailGameDataIndex < selectedSTO.gameResult.size){
-                                        val changeList = selectedSTO.gameResult.toMutableList()
+                                    if(selectedSTODetailGameDataIndex.intValue < selectedEducation.educationResult.size){
+                                        val changeList = selectedEducation.educationResult.toMutableList()
 
                                         when (buttonItem) {
                                             "+" -> {
-                                                changeList[selectedSTODetailGameDataIndex] = "+"
+                                                changeList[selectedSTODetailGameDataIndex.intValue] = "+"
+                                                plusNum += 1
                                             }
                                             "-" -> {
-                                                changeList[selectedSTODetailGameDataIndex] = "-"
+                                                changeList[selectedSTODetailGameDataIndex.intValue] = "-"
+                                                minusNum += 1
                                             }
                                             "P" -> {
-                                                changeList[selectedSTODetailGameDataIndex] = "P"
+                                                changeList[selectedSTODetailGameDataIndex.intValue] = "P"
+                                                pNum += 1
                                             }
                                             else -> {
-                                                changeList[selectedSTODetailGameDataIndex] = "n"
+                                                changeList[selectedSTODetailGameDataIndex.intValue] = "n"
                                             }
                                         }
-                                        selectedSTO.gameResult = changeList
-                                        stoViewModel.updateSTO(selectedSTO)
-                                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex+1)
+                                        selectedEducation.educationResult = changeList
+                                        educationViewModel.updateSelectedEducationList(selectedEducation, changeList)
+                                        educationViewModel.updateEducation(selectedEducation)
+                                        selectedSTODetailGameDataIndex.intValue = selectedSTODetailGameDataIndex.intValue + 1
+
                                     }
 
-                                }
+                                },
+                                contentPadding = PaddingValues(0.dp)
                             ) {
                                 Text(
                                     modifier = Modifier.padding(16.dp),
@@ -404,7 +452,8 @@ fun STODetailTableAndGameResult(
                         }
 
                     }
-                    }
+                }
+
 
 
 
@@ -424,6 +473,32 @@ fun RowScope.TableCell(
         Modifier
             .weight(weight)
             .padding(8.dp)
+    )
+
+}
+
+@Composable
+fun RowScope.TableCellWithLeftLine(
+    text: String,
+    weight: Float
+) {
+    Text(
+        text = text,
+        Modifier
+            .weight(weight)
+            .padding(8.dp)
+            .drawBehind {
+                val strokeWidth = 4f
+                val x = size.width - strokeWidth
+                val y = size.height - strokeWidth
+                //left line
+                drawLine(
+                    color = Color(0xFF888888),
+                    start = Offset(0f - 10f, 0f - 20f), //(0,0) at top-left point of the box
+                    end = Offset(0f - 10f, y + 22f),//bottom-left point of the box
+                    strokeWidth = strokeWidth
+                )
+            }
     )
 
 }
