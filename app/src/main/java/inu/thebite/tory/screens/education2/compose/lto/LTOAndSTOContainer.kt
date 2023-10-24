@@ -65,7 +65,8 @@ fun LTOAndSTOContainer(
             context = context,
             selectedLTOStatus = selectedLTOStatus,
             devViewModel = devViewModel,
-            ltoViewModel = ltoViewModel
+            ltoViewModel = ltoViewModel,
+            stoViewModel = stoViewModel
         )
         Divider(
             modifier = Modifier

@@ -49,6 +49,7 @@ import inu.thebite.tory.screens.education2.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education2.compose.dialog.lto.UpdateLTOItemDialog
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 
 @Composable
@@ -57,6 +58,7 @@ fun LTOItemColumn(
     selectedLTOStatus : MutableState<String>,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
+    stoViewModel: STOViewModel
 ){
     val allLTOs by ltoViewModel.allLTOs.collectAsState()
     val ltos by ltoViewModel.ltos.collectAsState()
@@ -186,6 +188,7 @@ fun LTOItemColumn(
                                     selectedLTOStatus.value = ""
                                 } else {
                                     ltoViewModel.setSelectedLTO(lto)
+                                    stoViewModel.getSTOsByLTO(lto)
                                 }
                             },
                         verticalAlignment = Alignment.CenterVertically,

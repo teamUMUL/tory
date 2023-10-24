@@ -89,6 +89,8 @@ fun STOItemColumn(
     val ltos by ltoViewModel.ltos.collectAsState()
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
+    val stos by stoViewModel.stos.collectAsState()
+
     val (updateSTODialog, setUpdateSTODialog) = remember {
         mutableStateOf(false)
     }
@@ -114,96 +116,56 @@ fun STOItemColumn(
         }
     }
 
+    LaunchedEffect(selectedLTO){
+        selectedLTO?.let { selectedLTO ->
+            stoViewModel.getSTOsByLTO(selectedLTO)
+        }
+    }
+
     val selectedSTODetailGameDataIndex = remember { mutableIntStateOf(0) }
     val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
 
     val selectedEducation by educationViewModel.selectedEducation.collectAsState()
 
-    val stos = mutableListOf<StoResponse>()
-    for(i in 1..10){
-        stos.add(
-            StoResponse(
-                id = i.toLong() ,
-                templateNum = i,
-                status = "",
-                name = "$i. 3 Array) 시도 수 : 20, 메인 아이템 : 연필, 예시 아이템 : 연필, 숟가락, 컵 2023/10/20",
-                contents = "",
-                count = 15,
-                goal = 90,
-                goalPercent = 90,
-                achievementOrNot = "",
-                urgeType = "",
-                urgeContent = "",
-                enforceContent = "",
-                memo = "",
-                hitGoalDate = "",
-                registerDate = "",
-                delYN = "",
-                lto = selectedLTO ?: LtoResponse(
-                    id = i.toLong(),
-                    templateNum = 0,
-                    status = "",
-                    name = "",
-                    contents = "",
-                    game = "",
-                    achieveDate = "",
-                    registerDate = "",
-                    delYN = "",
-                    domain = DomainResponse(
-                        id = 0L,
-                        templateNum = 0,
-                        type = "",
-                        status = "",
-                        name = "",
-                        contents = "",
-                        useYN = "",
-                        delYN = "",
-                        registerDate = ""
-                    )
-                )
-            )
-        )
-    }
-
-    stos.reverse()
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
     ){
+        stos?.let { stos ->
+            LazyColumn(
+                modifier = Modifier.padding(10.dp)
+            ){
 
-        LazyColumn(
-            modifier = Modifier.padding(10.dp)
-        ){
-            items(stos){sto ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp)
-                        .border(
-                            2.dp,
-                            color = if (selectedSTO == sto) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
-                            shape = RoundedCornerShape(8.dp)
-                        )
+                items(stos){sto ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp)
+                            .border(
+                                2.dp,
+                                color = if (selectedSTO == sto) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
+                                shape = RoundedCornerShape(8.dp)
+                            )
 //                        .clickable(
 //                            interactionSource = remember { MutableInteractionSource() },
 //                            indication = null
 //                        ) {
 //
 //                        }
-                        .animateContentSize(
-                            animationSpec = tween(
-                                durationMillis = 300,
-                                easing = LinearOutSlowInEasing
-                            )
-                        ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent
-                    )
-                ){
-                    Column(
-                        modifier = Modifier
-                            .background(color =
+                            .animateContentSize(
+                                animationSpec = tween(
+                                    durationMillis = 300,
+                                    easing = LinearOutSlowInEasing
+                                )
+                            ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        )
+                    ){
+                        Column(
+                            modifier = Modifier
+                                .background(color =
                                 if (selectedSTO == sto){
                                     when(selectedSTOStatus.value){
                                         "진행중" -> {
@@ -239,119 +201,121 @@ fun STOItemColumn(
                                         }
                                     }
                                 }
-                            )
+                                )
 
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    if (selectedSTO == sto) {
-                                        stoViewModel.clearSelectedSTO()
-                                        educationViewModel.clearSelectedEducation()
-                                        selectedSTOStatus.value = ""
-                                    } else {
-                                        stoViewModel.setSelectedSTO(sto)
-                                        educationViewModel.setSelectedEducation(selectedSTO = sto)
-//                                        selectedSTOStatus.value = selectedSTO!!.status
-                                    }
-                                },
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
-                                text = sto.name ,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.Black,
-                                modifier = Modifier
-                                    .weight(6f)
-                                    .padding(start = 20.dp),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
                             Row(
                                 modifier = Modifier
-                                    .weight(
-                                        if(selectedSTO == sto){
-                                            6f
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null
+                                    ) {
+                                        if (selectedSTO == sto) {
+                                            stoViewModel.clearSelectedSTO()
+                                            educationViewModel.clearSelectedEducation()
+                                            selectedSTOStatus.value = ""
                                         } else {
-                                            1f
+                                            stoViewModel.setSelectedSTO(sto)
+                                            educationViewModel.setSelectedEducation(selectedSTO = sto)
+//                                        selectedSTOStatus.value = selectedSTO!!.status
                                         }
-                                    ),
+                                    },
                                 verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                if(selectedSTO == sto){
-                                    selectedSTO?.let { selectedSTO->
-                                        STOStatusButtons(
-                                            modifier = Modifier.weight(4f),
-                                            selectedSTO = selectedSTO,
-                                            selectedSTOStatus = selectedSTOStatus,
-                                            setSelectedSTOStatus = {
-                                                selectedSTOStatus.value = it
-                                                selectedSTO.status = it
-                                                Log.d("클릭 감지", selectedSTO.toString())
+                                Text(
+                                    text = sto.name ,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black,
+                                    modifier = Modifier
+                                        .weight(6f)
+                                        .padding(start = 20.dp),
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .weight(
+                                            if(selectedSTO == sto){
+                                                6f
+                                            } else {
+                                                1f
                                             }
-                                        )
-                                        STOSettingButtons(
-                                            modifier = Modifier.weight(2f),
-                                            setUpdateSTODialog = {
-                                                setUpdateSTODialog(it)
-                                            }
-                                        )
-                                        Spacer(modifier = Modifier.width(10.dp))
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    if(selectedSTO == sto){
+                                        selectedSTO?.let { selectedSTO->
+                                            STOStatusButtons(
+                                                modifier = Modifier.weight(4f),
+                                                selectedSTO = selectedSTO,
+                                                selectedSTOStatus = selectedSTOStatus,
+                                                setSelectedSTOStatus = {
+                                                    selectedSTOStatus.value = it
+                                                    selectedSTO.status = it
+                                                    Log.d("클릭 감지", selectedSTO.toString())
+                                                }
+                                            )
+                                            STOSettingButtons(
+                                                modifier = Modifier.weight(2f),
+                                                setUpdateSTODialog = {
+                                                    setUpdateSTODialog(it)
+                                                }
+                                            )
+                                            Spacer(modifier = Modifier.width(10.dp))
+                                        }
                                     }
                                 }
+
                             }
 
-                        }
-
-                        if(selectedSTO == sto){
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(700.dp)
-                                    .border(
-                                        width = 2.dp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        shape = RoundedCornerShape(8.dp)
-                                    )
-                                    .background(
-                                        color = Color.Transparent,
-                                        shape = RoundedCornerShape(8.dp)
-                                    )
-                            ) {
-                                selectedSTO?.let { selectedSTO->
-                                    selectedEducation?.let {selectedEducation ->
-                                        STODetailTableAndGameResult(
-                                            selectedSTO = selectedSTO,
-                                            selectedEducation = selectedEducation,
-                                            selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-                                            educationViewModel = educationViewModel,
-                                            setSelectedSTOStatus = {
-                                                selectedSTOStatus.value = it
-                                                selectedSTO.status = it
-                                            }
+                            if(selectedSTO == sto){
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(700.dp)
+                                        .border(
+                                            width = 2.dp,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            shape = RoundedCornerShape(8.dp)
                                         )
+                                        .background(
+                                            color = Color.Transparent,
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                ) {
+                                    selectedSTO?.let { selectedSTO->
+                                        selectedEducation?.let {selectedEducation ->
+                                            STODetailTableAndGameResult(
+                                                selectedSTO = selectedSTO,
+                                                selectedEducation = selectedEducation,
+                                                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                                                educationViewModel = educationViewModel,
+                                                setSelectedSTOStatus = {
+                                                    selectedSTOStatus.value = it
+                                                    selectedSTO.status = it
+                                                }
+                                            )
+                                        }
+                                        GameReadyRow(
+                                            selectedSTO = selectedSTO,
+                                            setAddGameItem = {},
+                                        )
+
                                     }
-                                    GameReadyRow(
-                                        selectedSTO = selectedSTO,
-                                        setAddGameItem = {},
-                                    )
 
                                 }
-
                             }
                         }
                     }
-                }
 
+                }
             }
         }
+
 
     }
 }
