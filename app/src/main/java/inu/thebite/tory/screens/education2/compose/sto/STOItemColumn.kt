@@ -243,19 +243,25 @@ fun STOItemColumn(
                                         ),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    if(selectedSTO == sto){
-                                        selectedSTO?.let { selectedSTO->
+                                    selectedSTO?.let { selectedSTO->
+                                        if(selectedSTO.id == sto.id) {
                                             STOStatusButtons(
                                                 modifier = Modifier.weight(4f),
                                                 selectedSTO = selectedSTO,
                                                 selectedSTOStatus = selectedSTOStatus,
                                                 setSelectedSTOStatus = {
-                                                    if(selectedSTO.status == it){
+                                                    if (selectedSTO.status == it) {
                                                         selectedSTOStatus.value = ""
-                                                        stoViewModel.setSelectedLTOStatus(selectedSTO = selectedSTO, changeState = "")
+                                                        stoViewModel.setSelectedLTOStatus(
+                                                            selectedSTO = selectedSTO,
+                                                            changeState = ""
+                                                        )
                                                     } else {
                                                         selectedSTOStatus.value = it
-                                                        stoViewModel.setSelectedLTOStatus(selectedSTO = selectedSTO, changeState = it)
+                                                        stoViewModel.setSelectedLTOStatus(
+                                                            selectedSTO = selectedSTO,
+                                                            changeState = it
+                                                        )
                                                     }
                                                     Log.d("클릭 감지", selectedSTO.toString())
                                                 }
@@ -274,44 +280,46 @@ fun STOItemColumn(
                                 }
 
                             }
-
-                            if(selectedSTO == sto){
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(700.dp)
-                                        .border(
-                                            width = 2.dp,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            shape = RoundedCornerShape(8.dp)
-                                        )
-                                        .background(
-                                            color = Color.Transparent,
-                                            shape = RoundedCornerShape(8.dp)
-                                        )
-                                ) {
-                                    selectedSTO?.let { selectedSTO->
-                                        selectedEducation?.let {selectedEducation ->
-                                            STODetailTableAndGameResult(
-                                                selectedSTO = selectedSTO,
-                                                selectedEducation = selectedEducation,
-                                                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-                                                educationViewModel = educationViewModel,
-                                                setSelectedSTOStatus = {
-                                                    selectedSTOStatus.value = it
-                                                    selectedSTO.status = it
-                                                }
+                            selectedSTO?.let { selectedSTO ->
+                                if(selectedSTO.id == sto.id){
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(700.dp)
+                                            .border(
+                                                width = 2.dp,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                shape = RoundedCornerShape(8.dp)
                                             )
+                                            .background(
+                                                color = Color.Transparent,
+                                                shape = RoundedCornerShape(8.dp)
+                                            )
+                                    ) {
+                                        selectedSTO?.let { selectedSTO->
+                                            selectedEducation?.let {selectedEducation ->
+                                                STODetailTableAndGameResult(
+                                                    selectedSTO = selectedSTO,
+                                                    selectedEducation = selectedEducation,
+                                                    selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                                                    educationViewModel = educationViewModel,
+                                                    setSelectedSTOStatus = {
+                                                        selectedSTOStatus.value = it
+                                                        selectedSTO.status = it
+                                                    }
+                                                )
+                                            }
+                                            GameReadyRow(
+                                                selectedSTO = selectedSTO,
+                                                setAddGameItem = {},
+                                            )
+
                                         }
-                                        GameReadyRow(
-                                            selectedSTO = selectedSTO,
-                                            setAddGameItem = {},
-                                        )
 
                                     }
-
                                 }
                             }
+
                         }
                     }
 
