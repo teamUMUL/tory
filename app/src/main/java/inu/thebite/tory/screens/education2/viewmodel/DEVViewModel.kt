@@ -33,7 +33,7 @@ class DEVViewModel : ViewModel() {
     }
     init {
         getAllDEVs()
-        setDummyDEVData()
+//        setDummyDEVData()
     }
 
     fun setDummyDEVData(){

@@ -50,7 +50,7 @@ class LTOViewModel: ViewModel() {
     }
     init {
         getAllLTOs()
-        setLTODummyData()
+//        setLTODummyData()
     }
 
     fun setLTODummyData(){
