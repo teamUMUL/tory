@@ -8,6 +8,7 @@ import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.AddLtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.repositories.DEV.DEVRepoImpl
 import inu.thebite.tory.repositories.LTO.LTORepoImpl
 import kotlinx.coroutines.Dispatchers
@@ -35,15 +36,15 @@ class LTOViewModel: ViewModel() {
         _selectedLTO.value = ltoEntity
     }
 
-//    fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val foundLTO = _ltos.value!!.find {
-//                it.id == selectedLTO.id
-//            }
-//            foundLTO?.status = changeState
-//            _selectedLTO.value = foundLTO
-//        }
-//    }
+    fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
+        viewModelScope.launch {
+            val updateLTOStatus = UpdateLtoStatusRequest(
+                status = changeState
+            )
+            repo.updateLTOStatus(selectedLTO, updateLTOStatus)
+            getAllLTOs()
+        }
+    }
 
     fun clearSelectedCenter() {
         _selectedLTO.value = null

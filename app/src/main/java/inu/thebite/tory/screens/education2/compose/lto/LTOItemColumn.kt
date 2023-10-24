@@ -140,25 +140,6 @@ fun LTOItemColumn(
                             )
                             .background(
                                 color =
-                                if (selectedLTO == lto) {
-                                    when (selectedLTOStatus.value) {
-                                        "진행중" -> {
-                                            Color.Blue.copy(alpha = 0.2f)
-                                        }
-
-                                        "중지" -> {
-                                            Color.Red.copy(alpha = 0.2f)
-                                        }
-
-                                        "완료" -> {
-                                            Color.Green.copy(alpha = 0.2f)
-                                        }
-
-                                        else -> {
-                                            Color.Gray.copy(alpha = 0.2f)
-                                        }
-                                    }
-                                } else {
                                     when (lto.status) {
                                         "진행중" -> {
                                             Color.Blue.copy(alpha = 0.2f)
@@ -175,7 +156,6 @@ fun LTOItemColumn(
                                         else -> {
                                             Color.Gray.copy(alpha = 0.2f)
                                         }
-                                    }
                                 },
                                 shape = RoundedCornerShape(8.dp)
                             )

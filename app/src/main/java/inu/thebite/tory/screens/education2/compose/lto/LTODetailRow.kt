@@ -70,11 +70,14 @@ fun LTODetailRow(
                 setSelectedLTOStatus =  {
                     if(it == selectedLTOStatus.value){
                         selectedLTOStatus.value = ""
+                        ltoViewModel.setSelectedLTOStatus(selectedLTO, "")
                     } else {
                         selectedLTOStatus.value = it
+                        ltoViewModel.setSelectedLTOStatus(selectedLTO, it)
                     }
                     selectedLTO.status = it
                     ltoViewModel.setSelectedLTO(selectedLTO)
+
                 }
             )
             Spacer(modifier = Modifier.width(10.dp))

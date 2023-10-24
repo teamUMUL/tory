@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -23,18 +25,39 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 
 @Composable
 fun STOSettingButtons(
     modifier : Modifier,
-    setUpdateSTODialog : (Boolean) -> Unit
+    setUpdateSTODialog : (Boolean) -> Unit,
+    stoViewModel: STOViewModel,
+    selectedSTO : StoResponse
 ){
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        OutlinedButton(
+            modifier = Modifier
+                .size(40.dp),
+            border = BorderStroke(1.dp, Color.Black),
+            shape = RoundedCornerShape(5.dp),
+            onClick = {
+                stoViewModel.deleteSTO(selectedSTO)
+            },
+            contentPadding = PaddingValues(2.dp)
+        ){
+            Icon(
+                modifier = Modifier
+                    .size(35.dp),
+                imageVector = Icons.Default.Delete,
+                contentDescription = null,
+                tint = Color.Black)
+        }
         OutlinedButton(
             modifier = Modifier
                 .size(40.dp),

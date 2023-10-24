@@ -267,10 +267,12 @@ fun STOItemColumn(
                                                 }
                                             )
                                             STOSettingButtons(
-                                                modifier = Modifier.weight(2f),
+                                                modifier = Modifier.weight(2.5f),
                                                 setUpdateSTODialog = {
                                                     setUpdateSTODialog(it)
-                                                }
+                                                },
+                                                stoViewModel = stoViewModel,
+                                                selectedSTO = selectedSTO
                                             )
                                             Spacer(modifier = Modifier.width(10.dp))
                                         }
