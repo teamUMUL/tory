@@ -122,6 +122,12 @@ fun STOItemColumn(
             )
         }
     }
+    LaunchedEffect(selectedSTO){
+        selectedSTO?.let { selectedSTO ->
+            selectedSTOStatus.value = selectedSTO.status
+        }
+    }
+
     LaunchedEffect(selectedSTOStatus.value){
         selectedLTO?.let {selectedLTO ->
             stoViewModel.getSTOsByLTO(selectedLTO)
