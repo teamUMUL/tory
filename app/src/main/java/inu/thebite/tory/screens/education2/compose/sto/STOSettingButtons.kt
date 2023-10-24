@@ -58,6 +58,7 @@ fun STOSettingButtons(
                 contentDescription = null,
                 tint = Color.Black)
         }
+        Spacer(modifier = Modifier.width(10.dp))
         OutlinedButton(
             modifier = Modifier
                 .size(40.dp),

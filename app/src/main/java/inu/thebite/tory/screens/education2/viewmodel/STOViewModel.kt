@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.repositories.STO.STORepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,7 +52,15 @@ class STOViewModel : ViewModel() {
             }
         }
     }
-
+    fun setSelectedLTOStatus(selectedSTO: StoResponse, changeState : String) {
+        viewModelScope.launch {
+            val updateSTOStatus = UpdateStoStatusRequest(
+                status = changeState
+            )
+            repo.updateStoStatus(selectedSTO, updateSTOStatus)
+            getAllLTOs()
+        }
+    }
     fun getSTOsByLTO(
         selectedLTO: LtoResponse,
     ){

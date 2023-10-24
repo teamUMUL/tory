@@ -85,13 +85,19 @@ fun STOItemColumn(
     setAddSTODialog : (Boolean) -> Unit
 ){
     val context = LocalContext.current
+
     val allLTOs by ltoViewModel.allLTOs.collectAsState()
     val ltos by ltoViewModel.ltos.collectAsState()
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
+
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val stos by stoViewModel.stos.collectAsState()
     val allSTOs by stoViewModel.allSTOs.collectAsState()
 
+    val selectedSTODetailGameDataIndex = remember { mutableIntStateOf(0) }
+    val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
+
+    val selectedEducation by educationViewModel.selectedEducation.collectAsState()
     val (updateSTODialog, setUpdateSTODialog) = remember {
         mutableStateOf(false)
     }
@@ -116,6 +122,11 @@ fun STOItemColumn(
             )
         }
     }
+    LaunchedEffect(selectedSTOStatus.value){
+        selectedLTO?.let {selectedLTO ->
+            stoViewModel.getSTOsByLTO(selectedLTO)
+        }
+    }
 
     LaunchedEffect(selectedLTO){
         selectedLTO?.let { selectedLTO ->
@@ -129,10 +140,7 @@ fun STOItemColumn(
         }
     }
 
-    val selectedSTODetailGameDataIndex = remember { mutableIntStateOf(0) }
-    val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
 
-    val selectedEducation by educationViewModel.selectedEducation.collectAsState()
 
     Column(
         modifier = Modifier
@@ -173,24 +181,6 @@ fun STOItemColumn(
                         Column(
                             modifier = Modifier
                                 .background(color =
-                                if (selectedSTO == sto){
-                                    when(selectedSTOStatus.value){
-                                        "진행중" -> {
-                                            Color.Blue.copy(alpha = 0.1f)
-                                        }
-                                        "준거 도달" -> {
-                                            Color.Green.copy(alpha = 0.1f)
-
-                                        }
-                                        "중지" -> {
-                                            Color.Red.copy(alpha = 0.1f)
-
-                                        }
-                                        else -> {
-                                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
-                                        }
-                                    }
-                                } else {
                                     when(sto.status){
                                         "진행중" -> {
                                             Color.Blue.copy(alpha = 0.1f)
@@ -207,7 +197,6 @@ fun STOItemColumn(
                                             MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
                                         }
                                     }
-                                }
                                 )
 
                         ) {
@@ -261,8 +250,13 @@ fun STOItemColumn(
                                                 selectedSTO = selectedSTO,
                                                 selectedSTOStatus = selectedSTOStatus,
                                                 setSelectedSTOStatus = {
-                                                    selectedSTOStatus.value = it
-                                                    selectedSTO.status = it
+                                                    if(selectedSTO.status == it){
+                                                        selectedSTOStatus.value = ""
+                                                        stoViewModel.setSelectedLTOStatus(selectedSTO = selectedSTO, changeState = "")
+                                                    } else {
+                                                        selectedSTOStatus.value = it
+                                                        stoViewModel.setSelectedLTOStatus(selectedSTO = selectedSTO, changeState = it)
+                                                    }
                                                     Log.d("클릭 감지", selectedSTO.toString())
                                                 }
                                             )
