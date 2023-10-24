@@ -7,6 +7,7 @@ import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.AddLtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
@@ -120,5 +121,9 @@ interface RetrofitService {
 
     @DELETE("/sto/{stoId}/delete")
     suspend fun deleteSto(@Path("stoId") stoId: Long): Response<Void>
+
+    // image
+    @GET("/image/list")
+    suspend fun getImageList(): List<ImageResponse>
 
 }
