@@ -43,6 +43,7 @@ class LTOViewModel: ViewModel() {
             )
             repo.updateLTOStatus(selectedLTO, updateLTOStatus)
             getAllLTOs()
+            getLTOsByDEV(selectedLTO.domain)
         }
     }
 
