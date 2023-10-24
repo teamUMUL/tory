@@ -259,20 +259,15 @@ fun STOItemColumn(
                                                 selectedSTO = selectedSTO,
                                                 selectedSTOStatus = selectedSTOStatus,
                                                 setSelectedSTOStatus = {
-                                                    if (selectedSTO.status == it) {
+                                                    if(it == selectedSTOStatus.value){
                                                         selectedSTOStatus.value = ""
-                                                        stoViewModel.setSelectedLTOStatus(
-                                                            selectedSTO = selectedSTO,
-                                                            changeState = ""
-                                                        )
+                                                        stoViewModel.setSelectedSTOStatus(selectedSTO, "")
                                                     } else {
                                                         selectedSTOStatus.value = it
-                                                        stoViewModel.setSelectedLTOStatus(
-                                                            selectedSTO = selectedSTO,
-                                                            changeState = it
-                                                        )
+                                                        stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                     }
-                                                    Log.d("클릭 감지", selectedSTO.toString())
+                                                    selectedSTO.status = it
+                                                    stoViewModel.setSelectedSTO(selectedSTO)
                                                 }
                                             )
                                             STOSettingButtons(

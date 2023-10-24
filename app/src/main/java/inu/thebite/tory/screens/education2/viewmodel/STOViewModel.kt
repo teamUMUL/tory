@@ -39,10 +39,10 @@ class STOViewModel : ViewModel() {
         _selectedSTO.value = null
     }
     init {
-        getAllLTOs()
+        getAllSTOs()
     }
 
-    fun getAllLTOs(){
+    fun getAllSTOs(){
         viewModelScope.launch {
             try {
                 val allSTOs = repo.getStoList()
@@ -52,13 +52,13 @@ class STOViewModel : ViewModel() {
             }
         }
     }
-    fun setSelectedLTOStatus(selectedSTO: StoResponse, changeState : String) {
+    fun setSelectedSTOStatus(selectedSTO: StoResponse, changeState : String) {
         viewModelScope.launch {
             val updateSTOStatus = UpdateStoStatusRequest(
                 status = changeState
             )
             repo.updateStoStatus(selectedSTO, updateSTOStatus)
-            getAllLTOs()
+            getAllSTOs()
             getSTOsByLTO(selectedSTO.lto)
         }
     }
@@ -91,7 +91,7 @@ class STOViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to create STO", e.message.toString())
             }
-            getAllLTOs()
+            getAllSTOs()
         }
     }
 
@@ -121,7 +121,7 @@ class STOViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to delete STO", e.message.toString())
             }
-            getAllLTOs()
+            getAllSTOs()
         }
     }
 }
