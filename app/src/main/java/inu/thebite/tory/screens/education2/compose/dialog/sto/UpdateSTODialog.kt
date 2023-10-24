@@ -164,7 +164,6 @@ fun UpdateSTODialog(
                         stoMethodInputValue = TextFieldValue("")
                         stoScheduleInputValue = TextFieldValue("")
                         stoMemoInputValue = TextFieldValue("")
-
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
