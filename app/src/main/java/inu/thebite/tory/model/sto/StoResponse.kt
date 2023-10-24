@@ -2,6 +2,8 @@ package inu.thebite.tory.model.sto
 
 import com.google.gson.annotations.SerializedName
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.image.ImageResponse
+
 
 data class StoResponse(
 
@@ -53,9 +55,10 @@ data class StoResponse(
     @SerializedName("delYN")
     var delYN: String,
 
-//    @SerializedName("sto_image_list")
-//    var imageList: List<ImageResponse>,
-
     @SerializedName("lto")
     var lto: LtoResponse,
+
+    @SerializedName("name")
+    var ltoId: Long
+
 )

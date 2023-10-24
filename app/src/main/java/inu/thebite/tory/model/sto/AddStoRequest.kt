@@ -27,4 +27,8 @@ data class AddStoRequest(
 
     @SerializedName("memo")
     var memo: String,
+
+    @SerializedName("sto_memo")
+    var memo: String
+
 )

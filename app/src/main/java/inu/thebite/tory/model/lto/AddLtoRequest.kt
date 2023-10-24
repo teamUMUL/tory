@@ -11,5 +11,5 @@ data class AddLtoRequest(
     var contents: String,
 
     @SerializedName("game")
-    var game: String,
+    var game: String
 )
