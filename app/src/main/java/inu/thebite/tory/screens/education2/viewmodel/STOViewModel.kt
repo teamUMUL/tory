@@ -114,6 +114,7 @@ class STOViewModel : ViewModel() {
                 Log.e("failed to delete LTO", e.message.toString())
             }
             getAllSTOs()
+            getSTOsByLTO(selectedSTO.lto)
         }
     }
 

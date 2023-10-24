@@ -303,7 +303,7 @@ fun STOItemColumn(
                                         selectedSTO?.let { selectedSTO->
                                             selectedEducation?.let {selectedEducation ->
                                                 STODetailTableAndGameResult(
-                                                    selectedSTO = selectedSTO,
+                                                    selectedSTO = sto,
                                                     selectedEducation = selectedEducation,
                                                     selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
                                                     educationViewModel = educationViewModel,
