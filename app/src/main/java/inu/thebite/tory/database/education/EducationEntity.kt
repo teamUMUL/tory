@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class EducationEntity(
     @PrimaryKey(autoGenerate = true)
     var educationId: Int = 0,
-    @ColumnInfo("stoId")
-    var stoId: Long,
+    @ColumnInfo("stoName")
+    var stoName: String,
     @ColumnInfo("roundNum")
     var roundNum: Int,
     @ColumnInfo("educationResult")

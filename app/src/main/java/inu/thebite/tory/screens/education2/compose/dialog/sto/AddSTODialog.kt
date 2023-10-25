@@ -56,6 +56,7 @@ import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import java.sql.Date
 
@@ -63,6 +64,7 @@ import java.sql.Date
 fun AddSTODialog(
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
+    educationViewModel: EducationViewModel,
     selectedLTO : LtoResponse,
 ) {
     val addSTOScrollState = rememberScrollState()
@@ -158,6 +160,11 @@ fun AddSTODialog(
                                 enforceContent = stoScheduleInputValue.text,
                                 memo = stoMemoInputValue.text
                             )
+                        )
+                        educationViewModel.createEducation(
+                            selectedSTOName = stoNameInputValue.text,
+                            educationList = List(stoTryNum.value){"n"},
+                            roundNum = 1
                         )
                         stoNameInputValue = TextFieldValue("")
                         stoContentInputValue = TextFieldValue("")

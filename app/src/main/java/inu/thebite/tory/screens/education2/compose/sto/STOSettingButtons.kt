@@ -25,7 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.database.education.EducationEntity
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 
@@ -34,6 +36,8 @@ fun STOSettingButtons(
     modifier : Modifier,
     setUpdateSTODialog : (Boolean) -> Unit,
     stoViewModel: STOViewModel,
+    educationViewModel: EducationViewModel,
+    selectedEducation : EducationEntity,
     selectedSTO : StoResponse
 ){
     Row(
@@ -48,6 +52,7 @@ fun STOSettingButtons(
             shape = RoundedCornerShape(5.dp),
             onClick = {
                 stoViewModel.deleteSTO(selectedSTO)
+                educationViewModel.deleteEducation(selectedEducation)
             },
             contentPadding = PaddingValues(2.dp)
         ){

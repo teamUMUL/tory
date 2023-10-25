@@ -32,7 +32,7 @@ class EducationViewModel : ViewModel(), KoinComponent {
     fun setSelectedEducation(selectedSTO: StoResponse) {
         Log.d("selectedEducation",allEducations.value.toString())
         val foundEducation = allEducations.value!!.find {
-            it.stoId == selectedSTO.id
+            it.stoName == selectedSTO.name
         }
         _selectedEducation.value = foundEducation
     }
@@ -52,25 +52,25 @@ class EducationViewModel : ViewModel(), KoinComponent {
     }
 
     init {
-//        getAllEducations()
-        setDummyEducationData()
+        getAllEducations()
+//        setDummyEducationData()
     }
 
-    fun setDummyEducationData(){
-        val dummyEducationDataList = mutableListOf<EducationEntity>()
-        for (i in 1..10){
-            val dummyEducationData = EducationEntity(
-                stoId = i.toLong(),
-                roundNum = 1,
-                educationResult = listOf(
-                    "n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"
-                )
-            )
-            dummyEducationDataList.add(dummyEducationData)
-        }
-        _allEducations.value = dummyEducationDataList
-        Log.d("allEducations", allEducations.value.toString())
-    }
+//    fun setDummyEducationData(){
+//        val dummyEducationDataList = mutableListOf<EducationEntity>()
+//        for (i in 1..10){
+//            val dummyEducationData = EducationEntity(
+//                stoId = i.toString(),
+//                roundNum = 1,
+//                educationResult = listOf(
+//                    "n","n","n","n","n","n","n","n","n","n","n","n","n","n","n"
+//                )
+//            )
+//            dummyEducationDataList.add(dummyEducationData)
+//        }
+//        _allEducations.value = dummyEducationDataList
+//        Log.d("allEducations", allEducations.value.toString())
+//    }
 
     private fun getAllEducations(){
         viewModelScope.launch(Dispatchers.IO){
@@ -81,13 +81,13 @@ class EducationViewModel : ViewModel(), KoinComponent {
     }
 
     fun createEducation(
-        selectedSTO : StoResponse,
+        selectedSTOName : String,
         educationList: List<String>,
         roundNum : Int
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val newEducation = EducationEntity(
-                stoId = selectedSTO.id,
+                stoName = selectedSTOName,
                 educationResult = educationList,
                 roundNum = roundNum
             )
@@ -115,7 +115,7 @@ class EducationViewModel : ViewModel(), KoinComponent {
                 )
             )
             val foundEducation = allEducations.value!!.find {
-                it.stoId == selectedEducation.stoId
+                it.stoName == selectedEducation.stoName
             }
             foundEducation?.roundNum = beforeRound+1
             foundEducation?.educationResult = List(beforeEducationList.size){"n"}

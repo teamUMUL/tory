@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import inu.thebite.tory.database.TypeConverter.StringListConverter
 
 
-@Database(entities = [EducationEntity::class], version = 1, exportSchema = false)
+@Database(entities = [EducationEntity::class], version = 2, exportSchema = false)
 @TypeConverters(StringListConverter::class)
 abstract class EducationDatabase : RoomDatabase() {
     abstract fun educationDao(): EducationDao

@@ -106,7 +106,8 @@ fun STOItemColumn(
             AddSTODialog(
                 setAddSTOItem = {setAddSTODialog(it)},
                 stoViewModel = stoViewModel,
-                selectedLTO = selectedLTO
+                selectedLTO = selectedLTO,
+                educationViewModel = educationViewModel
             )
         }
     }
@@ -287,14 +288,18 @@ fun STOItemColumn(
                                                     stoViewModel.setSelectedSTO(selectedSTO)
                                                 }
                                             )
-                                            STOSettingButtons(
-                                                modifier = Modifier.weight(2.5f),
-                                                setUpdateSTODialog = {
-                                                    setUpdateSTODialog(it)
-                                                },
-                                                stoViewModel = stoViewModel,
-                                                selectedSTO = selectedSTO
-                                            )
+                                            selectedEducation?.let {selectedEducation ->
+                                                STOSettingButtons(
+                                                    modifier = Modifier.weight(2.5f),
+                                                    setUpdateSTODialog = {
+                                                        setUpdateSTODialog(it)
+                                                    },
+                                                    stoViewModel = stoViewModel,
+                                                    selectedSTO = selectedSTO,
+                                                    educationViewModel = educationViewModel,
+                                                    selectedEducation = selectedEducation
+                                                )
+                                            }
                                             Spacer(modifier = Modifier.width(10.dp))
                                         }
                                     }
@@ -317,34 +322,28 @@ fun STOItemColumn(
                                                 shape = RoundedCornerShape(8.dp)
                                             )
                                     ) {
-                                        selectedSTO?.let { selectedSTO->
-                                            selectedEducation?.let {selectedEducation ->
-                                                STODetailTableAndGameResult(
-                                                    selectedSTO = sto,
-                                                    selectedEducation = selectedEducation,
-                                                    selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-                                                    educationViewModel = educationViewModel,
-                                                    setSelectedSTOStatus = {
-                                                        selectedSTOStatus.value = it
-                                                        selectedSTO.status = it
-                                                    }
+                                        selectedEducation?.let {selectedEducation ->
+                                            STODetailTableAndGameResult(
+                                                selectedSTO = sto,
+                                                selectedEducation = selectedEducation,
+                                                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                                                educationViewModel = educationViewModel,
+                                                setSelectedSTOStatus = {
+                                                    selectedSTOStatus.value = it
+                                                    selectedSTO.status = it
+                                                }
+                                            )
+                                        }
+                                        selectedLTO?.let {selectedLTO ->
+                                            if(selectedLTO.game != "교육 선택 안함"){
+                                                GameReadyRow(
+                                                    mainItem = mainItem,
+                                                    selectedSTO = selectedSTO,
+                                                    setAddGameItem = {setAddGameItemDialog(it)},
+                                                    dragAndDropViewModel = dragAndDropViewModel
                                                 )
                                             }
-                                            selectedLTO?.let {selectedLTO ->
-                                                if(selectedLTO.game != "교육 선택 안함"){
-                                                    GameReadyRow(
-                                                        mainItem = mainItem,
-                                                        selectedSTO = selectedSTO,
-                                                        setAddGameItem = {setAddGameItemDialog(it)},
-                                                        dragAndDropViewModel = dragAndDropViewModel
-                                                    )
-                                                }
-                                            }
-
-
-
                                         }
-
                                     }
                                 }
                             }
