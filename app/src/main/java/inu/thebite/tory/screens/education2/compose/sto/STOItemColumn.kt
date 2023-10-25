@@ -315,7 +315,7 @@ fun STOItemColumn(
                                             }
                                             GameReadyRow(
                                                 selectedSTO = selectedSTO,
-                                                setAddGameItem = {},
+                                                setAddGameItem = {setAddGameItemDialog(it)},
                                             )
 
                                         }
