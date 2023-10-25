@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.model.image.ImageResponse
+import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.sto.AddStoRequest
@@ -112,6 +114,26 @@ class STOViewModel : ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.e("failed to update STO", e.message.toString())
+            }
+            getAllSTOs()
+            getSTOsByLTO(selectedSTO.lto)
+        }
+    }
+
+    fun updateSTOImageList(
+        selectedSTO: StoResponse,
+        updateImageList : List<ImageResponse>
+    ){
+        viewModelScope.launch {
+            try {
+                repo.updateImageList(
+                    stoInfo = selectedSTO,
+                    updateImageListRequest = UpdateImageListRequest(
+                        image = updateImageList
+                    )
+                )
+            } catch (e: Exception){
+                Log.e("failed to update STO ImageList", e.message.toString())
             }
             getAllSTOs()
             getSTOsByLTO(selectedSTO.lto)

@@ -12,22 +12,30 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import co.yml.charts.common.extensions.isNotNull
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import inu.thebite.tory.R
+import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.sto.StoResponse
 
 
 @Composable
 fun GameReadyRow(
 //    dragAndDropViewModel : DragAndDropViewModel,
+//    mainItem : ImageResponse?,
     selectedSTO : StoResponse,
     setAddGameItem : (Boolean) -> Unit,
 ){
@@ -64,38 +72,31 @@ fun GameReadyRow(
 
             }
 
-//            LazyRow(
-//            ) {
-//                items(selectedSTO.gameItems ?: emptyList()) { selectedGameItem ->
-//                    val imageResource = getResourceIdByName(selectedGameItem, context)
-//                    val isSelected = selectedGameItem == mainGameItem
-//
-//                    Image(
-//                        modifier = Modifier
-//                            .fillMaxHeight()
-//                            .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
-//                            .clickable {
-//                                // Update the selected item when clicked
-//                                if (isSelected) {
-//                                    setMainGameItem("")
-//                                    dragAndDropViewModel.clearMainItem()
-//                                } else {
-//                                    setMainGameItem(selectedGameItem)
-//                                    dragAndDropViewModel.setMainItem(
-//                                        GameItem(
-//                                            name = selectedGameItem,
-//                                            image = imageResource
-//                                        )
-//                                    )
-//
-//                                }
-//                            },
-//                        painter = painterResource(id = imageResource),
-//                        contentDescription = null,
-//                        alpha = if (isSelected) 1.0f else 0.5f
-//                    )
-//                }
-//            }
+            LazyRow(
+            ) {
+                items(selectedSTO.imageList) { selectedImage ->
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(selectedImage.url)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(id = R.drawable.icon_edit),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
+                            .clickable {
+
+                            },
+                        alpha =
+//                        if (selectedImage == mainItem)
+//                            1.0f
+//                        else
+                            0.5f
+                    )
+                }
+            }
         }
     }
 }

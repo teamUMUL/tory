@@ -18,8 +18,11 @@ class ImageViewModel : ViewModel() {
     private val _allImages: MutableStateFlow<List<ImageResponse>?> = MutableStateFlow(null)
     val allImages = _allImages.asStateFlow()
 
+    private val _allCategories: MutableStateFlow<List<String>?> = MutableStateFlow(null)
+    val allCategories = _allCategories.asStateFlow()
     init {
         getAllImages()
+        getAllCategories()
     }
 
     fun getAllImages(){
@@ -32,4 +35,28 @@ class ImageViewModel : ViewModel() {
             }
         }
     }
+
+    fun getAllCategories(){
+        viewModelScope.launch {
+            try {
+                val allImages = repo.getAllImages()
+                val allCategoryList = mutableListOf<String>()
+                allImages.forEach { image ->
+                    allCategoryList.add(image.category.name)
+                }
+                val allUniqueCategory = allCategoryList.distinct()
+                _allCategories.value = allUniqueCategory
+            } catch (e : Exception){
+                Log.e("failed to get all Categories", e.message.toString())
+            }
+        }
+    }
+
+    fun getImagesByCategory(category : String): List<ImageResponse> {
+        val filteredImages = allImages.value!!.filter { image ->
+            image.category.name == category
+        }
+        return filteredImages
+    }
+
 }

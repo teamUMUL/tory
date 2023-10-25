@@ -14,12 +14,14 @@ import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @Composable
 fun NewEducationScreen(
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
     stoViewModel : STOViewModel,
+    imageViewModel : ImageViewModel,
     educationViewModel : EducationViewModel
 ){
     val context = LocalContext.current
@@ -35,7 +37,8 @@ fun NewEducationScreen(
             devViewModel = devViewModel,
             ltoViewModel = ltoViewModel,
             educationViewModel = educationViewModel,
-            stoViewModel =  stoViewModel
+            stoViewModel =  stoViewModel,
+            imageViewModel = imageViewModel
         )
     }
 

@@ -45,7 +45,7 @@ import inu.thebite.tory.ChildSelectViewModel
 //import inu.thebite.tory.screens.education.Compose.GraphRow
 //import inu.thebite.tory.screens.education.Compose.LTODetailsRow
 //import inu.thebite.tory.screens.education.Compose.LTOItemsRow
-//import inu.thebite.tory.screens.education.Compose.STODetailTableAndGameResult
+//import inu.thebite.tory.screens.education2.compose.sto.STODetailTableAndGameResult
 //import inu.thebite.tory.screens.education.Compose.STODetailsRow
 //import inu.thebite.tory.screens.education.Compose.STOItemsRow
 //import inu.thebite.tory.screens.education.Compose.Dialog.AddLTOItemDialog

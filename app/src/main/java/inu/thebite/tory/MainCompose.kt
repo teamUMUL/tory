@@ -366,7 +366,8 @@ fun MainCompose(
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,
                         educationViewModel = educationViewModel,
-                        stoViewModel = stoViewModel
+                        stoViewModel = stoViewModel,
+                        imageViewModel = imageViewModel
                     )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,
