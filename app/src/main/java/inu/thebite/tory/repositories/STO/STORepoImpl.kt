@@ -1,5 +1,6 @@
 package inu.thebite.tory.repositories.STO
 
+import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
@@ -32,6 +33,13 @@ class STORepoImpl: STORepo {
 
     override suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest) {
         stoRetrofit.updateSto(stoId = stoInfo.id, updateStoRequest = updateStoRequest)
+    }
+
+    override suspend fun updateImageList(
+        stoInfo: StoResponse,
+        updateImageListRequest: UpdateImageListRequest
+    ) {
+        stoRetrofit.updateImageList(stoId = stoInfo.id, updateImageListRequest = updateImageListRequest)
     }
 
     override suspend fun getStoList(): List<StoResponse> {

@@ -7,6 +7,7 @@ import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.image.ImageResponse
+import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
@@ -116,6 +117,8 @@ interface RetrofitService {
     suspend fun updateSto(@Path("stoId") stoId: Long, @Body updateStoRequest: UpdateStoRequest): Response<StoResponse>
 
     // need a code to update image url list
+    @PATCH("/sto/{stoId}/image/list/update")
+    suspend fun updateImageList(@Path("stoId") stoId: Long, @Body updateImageListRequest: UpdateImageListRequest) : Response<ImageResponse>
 
     @GET("/sto/list")
     suspend fun getStoList(): List<StoResponse>
