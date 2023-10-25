@@ -7,7 +7,6 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
-import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
@@ -129,7 +128,7 @@ class STOViewModel : ViewModel() {
                 repo.updateImageList(
                     stoInfo = selectedSTO,
                     updateImageListRequest = UpdateImageListRequest(
-                        image = updateImageList
+                        imageList = updateImageList
                     )
                 )
             } catch (e: Exception){
