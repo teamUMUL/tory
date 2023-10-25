@@ -2,7 +2,7 @@ package inu.thebite.tory.model.lto
 
 import com.google.gson.annotations.SerializedName
 
-data class AddLtoRequest(
+data class LtoRequest(
 
     @SerializedName("name")
     var name: String,

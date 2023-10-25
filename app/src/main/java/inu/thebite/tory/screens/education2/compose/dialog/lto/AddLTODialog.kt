@@ -44,8 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.model.lto.AddLtoRequest
-import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,7 +180,7 @@ fun AddLTODialog(
                         //LTO 추가 코드
                         ltoViewModel.createLTO(
                             selectedDEV = selectedDEV,
-                            newLTO = AddLtoRequest(
+                            newLTO = LtoRequest(
                                 name = ltoInputValue.text,
                                 contents = "",
                                 game = gameMode

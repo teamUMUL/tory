@@ -4,14 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.model.lto.AddLtoRequest
+import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
-import inu.thebite.tory.repositories.DEV.DEVRepoImpl
 import inu.thebite.tory.repositories.LTO.LTORepoImpl
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -121,7 +118,7 @@ class LTOViewModel: ViewModel() {
 
     fun createLTO(
         selectedDEV : DomainResponse,
-        newLTO : AddLtoRequest
+        newLTO : LtoRequest
     ){
         viewModelScope.launch {
             try {

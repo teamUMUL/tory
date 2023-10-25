@@ -1,6 +1,5 @@
 package inu.thebite.tory.retrofit
 
-import androidx.room.Delete
 import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
@@ -8,7 +7,7 @@ import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.image.ImageResponse
-import inu.thebite.tory.model.lto.AddLtoRequest
+import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.sto.AddStoRequest
@@ -19,7 +18,6 @@ import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
 import inu.thebite.tory.model.student.UpdateStudentRequest
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -87,13 +85,16 @@ interface RetrofitService {
 
     // lto
     @POST("/{domainId}/lto/add")
-    suspend fun addLto(@Path("domainId") domainId: Long, @Body addLtoRequest: AddLtoRequest): Response<LtoResponse>
+    suspend fun addLto(@Path("domainId") domainId: Long, @Body ltoRequest: LtoRequest): Response<LtoResponse>
 
     @PATCH("/lto/{ltoId}/status/update")
     suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
 
     @PATCH("/lto/{ltoId}/hit/status/update")
     suspend fun updateLtoHitStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
+
+    @PATCH("/lto/{ltoId}/update")
+    suspend fun updateLto(@Path("ltoId") ltoId: Long, @Body ltoRequest: LtoRequest) : Response<LtoResponse>
 
     @GET("/lto/list")
     suspend fun getLtoList(): List<LtoResponse>
