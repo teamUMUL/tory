@@ -1,9 +1,5 @@
 package inu.thebite.tory.screens.education2.compose.dialog.sto
 
-import android.content.Context
-import android.text.TextUtils.split
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import co.yml.charts.common.extensions.isNotNull
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import inu.thebite.tory.R
@@ -53,7 +47,7 @@ import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @Composable
-fun AddGameItemsDialog(
+fun AddSameGameItemDialog(
     selectedSTO : StoResponse,
     setAddGameItem : (Boolean) -> Unit,
     stoViewModel : STOViewModel,

@@ -44,6 +44,7 @@ import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @Composable
@@ -53,6 +54,7 @@ fun LTOAndSTOContainer(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
     imageViewModel : ImageViewModel,
+    dragAndDropViewModel: DragAndDropViewModel,
     educationViewModel : EducationViewModel
 ){
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
@@ -97,7 +99,8 @@ fun LTOAndSTOContainer(
                     stoViewModel = stoViewModel,
                     addSTODialog = addSTODialog,
                     imageViewModel = imageViewModel,
-                    setAddSTODialog = {setAddSTODialog(it)}
+                    dragAndDropViewModel = dragAndDropViewModel,
+                    setAddSTODialog = {setAddSTODialog(it)},
                 )
             }
 

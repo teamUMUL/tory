@@ -30,14 +30,16 @@ import coil.request.ImageRequest
 import inu.thebite.tory.R
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 
 
 @Composable
 fun GameReadyRow(
 //    dragAndDropViewModel : DragAndDropViewModel,
-//    mainItem : ImageResponse?,
+    mainItem : ImageResponse?,
     selectedSTO : StoResponse,
     setAddGameItem : (Boolean) -> Unit,
+    dragAndDropViewModel: DragAndDropViewModel
 ){
     Row(
         modifier = Modifier
@@ -87,13 +89,14 @@ fun GameReadyRow(
                             .fillMaxHeight()
                             .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
                             .clickable {
+                                if(selectedImage == mainItem){
+                                    dragAndDropViewModel.clearMainItem()
+                                } else {
+                                    dragAndDropViewModel.setMainItem(selectedImage)
+                                }
 
                             },
-                        alpha =
-//                        if (selectedImage == mainItem)
-//                            1.0f
-//                        else
-                            0.5f
+                        alpha = if (selectedImage == mainItem) 1.0f else 0.5f
                     )
                 }
             }

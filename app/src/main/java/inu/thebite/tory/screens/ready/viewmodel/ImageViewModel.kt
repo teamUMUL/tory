@@ -59,4 +59,11 @@ class ImageViewModel : ViewModel() {
         return filteredImages
     }
 
+    fun findImageByName(imageName : String) : ImageResponse? {
+        val returnImage = allImages.value!!.find {
+            it.name == imageName
+        }
+        return returnImage
+    }
+
 }

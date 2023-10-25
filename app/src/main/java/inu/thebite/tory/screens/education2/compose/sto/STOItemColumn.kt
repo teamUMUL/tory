@@ -39,12 +39,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.screens.education2.compose.dialog.sto.AddGameItemsDialog
+import inu.thebite.tory.screens.education2.compose.dialog.sto.AddGeneralGameItemDialog
+import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSameGameItemDialog
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
 import inu.thebite.tory.screens.education2.compose.dialog.sto.UpdateSTODialog
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @Composable
@@ -53,6 +55,7 @@ fun STOItemColumn(
     educationViewModel : EducationViewModel,
     stoViewModel: STOViewModel,
     imageViewModel: ImageViewModel,
+    dragAndDropViewModel: DragAndDropViewModel,
     addSTODialog : Boolean,
     setAddSTODialog : (Boolean) -> Unit
 ){
@@ -65,6 +68,8 @@ fun STOItemColumn(
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val stos by stoViewModel.stos.collectAsState()
     val allSTOs by stoViewModel.allSTOs.collectAsState()
+
+    val mainItem by dragAndDropViewModel.mainItem.collectAsState()
 
 
     val selectedSTODetailGameDataIndex = remember { mutableIntStateOf(0) }
@@ -108,14 +113,28 @@ fun STOItemColumn(
 
     //게임 카드 준비
     if(addGameItemDialog){
-        selectedSTO?.let {selectedSTO ->
-            AddGameItemsDialog(
-                selectedSTO = selectedSTO,
-                setAddGameItem = {setAddGameItemDialog(it)},
-                stoViewModel = stoViewModel,
-                imageViewModel = imageViewModel
-            )
+        selectedLTO?.let {selectedLTO ->
+            selectedSTO?.let {selectedSTO ->
+                if(selectedLTO.game == "같은 사진 매칭"){
+                    AddSameGameItemDialog(
+                        selectedSTO = selectedSTO,
+                        setAddGameItem = {setAddGameItemDialog(it)},
+                        stoViewModel = stoViewModel,
+                        imageViewModel = imageViewModel
+                    )
+                }
+                else if (selectedLTO.game == ""){
+                    AddGeneralGameItemDialog(
+                        selectedSTO = selectedSTO,
+                        setAddGameItem = {setAddGameItemDialog(it)},
+                        stoViewModel = stoViewModel,
+                        imageViewModel = imageViewModel
+                    )
+                }
+
+            }
         }
+
     } else {
         selectedSTO?.let { selectedSTO ->
             stoViewModel.updateSelectedSTO(selectedSTOId = selectedSTO.id)
@@ -314,8 +333,10 @@ fun STOItemColumn(
                                                 )
                                             }
                                             GameReadyRow(
+                                                mainItem = mainItem,
                                                 selectedSTO = selectedSTO,
                                                 setAddGameItem = {setAddGameItemDialog(it)},
+                                                dragAndDropViewModel = dragAndDropViewModel
                                             )
 
                                         }
