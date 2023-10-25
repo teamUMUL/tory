@@ -332,12 +332,18 @@ fun STOItemColumn(
                                                     }
                                                 )
                                             }
-                                            GameReadyRow(
-                                                mainItem = mainItem,
-                                                selectedSTO = selectedSTO,
-                                                setAddGameItem = {setAddGameItemDialog(it)},
-                                                dragAndDropViewModel = dragAndDropViewModel
-                                            )
+                                            selectedLTO?.let {selectedLTO ->
+                                                if(selectedLTO.game != "교육 선택 안함"){
+                                                    GameReadyRow(
+                                                        mainItem = mainItem,
+                                                        selectedSTO = selectedSTO,
+                                                        setAddGameItem = {setAddGameItemDialog(it)},
+                                                        dragAndDropViewModel = dragAndDropViewModel
+                                                    )
+                                                }
+                                            }
+
+
 
                                         }
 
