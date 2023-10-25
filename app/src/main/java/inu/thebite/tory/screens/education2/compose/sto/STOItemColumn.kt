@@ -123,7 +123,7 @@ fun STOItemColumn(
                         imageViewModel = imageViewModel
                     )
                 }
-                else if (selectedLTO.game == ""){
+                else if (selectedLTO.game == "일반화 매칭"){
                     AddGeneralGameItemDialog(
                         selectedSTO = selectedSTO,
                         setAddGameItem = {setAddGameItemDialog(it)},
@@ -131,10 +131,8 @@ fun STOItemColumn(
                         imageViewModel = imageViewModel
                     )
                 }
-
             }
         }
-
     } else {
         selectedSTO?.let { selectedSTO ->
             stoViewModel.updateSelectedSTO(selectedSTOId = selectedSTO.id)
