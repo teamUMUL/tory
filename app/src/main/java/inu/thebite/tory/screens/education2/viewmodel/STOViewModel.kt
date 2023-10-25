@@ -73,10 +73,10 @@ class STOViewModel : ViewModel() {
         if(selectedLTO.isNotNull()){
             _stos.update {
 
-                val filteredChildClasses = allSTOs.value!!.filter {
+                val filteredSTOs = allSTOs.value!!.filter {
                     it.lto.id == selectedLTO.id
                 }
-                filteredChildClasses
+                filteredSTOs
             }
         }else{
             _stos.update { null }
@@ -111,7 +111,7 @@ class STOViewModel : ViewModel() {
                     updateStoRequest = updateSTO
                 )
             } catch (e: Exception) {
-                Log.e("failed to delete LTO", e.message.toString())
+                Log.e("failed to update STO", e.message.toString())
             }
             getAllSTOs()
             getSTOsByLTO(selectedSTO.lto)

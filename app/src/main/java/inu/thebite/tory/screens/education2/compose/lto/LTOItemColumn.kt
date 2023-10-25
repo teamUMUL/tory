@@ -119,6 +119,10 @@ fun LTOItemColumn(
                 ltoViewModel = ltoViewModel
             )
         }
+    } else {
+        selectedLTO?.let { selectedLTO ->
+            ltoViewModel.updateSelectedLTO(selectedLTO.id)
+        }
     }
     Column(
         modifier = Modifier

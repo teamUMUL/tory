@@ -105,11 +105,11 @@ class LTOViewModel: ViewModel() {
     ){
         if(selectedDEV.isNotNull()){
             _ltos.update {
-                val filteredChildClasses = allLTOs.value!!.filter {
+                val filteredLTOs = allLTOs.value!!.filter {
                     it.domain.id == selectedDEV.id
                 }
                 Log.d("allLTOs", allLTOs.toString())
-                filteredChildClasses
+                filteredLTOs
             }
         }else{
             _ltos.update { null }
@@ -135,20 +135,38 @@ class LTOViewModel: ViewModel() {
         }
     }
 
-//    fun updateLTO(
-//        selectedLTO : LtoResponse
-//    ){
-//        viewModelScope.launch {
-//            try {
-//                repo.updateLTOStatus(
-//                    selectedLTO = selectedLTO,
-//                )
-//            } catch (e: Exception) {
-//                Log.e("failed to delete LTO", e.message.toString())
-//            }
-//            getAllLTOs()
-//        }
-//    }
+    fun updateLTO(
+        selectedLTO : LtoResponse,
+        updateLTO : LtoRequest
+    ){
+        viewModelScope.launch {
+            try {
+                repo.updateLto(
+                    selectedLTO = selectedLTO,
+                    ltoRequest = updateLTO
+                )
+            } catch (e: Exception) {
+                Log.e("failed to update LTO", e.message.toString())
+            }
+            getAllLTOs()
+            getLTOsByDEV(selectedLTO.domain)
+        }
+    }
+
+    fun updateSelectedLTO(
+        selectedLTOId : Long
+    ){
+        viewModelScope.launch {
+            val foundLTO = allLTOs.value!!.find {
+                it.id == selectedLTOId
+            }
+            foundLTO?.let {foundLTO ->
+                setSelectedLTO(
+                    foundLTO
+                )
+            }
+        }
+    }
 
     fun deleteLTO(
         selectedLTO : LtoResponse

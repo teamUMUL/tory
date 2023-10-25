@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
@@ -178,6 +179,16 @@ fun UpdateLTOItemDialog(
                 onClick = {
                     if(ltoInputValue.text.isNotEmpty()){
                         //LTO 업데이트 코드
+                        ltoViewModel.updateLTO(
+                            selectedLTO = selectedLTO,
+                            updateLTO = LtoRequest(
+                                name = ltoInputValue.text,
+                                contents = selectedLTO.contents,
+                                game = gameMode
+                            )
+                        )
+                        ltoInputValue = TextFieldValue("")
+                        setUpdateLTOItem(false)
                     }
                     else{
                         Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
