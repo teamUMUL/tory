@@ -139,15 +139,16 @@ fun HomeScreen(
                         spotColor = Color(0x40000000),
                         ambientColor = Color(0x40000000)
                     )
-                    .padding(4.dp)
+                    .fillMaxHeight()
+                    .padding(start = 8.dp, end = 16.dp)
                     .weight(3f)
                     .fillMaxHeight()
                     .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
 
                 ) {
-
-                    chart_bar()
                     pieChartPreview()
+                    chart_bar()
+
 
                 }
 

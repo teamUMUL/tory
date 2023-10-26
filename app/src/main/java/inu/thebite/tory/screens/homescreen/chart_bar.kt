@@ -44,7 +44,7 @@ fun chart_bar(
         Column(
             modifier= Modifier
                 .padding(8.dp)
-                .width(420.dp),
+                .width(500.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

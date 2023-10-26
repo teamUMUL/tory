@@ -148,7 +148,7 @@ fun reportList(){
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
             )
-            .width(144.dp)
+            .weight(1f)
             .height(55.dp)
             .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
         ){
@@ -164,7 +164,7 @@ fun reportList(){
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
             )
-            .width(144.dp)
+                .weight(1f)
             .height(55.dp)
             .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
         ){
@@ -180,7 +180,7 @@ fun reportList(){
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
             )
-            .width(144.dp)
+                .weight(1f)
             .height(55.dp)
             .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
         ){
@@ -195,7 +195,7 @@ fun reportList(){
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
             )
-            .width(144.dp)
+                .weight(1f)
             .height(55.dp)
             .background(color = Color(0xFF0047B3), shape = RoundedCornerShape(size = 10.dp))
         ){
@@ -210,7 +210,7 @@ fun reportList(){
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
             )
-            .width(144.dp)
+                .weight(1f)
             .height(55.dp)
             .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
 
@@ -227,7 +227,7 @@ fun reportList(){
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
             )
-            .width(144.dp)
+                .weight(1f)
             .height(55.dp)
             .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
 
