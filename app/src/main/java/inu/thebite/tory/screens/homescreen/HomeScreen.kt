@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +48,7 @@ import inu.thebite.tory.screens.HomeViewModel
 
 @Composable
 fun HomeScreen(
+    modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = viewModel(),
 ){
     Column(modifier = Modifier
@@ -54,70 +57,105 @@ fun HomeScreen(
         .background(color = Color(0xFFEFEFEF))
 
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .padding(start = 16.dp, top = 8.dp)) {
-            Text(
-                text = "Dash board",
+        Column(modifier=Modifier.weight(1f)) {
+            Row(
                 modifier = Modifier
-                    .width(240.dp)
-                    .height(40.dp)
-                    .padding(start = 16.dp),
-                style = TextStyle(
-                    fontSize = 33.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF000000),
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
 
-                    textAlign = TextAlign.Start,
-                )
-            )
-            Spacer(modifier = Modifier.width(590.dp))
-
-            Column(modifier = Modifier  //lto & sto button
-                .shadow(
-                    elevation = 4.dp,
-                    spotColor = Color(0x40000000),
-                    ambientColor = Color(0x40000000)
-                )
-                .width(155.dp)
-                .height(40.dp)
-                .background(color = Color(0xFF0047B3), shape = RoundedCornerShape(size = 10.dp)),
-                verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(text = "LTO & STO",
-                    style = TextStyle(color = Color(0xFFFFFFFF)))
+                Text(
+                    text = "Dash board",
+                    modifier = Modifier
+                        .width(240.dp)
+                        .height(40.dp)
+                        .padding(start = 16.dp),
+                    style = TextStyle(
+                        fontSize = 33.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF000000),
+                        textAlign = TextAlign.Start,
+                    )
+                )
+                //            Spacer(modifier = Modifier.width(590.dp))
+
+                Button(
+                    onClick = { /* Define the click action here */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
+                    modifier = Modifier  //lto & sto button
+                        .shadow(
+                            elevation = 4.dp,
+                            spotColor = Color(0x40000000),
+                            ambientColor = Color(0x40000000)
+                        )
+                        .width(155.dp)
+                        .padding(end = 16.dp)
+                        .height(40.dp)
+                        .background(
+                            color = Color(0xFF0047B3),
+                            shape = RoundedCornerShape(size = 10.dp)
+                        )
+
+                ) {
+                    Text(
+                        text = "LTO & STO",
+                        style = TextStyle(color = Color(0xFFFFFFFF), background = Color(0xFF0047B3))
+                    )
+                }
             }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp)
-                .padding(start = 16.dp)
+        Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+//                    .height(112.dp)
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
 
-        ) {
-            ChainCard()// 지점 선택
-            Spacer(modifier = Modifier.width(32.dp))
-            ClassCard() //반 선택
-            Spacer(modifier = Modifier.width(32.dp))
-            ChildrenCard() //아이 선택
+            ) {
 
+                ChainCard(modifier = Modifier.weight(1f))// 지점 선택
+                ClassCard(modifier = Modifier.weight(1f)) //반 선택
+                ChildrenCard(modifier = Modifier.weight(1f)) //아이 선택
+
+            }
         }
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .height(446.dp)
-            .padding(start = 24.dp)
-        ){
-            childInfor()
-            Image(modifier = Modifier
-                .width(770.dp)
-                .height(440.dp),
-                painter = painterResource(id = R.drawable. graph), contentDescription = "null")
-        }
-        
-        reportList()
 
+        Column(modifier = Modifier
+            .weight(8f)
+            .padding(top = 10.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(446.dp)
+                    .padding(start = 12.dp)
+            ) {
+                childInfor(modifier = Modifier.weight(1f))
+
+                Row (modifier = modifier
+                    .shadow(
+                        elevation = 4.dp,
+                        spotColor = Color(0x40000000),
+                        ambientColor = Color(0x40000000)
+                    )
+                    .padding(4.dp)
+                    .weight(3f)
+                    .fillMaxHeight()
+                    .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
+
+                ) {
+
+                    chart_bar()
+                    pieChartPreview()
+
+                }
+
+            }
+        }
+        Column(modifier= Modifier.weight(1f)) {
+            reportList()
+        }
 //            Row (modifier = Modifier
 //                .padding(16.dp),
 //                horizontalArrangement = Arrangement.Center){

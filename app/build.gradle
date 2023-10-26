@@ -88,6 +88,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation "androidx.navigation:navigation-compose:$nav_version"
+    implementation 'co.yml:ycharts:2.1.0'
 
     // Room
     implementation("androidx.room:room-runtime:$room_version")

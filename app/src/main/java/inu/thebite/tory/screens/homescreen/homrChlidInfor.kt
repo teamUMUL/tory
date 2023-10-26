@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,24 +33,26 @@ import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 
 @Composable
-fun childInfor() {
+fun childInfor(
+    modifier: Modifier = Modifier
+) {
 
-        Row(modifier= Modifier
+        Row(modifier= modifier
             .shadow(
                 elevation = 4.dp,
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
             )
-            .width(241.dp)
-            .height(440.dp)
+//            .width(241.dp)
+//            .height(440.dp)
             .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
-            .padding(start = 25.dp, top = 15.dp, end = 25.dp, bottom = 15.dp),
+            .padding(4.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier= Modifier
-                .width(191.dp)
-                .height(414.dp),
+                .fillMaxSize()
+                .padding(start = 25.dp, bottom = 15.dp, top = 15.dp, end = 25.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
                 horizontalAlignment = Alignment.Start,
             ) {
@@ -133,9 +138,11 @@ fun reportList(){
         Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .height(70.dp)
+            .height(78.dp)
     ){
-        Row(modifier = Modifier
+        Button(onClick = { /* Define the click action here */ },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3083FF)),
+            modifier = Modifier
             .shadow(
                 elevation = 4.dp,
                 spotColor = Color(0x40000000),
@@ -143,14 +150,15 @@ fun reportList(){
             )
             .width(144.dp)
             .height(55.dp)
-            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp)),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "상담일지")
         }
         Spacer(modifier = Modifier.width(30.dp))
-        Row(modifier = Modifier
+        Button(
+            onClick = { /* Define the click action here */ },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3083FF)),
+            modifier = Modifier
             .shadow(
                 elevation = 4.dp,
                 spotColor = Color(0x40000000),
@@ -158,14 +166,15 @@ fun reportList(){
             )
             .width(144.dp)
             .height(55.dp)
-            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp)),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "아동영상")
         }
         Spacer(modifier = Modifier.width(30.dp))
-        Row(modifier = Modifier
+        Button(
+            onClick = { /* Define the click action here */ },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8E8E8E)),
+            modifier = Modifier
             .shadow(
                 elevation = 4.dp,
                 spotColor = Color(0x40000000),
@@ -173,14 +182,14 @@ fun reportList(){
             )
             .width(144.dp)
             .height(55.dp)
-            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp)),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "보고서")
         }
         Spacer(modifier = Modifier.width(30.dp))
-        Row(modifier = Modifier
+        Button(onClick = { /* Define the click action here */ },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
+            modifier = Modifier
             .shadow(
                 elevation = 4.dp,
                 spotColor = Color(0x40000000),
@@ -188,14 +197,14 @@ fun reportList(){
             )
             .width(144.dp)
             .height(55.dp)
-            .background(color = Color(0xFF00D696), shape = RoundedCornerShape(size = 10.dp)),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            .background(color = Color(0xFF0047B3), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "완료목록")
         }
         Spacer(modifier = Modifier.width(30.dp))
-        Row(modifier = Modifier
+        Button(onClick = { /* Define the click action here */ },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8E8E8E)),
+            modifier = Modifier
             .shadow(
                 elevation = 4.dp,
                 spotColor = Color(0x40000000),
@@ -203,14 +212,16 @@ fun reportList(){
             )
             .width(144.dp)
             .height(55.dp)
-            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp)),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
+
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "그래프")
         }
         Spacer(modifier = Modifier.width(30.dp))
-        Row(modifier = Modifier
+        Button(
+            onClick = { /* Define the click action here */ },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8E8E8E)),
+            modifier = Modifier
             .shadow(
                 elevation = 4.dp,
                 spotColor = Color(0x40000000),
@@ -218,11 +229,10 @@ fun reportList(){
             )
             .width(144.dp)
             .height(55.dp)
-            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp)),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
+
         ){
-            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), textAlign = TextAlign.Center, fontWeight = FontWeight(400),text = "크리테리아\n그래프")
+            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 16.sp), textAlign = TextAlign.Center, fontWeight = FontWeight(400),text = "크리테리아\n그래프")
         }
 
     }
