@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.ui.theme.Black
+import inu.thebite.tory.ui.theme.LightGray
 import inu.thebite.tory.ui.theme.blueGray
 import inu.thebite.tory.ui.theme.brightBlue
 import inu.thebite.tory.ui.theme.gray
@@ -54,9 +55,11 @@ import kotlin.math.atan
 import kotlin.math.atan2
 
 
+
 @Composable
 fun pieChartPreview(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    radius:Float = 250f
 ){
     Column(
         modifier = modifier
@@ -68,6 +71,7 @@ fun pieChartPreview(
         Box(
             modifier = Modifier
         ){
+
             PieChart(
                 modifier = Modifier
                     .size(400.dp),
@@ -76,60 +80,81 @@ fun pieChartPreview(
                         color = Color(0xFF97DFFC),
                         value = 10,
                         number = 3,
+                        size = Size(width = radius*1.3f, height = radius*1.3f),
+                        topLeft = radius*1.3f ,
                         description = "학습준비"
+
                     ),
                     PieChartInput(
                         color = Color(0xFF93CAF6),
                         value = 10,
                         number = 2,
+                        size = Size(width = radius*1.2f, height = radius*1.2f ),
+                        topLeft = radius*1.2f ,
                         description = "매칭"
                     ),
                     PieChartInput(
                         color = Color(0xFF8EB5F0),
                         value = 10,
                         number = 5,
+                        size = Size(width = radius*1.5f, height = radius*1.5f),
+                        topLeft = radius*1.5f ,
                         description = "동작"
                     ),
                     PieChartInput(
                         color = Color(0xFF858AE3),
                         value = 10,
                         number = 8,
+                        size = Size(width = radius*1.8f, height = radius*1.8f),
+                        topLeft = radius*1.8f ,
                         description = "언어"
                     ),
                     PieChartInput(
                         color = Color(0xFF7364D2),
                         value = 10,
                         number =4,
+                        size = Size(width = radius*1.4f, height = radius*1.4f),
+                        topLeft = radius*1.4f ,
                         description = "변별"
                     ),
                     PieChartInput(
                         color = Color(0xFF613DC1),
                         value = 10,
                         number = 0,
+                        size = Size(width = radius*0f, height = radius*0f),
+                        topLeft = radius*0f ,
                         description = "지시"
                     ),
                     PieChartInput(
                         color = Color(0xFF5829A7),
                         value = 10,
                         number = 1,
+                        size = Size(width = radius*1.1f, height = radius*1.1f),
+                        topLeft = radius*1.1f ,
                         description = "명명"
                     ),
                     PieChartInput(
                         color = Color(0xFF4E148C),
                         value = 10,
                         number = 0,
+                        size = Size(width = radius*0f, height = radius*0f),
+                        topLeft = radius*0f ,
                         description = "요구"
                     ),
                     PieChartInput(
                         color = Color(0xFF461177),
                         value = 10,
                         number = 0,
+                        size = Size(width = radius*0f, height = radius*0f),
+                        topLeft = radius*0f ,
                         description = "인트라"
                     ),
                     PieChartInput(
                         color = Color(0xFF3D0E61),
                         value = 10,
                         number = 0,
+                        size = Size(width = radius*0f, height = radius*0f),
+                        topLeft = radius*0f ,
                         description = "사회성"
                     ),
                 ),
@@ -214,6 +239,20 @@ fun PieChart(
                     )
                 }
         ){
+            //----------------그림 그리는 부분---------------------------//
+            drawContext.canvas.nativeCanvas.apply {
+                drawCircle(
+                    circleCenter.x,
+                    circleCenter.y,
+                    radius,
+                    Paint().apply {
+                        color = LightGray.toArgb()
+//                        setShadowLayer(10f,0f,0f, Black.toArgb())
+                    }
+                )
+            }
+
+
             val width = size.width
             val height = size.height
             circleCenter = Offset(x= width/2f,y= height/2f)
@@ -227,40 +266,23 @@ fun PieChart(
             inputList.forEach { pieChartInput ->
                 val scale = if(pieChartInput.isTapped) 1.1f else 1.0f // 사이즈 커지는 정도
                 val angleToDraw = pieChartInput.value * anglePerValue
+
+                //----------------------파이차트-------------------
                 scale(scale){
                     drawArc(
                         color = pieChartInput.color, // 파이차트에 들어가는 색
                         startAngle = currentStartAngle,
                         sweepAngle = angleToDraw,
                         useCenter = true,
-                        size = Size(  // 파이차트 사이즈
-                            width = radius*2f,
-                            height = radius*2f
-                        ),
+                        size = pieChartInput.size,
                         topLeft = Offset(
-                            (width-radius*2f)/2f,
-                            (height -radius*2f)/2f
+                            (width-pieChartInput.topLeft)/2f,
+                            (height -pieChartInput.topLeft)/2f
                         )
                     )
                     currentStartAngle += angleToDraw
                 }
-//                scale(scale){
-//                    drawArc(
-//                        color = white.copy(0.2f), // 하얀부분
-//                        startAngle = currentStartAngle,
-//                        sweepAngle = angleToDraw,
-//                        useCenter = true,
-//                        size = Size(
-//                            width = radius*1f,
-//                            height = radius*1f
-//                        ),
-//                        topLeft = Offset(
-//                            (width-radius*2f)/2f,
-//                            (height -radius*2f)/2f
-//                        )
-//                    )
-//                    currentStartAngle += angleToDraw
-//                }
+
                 var rotateAngle = currentStartAngle-angleToDraw/2f-90f
                 var factor = 1f
                 if(rotateAngle>90f){
@@ -276,9 +298,9 @@ fun PieChart(
                             drawText(
                                 "${pieChartInput.description}",
                                 circleCenter.x,
-                                circleCenter.y+(radius-(radius-innerRadius)/2f)*factor,
+                                circleCenter.y+(radius-(radius-innerRadius)/1.5f)*factor,
                                 Paint().apply {
-                                    textSize = 13.sp.toPx()
+                                    textSize = 10.sp.toPx()
                                     textAlign = Paint.Align.CENTER
                                     color = white.toArgb()
                                 }
@@ -288,22 +310,22 @@ fun PieChart(
                 }
                 if(pieChartInput.isTapped){
                     val tabRotation = currentStartAngle - angleToDraw - 90f
-                    rotate(tabRotation){
-                        drawRoundRect(
-                            topLeft = circleCenter,
-                            size = Size(12f,radius*1.2f),
-                            color = white, //탭했을 떄 나오는 선
-                            cornerRadius = CornerRadius(15f,15f)
-                        )
-                    }
-                    rotate(tabRotation+angleToDraw){
-                        drawRoundRect(
-                            topLeft = circleCenter,
-                            size = Size(12f,radius*1.2f),
-                            color = white,
-                            cornerRadius = CornerRadius(15f,15f)
-                        )
-                    }
+//                    rotate(tabRotation){
+//                        drawRoundRect(
+//                            topLeft = circleCenter,
+//                            size = Size(12f,radius*1.2f),
+//                            color = white, //탭했을 떄 나오는 선
+//                            cornerRadius = CornerRadius(15f,15f)
+//                        )
+//                    }
+//                    rotate(tabRotation+angleToDraw){
+//                        drawRoundRect(
+//                            topLeft = circleCenter,
+//                            size = Size(12f,radius*1.2f),
+//                            color = white,
+//                            cornerRadius = CornerRadius(15f,15f)
+//                        )
+//                    }
                     rotate(rotateAngle){
                         drawContext.canvas.nativeCanvas.apply {
                             drawText(
@@ -324,24 +346,24 @@ fun PieChart(
                 }
             }
 
-            if(inputList.first().isTapped){   // 1번째 부채콜을 터치했을 때  선 한쪽 추가
-                rotate(-90f){
-                    drawRoundRect(
-                        topLeft = circleCenter,
-                        size = Size(12f,radius*1.2f),
-                        color = white,
-                        cornerRadius = CornerRadius(15f,15f)
-                    )
-                }
-            }
+//            if(inputList.first().isTapped){   // 1번째 부채콜을 터치했을 때  선 한쪽 추가
+//                rotate(-90f){
+//                    drawRoundRect(
+//                        topLeft = circleCenter,
+//                        size = Size(12f,radius*1.2f),
+//                        color = white,
+//                        cornerRadius = CornerRadius(15f,15f)
+//                    )
+//                }
+//            }
 //            drawContext.canvas.nativeCanvas.apply {
 //                drawCircle(
 //                    circleCenter.x,
 //                    circleCenter.y,
-//                    innerRadius,
+//                    radius,
 //                    Paint().apply {
 //                        color = white.copy(alpha = 0.6f).toArgb()
-//                        setShadowLayer(10f,0f,0f, Black.toArgb())
+////                        setShadowLayer(10f,0f,0f, Black.toArgb())
 //                    }
 //                )
 //            }
@@ -366,6 +388,8 @@ data class PieChartInput(
     val color:Color,
     val value:Int,
     val number:Int,
+    val size: Size,
+    val topLeft : Float,
     val description:String,
     val isTapped:Boolean = false
 )

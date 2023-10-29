@@ -150,7 +150,7 @@ fun VerticalGroupBarChart() {
     )
     val groupBarPlotData = BarPlotData(
         groupBarList = groupBarData,
-        barStyle = BarStyle(barWidth = 6.dp),
+        barStyle = BarStyle(barWidth = 8.dp),
         barColorPaletteList = colorPaletteList
     )
     val groupBarChartData = GroupBarChartData(
