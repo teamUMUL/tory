@@ -1,31 +1,45 @@
 package inu.thebite.tory.screens.game
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import inu.thebite.tory.R
 import inu.thebite.tory.database.LTO.LTOEntity
+import inu.thebite.tory.screens.education.GameViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SuccessDialog(
     context: Context,
@@ -33,16 +47,94 @@ fun SuccessDialog(
     image2: Int,
     selectedLTO: LTOEntity,
     setSuccessDialog : (Boolean) -> Unit,
-    dragAndDropViewModel: DragAndDropViewModel
+    dragAndDropViewModel: DragAndDropViewModel,
+    gameViewModel: GameViewModel
 ){
+    val (selectedButton, setSelectedButton) = remember {
+        mutableStateOf("")
+    }
     Dialog(
-        onDismissRequest = { setSuccessDialog(false) },
+        onDismissRequest = {
+            gameViewModel.setOneGameResult("+")
+            setSuccessDialog(false)
+        },
         properties = DialogProperties(usePlatformDefaultWidth = false),
         content = {
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                if(gameViewModel.oneGameResult.value == "+"){
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Button(
+                            onClick = {
+                                gameViewModel.setOneGameResult("P")
+                                setSelectedButton("P")
+                                setSuccessDialog(false)
+                                if(selectedLTO.gameMode == "같은 사진 매칭"){
+                                    dragAndDropViewModel.restartSameMode(context = context)
+                                } else {
+                                    dragAndDropViewModel.restartGeneralMode(context = context)
+                                    dragAndDropViewModel.setTwoMainDifferentImageInCategory(context,dragAndDropViewModel.mainItem.value!!.name)
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor =
+                                if(selectedButton == "P"){
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.tertiary
+                                }
+                            )
+                        ){
+                            Text(
+                                text = "P",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                gameViewModel.clearOneGameResult()
+                                setSelectedButton("C")
+                                setSuccessDialog(false)
+                                if(selectedLTO.gameMode == "같은 사진 매칭"){
+                                    dragAndDropViewModel.restartSameMode(context = context)
+                                } else {
+                                    dragAndDropViewModel.restartGeneralMode(context = context)
+                                    dragAndDropViewModel.setTwoMainDifferentImageInCategory(context,dragAndDropViewModel.mainItem.value!!.name)
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor =
+                                if(selectedButton == "C"){
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.tertiary
+                                }
+                            )
+                        ){
+                            Text(
+                                text = "C",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+
+                        }
+                    }
+                }
+
                 Box(
                     modifier = Modifier.size(1000.dp),
                     contentAlignment = Alignment.Center
@@ -96,7 +188,7 @@ fun SuccessAnimation(
             targetValue1,
             animationSpec = tween(durationMillis = 1000)   //애니매이션 지속시간
         )
-        delay(500)
+        delay(1000)
         if(selectedLTO.gameMode == "같은 사진 매칭"){
             dragAndDropViewModel.restartSameMode(context = context)
         } else {
@@ -106,11 +198,13 @@ fun SuccessAnimation(
         setSuccessDialog(false)
     }
 
-    val modifier1: Modifier = Modifier.size(300.dp)
+    val modifier1: Modifier = Modifier
+        .size(300.dp)
 
         .offset { IntOffset(animatable1.value.roundToInt(), 0) }
 
-    val modifier2: Modifier = Modifier.size(300.dp)
+    val modifier2: Modifier = Modifier
+        .size(300.dp)
         .offset { IntOffset(animatable2.value.roundToInt(), 0) }
 
 

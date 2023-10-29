@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.LTO.LTOEntity
 import inu.thebite.tory.database.STO.STOEntity
 import inu.thebite.tory.screens.education.GameViewModel
@@ -57,20 +58,14 @@ fun GameScreen(
             image2 = secondSuccessImage,
             setSuccessDialog = {setSuccessDialog(it)},
             dragAndDropViewModel = dragAndDropViewModel,
-            selectedLTO = selectedLTO
+            selectedLTO = selectedLTO,
+            gameViewModel = gameViewModel
         )
     }
-
-    val mainItem by dragAndDropViewModel.mainItem.collectAsState()
-    if(selectedLTO.gameMode == "같은 사진 매칭") {
-        LaunchedEffect(isCardSelectEnd){
-            if(isCardSelectEnd){
-                if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
-                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-                        setFirstSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
-                        setSecondSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
-                        setSuccessDialog(true)
-                    }
+    LaunchedEffect(successDialog){
+        if(selectedLTO.gameMode == "같은 사진 매칭") {
+            if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
+                selectedSTO?.let { selectedSTO ->
                     val changeList = selectedSTO.gameResult.toMutableList()
                     changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
                     selectedSTO.gameResult = changeList
@@ -89,6 +84,59 @@ fun GameScreen(
                 }
             }
         }
+        if(selectedLTO.gameMode == "일반화 매칭"){
+            if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
+                //-,P 저장
+                val changeList = selectedSTO!!.gameResult.toMutableList()
+                changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
+                selectedSTO.gameResult = changeList
+                stoViewModel.updateSTO(selectedSTO)
+                gameViewModel.setGameResultList(changeList)
+                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
+
+                if(dragAndDropViewModel.isRandomGame){
+                    val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                    dragAndDropViewModel.setMainItem(randomMainItem)
+                    dragAndDropViewModel.setTwoMainDifferentImageInCategory(context, randomMainItem.name)
+
+                }
+                //이미지 변경(target에 있는 동일한 카테고리)
+                gameViewModel.clearOneGameResult()
+            }
+        }
+
+    }
+
+    val mainItem by dragAndDropViewModel.mainItem.collectAsState()
+    if(selectedLTO.gameMode == "같은 사진 매칭") {
+        LaunchedEffect(isCardSelectEnd){
+            if(isCardSelectEnd){
+                if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
+                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
+                        setFirstSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
+                        setSecondSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
+                        setSuccessDialog(true)
+                    }
+                    if (gameViewModel.oneGameResult.value != "+"){
+                        val changeList = selectedSTO.gameResult.toMutableList()
+                        changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
+                        selectedSTO.gameResult = changeList
+                        stoViewModel.updateSTO(selectedSTO)
+                        gameViewModel.setGameResultList(changeList)
+                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
+                        if(dragAndDropViewModel.isRandomGame){
+                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                            dragAndDropViewModel.setMainItem(
+                                randomMainItem.copy(
+                                    image = getResourceIdByName(randomMainItem.name, context)
+                                )
+                            )
+                        }
+                        gameViewModel.clearOneGameResult()
+                    }
+                }
+            }
+        }
     }
     val (beforeCircleImage , setBeforeCircleImage) = remember {
         mutableIntStateOf(0)
@@ -103,22 +151,24 @@ fun GameScreen(
                         setSecondSuccessImage(beforeCircleImage)
                         setSuccessDialog(true)
                     }
-                    //+,-,P 저장
-                    val changeList = selectedSTO.gameResult.toMutableList()
-                    changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
-                    selectedSTO.gameResult = changeList
-                    stoViewModel.updateSTO(selectedSTO)
-                    gameViewModel.setGameResultList(changeList)
-                    setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
+                    if (gameViewModel.oneGameResult.value != "+"){
+                        //-,P 저장
+                        val changeList = selectedSTO.gameResult.toMutableList()
+                        changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
+                        selectedSTO.gameResult = changeList
+                        stoViewModel.updateSTO(selectedSTO)
+                        gameViewModel.setGameResultList(changeList)
+                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
 
-                    if(dragAndDropViewModel.isRandomGame){
-                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                        dragAndDropViewModel.setMainItem(randomMainItem)
-                        dragAndDropViewModel.setTwoMainDifferentImageInCategory(context, randomMainItem.name)
+                        if(dragAndDropViewModel.isRandomGame){
+                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                            dragAndDropViewModel.setMainItem(randomMainItem)
+                            dragAndDropViewModel.setTwoMainDifferentImageInCategory(context, randomMainItem.name)
 
+                        }
+                        //이미지 변경(target에 있는 동일한 카테고리)
+                        gameViewModel.clearOneGameResult()
                     }
-                    //이미지 변경(target에 있는 동일한 카테고리)
-                    gameViewModel.clearOneGameResult()
                 }
             }
         }
