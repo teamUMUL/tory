@@ -88,8 +88,8 @@ interface RetrofitService {
     suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>
 
     // lto
-    @POST("/{studentId}/{domainId}/ltos")
-    suspend fun addLto(@Path("studentId") studentId: Long, @Path("domainId") domainId: Long, @Body ltoRequest: LtoRequest): Response<LtoResponse>
+    @POST("/{domainId}/ltos")
+    suspend fun addLto(@Path("domainId") domainId: Long, @Body ltoRequest: LtoRequest): Response<LtoResponse>
 
     @PATCH("/ltos/{ltoId}/status")
     suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
