@@ -55,7 +55,9 @@ fun SuccessDialog(
     }
     Dialog(
         onDismissRequest = {
-            gameViewModel.setOneGameResult("+")
+            if(gameViewModel.oneGameResult.value == "+"){
+                gameViewModel.setOneGameResult("+")
+            }
             setSuccessDialog(false)
         },
         properties = DialogProperties(usePlatformDefaultWidth = false),
