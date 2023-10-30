@@ -170,19 +170,17 @@ fun SettingScreen(
             items(settingTypeList){settingType ->
                 when(settingType){
                     "센터" -> {
-                        if(allCenters.isNotNull()){
-                            Log.e("allCenters", allCenters.toString())
-                            CenterItemRow(
-                                settingType = settingType,
-                                allCenters = allCenters,
-                                selectedCenter = selectedCenter,
-                                centerViewModel = centerViewModel,
-                                childClassViewModel = childClassViewModel,
-                                childInfoViewModel = childInfoViewModel,
-                                setAddCenterDialog = {setAddCenterDialog(it)},
-                                setUpdateCenterDialg = {setUpdateCenterDialog(it)}
-                            )
-                        }
+                        Log.e("allCenters", allCenters.toString())
+                        CenterItemRow(
+                            settingType = settingType,
+                            allCenters = allCenters,
+                            selectedCenter = selectedCenter,
+                            centerViewModel = centerViewModel,
+                            childClassViewModel = childClassViewModel,
+                            childInfoViewModel = childInfoViewModel,
+                            setAddCenterDialog = {setAddCenterDialog(it)},
+                            setUpdateCenterDialg = {setUpdateCenterDialog(it)}
+                        )
                     }
                     "반" -> {
                         ChildClassItemRow(
