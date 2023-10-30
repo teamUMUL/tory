@@ -212,21 +212,21 @@ fun GameScreen(
             }
             "일반화 매칭" -> {
                 targetItems?.let {targetItems ->
-//                    GeneralGameScreen(
-//                        selectedLTO = selectedLTO,
-//                        context = context,
-//                        timerStart = timerStart,
-//                        timerRestart = timerRestart,
-//                        targetItems = targetItems,
-//                        cardSize = cardSize,
-//                        oneGameResult = oneGameResult,
-//                        isCardSelectEnd = isCardSelectEnd,
-//                        dragAndDropViewModel = dragAndDropViewModel,
-//                        gameViewModel = gameViewModel,
-//                        resetGameButtonIndex = {resetGameButtonIndex()},
-//                        setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                    GeneralGameScreen(
+                        selectedLTO = selectedLTO,
+                        context = context,
+                        timerStart = timerStart,
+                        timerRestart = timerRestart,
+                        targetItems = targetItems,
+                        cardSize = cardSize,
+                        oneGameResult = oneGameResult,
+                        isCardSelectEnd = isCardSelectEnd,
+                        dragAndDropViewModel = dragAndDropViewModel,
+                        gameViewModel = gameViewModel,
+                        resetGameButtonIndex = {resetGameButtonIndex()},
+                        setIsCardSelectEnd = {setIsCardSelectEnd(it)},
 //                        setBeforeCircleImage = {setBeforeCircleImage(it)}
-//                    )
+                    )
                 }
             }
             else -> {
