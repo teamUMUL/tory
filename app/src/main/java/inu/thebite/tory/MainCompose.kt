@@ -63,6 +63,13 @@ import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 //import inu.thebite.tory.screens.education.LTOViewModel
 //import inu.thebite.tory.screens.education.STOViewModel
 //import inu.thebite.tory.screens.game.DragAndDropViewModel
+import inu.thebite.tory.screens.DataScreen.DataScreen
+import inu.thebite.tory.screens.DataScreen.GraphViewModel
+import inu.thebite.tory.screens.GameScreen
+import inu.thebite.tory.screens.homescreen.HomeScreen
+import inu.thebite.tory.screens.DataScreen.LTOViewModel
+import inu.thebite.tory.screens.DataScreen.STODetailViewModel
+import inu.thebite.tory.screens.DataScreen.STOViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
