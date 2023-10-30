@@ -12,7 +12,10 @@ data class PointResponse(
     @SerializedName("round")
     var round: Int,
 
-    @SerializedName("registerant")
+    @SerializedName("points")
+    var points: List<String>,
+
+    @SerializedName("registrant")
     var registrant: String,
 
     @SerializedName("registerDate")

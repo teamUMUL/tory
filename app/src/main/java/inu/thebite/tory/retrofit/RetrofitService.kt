@@ -11,6 +11,9 @@ import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.point.AddPointRequest
+import inu.thebite.tory.model.point.PointResponse
+import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
@@ -30,104 +33,112 @@ import retrofit2.http.Path
 interface RetrofitService {
 
     // center
-    @POST("/center/add")
+    @POST("/centers")
     suspend fun addCenter(@Body addCenterRequest: CenterRequest): Response<CenterResponse>
 
-    @PATCH("/center/{centerId}/update")
+    @PATCH("/centers/{centerId}")
     suspend fun updateCenter(@Path("centerId")  centerId: Long, @Body updateCenterRequest: CenterRequest): Response<CenterResponse>
 
-    @GET("/center/list")
+    @GET("/centers")
     suspend fun getCenterList(): List<CenterResponse>
 
-    @DELETE("/center/{centerId}/delete")
+    @DELETE("/centers/{centerId}")
     suspend fun deleteCenter(@Path("centerId") centerId: Long): Response<Void>
 
     // class
-    @POST("/{centerId}/class/add")
+    @POST("/{centerId}/classes")
     suspend fun addClass(@Path("centerId") centerId: Long, @Body addChildClassRequest: ChildClassRequest): Response<ChildClassResponse>
 
-    @PATCH("/class/{classId}/update")
+    @PATCH("/classes/{classId}")
     suspend fun updateChildClass(@Path("classId") classId: Long, @Body updateChildClass: ChildClassRequest): Response<ChildClassResponse>
 
-    @GET("/class/list")
+    @GET("/classes")
     suspend fun getAllClassList(): List<ChildClassResponse>
 
-    @DELETE("/class/{classId}/delete")
+    @DELETE("/classes/{classId}")
     suspend fun deleteClass(@Path("classId") classId: Long): Response<Void>
 
     // student
-    @POST("/{classId}/student/add")
+    @POST("/{classId}/students")
     suspend fun addStudent(@Path("classId") classId: Long, @Body addStudentRequest: AddStudentRequest) : Response<StudentResponse>
 
-    @PATCH("/student/{studentId}/update")
+    @PATCH("/students/{studentId}")
     suspend fun updateStudent(@Path("studentId") studentId: Long, @Body updateStudentRequest: UpdateStudentRequest): Response<StudentResponse>
 
-    @PATCH("/student/{studentId}/startDate/update")
+    @PATCH("/students/{studentId}/startDate")
     suspend fun updateStudentStartDate(@Path("studentId") studentId: Long, @Body updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
 
-    @PATCH("/student/{studentId}/endDate/update")
+    @PATCH("/students/{studentId}/endDate")
     suspend fun updateStudentEndDate(@Path("studentId") studentId: Long, @Body updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
 
-    @GET("/student/list")
+    @GET("/students")
     suspend fun getStudentList() : List<StudentResponse>
 
-    @DELETE("/student/{studentId}/delete")
+    @DELETE("/students/{studentId}")
     suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Void>
 
     // domain
-    @POST("/domain/add")
+    @POST("/domains")
     suspend fun addDomain(@Body addDomainRequest: AddDomainRequest) : Response<DomainResponse>
 
-    @GET("/domain/list")
+    @GET("/domains")
     suspend fun getDomainList() : List<DomainResponse>
 
-    @DELETE("/{domainId}/delete")
+    @DELETE("/domains/{domainId}")
     suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>
 
     // lto
-    @POST("/{domainId}/lto/add")
-    suspend fun addLto(@Path("domainId") domainId: Long, @Body ltoRequest: LtoRequest): Response<LtoResponse>
+    @POST("/{studentId}/{domainId}/ltos")
+    suspend fun addLto(@Path("studentId") studentId: Long, @Path("domainId") domainId: Long, @Body ltoRequest: LtoRequest): Response<LtoResponse>
 
-    @PATCH("/lto/{ltoId}/status/update")
+    @PATCH("/ltos/{ltoId}/status")
     suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
 
-    @PATCH("/lto/{ltoId}/hit/status/update")
+    @PATCH("/ltos/{ltoId}/hit/status")
     suspend fun updateLtoHitStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
 
-    @PATCH("/lto/{ltoId}/update")
+    @PATCH("/ltos/{ltoId}")
     suspend fun updateLto(@Path("ltoId") ltoId: Long, @Body ltoRequest: LtoRequest) : Response<LtoResponse>
 
-    @GET("/lto/list")
+    @GET("/ltos")
     suspend fun getLtoList(): List<LtoResponse>
 
-    @DELETE("/lto/{ltoId}/delete")
+    @DELETE("/ltos/{ltoId}")
     suspend fun deleteLto(@Path("ltoId") ltoId: Long): Response<Void>
 
     // sto
-    @POST("/{ltoId}/sto/add")
+    @POST("/{ltoId}/stos")
     suspend fun addSto(@Path("ltoId") ltoId: Long, @Body addStoRequest: AddStoRequest): Response<StoResponse>
 
-    @PATCH("/sto/{stoId}/status/update")
+    @PATCH("/stos/{stoId}/status")
     suspend fun updateStoStatus(@Path("stoId") stoId: Long, @Body updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
 
-    @PATCH("/sto/{stoId}/hit/status/update")
+    @PATCH("/stos/{stoId}/hit/status")
     suspend fun updateStoHitStatus(@Path("stoId") stoId: Long, @Body updateStoStatusRequest: UpdateStoStatusRequest): Response<StoResponse>
 
-    @PATCH("/sto/{stoId}/update")
+    @PATCH("/stos/{stoId}")
     suspend fun updateSto(@Path("stoId") stoId: Long, @Body updateStoRequest: UpdateStoRequest): Response<StoResponse>
 
-    // need a code to update image url list
-    @PATCH("/sto/{stoId}/image/list/update")
+    @PATCH("/stos/{stoId}/images")
     suspend fun updateImageList(@Path("stoId") stoId: Long, @Body updateImageListRequest: UpdateImageListRequest) : Response<ImageResponse>
 
-    @GET("/sto/list")
+    @GET("/stos")
     suspend fun getStoList(): List<StoResponse>
 
-    @DELETE("/sto/{stoId}/delete")
+    @DELETE("/stos/{stoId}")
     suspend fun deleteSto(@Path("stoId") stoId: Long): Response<Void>
 
     // image
-    @GET("/image/list")
+    @GET("/images")
     suspend fun getImageList(): List<ImageResponse>
 
+    // point
+    @POST("/stos/{stoId}/points")
+    suspend fun addPoint(@Path("stoId") stoId: Long, @Body addPointRequest: AddPointRequest) : Response<Void>
+
+    @PATCH("/stos/{stoId}/points")
+    suspend fun updatePoint(@Path("stoId") stoId: Long, @Body updatePointRequest: UpdatePointRequest) : Response<List<PointResponse>>
+
+    @GET("/stos/{stoId}/points")
+    suspend fun getPointList(@Path("stoId") stoId: Long) : Response<List<PointResponse>>
 }

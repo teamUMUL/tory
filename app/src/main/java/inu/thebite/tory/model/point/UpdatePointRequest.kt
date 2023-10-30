@@ -2,10 +2,10 @@ package inu.thebite.tory.model.point
 
 import com.google.gson.annotations.SerializedName
 
-data class AddPointRequest(
+data class UpdatePointRequest(
 
-    @SerializedName("result")
-    var result: String,
+    @SerializedName("points")
+    var points: List<String>,
 
     @SerializedName("registrant")
     var registrant: String
