@@ -37,15 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
-import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.SegmentedControl
 
 @Composable
 fun ChainDialog(
     modifier: Modifier = Modifier,
-    viewModel: ChildViewModel = viewModel(),
     showDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
@@ -127,7 +123,7 @@ fun ChainDialog(
                                 setSelectedChildClass(classList[selectedChildClassIndex])
                                 onConfirm(chainText)
                                 setCenterName(classList[selectedChildClassIndex])
-                                viewModel.selectedChildClass = selectedChildClass
+//                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },
 
@@ -143,7 +139,7 @@ fun ChainDialog(
 @Composable
 fun ClassDialog(
     modifier: Modifier = Modifier,
-    viewModel: ChildViewModel = viewModel(),
+
     showDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
@@ -227,7 +223,7 @@ fun ClassDialog(
                                 setSelectedChildClass(classList[selectedChildClassIndex])
                                 onConfirm(classText)
                                 setClassName(classList[selectedChildClassIndex])
-                                viewModel.selectedChildClass = selectedChildClass
+//                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },
 
@@ -243,7 +239,6 @@ fun ClassDialog(
 @Composable
 fun ChildDialog(
     modifier: Modifier = Modifier,
-    viewModel: ChildViewModel = viewModel(),
     showDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
@@ -327,7 +322,7 @@ fun ChildDialog(
                                 setSelectedChildClass(classList[selectedChildClassIndex])
 
                                 setChildName(classList[selectedChildClassIndex])
-                                viewModel.selectedChildClass = selectedChildClass
+//                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },
 
