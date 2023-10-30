@@ -177,12 +177,14 @@ fun CenterItemRow(
                                         centerViewModel.clearSelectedCenter()
                                     } else {
                                         centerViewModel.setSelectedCenter(center)
+                                        childClassViewModel.getChildClassesByCenter(
+                                            center
+                                        )
                                     }
                                     childClassViewModel.clearSelectedChildClass()
                                     childInfoViewModel.clearSelectedChildInfo()
-                                    childClassViewModel.getChildClassesByCenter(
-                                        center
-                                    )
+                                    childInfoViewModel.clearChildInfos()
+
                                 },
                             shape = RoundedCornerShape(8.dp),
                             colors = CardDefaults.cardColors(

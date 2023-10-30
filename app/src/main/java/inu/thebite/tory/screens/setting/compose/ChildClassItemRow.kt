@@ -178,6 +178,7 @@ fun ChildClassItemRow(
                                             childInfoViewModel.clearChildInfos()
                                         } else {
                                             childClassViewModel.setSelectedChildClass(childClass)
+                                            childInfoViewModel.getChildInfosByClass(childClass)
                                         }
                                         childInfoViewModel.clearSelectedChildInfo()
                                     },
