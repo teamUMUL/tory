@@ -146,7 +146,8 @@ fun HomeScreen(
                     .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
 
                 ) {
-                    pieChartPreview()
+
+//                    pieChartPreview()
                     chart_bar()
 
 

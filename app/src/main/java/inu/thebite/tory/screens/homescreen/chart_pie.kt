@@ -59,12 +59,10 @@ import kotlin.math.atan2
 @Composable
 fun pieChartPreview(
     modifier: Modifier = Modifier,
-    radius:Float = 250f
+    radius:Float = 120f  //
 ){
     Column(
-        modifier = modifier
-            .padding(40.dp),
-
+        modifier = modifier.padding(start = 50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -74,7 +72,7 @@ fun pieChartPreview(
 
             PieChart(
                 modifier = Modifier
-                    .size(400.dp),
+                    .size(150.dp),
                 input = listOf(
                     PieChartInput(
                         color = Color(0xFF97DFFC),
@@ -166,8 +164,8 @@ fun pieChartPreview(
 @Composable
 fun PieChart(
     modifier: Modifier = Modifier,
-    radius:Float = 250f,  //색 원
-    innerRadius:Float = 20f,  //중앙 하얀 원
+    radius:Float = 120f,  //색 원
+    innerRadius:Float = 15f,  //중앙 하얀 원
     transparentWidth:Float = 35f, //하얀 원 테두리
     input:List<PieChartInput>,
     centerText:String = "" //하얀 원 중앙에 들어가는 텍스트
@@ -300,7 +298,7 @@ fun PieChart(
                                 circleCenter.x,
                                 circleCenter.y+(radius-(radius-innerRadius)/1.5f)*factor,
                                 Paint().apply {
-                                    textSize = 10.sp.toPx()
+                                    textSize = 6.sp.toPx()
                                     textAlign = Paint.Align.CENTER
                                     color = white.toArgb()
                                 }
@@ -333,7 +331,7 @@ fun PieChart(
                                 circleCenter.x,
                                 circleCenter.y + radius*1.3f*factor,
                                 Paint().apply {
-                                    textSize = 22.sp.toPx()
+                                    textSize = 10.sp.toPx()
                                     textAlign = Paint.Align.CENTER
                                     color = gray.toArgb()
                                     isFakeBoldText = true

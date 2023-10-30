@@ -56,12 +56,13 @@ fun childInfor(
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
                 horizontalAlignment = Alignment.Start,
             ) {
-                Image(modifier = Modifier
-                    .width(180.dp)
-                    .height(180.dp),
-                    painter = painterResource(id = R.drawable.chart_round),
-                    contentDescription ="null",
-                    contentScale = ContentScale.Fit)
+                pieChartPreview()
+//                Image(modifier = Modifier
+//                    .width(180.dp)
+//                    .height(180.dp),
+//                    painter = painterResource(id = R.drawable.chart_round),
+//                    contentDescription ="null",
+//                    contentScale = ContentScale.Fit)
                 Text(
                     text = "이름",
                     style = TextStyle(
@@ -143,14 +144,14 @@ fun reportList(){
         Button(onClick = { /* Define the click action here */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3083FF)),
             modifier = Modifier
-            .shadow(
-                elevation = 4.dp,
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
-            )
-            .weight(1f)
-            .height(55.dp)
-            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
+                .weight(1f)
+                .height(55.dp)
+                .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "상담일지")
         }
@@ -159,14 +160,14 @@ fun reportList(){
             onClick = { /* Define the click action here */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3083FF)),
             modifier = Modifier
-            .shadow(
-                elevation = 4.dp,
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
-            )
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
                 .weight(1f)
-            .height(55.dp)
-            .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
+                .height(55.dp)
+                .background(color = Color(0xFF3083FF), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "아동영상")
         }
@@ -175,14 +176,14 @@ fun reportList(){
             onClick = { /* Define the click action here */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8E8E8E)),
             modifier = Modifier
-            .shadow(
-                elevation = 4.dp,
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
-            )
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
                 .weight(1f)
-            .height(55.dp)
-            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
+                .height(55.dp)
+                .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "보고서")
         }
@@ -190,14 +191,14 @@ fun reportList(){
         Button(onClick = { /* Define the click action here */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
             modifier = Modifier
-            .shadow(
-                elevation = 4.dp,
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
-            )
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
                 .weight(1f)
-            .height(55.dp)
-            .background(color = Color(0xFF0047B3), shape = RoundedCornerShape(size = 10.dp))
+                .height(55.dp)
+                .background(color = Color(0xFF0047B3), shape = RoundedCornerShape(size = 10.dp))
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "완료목록")
         }
@@ -205,14 +206,14 @@ fun reportList(){
         Button(onClick = { /* Define the click action here */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8E8E8E)),
             modifier = Modifier
-            .shadow(
-                elevation = 4.dp,
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
-            )
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
                 .weight(1f)
-            .height(55.dp)
-            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
+                .height(55.dp)
+                .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
 
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "그래프")
@@ -222,14 +223,14 @@ fun reportList(){
             onClick = { /* Define the click action here */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8E8E8E)),
             modifier = Modifier
-            .shadow(
-                elevation = 4.dp,
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
-            )
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
                 .weight(1f)
-            .height(55.dp)
-            .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
+                .height(55.dp)
+                .background(color = Color(0xFF8E8E8E), shape = RoundedCornerShape(size = 10.dp))
 
         ){
             Text(style = TextStyle(color = Color(0xffffffff), fontSize = 16.sp), textAlign = TextAlign.Center, fontWeight = FontWeight(400),text = "크리테리아\n그래프")
