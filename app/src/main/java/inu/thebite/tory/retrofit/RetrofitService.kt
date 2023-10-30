@@ -140,5 +140,5 @@ interface RetrofitService {
     suspend fun updatePoint(@Path("stoId") stoId: Long, @Body updatePointRequest: UpdatePointRequest) : Response<List<PointResponse>>
 
     @GET("/stos/{stoId}/points")
-    suspend fun getPointList(@Path("stoId") stoId: Long) : Response<List<PointResponse>>
+    suspend fun getPointList(@Path("stoId") stoId: Long) : List<String>
 }

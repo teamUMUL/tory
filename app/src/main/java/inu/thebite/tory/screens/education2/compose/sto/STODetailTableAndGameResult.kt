@@ -53,13 +53,11 @@ import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 @Composable
 fun STODetailTableAndGameResult(
     selectedSTO: StoResponse,
-    selectedEducation : EducationEntity,
+    points: List<String>,
     selectedSTODetailGameDataIndex: MutableIntState,
 //    stoViewModel: STOViewModel,
-    educationViewModel: EducationViewModel,
     setSelectedSTOStatus : (String) -> Unit
 ){
-    val allEducations by educationViewModel.allEducations.collectAsState()
 
     var plusNum by remember {
         mutableIntStateOf(0)
@@ -76,9 +74,9 @@ fun STODetailTableAndGameResult(
 
 
     LaunchedEffect(Unit){
-        plusNum = selectedEducation.educationResult.count { it == "+" }
-        pNum = selectedEducation.educationResult.count { it == "p" }
-        minusNum = selectedEducation.educationResult.count { it == "-" }
+        plusNum = points.count { it == "+" }
+        pNum = points.count { it == "p" }
+        minusNum = points.count { it == "-" }
     }
     val STODetailTitles =
         listOf<String>(
@@ -161,7 +159,6 @@ fun STODetailTableAndGameResult(
                 verticalArrangement = Arrangement.Top
             ) {
 
-                selectedEducation?.let { selectedEducation->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -213,10 +210,10 @@ fun STODetailTableAndGameResult(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = "회차 :", modifier = Modifier.padding(horizontal = 5.dp))
-                            Text(
-                                text = selectedEducation.roundNum.toString(),
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp))
+//                            Text(
+//                                text = selectedEducation.roundNum.toString(),
+//                                modifier = Modifier
+//                                    .padding(horizontal = 5.dp))
                         }
                     }
                     Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
@@ -226,7 +223,7 @@ fun STODetailTableAndGameResult(
                             .fillMaxHeight(0.8f)
                             .padding(10.dp)
                     ) {
-                        items(selectedEducation.educationResult.size / 5) { verticalIndex ->
+                        items(selectedSTO.count / 5) { verticalIndex ->
                             LazyRow(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -235,8 +232,12 @@ fun STODetailTableAndGameResult(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 items(5) { horizonIndex ->
-                                    val stoGameData =
-                                        selectedEducation.educationResult[(5 * verticalIndex) + horizonIndex]
+                                    var stoGameData = ""
+                                    if(points.size > (5 * verticalIndex) + horizonIndex){
+                                        stoGameData = points[(5 * verticalIndex) + horizonIndex]
+                                    } else {
+                                        stoGameData = "n"
+                                    }
                                     Card(
                                         modifier = Modifier
                                             .padding(2.dp)
@@ -306,7 +307,7 @@ fun STODetailTableAndGameResult(
                             }
                         }
                         item {
-                            if(!selectedEducation.educationResult.contains("n")) {
+                            if(points.size == selectedSTO.count) {
                                 Button(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -314,14 +315,13 @@ fun STODetailTableAndGameResult(
                                         .padding(vertical = 5.dp),
                                     onClick = {
                                         //+비율이 90%이상인 경우 자동으로 준거완료 설정
-                                        if((selectedEducation.educationResult.count { it == "+" }.toFloat()/selectedEducation.educationResult.size.toFloat())*100 >= 90f){
+                                        if((points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100 >= 90f){
                                             setSelectedSTOStatus("준거 도달")
                                         }else{
                                             setSelectedSTOStatus("진행중")
                                             //--------------
                                         }
                                         selectedSTODetailGameDataIndex.intValue = 0
-                                        educationViewModel.addEducationRound(selectedEducation)
                                         plusNum = 0
                                         pNum = 0
                                         minusNum = 0
@@ -387,30 +387,29 @@ fun STODetailTableAndGameResult(
                                     }
                                 ),
                                 onClick = {
-                                    if(selectedSTODetailGameDataIndex.intValue < selectedEducation.educationResult.size){
-                                        val changeList = selectedEducation.educationResult.toMutableList()
-
-                                        when (buttonItem) {
-                                            "+" -> {
-                                                changeList[selectedSTODetailGameDataIndex.intValue] = "+"
-                                                plusNum += 1
-                                            }
-                                            "-" -> {
-                                                changeList[selectedSTODetailGameDataIndex.intValue] = "-"
-                                                minusNum += 1
-                                            }
-                                            "P" -> {
-                                                changeList[selectedSTODetailGameDataIndex.intValue] = "P"
-                                                pNum += 1
-                                            }
-                                            else -> {
-                                                changeList[selectedSTODetailGameDataIndex.intValue] = "n"
-                                            }
-                                        }
-                                        selectedEducation.educationResult = changeList
-                                        educationViewModel.updateSelectedEducationList(selectedEducation, changeList)
-                                        educationViewModel.updateEducation(selectedEducation)
-                                        selectedSTODetailGameDataIndex.intValue = selectedSTODetailGameDataIndex.intValue + 1
+                                    if(selectedSTODetailGameDataIndex.intValue < selectedSTO.count){
+//
+//                                        when (buttonItem) {
+//                                            "+" -> {
+//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "+"
+//                                                plusNum += 1
+//                                            }
+//                                            "-" -> {
+//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "-"
+//                                                minusNum += 1
+//                                            }
+//                                            "P" -> {
+//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "P"
+//                                                pNum += 1
+//                                            }
+//                                            else -> {
+//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "n"
+//                                            }
+//                                        }
+//                                        selectedEducation.educationResult = changeList
+//                                        educationViewModel.updateSelectedEducationList(selectedEducation, changeList)
+//                                        educationViewModel.updateEducation(selectedEducation)
+//                                        selectedSTODetailGameDataIndex.intValue = selectedSTODetailGameDataIndex.intValue + 1
 
                                     }
 
@@ -444,7 +443,6 @@ fun STODetailTableAndGameResult(
                         }
 
                     }
-                }
 
 
 

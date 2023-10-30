@@ -68,6 +68,8 @@ fun STOItemColumn(
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val stos by stoViewModel.stos.collectAsState()
     val allSTOs by stoViewModel.allSTOs.collectAsState()
+    val points by stoViewModel.points.collectAsState()
+
 
     val mainItem by dragAndDropViewModel.mainItem.collectAsState()
 
@@ -143,6 +145,7 @@ fun STOItemColumn(
     LaunchedEffect(selectedSTO){
         selectedSTO?.let { selectedSTO ->
             selectedSTOStatus.value = selectedSTO.status
+            stoViewModel.getPointList(selectedSTO)
         }
     }
 
@@ -322,18 +325,17 @@ fun STOItemColumn(
                                                 shape = RoundedCornerShape(8.dp)
                                             )
                                     ) {
-                                        selectedEducation?.let {selectedEducation ->
-                                            STODetailTableAndGameResult(
-                                                selectedSTO = sto,
-                                                selectedEducation = selectedEducation,
-                                                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-                                                educationViewModel = educationViewModel,
-                                                setSelectedSTOStatus = {
-                                                    selectedSTOStatus.value = it
-                                                    selectedSTO.status = it
-                                                }
-                                            )
-                                        }
+                                            points?.let {points ->
+                                                STODetailTableAndGameResult(
+                                                    selectedSTO = sto,
+                                                    points = points,
+                                                    selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                                                    setSelectedSTOStatus = {
+                                                        selectedSTOStatus.value = it
+                                                        selectedSTO.status = it
+                                                    }
+                                                )
+                                            }
                                         selectedLTO?.let {selectedLTO ->
                                             if(selectedLTO.game != "교육 선택 안함"){
                                                 GameReadyRow(

@@ -23,4 +23,6 @@ interface STORepo {
     suspend fun getStoList(): List<StoResponse>
 
     suspend fun deleteSto(stoInfo: StoResponse)
+
+    suspend fun getPointList(selectedSTO : StoResponse) : List<String>
 }

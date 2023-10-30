@@ -49,4 +49,8 @@ class STORepoImpl: STORepo {
     override suspend fun deleteSto(stoInfo: StoResponse) {
         stoRetrofit.deleteSto(stoId = stoInfo.id)
     }
+
+    override suspend fun getPointList(selectedSTO: StoResponse): List<String> {
+        return stoRetrofit.getPointList(selectedSTO.id)
+    }
 }

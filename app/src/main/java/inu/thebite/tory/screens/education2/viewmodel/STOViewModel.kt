@@ -30,6 +30,8 @@ class STOViewModel : ViewModel() {
     private val _selectedSTO = MutableStateFlow<StoResponse?>(null)
     val selectedSTO = _selectedSTO.asStateFlow()
 
+    private val _points = MutableStateFlow<List<String>?>(null)
+    val points = _points.asStateFlow()
 
     fun setSelectedSTO(stoEntity: StoResponse) {
 
@@ -98,6 +100,19 @@ class STOViewModel : ViewModel() {
                 Log.e("failed to create STO", e.message.toString())
             }
             getAllSTOs()
+        }
+    }
+
+    fun getPointList(
+        selectedSTO: StoResponse
+    ){
+        viewModelScope.launch {
+            try {
+                val points = repo.getPointList(selectedSTO)
+                _points.value = points
+            }catch (e: Exception){
+                Log.e("failed to get Point List", e.message.toString())
+            }
         }
     }
 
