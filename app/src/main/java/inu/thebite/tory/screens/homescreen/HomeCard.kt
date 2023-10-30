@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,31 +30,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import inu.thebite.tory.CenterSelectViewModel
+import inu.thebite.tory.ChildClassSelectViewModel
+import inu.thebite.tory.ChildSelectViewModel
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.homescreen.dialog.CenterDialog
 
-import inu.thebite.tory.screens.homescreen.dialog.ChainDialog
 import inu.thebite.tory.screens.homescreen.dialog.ChildDialog
 import inu.thebite.tory.screens.homescreen.dialog.ClassDialog
 
 @Composable
 fun ChainCard(
     modifier: Modifier = Modifier,
+    centerSelectViewModel: CenterSelectViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ){
-    val (centerName, setCenterName) = remember {
-        mutableStateOf("")
-    }
+    val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
+
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
-        ChainDialog(
+        CenterDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
             onConfirm = { configText ->
                 // Handle dialog confirmation here
                 // configText contains the user input
                 isDialogVisible = false},
-            centerName = centerName,
-            setCenterName = {setCenterName(it)}
+            centerSelectViewModel = centerSelectViewModel,
+            childClassSelectViewModel = childClassSelectViewModel,
+            childSelectViewModel = childSelectViewModel
         )
     }
     Box(modifier = modifier   //카드 하얀 배경
@@ -100,7 +107,7 @@ fun ChainCard(
                     .width(140.dp)
 
                     .height(32.dp),
-                text = centerName,
+                text = selectedCenter?.name ?: "미선택",
                 style = TextStyle(
                     fontSize = 22.sp,
                     lineHeight = 24.sp,
@@ -117,11 +124,12 @@ fun ChainCard(
 }
 @Composable
 fun ClassCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ){
-    val (className, setClassName) = remember {
-        mutableStateOf("")
-    }
+    val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
+
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
@@ -132,8 +140,8 @@ fun ClassCard(
                 // Handle dialog confirmation here
                 // configText contains the user input
                 isDialogVisible = false},
-            className = className,
-            setClassName = {setClassName(it)}
+            childClassSelectViewModel = childClassSelectViewModel,
+            childSelectViewModel = childSelectViewModel
         )
     }
 
@@ -182,7 +190,7 @@ fun ClassCard(
                     .width(140.dp)
 
                     .height(32.dp),
-                text = className,
+                text = selectedChildClass?.name ?: "미선택",
                 style = TextStyle(
                     fontSize = 22.sp,
                     lineHeight = 24.sp,
@@ -201,23 +209,18 @@ fun ClassCard(
 }
 @Composable
 fun ChildrenCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    childSelectViewModel: ChildSelectViewModel
 ){
-    val (childName, setChildName) = remember {
-        mutableStateOf("")
-    }
+    val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
+
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
         ChildDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
-            onConfirm = { configText ->
-                // Handle dialog confirmation here
-                // configText contains the user input
-                isDialogVisible = false},
-            childName = childName,
-            setChildName = {setChildName(it)}
+            childSelectViewModel = childSelectViewModel
         )
     }
 
@@ -265,7 +268,7 @@ fun ChildrenCard(
                     .width(140.dp)
 
                     .height(32.dp),
-                text = childName,
+                text = selectedChild?.name ?: "미선택",
                 style = TextStyle(
                     fontSize = 22.sp,
                     lineHeight = 24.sp,

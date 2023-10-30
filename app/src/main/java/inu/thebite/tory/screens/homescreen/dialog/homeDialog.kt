@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,27 +38,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import inu.thebite.tory.CenterControl
+import inu.thebite.tory.CenterSelectViewModel
+import inu.thebite.tory.ChildClassControl
+import inu.thebite.tory.ChildClassSelectViewModel
+import inu.thebite.tory.ChildInfoControl
+import inu.thebite.tory.ChildSelectViewModel
 import inu.thebite.tory.R
 
 @Composable
-fun ChainDialog(
-    modifier: Modifier = Modifier,
+fun CenterDialog(
     showDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
-    centerName : String,
-    setCenterName : (String) -> Unit
+    centerSelectViewModel: CenterSelectViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ) {
-    val classList = listOf<String>(
-        "강남점",
-        "송도점"
-    )
-    val (selectedChildClass, setSelectedChildClass) = rememberSaveable {
-        mutableStateOf(classList[0])
-    }
-    val (selectedChildClassIndex, setSelectedChildClassIndex) = rememberSaveable {
-        mutableStateOf(0)
-    }
+
+    val allCenters by centerSelectViewModel.allCenters.collectAsState()
+    val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
+    val _selectedCenter by centerSelectViewModel.tempSelectedCenter.collectAsState()
 
     if (showDialog) {
         Dialog(
@@ -82,15 +83,13 @@ fun ChainDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    SegmentedControl(
-                        items = classList,
-                        defaultSelectedItemIndex = selectedChildClassIndex,
-                        useFixedWidth = true,
-                        itemWidth = 140.dp
-                    ){
-                        Log.e("CustomToggle", "Selected item : ${classList[it]}")
-                        setSelectedChildClassIndex(it)
-                    }
+                    CenterControl(
+                        items = allCenters!!,
+                        selectedCenter = _selectedCenter,
+                        centerSelectViewModel = centerSelectViewModel,
+                        childClassSelectViewModel = childClassSelectViewModel,
+                        childSelectViewModel = childSelectViewModel,
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -120,9 +119,10 @@ fun ChainDialog(
                                 containerColor = colorResource(id = R.color.light_gray)
                             ),
                             onClick = {
-                                setSelectedChildClass(classList[selectedChildClassIndex])
+                                _selectedCenter?.let {_selectedCenter ->
+                                    centerSelectViewModel.setSelectedCenter(_selectedCenter)
+                                }
                                 onConfirm(chainText)
-                                setCenterName(classList[selectedChildClassIndex])
 //                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },
@@ -138,26 +138,18 @@ fun ChainDialog(
 }
 @Composable
 fun ClassDialog(
-    modifier: Modifier = Modifier,
-
     showDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
-    className : String,
-    setClassName : (String) -> Unit
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ) {
-    val classList = listOf<String>(
-        "오전반(월수금)",
-        "오후반(월수금)",
-        "오전반(화목)",
-        "오후반(화목)"
-    )
-    val (selectedChildClass, setSelectedChildClass) = rememberSaveable {
-        mutableStateOf(classList[0])
-    }
-    val (selectedChildClassIndex, setSelectedChildClassIndex) = rememberSaveable {
-        mutableStateOf(0)
-    }
+    val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
+    val childClasses by childClassSelectViewModel.childClasses.collectAsState()
+    val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
+    val _selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
+
+
 
     if (showDialog) {
         Dialog(
@@ -182,14 +174,13 @@ fun ClassDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    SegmentedControl(
-                        items = classList,
-                        defaultSelectedItemIndex = selectedChildClassIndex,
-                        useFixedWidth = true,
-                        itemWidth = 140.dp
-                    ){
-                        Log.e("CustomToggle", "Selected item : ${classList[it]}")
-                        setSelectedChildClassIndex(it)
+                    childClasses?.let {childClasses ->
+                        ChildClassControl(
+                            items = childClasses,
+                            selectedChildClass = _selectedChildClass,
+                            childSelectViewModel = childSelectViewModel,
+                            childClassSelectViewModel = childClassSelectViewModel
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -220,9 +211,12 @@ fun ClassDialog(
                                 containerColor = colorResource(id = R.color.light_gray)
                             ),
                             onClick = {
-                                setSelectedChildClass(classList[selectedChildClassIndex])
                                 onConfirm(classText)
-                                setClassName(classList[selectedChildClassIndex])
+                                _selectedChildClass?.let {_selectedChildClass ->
+                                    childClassSelectViewModel.setSelectedChildClass(
+                                        _selectedChildClass
+                                    )
+                                }
 //                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },
@@ -238,25 +232,14 @@ fun ClassDialog(
 }
 @Composable
 fun ChildDialog(
-    modifier: Modifier = Modifier,
     showDialog: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit,
-    childName : String,
-    setChildName : (String) -> Unit
+    childSelectViewModel: ChildSelectViewModel
 ) {
-    val classList = listOf<String>(
-        "김토리",
-        "양토리",
-        "안토리",
-        "차토리"
-    )
-    val (selectedChildClass, setSelectedChildClass) = rememberSaveable {
-        mutableStateOf(classList[0])
-    }
-    val (selectedChildClassIndex, setSelectedChildClassIndex) = rememberSaveable {
-        mutableStateOf(0)
-    }
+    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
+    val childInfos by childSelectViewModel.childInfos.collectAsState()
+    val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
+    val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
 
     if (showDialog) {
         Dialog(
@@ -281,14 +264,12 @@ fun ChildDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    SegmentedControl(
-                        items = classList,
-                        defaultSelectedItemIndex = selectedChildClassIndex,
-                        useFixedWidth = true,
-                        itemWidth = 140.dp
-                    ){
-                        Log.e("CustomToggle", "Selected item : ${classList[it]}")
-                        setSelectedChildClassIndex(it)
+                    childInfos?.let {childInfos ->
+                        ChildInfoControl(
+                            items = childInfos,
+                            selectedChildInfo = _selectedChildInfo,
+                            childSelectViewModel = childSelectViewModel
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -319,10 +300,11 @@ fun ChildDialog(
                                 containerColor = colorResource(id = R.color.light_gray)
                             ),
                             onClick = {
-                                setSelectedChildClass(classList[selectedChildClassIndex])
-
-                                setChildName(classList[selectedChildClassIndex])
-//                                viewModel.selectedChildClass = selectedChildClass
+                                _selectedChildInfo?.let {_selectedChildInfo ->
+                                    childSelectViewModel.setSelectedChildInfo(
+                                        _selectedChildInfo
+                                    )
+                                }
                                 onDismiss()
                             },
 

@@ -23,13 +23,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import inu.thebite.tory.CenterSelectViewModel
+import inu.thebite.tory.ChildClassSelectViewModel
+import inu.thebite.tory.ChildSelectViewModel
 import inu.thebite.tory.screens.HomeViewModel
 
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel = viewModel(),
+    centerSelectViewModel: CenterSelectViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ){
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -95,9 +100,21 @@ fun HomeScreen(
 
             ) {
 
-                ChainCard(modifier = Modifier.weight(1f))// 지점 선택
-                ClassCard(modifier = Modifier.weight(1f)) //반 선택
-                ChildrenCard(modifier = Modifier.weight(1f)) //아이 선택
+                ChainCard(
+                    modifier = Modifier.weight(1f),
+                    centerSelectViewModel = centerSelectViewModel,
+                    childClassSelectViewModel = childClassSelectViewModel,
+                    childSelectViewModel = childSelectViewModel
+                )// 지점 선택
+                ClassCard(
+                    modifier = Modifier.weight(1f),
+                    childClassSelectViewModel = childClassSelectViewModel,
+                    childSelectViewModel = childSelectViewModel
+                ) //반 선택
+                ChildrenCard(
+                    modifier = Modifier.weight(1f),
+                    childSelectViewModel = childSelectViewModel
+                ) //아이 선택
 
             }
         }

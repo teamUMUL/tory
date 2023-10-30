@@ -27,8 +27,7 @@ import java.lang.Exception
 class CenterSelectViewModel : ViewModel() {
     private val repo: CenterRepoImpl = CenterRepoImpl()
 
-
-    private val _allCenters: MutableStateFlow<List<CenterResponse>?> = MutableStateFlow(null)
+    private val _allCenters : MutableStateFlow<List<CenterResponse>> = MutableStateFlow(emptyList())
     val allCenters = _allCenters.asStateFlow()
 
     private val _centers: MutableStateFlow<List<CenterResponse>?> = MutableStateFlow(null)
@@ -36,7 +35,6 @@ class CenterSelectViewModel : ViewModel() {
 
     private val _selectedCenter = MutableStateFlow<CenterResponse?>(null)
     val selectedCenter = _selectedCenter.asStateFlow()
-
 
     fun setSelectedCenter(centerEntity: CenterResponse) {
 
@@ -46,21 +44,33 @@ class CenterSelectViewModel : ViewModel() {
     fun clearSelectedCenter() {
         _selectedCenter.value = null
     }
+
+
+    private val _tempSelectedCenter = MutableStateFlow<CenterResponse?>(null)
+    val tempSelectedCenter = _tempSelectedCenter.asStateFlow()
+
+    fun setTempSelectedCenter(centerEntity: CenterResponse) {
+
+        _tempSelectedCenter.value = centerEntity
+    }
+
+    fun clearTempSelectedCenter() {
+        _tempSelectedCenter.value = null
+    }
+
+
     init {
         getAllCenters()
     }
 
-    fun getAllCenters(){
-        viewModelScope.launch {
+    private fun getAllCenters(){
+        viewModelScope.launch{
             try {
                 val allCenters = repo.getAllCenters()
-                Log.e("가지고 온 센터", allCenters.toString())
                 _allCenters.value = allCenters
             } catch (e: Exception) {
                 Log.e("failed to get all centers", e.message.toString())
             }
         }
-
     }
-
 }
