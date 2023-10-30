@@ -51,6 +51,7 @@ fun ChainCard(
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
+        centerSelectViewModel.getAllCenters()
         CenterDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
@@ -133,6 +134,7 @@ fun ClassCard(
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
+        childClassSelectViewModel.getAllChildClasses()
         ClassDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
@@ -217,6 +219,7 @@ fun ChildrenCard(
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
+        childSelectViewModel.getAllChildInfos()
         ChildDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },

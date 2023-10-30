@@ -84,7 +84,7 @@ fun CenterDialog(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                     CenterControl(
-                        items = allCenters!!,
+                        items = allCenters,
                         selectedCenter = _selectedCenter,
                         centerSelectViewModel = centerSelectViewModel,
                         childClassSelectViewModel = childClassSelectViewModel,
