@@ -2,7 +2,6 @@ package inu.thebite.tory.model.lto
 
 import com.google.gson.annotations.SerializedName
 import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.model.student.StudentResponse
 
 data class LtoResponse(
 
@@ -34,8 +33,5 @@ data class LtoResponse(
     var delYN: String,
 
     @SerializedName("domain")
-    var domain: DomainResponse,
-
-    @SerializedName("student")
-    var student: StudentResponse
+    var domain: DomainResponse
 )
