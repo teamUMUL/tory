@@ -202,7 +202,8 @@ fun GameScreen(
                         dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel,
                         resetGameButtonIndex = {resetGameButtonIndex()},
-                        setIsCardSelectEnd = {setIsCardSelectEnd(it)}
+                        setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                        imageViewModel = imageViewModel
                     )
                 }
             }
