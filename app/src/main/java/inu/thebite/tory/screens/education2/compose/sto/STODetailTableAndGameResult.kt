@@ -48,6 +48,7 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.education.EducationEntity
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
@@ -56,29 +57,29 @@ import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 fun STODetailTableAndGameResult(
     selectedSTO: StoResponse,
     points: List<String>,
-    selectedSTODetailGameDataIndex: MutableIntState,
+//    selectedSTODetailGameDataIndex: MutableIntState,
     stoViewModel: STOViewModel,
     setSelectedSTOStatus : (String) -> Unit
 ){
 
-    var plusNum by remember {
-        mutableIntStateOf(0)
-    }
-
-    var pNum by remember {
-        mutableIntStateOf(0)
-    }
-
-    var minusNum by remember {
-        mutableIntStateOf(0)
-    }
+//    var plusNum by remember {
+//        mutableIntStateOf(0)
+//    }
+//
+//    var pNum by remember {
+//        mutableIntStateOf(0)
+//    }
+//
+//    var minusNum by remember {
+//        mutableIntStateOf(0)
+//    }
 
 
 
     LaunchedEffect(Unit){
-        plusNum = points.count { it == "+" }
-        pNum = points.count { it == "p" }
-        minusNum = points.count { it == "-" }
+//        plusNum = points.count { it == "+" }
+//        pNum = points.count { it == "p" }
+//        minusNum = points.count { it == "-" }
     }
     val STODetailTitles =
         listOf<String>(
@@ -181,7 +182,7 @@ fun STODetailTableAndGameResult(
                         ) {
                             Text(text = "정반응 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = plusNum.toString(),
+                                text = points.count { it == "+" }.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
                             Divider(
@@ -191,7 +192,7 @@ fun STODetailTableAndGameResult(
                             )
                             Text(text = "촉구 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = pNum.toString(),
+                                text = points.count { it == "P" }.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
 
@@ -202,7 +203,7 @@ fun STODetailTableAndGameResult(
                             )
                             Text(text = "미반응 :", modifier = Modifier.padding(horizontal = 5.dp))
                             Text(
-                                text = minusNum.toString(),
+                                text = points.count { it == "-" }.toString(),
                                 modifier = Modifier.padding(horizontal = 5.dp)
                             )
                         }
@@ -212,10 +213,10 @@ fun STODetailTableAndGameResult(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = "회차 :", modifier = Modifier.padding(horizontal = 5.dp))
-//                            Text(
-//                                text = selectedEducation.roundNum.toString(),
-//                                modifier = Modifier
-//                                    .padding(horizontal = 5.dp))
+                            Text(
+                                text = selectedSTO.round.toString(),
+                                modifier = Modifier
+                                    .padding(horizontal = 5.dp))
                         }
                     }
                     Divider(thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
@@ -246,31 +247,12 @@ fun STODetailTableAndGameResult(
                                             .width(65.dp)
                                             .fillMaxHeight(0.3f)
                                             .clickable {
-                                                selectedSTODetailGameDataIndex.intValue =
-                                                    (5 * verticalIndex) + horizonIndex
+//                                                selectedSTODetailGameDataIndex.intValue =
+//                                                    (5 * verticalIndex) + horizonIndex
                                             },
                                         shape = RoundedCornerShape(16.dp),
                                         colors = CardDefaults.cardColors(
                                             containerColor =
-                                            if(selectedSTODetailGameDataIndex.intValue == (5 * verticalIndex) + horizonIndex){
-                                                when (stoGameData) {
-                                                    "+" -> {
-                                                        Color.Green.copy(alpha = 0.85f)
-                                                    }
-
-                                                    "-" -> {
-                                                        Color.Red.copy(alpha = 0.85f)
-                                                    }
-
-                                                    "P" -> {
-                                                        Color.Yellow.copy(alpha = 0.85f)
-                                                    }
-
-                                                    else -> {
-                                                        Color.Gray.copy(alpha = 0.85f)
-                                                    }
-                                                }
-                                            } else {
                                                 when (stoGameData) {
                                                     "+" -> {
                                                         Color.Green.copy(alpha = 0.55f)
@@ -288,7 +270,6 @@ fun STODetailTableAndGameResult(
                                                         Color.Gray.copy(alpha = 0.55f)
                                                     }
                                                 }
-                                            }
 
                                         ),
                                     ) {
@@ -323,10 +304,9 @@ fun STODetailTableAndGameResult(
                                             setSelectedSTOStatus("진행중")
                                             //--------------
                                         }
-                                        selectedSTODetailGameDataIndex.intValue = 0
-                                        plusNum = 0
-                                        pNum = 0
-                                        minusNum = 0
+                                        stoViewModel.addRound(selectedSTO = selectedSTO)
+//                                        selectedSTODetailGameDataIndex.intValue = 0
+
 //
 //                                        selectedSTO. += (selectedSTO.gameResult.count { it == "-" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
 //                                        selectedSTO.plusRatio += (selectedSTO.gameResult.count { it == "+" }.toFloat()/selectedSTO.gameResult.size.toFloat())*100
@@ -389,25 +369,22 @@ fun STODetailTableAndGameResult(
                                     }
                                 ),
                                 onClick = {
-                                    if(selectedSTODetailGameDataIndex.intValue < selectedSTO.count){
+                                    if(points.size <= selectedSTO.count){
 
                                         when (buttonItem) {
                                             "+" -> {
                                                 stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "+", registrant = "테스트"))
-                                                plusNum += 1
                                             }
                                             "-" -> {
                                                 stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "-", registrant = "테스트"))
-                                                minusNum += 1
                                             }
                                             "P" -> {
                                                 stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "P", registrant = "테스트"))
-                                                pNum += 1
                                             }
                                             else -> {
+                                                stoViewModel.deletePoint(selectedSTO = selectedSTO)
                                             }
                                         }
-                                        selectedSTODetailGameDataIndex.intValue = selectedSTODetailGameDataIndex.intValue + 1
 
                                     }
 

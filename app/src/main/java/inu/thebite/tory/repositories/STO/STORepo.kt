@@ -29,5 +29,7 @@ interface STORepo {
 
     suspend fun addPoint(selectedSTO: StoResponse, addPointRequest: AddPointRequest)
 
-    suspend fun addRound()
+    suspend fun addRound(selectedSTO: StoResponse)
+
+    suspend fun deletePoint(selectedSTO: StoResponse)
 }

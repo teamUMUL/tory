@@ -59,7 +59,11 @@ class STORepoImpl: STORepo {
         stoRetrofit.addPoint(stoId = selectedSTO.id, addPointRequest = addPointRequest)
     }
 
-    override suspend fun addRound() {
-        TODO("Not yet implemented")
+    override suspend fun addRound(selectedSTO: StoResponse) {
+        stoRetrofit.updateStoRound(stoId = selectedSTO.id)
+    }
+
+    override suspend fun deletePoint(selectedSTO: StoResponse) {
+        stoRetrofit.deletePoint(stoId = selectedSTO.id)
     }
 }

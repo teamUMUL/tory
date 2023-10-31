@@ -475,11 +475,12 @@ fun STOItemColumn(
                                                 STODetailTableAndGameResult(
                                                     selectedSTO = sto,
                                                     points = points,
-                                                    selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
                                                     stoViewModel = stoViewModel,
                                                     setSelectedSTOStatus = {
                                                         selectedSTOStatus.value = it
+                                                        stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                         selectedSTO.status = it
+                                                        stoViewModel.setSelectedSTO(selectedSTO)
                                                     }
                                                 )
                                             }
