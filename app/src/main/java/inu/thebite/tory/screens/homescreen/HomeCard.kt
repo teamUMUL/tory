@@ -29,10 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import androidx.lifecycle.viewmodel.compose.viewModel
-import inu.thebite.tory.CenterSelectViewModel
-import inu.thebite.tory.ChildClassSelectViewModel
-import inu.thebite.tory.ChildSelectViewModel
+import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
+import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
+import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.homescreen.dialog.CenterDialog
 

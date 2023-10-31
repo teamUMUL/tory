@@ -1,6 +1,5 @@
 package inu.thebite.tory.screens.homescreen.dialog
 
-import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -21,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,11 +37,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.CenterControl
-import inu.thebite.tory.CenterSelectViewModel
+import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.ChildClassControl
-import inu.thebite.tory.ChildClassSelectViewModel
+import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.ChildInfoControl
-import inu.thebite.tory.ChildSelectViewModel
+import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.R
 
 @Composable

@@ -1,4 +1,4 @@
-package inu.thebite.tory
+package inu.thebite.tory.screens.homescreen.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,16 +6,11 @@ import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
-import inu.thebite.tory.repositories.ChildClass.ChildClassRepo
 import inu.thebite.tory.repositories.ChildClass.ChildClassRepoImpl
-import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepoImpl
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.java.KoinJavaComponent.inject
 import java.lang.Exception
 
 //반을 선택할 때 사용하는 ViewModel 선택과 조회만 가능함(삭제, 수정은 불가능)

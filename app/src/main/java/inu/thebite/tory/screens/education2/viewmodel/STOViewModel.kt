@@ -7,6 +7,7 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
@@ -112,6 +113,31 @@ class STOViewModel : ViewModel() {
                 _points.value = points
             }catch (e: Exception){
                 Log.e("failed to get Point List", e.message.toString())
+            }
+        }
+    }
+
+    fun addPoint(
+        selectedSTO: StoResponse,
+        addPointRequest: AddPointRequest
+    ){
+        viewModelScope.launch {
+            try {
+                repo.addPoint(selectedSTO, addPointRequest)
+            }catch (e: Exception){
+                Log.e("failed to add Point", e.message.toString())
+            }
+        }
+    }
+
+    fun addRound(
+        selectedSTO: StoResponse
+    ){
+        viewModelScope.launch {
+            try {
+
+            }catch (e: Exception){
+                Log.e("failed to add Round", e.message.toString())
             }
         }
     }

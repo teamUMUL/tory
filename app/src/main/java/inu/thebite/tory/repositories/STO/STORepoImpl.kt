@@ -2,6 +2,7 @@ package inu.thebite.tory.repositories.STO
 
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
@@ -52,5 +53,13 @@ class STORepoImpl: STORepo {
 
     override suspend fun getPointList(selectedSTO: StoResponse): List<String> {
         return stoRetrofit.getPointList(selectedSTO.id)
+    }
+
+    override suspend fun addPoint(selectedSTO: StoResponse, addPointRequest: AddPointRequest) {
+        stoRetrofit.addPoint(stoId = selectedSTO.id, addPointRequest = addPointRequest)
+    }
+
+    override suspend fun addRound() {
+        TODO("Not yet implemented")
     }
 }

@@ -330,6 +330,7 @@ fun STOItemColumn(
                                                     selectedSTO = sto,
                                                     points = points,
                                                     selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                                                    stoViewModel = stoViewModel,
                                                     setSelectedSTOStatus = {
                                                         selectedSTOStatus.value = it
                                                         selectedSTO.status = it

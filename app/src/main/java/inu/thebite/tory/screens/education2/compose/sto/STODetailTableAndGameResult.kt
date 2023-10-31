@@ -46,8 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.education.EducationEntity
+import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 @SuppressLint("SimpleDateFormat")
 @Composable
@@ -55,7 +57,7 @@ fun STODetailTableAndGameResult(
     selectedSTO: StoResponse,
     points: List<String>,
     selectedSTODetailGameDataIndex: MutableIntState,
-//    stoViewModel: STOViewModel,
+    stoViewModel: STOViewModel,
     setSelectedSTOStatus : (String) -> Unit
 ){
 
@@ -388,28 +390,24 @@ fun STODetailTableAndGameResult(
                                 ),
                                 onClick = {
                                     if(selectedSTODetailGameDataIndex.intValue < selectedSTO.count){
-//
-//                                        when (buttonItem) {
-//                                            "+" -> {
-//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "+"
-//                                                plusNum += 1
-//                                            }
-//                                            "-" -> {
-//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "-"
-//                                                minusNum += 1
-//                                            }
-//                                            "P" -> {
-//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "P"
-//                                                pNum += 1
-//                                            }
-//                                            else -> {
-//                                                changeList[selectedSTODetailGameDataIndex.intValue] = "n"
-//                                            }
-//                                        }
-//                                        selectedEducation.educationResult = changeList
-//                                        educationViewModel.updateSelectedEducationList(selectedEducation, changeList)
-//                                        educationViewModel.updateEducation(selectedEducation)
-//                                        selectedSTODetailGameDataIndex.intValue = selectedSTODetailGameDataIndex.intValue + 1
+
+                                        when (buttonItem) {
+                                            "+" -> {
+                                                stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "+", registrant = "테스트"))
+                                                plusNum += 1
+                                            }
+                                            "-" -> {
+                                                stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "-", registrant = "테스트"))
+                                                minusNum += 1
+                                            }
+                                            "P" -> {
+                                                stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "P", registrant = "테스트"))
+                                                pNum += 1
+                                            }
+                                            else -> {
+                                            }
+                                        }
+                                        selectedSTODetailGameDataIndex.intValue = selectedSTODetailGameDataIndex.intValue + 1
 
                                     }
 
