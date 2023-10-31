@@ -13,6 +13,7 @@ import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
+import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     val stoViewModel : STOViewModel = koinViewModel()
                     val imageViewModel : ImageViewModel = koinViewModel()
                     val dragAndDropViewModel: DragAndDropViewModel = koinViewModel()
-
+                    val gameViewModel : GameViewModel = koinViewModel()
 //                    val dragAndDropViewModel : DragAndDropViewModel = koinViewModel()
 //                    val gameViewModel : GameViewModel = koinViewModel()
                     MainCompose(
@@ -71,7 +72,8 @@ class MainActivity : ComponentActivity() {
                         educationViewModel = educationViewModel,
                         stoViewModel = stoViewModel,
                         imageViewModel = imageViewModel,
-                        dragAndDropViewModel = dragAndDropViewModel
+                        dragAndDropViewModel = dragAndDropViewModel,
+                        gameViewModel = gameViewModel
 //                        dragAndDropViewModel = dragAndDropViewModel,
 //                        gameViewModel = gameViewModel
                     )

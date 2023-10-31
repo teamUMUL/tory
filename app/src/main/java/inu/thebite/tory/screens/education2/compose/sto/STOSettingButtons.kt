@@ -38,7 +38,8 @@ fun STOSettingButtons(
     stoViewModel: STOViewModel,
     educationViewModel: EducationViewModel,
     selectedEducation : EducationEntity,
-    selectedSTO : StoResponse
+    selectedSTO : StoResponse,
+    gameStart : () -> Unit
 ){
     Row(
         modifier = modifier,
@@ -89,7 +90,7 @@ fun STOSettingButtons(
             border = BorderStroke(1.dp, Color.Black),
             shape = RoundedCornerShape(5.dp),
             onClick = {
-//                                            gameStart()
+                gameStart()
             },
             contentPadding = PaddingValues(6.dp)
         ){

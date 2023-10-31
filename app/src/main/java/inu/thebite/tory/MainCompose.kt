@@ -50,6 +50,7 @@ import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
+import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.homescreen.HomeScreen
 import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
@@ -90,6 +91,7 @@ fun MainCompose(
     stoViewModel : STOViewModel,
     imageViewModel : ImageViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
+    gameViewModel : GameViewModel
 
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
@@ -354,6 +356,7 @@ fun MainCompose(
                         stoViewModel = stoViewModel,
                         imageViewModel = imageViewModel,
                         dragAndDropViewModel =  dragAndDropViewModel,
+                        gameViewModel = gameViewModel
                         )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,

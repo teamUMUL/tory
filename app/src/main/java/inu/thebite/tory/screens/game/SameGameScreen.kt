@@ -18,6 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -133,18 +137,22 @@ fun SameGameScreen(
 
                                 }
                             }
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(gameItem.url)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(id = R.drawable.icon_edit),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(cardSize),
-                                alpha = if(isInBound) 0.5f else 1f
-                            )
+                            if(dragAndDropViewModel.isCorrect){
+                                Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
+                            } else {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(gameItem.url)
+                                        .crossfade(true)
+                                        .build(),
+                                    placeholder = painterResource(id = R.drawable.icon_edit),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(cardSize),
+                                    alpha = if(isInBound) 0.5f else 1f
+                                )
+                            }
 
 
 
@@ -225,19 +233,23 @@ fun SameGameScreen(
 
                                     }
                                 }
+                                if(dragInGameItem == gameItem){
+                                    Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
+                                } else {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(gameItem.url)
+                                            .crossfade(true)
+                                            .build(),
+                                        placeholder = painterResource(id = R.drawable.icon_edit),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(cardSize),
+                                        alpha = if(isInBound) 0.5f else 1f
+                                    )
+                                }
 
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(gameItem.url)
-                                        .crossfade(true)
-                                        .build(),
-                                    placeholder = painterResource(id = R.drawable.icon_edit),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(cardSize),
-                                    alpha = if(isInBound) 0.5f else 1f
-                                )
                             }
                         }
                     }
@@ -310,18 +322,22 @@ fun SameGameScreen(
                                     }
                                 }
 
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(gameItem.url)
-                                        .crossfade(true)
-                                        .build(),
-                                    placeholder = painterResource(id = R.drawable.icon_edit),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(cardSize),
-                                    alpha = if(isInBound) 0.5f else 1f
-                                )
+                                if(dragInGameItem == gameItem){
+                                    Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
+                                } else {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(gameItem.url)
+                                            .crossfade(true)
+                                            .build(),
+                                        placeholder = painterResource(id = R.drawable.icon_edit),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(cardSize),
+                                        alpha = if(isInBound) 0.5f else 1f
+                                    )
+                                }
 
 
 

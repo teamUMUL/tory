@@ -127,6 +127,7 @@ class STOViewModel : ViewModel() {
             }catch (e: Exception){
                 Log.e("failed to add Point", e.message.toString())
             }
+            getPointList(selectedSTO)
         }
     }
 

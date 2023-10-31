@@ -2,12 +2,7 @@ package inu.thebite.tory.screens.game
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
@@ -17,20 +12,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.R
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
+import inu.thebite.tory.screens.game.dialog.SuccessDialog
+import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -39,6 +31,7 @@ fun GameScreen(
     dragAndDropViewModel: DragAndDropViewModel,
     gameViewModel: GameViewModel,
     stoViewModel: STOViewModel,
+    imageViewModel : ImageViewModel,
     selectedSTO: StoResponse,
     selectedLTO: LtoResponse,
     timerStart : MutableState<Boolean>,
@@ -62,19 +55,22 @@ fun GameScreen(
     }
 
     if(successDialog){
-//        SuccessDialog(
-//            context = context,
-//            image1 = firstSuccessImage,
-//            image2 = secondSuccessImage,
-//            setSuccessDialog = {setSuccessDialog(it)},
-//            dragAndDropViewModel = dragAndDropViewModel,
-//            selectedLTO = selectedLTO,
-//            gameViewModel = gameViewModel
-//        )
+        SuccessDialog(
+            context = context,
+            image1 = firstSuccessImage,
+            image2 = secondSuccessImage,
+            setSuccessDialog = {setSuccessDialog(it)},
+            dragAndDropViewModel = dragAndDropViewModel,
+            selectedLTO = selectedLTO,
+            gameViewModel = gameViewModel,
+            imageViewModel = imageViewModel
+        )
     }
+    //성공 시 축하 다이얼로그가 종료 후 데이터 추가하는 경우
     LaunchedEffect(successDialog){
         if(selectedLTO.game == "같은 사진 매칭") {
             if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
+                stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
 //                selectedSTO?.let { selectedSTO ->
 //                    val changeList = selectedSTO.gameResult.toMutableList()
 //                    changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
@@ -94,6 +90,7 @@ fun GameScreen(
 //                }
             }
         }
+        //성공 시 축하 다이얼로그가 종료 후 데이터 추가하는 경우
         if(selectedLTO.game == "일반화 매칭"){
             if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
 //                //-,P 저장
@@ -117,7 +114,7 @@ fun GameScreen(
 
     }
 
-    val mainItem by dragAndDropViewModel.mainItem.collectAsState()
+    //바로 데이터를 추가하는 경우
     if(selectedLTO.game == "같은 사진 매칭") {
         LaunchedEffect(isCardSelectEnd){
             if(isCardSelectEnd){
@@ -148,9 +145,8 @@ fun GameScreen(
             }
         }
     }
-    val (beforeCircleImage , setBeforeCircleImage) = remember {
-        mutableIntStateOf(0)
-    }
+
+    //바로 데이터를 추가하는 경우
     if(selectedLTO.game == "일반화 매칭"){
         LaunchedEffect(isCardSelectEnd){
             if(isCardSelectEnd){

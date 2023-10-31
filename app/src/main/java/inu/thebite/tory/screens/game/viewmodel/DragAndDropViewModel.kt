@@ -120,17 +120,20 @@ class DragAndDropViewModel :ViewModel() {
     fun restartSameMode(context: Context){
         _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
 
-        // 아이템 별로 이름 별 이미지로 재설정(정답을 맞춘 경우에는 O로 이미지가 변하기 때문에 이미지를 되돌리기 위해서 필요)
         isCorrect = false
     }
 
-    fun restartGeneralMode(context: Context){
+    fun restartGeneralMode(context: Context, imagesByCategory : List<ImageResponse>){
         _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
-//        _secondMainItem.value = _secondMainItem.value.copy(
-//            image =
-//        )
 
+        resetMainItemsGeneralMode(imagesByCategory)
         isCorrect = false
+    }
+
+    fun resetMainItemsGeneralMode(imagesByCategory: List<ImageResponse>){
+        val shuffledImagesByCategory = imagesByCategory.shuffled(Random(System.currentTimeMillis()))
+        setFirstMainItem(shuffledImagesByCategory[0])
+        setSecondMainItem(shuffledImagesByCategory[1])
     }
 
     fun stopDragging(){

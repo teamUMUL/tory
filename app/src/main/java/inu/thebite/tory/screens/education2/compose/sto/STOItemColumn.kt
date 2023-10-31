@@ -1,5 +1,9 @@
 package inu.thebite.tory.screens.education2.compose.sto
 
+import android.content.Context
+import android.util.DisplayMetrics
+import android.view.WindowManager
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -12,9 +16,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,10 +41,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import co.yml.charts.common.extensions.isNotNull
+import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddGeneralGameItemDialog
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSameGameItemDialog
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
@@ -46,8 +58,12 @@ import inu.thebite.tory.screens.education2.compose.dialog.sto.UpdateSTODialog
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.GameScreen
+import inu.thebite.tory.screens.game.GameTopBar
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
+import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
+import kotlin.random.Random
 
 @Composable
 fun STOItemColumn(
@@ -56,6 +72,7 @@ fun STOItemColumn(
     stoViewModel: STOViewModel,
     imageViewModel: ImageViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
+    gameViewModel: GameViewModel,
     addSTODialog : Boolean,
     setAddSTODialog : (Boolean) -> Unit
 ){
@@ -82,6 +99,9 @@ fun STOItemColumn(
         mutableStateOf(false)
     }
     val (addGameItemDialog, setAddGameItemDialog) = remember {
+        mutableStateOf(false)
+    }
+    val (gameDialog, setGameDialog) = remember {
         mutableStateOf(false)
     }
 
@@ -139,6 +159,95 @@ fun STOItemColumn(
     } else {
         selectedSTO?.let { selectedSTO ->
             stoViewModel.updateSelectedSTO(selectedSTOId = selectedSTO.id)
+        }
+    }
+
+    val (gameButton1Index, setGameButton1Index) = rememberSaveable {
+        mutableStateOf(-1)
+    }
+    val (gameButton2Index, setGameButton2Index) = rememberSaveable {
+        mutableStateOf(-1)
+    }
+    val timerStart = remember { mutableStateOf(false) }
+    val timerRestart = remember { mutableStateOf(false) }
+
+    if(gameDialog){
+        val (isCardSelectEnd, setIsCardSelectEnd) = rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        Dialog(
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            ),
+            onDismissRequest = { setGameDialog(false) }
+        ){
+            val windowManager =
+                remember { context.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+
+            val metrics = DisplayMetrics().apply {
+                windowManager.defaultDisplay.getRealMetrics(this)
+            }
+            val (width, height) = with(LocalDensity.current) {
+                Pair(metrics.widthPixels.toDp(), metrics.heightPixels.toDp())
+            }
+            Column(
+                modifier = Modifier
+                    .requiredSize(width = width, height = height)
+            ){
+                selectedLTO?.let { selectedLTO ->
+                    selectedSTO?.let { selectedSTO ->
+                        points?.let {points ->
+                            GameTopBar(
+                                context = context,
+                                dragAndDropViewModel = dragAndDropViewModel,
+                                gameViewModel = gameViewModel,
+                                selectedSTO = selectedSTO,
+                                selectedLTO = selectedLTO,
+                                points = points,
+                                gameButton1Index = gameButton1Index,
+                                gameButton2Index = gameButton2Index,
+                                timerStart = timerStart,
+                                timerRestart = timerRestart,
+                                setGameDialog = {setGameDialog(it)},
+                                setGameButton1Index = {setGameButton1Index(it)},
+                                setGameButton2Index = {setGameButton2Index(it)},
+                                setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                                imageViewModel = imageViewModel
+                            )
+                        }
+                    }
+                }
+
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+
+                ) {
+                    selectedLTO?.let {selectedLTO ->
+                        selectedSTO?.let { selectedSTO ->
+                            GameScreen(
+                                context = context,
+                                dragAndDropViewModel = dragAndDropViewModel,
+                                gameViewModel = gameViewModel,
+                                stoViewModel = stoViewModel,
+                                imageViewModel = imageViewModel,
+                                selectedSTO = selectedSTO,
+                                selectedLTO = selectedLTO,
+                                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                                timerStart = timerStart,
+                                timerRestart = timerRestart,
+                                resetGameButtonIndex = {setGameButton1Index(-1)},
+                                setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
+                                setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                                isCardSelectEnd = isCardSelectEnd
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -300,7 +409,44 @@ fun STOItemColumn(
                                                     stoViewModel = stoViewModel,
                                                     selectedSTO = selectedSTO,
                                                     educationViewModel = educationViewModel,
-                                                    selectedEducation = selectedEducation
+                                                    selectedEducation = selectedEducation,
+                                                    gameStart = {
+                                                        selectedLTO?.let {selectedLTO ->
+                                                            when(selectedLTO.game){
+                                                                "같은 사진 매칭" -> {
+                                                                    //타겟 아이템 설정
+                                                                    dragAndDropViewModel.setTargetItems(
+                                                                        selectedSTO.imageList
+                                                                    )
+                                                                    //타겟 아이템 설정 확인
+                                                                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
+                                                                        //타겟 아이템 설정 후 랜덤 유무 확인
+                                                                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                                                                            //선택한 메인 아이템이 있을 경우 랜덤게임이 아니라고 설정
+                                                                            dragAndDropViewModel.isNotRandomGame()
+                                                                        } else {
+                                                                            //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
+                                                                            dragAndDropViewModel.setMainItem(
+                                                                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                                                            )
+                                                                            dragAndDropViewModel.isRandomGame()
+                                                                        }
+
+                                                                        setGameDialog(true)
+                                                                    } else {
+                                                                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                                                                    }
+                                                                }
+                                                                "일반화 매칭" -> {
+                                                                    //타겟 아이템 설정
+                                                                    dragAndDropViewModel.setTargetItems(
+                                                                        selectedSTO.imageList
+                                                                    )
+                                                                }
+                                                            }
+
+                                                        }
+                                                    }
                                                 )
                                             }
                                             Spacer(modifier = Modifier.width(10.dp))
@@ -362,4 +508,8 @@ fun STOItemColumn(
     }
 }
 
+
+fun getRandomIndex(itemSize: Int): Int {
+    return Random.nextInt(0, itemSize)
+}
 

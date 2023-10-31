@@ -15,6 +15,7 @@ import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
+import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @Composable
@@ -23,6 +24,7 @@ fun NewEducationScreen(
     ltoViewModel: LTOViewModel,
     stoViewModel : STOViewModel,
     imageViewModel : ImageViewModel,
+    gameViewModel: GameViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
     educationViewModel : EducationViewModel
 ){
@@ -41,7 +43,8 @@ fun NewEducationScreen(
             educationViewModel = educationViewModel,
             stoViewModel =  stoViewModel,
             imageViewModel = imageViewModel,
-            dragAndDropViewModel = dragAndDropViewModel
+            dragAndDropViewModel = dragAndDropViewModel,
+            gameViewModel = gameViewModel
         )
     }
 
