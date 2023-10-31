@@ -141,6 +141,7 @@ class STOViewModel : ViewModel() {
             }catch (e: Exception){
                 Log.e("failed to delete Point", e.message.toString())
             }
+            getPointList(selectedSTO)
         }
     }
 
@@ -153,6 +154,7 @@ class STOViewModel : ViewModel() {
             }catch (e: Exception){
                 Log.e("failed to add Round", e.message.toString())
             }
+            getPointList(selectedSTO)
         }
     }
 
