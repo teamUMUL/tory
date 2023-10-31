@@ -155,7 +155,20 @@ fun SameGameScreen(
                                             alpha = if(isInBound) 0.5f else 1f
                                         )
                                     }
-                                }
+                                } ?:
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(gameItem.url)
+                                        .crossfade(true)
+                                        .build(),
+                                    placeholder = painterResource(id = R.drawable.icon_edit),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(cardSize),
+                                    alpha = if(isInBound) 0.5f else 1f
+                                )
+
                             } else {
                                 AsyncImage(
                                     model = ImageRequest.Builder(LocalContext.current)
@@ -268,7 +281,20 @@ fun SameGameScreen(
                                                 alpha = if(isInBound) 0.5f else 1f
                                             )
                                         }
-                                    }
+                                    } ?:
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(gameItem.url)
+                                            .crossfade(true)
+                                            .build(),
+                                        placeholder = painterResource(id = R.drawable.icon_edit),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(cardSize),
+                                        alpha = if(isInBound) 0.5f else 1f
+                                    )
+
                                 } else {
                                     AsyncImage(
                                         model = ImageRequest.Builder(LocalContext.current)
@@ -374,7 +400,20 @@ fun SameGameScreen(
                                                 alpha = if(isInBound) 0.5f else 1f
                                             )
                                         }
-                                    }
+                                    } ?:
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(gameItem.url)
+                                            .crossfade(true)
+                                            .build(),
+                                        placeholder = painterResource(id = R.drawable.icon_edit),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(cardSize),
+                                        alpha = if(isInBound) 0.5f else 1f
+                                    )
+
                                 } else {
                                     AsyncImage(
                                         model = ImageRequest.Builder(LocalContext.current)
