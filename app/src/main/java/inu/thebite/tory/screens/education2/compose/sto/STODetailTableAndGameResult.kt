@@ -369,7 +369,7 @@ fun STODetailTableAndGameResult(
                                     }
                                 ),
                                 onClick = {
-                                    if(points.size <= selectedSTO.count){
+                                    if(points.size < selectedSTO.count){
 
                                         when (buttonItem) {
                                             "+" -> {
