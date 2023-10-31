@@ -122,6 +122,9 @@ interface RetrofitService {
     @PATCH("/stos/{stoId}/images")
     suspend fun updateImageList(@Path("stoId") stoId: Long, @Body updateImageListRequest: UpdateImageListRequest) : Response<ImageResponse>
 
+    @PATCH("/stos/{stoId}/round")
+    suspend fun updateStoRound(@Path("stoId") stoId: Long) : Response<StoResponse>
+
     @GET("/stos")
     suspend fun getStoList(): List<StoResponse>
 
@@ -136,8 +139,11 @@ interface RetrofitService {
     @POST("/stos/{stoId}/points")
     suspend fun addPoint(@Path("stoId") stoId: Long, @Body addPointRequest: AddPointRequest) : Response<Void>
 
-    @PATCH("/stos/{stoId}/points")
-    suspend fun updatePoint(@Path("stoId") stoId: Long, @Body updatePointRequest: UpdatePointRequest) : Response<List<PointResponse>>
+//    @PATCH("/stos/{stoId}/points")
+//    suspend fun updatePoint(@Path("stoId") stoId: Long, @Body updatePointRequest: UpdatePointRequest) : Response<List<PointResponse>>
+
+    @DELETE("stos/{stoId}/points")
+    suspend fun deletePoint(@Path("stoId") stoId: Long) : Response<Void>
 
     @GET("/stos/{stoId}/points")
     suspend fun getPointList(@Path("stoId") stoId: Long) : List<String>
