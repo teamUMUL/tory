@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -31,7 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import inu.thebite.tory.R
+import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.education2.compose.sto.getRandomIndex
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
@@ -45,8 +49,8 @@ import kotlin.math.roundToInt
 @Composable
 fun SuccessDialog(
     context: Context,
-    image1: Int,
-    image2: Int,
+    image1: ImageResponse,
+    image2: ImageResponse,
     selectedLTO: LtoResponse,
     setSuccessDialog : (Boolean) -> Unit,
     dragAndDropViewModel: DragAndDropViewModel,
@@ -190,8 +194,8 @@ fun SuccessDialog(
 @Composable
 fun SuccessAnimation(
     context: Context,
-    image1: Int,
-    image2: Int,
+    image1: ImageResponse,
+    image2: ImageResponse,
     selectedLTO: LtoResponse,
     setSuccessDialog : (Boolean) -> Unit,
     dragAndDropViewModel : DragAndDropViewModel,
@@ -248,15 +252,28 @@ fun SuccessAnimation(
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = image1), // 다른 사진 대체하는 곳
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(
+                    image1.url
+                )
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(id = R.drawable.icon_edit),
             contentDescription = null,
+//            contentScale = ContentScale.Crop,
             modifier = modifier2
         )
-
-        Image(
-            painter = painterResource(id = image2), // 다른 움직이는 사진 대체하는 곳
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(
+                    image2.url
+                )
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(id = R.drawable.icon_edit),
             contentDescription = null,
+//            contentScale = ContentScale.Crop,
             modifier = modifier1
         )
     }

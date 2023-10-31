@@ -15,9 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.compose.sto.getRandomIndex
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
@@ -36,6 +38,7 @@ fun GameScreen(
     selectedLTO: LtoResponse,
     timerStart : MutableState<Boolean>,
     timerRestart : MutableState<Boolean>,
+    points : List<String>,
     selectedSTODetailGameDataIndex : MutableIntState,
     setSelectedSTODetailGameDataIndex : (Int) -> Unit,
     resetGameButtonIndex : () -> Unit,
@@ -47,30 +50,43 @@ fun GameScreen(
     }
 
     val (firstSuccessImage, setFirstSuccessImage) = remember{
-        mutableIntStateOf(0)
+        mutableStateOf<ImageResponse?>(null)
     }
 
     val (secondSuccessImage, setSecondSuccessImage) = remember{
-        mutableIntStateOf(0)
+        mutableStateOf<ImageResponse?>(null)
     }
 
     if(successDialog){
-        SuccessDialog(
-            context = context,
-            image1 = firstSuccessImage,
-            image2 = secondSuccessImage,
-            setSuccessDialog = {setSuccessDialog(it)},
-            dragAndDropViewModel = dragAndDropViewModel,
-            selectedLTO = selectedLTO,
-            gameViewModel = gameViewModel,
-            imageViewModel = imageViewModel
-        )
+        firstSuccessImage?.let {firstSuccessImage ->
+            secondSuccessImage?.let { secondSuccessImage ->
+                SuccessDialog(
+                    context = context,
+                    image1 = firstSuccessImage,
+                    image2 = secondSuccessImage,
+                    setSuccessDialog = {setSuccessDialog(it)},
+                    dragAndDropViewModel = dragAndDropViewModel,
+                    selectedLTO = selectedLTO,
+                    gameViewModel = gameViewModel,
+                    imageViewModel = imageViewModel
+                )
+            }
+        }
     }
     //성공 시 축하 다이얼로그가 종료 후 데이터 추가하는 경우
     LaunchedEffect(successDialog){
         if(selectedLTO.game == "같은 사진 매칭") {
             if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
                 stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
+                if(dragAndDropViewModel.isRandomGame){
+                    val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                    imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                        dragAndDropViewModel.setMainItem(
+                            foundImage
+                        )
+                    }
+                }
+                gameViewModel.clearOneGameResult()
 //                selectedSTO?.let { selectedSTO ->
 //                    val changeList = selectedSTO.gameResult.toMutableList()
 //                    changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
@@ -118,6 +134,49 @@ fun GameScreen(
     if(selectedLTO.game == "같은 사진 매칭") {
         LaunchedEffect(isCardSelectEnd){
             if(isCardSelectEnd){
+                if(points.size < selectedSTO.count){
+                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
+                        setFirstSuccessImage(dragAndDropViewModel.mainItem.value!!)
+                        setSecondSuccessImage(dragAndDropViewModel.mainItem.value!!)
+                        setSuccessDialog(true)
+                    }
+                    if (gameViewModel.oneGameResult.value != "+"){
+                        stoViewModel.addPoint(
+                            selectedSTO,
+                            AddPointRequest(
+                                result = gameViewModel.oneGameResult.value!!,
+                                registrant = "테스트"
+                            )
+                        )
+                        if(dragAndDropViewModel.isRandomGame){
+                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                            imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                                dragAndDropViewModel.setMainItem(
+                                    foundImage
+                                )
+                            }
+                        }
+                    }
+                    gameViewModel.clearOneGameResult()
+                    //                    if (gameViewModel.oneGameResult.value != "+"){
+//                        val changeList = selectedSTO.gameResult.toMutableList()
+//                        changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
+//                        selectedSTO.gameResult = changeList
+//                        stoViewModel.updateSTO(selectedSTO)
+//                        gameViewModel.setGameResultList(changeList)
+//                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
+//                        if(dragAndDropViewModel.isRandomGame){
+//                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+//                            dragAndDropViewModel.setMainItem(
+//                                randomMainItem.copy(
+//                                    image = getResourceIdByName(randomMainItem.name, context)
+//                                )
+//                            )
+//                        }
+//                        gameViewModel.clearOneGameResult()
+//                    }
+//                }
+                }
 //                if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
 //                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
 //                        setFirstSuccessImage(dragAndDropViewModel.mainItem.value!!.image)

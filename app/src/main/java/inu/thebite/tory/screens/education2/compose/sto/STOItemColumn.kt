@@ -228,22 +228,25 @@ fun STOItemColumn(
                 ) {
                     selectedLTO?.let {selectedLTO ->
                         selectedSTO?.let { selectedSTO ->
-                            GameScreen(
-                                context = context,
-                                dragAndDropViewModel = dragAndDropViewModel,
-                                gameViewModel = gameViewModel,
-                                stoViewModel = stoViewModel,
-                                imageViewModel = imageViewModel,
-                                selectedSTO = selectedSTO,
-                                selectedLTO = selectedLTO,
-                                selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
-                                timerStart = timerStart,
-                                timerRestart = timerRestart,
-                                resetGameButtonIndex = {setGameButton1Index(-1)},
-                                setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
-                                setIsCardSelectEnd = {setIsCardSelectEnd(it)},
-                                isCardSelectEnd = isCardSelectEnd
-                            )
+                            points?.let {points ->
+                                GameScreen(
+                                    context = context,
+                                    dragAndDropViewModel = dragAndDropViewModel,
+                                    gameViewModel = gameViewModel,
+                                    stoViewModel = stoViewModel,
+                                    imageViewModel = imageViewModel,
+                                    selectedSTO = selectedSTO,
+                                    selectedLTO = selectedLTO,
+                                    points = points,
+                                    selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
+                                    timerStart = timerStart,
+                                    timerRestart = timerRestart,
+                                    resetGameButtonIndex = {setGameButton1Index(-1)},
+                                    setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
+                                    setIsCardSelectEnd = {setIsCardSelectEnd(it)},
+                                    isCardSelectEnd = isCardSelectEnd
+                                )
+                            }
                         }
                     }
                 }
