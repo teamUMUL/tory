@@ -156,8 +156,8 @@ fun GameScreen(
                                 )
                             }
                         }
+                        gameViewModel.clearOneGameResult()
                     }
-                    gameViewModel.clearOneGameResult()
                     //                    if (gameViewModel.oneGameResult.value != "+"){
 //                        val changeList = selectedSTO.gameResult.toMutableList()
 //                        changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
