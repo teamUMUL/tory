@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 data class UpdateImageListRequest(
 
     @SerializedName("imageList")
-    var imageList: List<ImageResponse>
+    var imageList: List<String>
 )

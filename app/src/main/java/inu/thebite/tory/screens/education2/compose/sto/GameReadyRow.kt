@@ -31,6 +31,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
+import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 
 @Composable
@@ -39,7 +40,8 @@ fun GameReadyRow(
     mainItem : ImageResponse?,
     selectedSTO : StoResponse,
     setAddGameItem : (Boolean) -> Unit,
-    dragAndDropViewModel: DragAndDropViewModel
+    dragAndDropViewModel: DragAndDropViewModel,
+    imageViewModel: ImageViewModel
 ){
     Row(
         modifier = Modifier
@@ -76,7 +78,7 @@ fun GameReadyRow(
 
             LazyRow(
             ) {
-                items(selectedSTO.imageList) { selectedImage ->
+                items(imageViewModel.findImagesByNames(selectedSTO.imageList)) { selectedImage ->
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(selectedImage.url)

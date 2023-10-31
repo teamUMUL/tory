@@ -59,10 +59,10 @@ fun AddSameGameItemDialog(
         mutableStateOf(selectedSTO.imageList.toMutableList())
     }
     val selectedIdxMap = remember {
-        mutableStateMapOf<String, ImageResponse?>()
+        mutableStateMapOf<String, String?>()
     }
     for (image in selectedSTO.imageList) {
-        selectedIdxMap[image.category.name] = image
+        selectedIdxMap[image.substringBefore("_")] = image
     }
     Dialog(
         properties = DialogProperties(
@@ -135,7 +135,7 @@ fun AddSameGameItemDialog(
                                         .fillMaxHeight()
                                 ) {
                                     items(imageViewModel.getImagesByCategory(category)){ image ->
-                                        val isSelected = image == selectedIdxMap.getOrDefault(category, null)
+                                        val isSelected = image.name == selectedIdxMap.getOrDefault(category, null)
                                         AsyncImage(
                                             model = ImageRequest.Builder(LocalContext.current)
                                                 .data(image.url)
@@ -149,16 +149,16 @@ fun AddSameGameItemDialog(
                                                 .padding(10.dp)
                                                 .clickable {
                                                     if (isSelected) {
-                                                        selectedGameItems.remove(image)
+                                                        selectedGameItems.remove(image.name)
                                                         selectedIdxMap[category] = null
                                                     } else {
                                                         selectedGameItems.removeAll {
-                                                            it.category.name.startsWith(
+                                                            it.substringBefore("_").startsWith(
                                                                 category
                                                             )
                                                         }
-                                                        selectedGameItems.add(image)
-                                                        selectedIdxMap[category] = image
+                                                        selectedGameItems.add(image.name)
+                                                        selectedIdxMap[category] = image.name
                                                     }
                                                 },
                                             alpha =  if (isSelected) 1.0f else 0.5f

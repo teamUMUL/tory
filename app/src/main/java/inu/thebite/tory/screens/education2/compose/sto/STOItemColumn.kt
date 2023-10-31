@@ -416,7 +416,7 @@ fun STOItemColumn(
                                                                 "같은 사진 매칭" -> {
                                                                     //타겟 아이템 설정
                                                                     dragAndDropViewModel.setTargetItems(
-                                                                        selectedSTO.imageList
+                                                                        imageViewModel.findImagesByNames(selectedSTO.imageList)
                                                                     )
                                                                     //타겟 아이템 설정 확인
                                                                     if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
@@ -440,7 +440,7 @@ fun STOItemColumn(
                                                                 "일반화 매칭" -> {
                                                                     //타겟 아이템 설정
                                                                     dragAndDropViewModel.setTargetItems(
-                                                                        selectedSTO.imageList
+                                                                        imageViewModel.findImagesByNames(selectedSTO.imageList)
                                                                     )
                                                                 }
                                                             }
@@ -490,7 +490,8 @@ fun STOItemColumn(
                                                     mainItem = mainItem,
                                                     selectedSTO = selectedSTO,
                                                     setAddGameItem = {setAddGameItemDialog(it)},
-                                                    dragAndDropViewModel = dragAndDropViewModel
+                                                    dragAndDropViewModel = dragAndDropViewModel,
+                                                    imageViewModel = imageViewModel
                                                 )
                                             }
                                         }

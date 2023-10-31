@@ -60,7 +60,7 @@ data class StoResponse(
     var round: Int,
 
     @SerializedName("imageList")
-    var imageList: List<ImageResponse>,
+    var imageList: List<String>,
 
     @SerializedName("pointList")
     var pointList: List<PointResponse>,

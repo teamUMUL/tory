@@ -65,7 +65,7 @@ fun AddGeneralGameItemDialog(
         mutableStateMapOf<String, Boolean>()
     }
     for (selectedGameItem in selectedSTO.imageList) {
-        val parts = selectedGameItem.name.split("_")
+        val parts = selectedGameItem.split("_")
         if (parts.size == 2) {
             val category = parts[0]
             selectedIdxMap[category] = true
@@ -157,10 +157,10 @@ fun AddGeneralGameItemDialog(
                                                 .padding(10.dp)
                                                 .clickable {
                                                     if (isSelected) {
-                                                        selectedGameItems.removeIf { it.category.name == category }
+                                                        selectedGameItems.removeIf { it.substringBefore("_") == category }
                                                         selectedIdxMap[category] = false
                                                     } else {
-                                                        selectedGameItems.add(image)
+                                                        selectedGameItems.add(image.name)
                                                         selectedIdxMap[category] = true
                                                     }
                                                 },
@@ -181,12 +181,10 @@ fun AddGeneralGameItemDialog(
                         .fillMaxHeight()
                         .padding(10.dp),
                     onClick = {
-                        val generalModeImageList = mutableListOf<ImageResponse>()
+                        val generalModeImageList = mutableListOf<String>()
                         selectedGameItems.forEach { selectedGameItem ->
-                            val generalModeImage = imageViewModel.findImageByName(selectedGameItem.name.substringBefore("_")+"_1")
-                            generalModeImage?.let { generalModeImage ->
-                                generalModeImageList.add(generalModeImage)
-                            }
+                            val generalModeImageName = selectedGameItem.substringBefore("_")+"_1"
+                            generalModeImageList.add(generalModeImageName)
                         }
                         stoViewModel.updateSTOImageList(selectedSTO, generalModeImageList)
                         setAddGameItem(false)

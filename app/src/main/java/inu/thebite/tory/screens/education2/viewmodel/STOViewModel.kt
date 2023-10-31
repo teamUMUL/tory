@@ -180,7 +180,7 @@ class STOViewModel : ViewModel() {
 
     fun updateSTOImageList(
         selectedSTO: StoResponse,
-        updateImageList : List<ImageResponse>
+        updateImageList : List<String>
     ){
         viewModelScope.launch {
             try {

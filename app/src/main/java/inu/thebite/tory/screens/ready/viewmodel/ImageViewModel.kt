@@ -66,4 +66,14 @@ class ImageViewModel : ViewModel() {
         return returnImage
     }
 
+    fun findImagesByNames(imageNames : List<String>) : List<ImageResponse>{
+        val returnImages = mutableListOf<ImageResponse>()
+        for (imageName in imageNames){
+            findImageByName(imageName)?.let {
+                returnImages.add(it)
+            }
+        }
+        return returnImages
+    }
+
 }
