@@ -141,6 +141,19 @@ fun SameGameScreen(
                                 dragInGameItem?.let { dragInGameItem ->
                                     if(dragInGameItem.name == gameItem.name){
                                         Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
+                                    }else{
+                                        AsyncImage(
+                                            model = ImageRequest.Builder(LocalContext.current)
+                                                .data(gameItem.url)
+                                                .crossfade(true)
+                                                .build(),
+                                            placeholder = painterResource(id = R.drawable.icon_edit),
+                                            contentDescription = null,
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier
+                                                .size(cardSize),
+                                            alpha = if(isInBound) 0.5f else 1f
+                                        )
                                     }
                                 }
                             } else {
@@ -241,6 +254,19 @@ fun SameGameScreen(
                                     dragInGameItem?.let { dragInGameItem ->
                                         if(dragInGameItem.name == gameItem.name){
                                             Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
+                                        }else{
+                                            AsyncImage(
+                                                model = ImageRequest.Builder(LocalContext.current)
+                                                    .data(gameItem.url)
+                                                    .crossfade(true)
+                                                    .build(),
+                                                placeholder = painterResource(id = R.drawable.icon_edit),
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .size(cardSize),
+                                                alpha = if(isInBound) 0.5f else 1f
+                                            )
                                         }
                                     }
                                 } else {
@@ -334,6 +360,19 @@ fun SameGameScreen(
                                     dragInGameItem?.let { dragInGameItem ->
                                         if(dragInGameItem.name == gameItem.name){
                                             Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
+                                        }else{
+                                            AsyncImage(
+                                                model = ImageRequest.Builder(LocalContext.current)
+                                                    .data(gameItem.url)
+                                                    .crossfade(true)
+                                                    .build(),
+                                                placeholder = painterResource(id = R.drawable.icon_edit),
+                                                contentDescription = null,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier
+                                                    .size(cardSize),
+                                                alpha = if(isInBound) 0.5f else 1f
+                                            )
                                         }
                                     }
                                 } else {
