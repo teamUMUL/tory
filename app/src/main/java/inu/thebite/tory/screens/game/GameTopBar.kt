@@ -260,7 +260,7 @@ fun GameTopBar(
                         onClick = {
                             if(item == "M"){
                                 if(selectedLTO.game == "같은 사진 매칭"){
-                                    dragAndDropViewModel.restartSameMode(context = context)
+                                    dragAndDropViewModel.restartSameMode(context = context, imageViewModel.allImages.value?: emptyList())
                                 }
                                 else{
                                     if(dragAndDropViewModel.isRandomGame){
