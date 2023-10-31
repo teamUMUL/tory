@@ -37,6 +37,7 @@ import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
+import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -50,6 +51,7 @@ fun SameGameScreen(
     isCardSelectEnd : Boolean,
     dragAndDropViewModel: DragAndDropViewModel,
     gameViewModel : GameViewModel,
+    imageViewModel: ImageViewModel,
     resetGameButtonIndex : () -> Unit,
     setIsCardSelectEnd : (Boolean) -> Unit,
 ){
@@ -88,12 +90,12 @@ fun SameGameScreen(
                                 LaunchedEffect(key1 = dragInGameItem){
                                     //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                     if(dragInGameItem.name == gameItem.name){
-//                                        dragAndDropViewModel.updateGameItem(
-//                                            GameItem(
-//                                                dragInGameItem.name,
-//                                                R.drawable.ellipse
-//                                            )
-//                                        )
+                                        dragAndDropViewModel.updateGameItem(
+                                            dragInGameItem.copy(
+                                                url = imageViewModel.findImageByName(imageName = "Correct")?.url
+                                                    ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                            )
+                                        )
                                         dragAndDropViewModel.isCorrect()
                                         when (oneGameResult) {
                                             "P" -> {
@@ -137,56 +139,19 @@ fun SameGameScreen(
 
                                 }
                             }
-                            if(dragAndDropViewModel.isCorrect ){
-                                dragInGameItem?.let { dragInGameItem ->
-                                    if(dragInGameItem.name == gameItem.name){
-                                        Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
-                                    }else{
-                                        AsyncImage(
-                                            model = ImageRequest.Builder(LocalContext.current)
-                                                .data(gameItem.url)
-                                                .crossfade(true)
-                                                .build(),
-                                            placeholder = painterResource(id = R.drawable.icon_edit),
-                                            contentDescription = null,
-                                            contentScale = ContentScale.Crop,
-                                            modifier = Modifier
-                                                .size(cardSize),
-                                            alpha = if(isInBound) 0.5f else 1f
-                                        )
-                                    }
-                                } ?:
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(gameItem.url)
-                                        .crossfade(true)
-                                        .build(),
-                                    placeholder = painterResource(id = R.drawable.icon_edit),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(cardSize),
-                                    alpha = if(isInBound) 0.5f else 1f
-                                )
 
-                            } else {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(gameItem.url)
-                                        .crossfade(true)
-                                        .build(),
-                                    placeholder = painterResource(id = R.drawable.icon_edit),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(cardSize),
-                                    alpha = if(isInBound) 0.5f else 1f
-                                )
-                            }
-
-
-
-
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(gameItem.url)
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(id = R.drawable.icon_edit),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(cardSize),
+                                alpha = if(isInBound) 0.5f else 1f
+                            )
                         }
                     }
                 }
@@ -215,12 +180,12 @@ fun SameGameScreen(
                                     LaunchedEffect(key1 = dragInGameItem){
                                         //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                         if(dragInGameItem.name == gameItem.name){
-//                                            dragAndDropViewModel.updateGameItem(
-//                                                GameItem(
-//                                                    dragInGameItem.name,
-//                                                    R.drawable.ellipse
-//                                                )
-//                                            )
+                                            dragAndDropViewModel.updateGameItem(
+                                                dragInGameItem.copy(
+                                                    url = imageViewModel.findImageByName(imageName = "Correct")?.url
+                                                        ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                )
+                                            )
                                             dragAndDropViewModel.isCorrect()
                                             when (oneGameResult) {
                                                 "P" -> {
@@ -261,54 +226,22 @@ fun SameGameScreen(
 
                                         }
 
+
                                     }
                                 }
-                                if(dragAndDropViewModel.isCorrect ){
-                                    dragInGameItem?.let { dragInGameItem ->
-                                        if(dragInGameItem.name == gameItem.name){
-                                            Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
-                                        }else{
-                                            AsyncImage(
-                                                model = ImageRequest.Builder(LocalContext.current)
-                                                    .data(gameItem.url)
-                                                    .crossfade(true)
-                                                    .build(),
-                                                placeholder = painterResource(id = R.drawable.icon_edit),
-                                                contentDescription = null,
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier
-                                                    .size(cardSize),
-                                                alpha = if(isInBound) 0.5f else 1f
-                                            )
-                                        }
-                                    } ?:
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(gameItem.url)
-                                            .crossfade(true)
-                                            .build(),
-                                        placeholder = painterResource(id = R.drawable.icon_edit),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(cardSize),
-                                        alpha = if(isInBound) 0.5f else 1f
-                                    )
 
-                                } else {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(gameItem.url)
-                                            .crossfade(true)
-                                            .build(),
-                                        placeholder = painterResource(id = R.drawable.icon_edit),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(cardSize),
-                                        alpha = if(isInBound) 0.5f else 1f
-                                    )
-                                }
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(gameItem.url)
+                                        .crossfade(true)
+                                        .build(),
+                                    placeholder = painterResource(id = R.drawable.icon_edit),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(cardSize),
+                                    alpha = if(isInBound) 0.5f else 1f
+                                )
 
                             }
                         }
@@ -327,16 +260,15 @@ fun SameGameScreen(
                                     .size(cardSize)
                             ) { isInBound, dragInGameItem ->
                                 if(dragInGameItem != null){
-                                    Log.e("dragInGameItem", dragInGameItem.name)
                                     LaunchedEffect(key1 = dragInGameItem){
                                         //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                         if(dragInGameItem.name == gameItem.name){
-//                                            dragAndDropViewModel.updateGameItem(
-//                                                GameItem(
-//                                                    dragInGameItem.name,
-//                                                    R.drawable.ellipse
-//                                                )
-//                                            )
+                                            dragAndDropViewModel.updateGameItem(
+                                                dragInGameItem.copy(
+                                                    url = imageViewModel.findImageByName(imageName = "Correct")?.url
+                                                        ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                )
+                                            )
                                             dragAndDropViewModel.isCorrect()
                                             when (oneGameResult) {
                                                 "P" -> {
@@ -378,56 +310,21 @@ fun SameGameScreen(
                                         }
 
 
-
                                     }
                                 }
 
-                                if(dragAndDropViewModel.isCorrect ){
-                                    dragInGameItem?.let { dragInGameItem ->
-                                        if(dragInGameItem.name == gameItem.name){
-                                            Image(painter = painterResource(id = R.drawable.ellipse), contentDescription = null)
-                                        }else{
-                                            AsyncImage(
-                                                model = ImageRequest.Builder(LocalContext.current)
-                                                    .data(gameItem.url)
-                                                    .crossfade(true)
-                                                    .build(),
-                                                placeholder = painterResource(id = R.drawable.icon_edit),
-                                                contentDescription = null,
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier
-                                                    .size(cardSize),
-                                                alpha = if(isInBound) 0.5f else 1f
-                                            )
-                                        }
-                                    } ?:
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(gameItem.url)
-                                            .crossfade(true)
-                                            .build(),
-                                        placeholder = painterResource(id = R.drawable.icon_edit),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(cardSize),
-                                        alpha = if(isInBound) 0.5f else 1f
-                                    )
-
-                                } else {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(gameItem.url)
-                                            .crossfade(true)
-                                            .build(),
-                                        placeholder = painterResource(id = R.drawable.icon_edit),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(cardSize),
-                                        alpha = if(isInBound) 0.5f else 1f
-                                    )
-                                }
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(gameItem.url)
+                                        .crossfade(true)
+                                        .build(),
+                                    placeholder = painterResource(id = R.drawable.icon_edit),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(cardSize),
+                                    alpha = if(isInBound) 0.5f else 1f
+                                )
 
 
 

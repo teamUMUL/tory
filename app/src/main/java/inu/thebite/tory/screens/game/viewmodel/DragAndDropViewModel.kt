@@ -117,9 +117,14 @@ class DragAndDropViewModel :ViewModel() {
 
     }
 
-    fun restartSameMode(context: Context){
+    fun restartSameMode(context: Context, allImageList : List<ImageResponse>){
         _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
 
+        _targetItems.value = targetItems.value!!.map { gameItem ->
+            gameItem.copy(
+                url = allImageList.find { it.name == gameItem.name }?.url ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+            )
+        }
         isCorrect = false
     }
 
@@ -152,7 +157,6 @@ class DragAndDropViewModel :ViewModel() {
         Log.e("정답 유무", updatedItem.name)
         val updatedList = _targetItems.value!!.map { oldItem ->
             if (oldItem.name == updatedItem.name) {
-                // Replace the old item with the updated item based on some identifier (e.g., id)
                 updatedItem
             } else {
                 oldItem
