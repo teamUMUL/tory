@@ -3,6 +3,7 @@ package inu.thebite.tory.repositories.STO
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
+import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
@@ -64,7 +65,7 @@ class STORepoImpl: STORepo {
         stoRetrofit.updateStoRound(stoId = selectedSTO.id, updateStoRoundRequest = updateStoRoundRequest)
     }
 
-    override suspend fun deletePoint(selectedSTO: StoResponse) {
-        stoRetrofit.deletePoint(stoId = selectedSTO.id)
+    override suspend fun deletePoint(selectedSTO: StoResponse, deletePointRequest: DeletePointRequest) {
+        stoRetrofit.deletePoint(stoId = selectedSTO.id, deletePointRequest = deletePointRequest)
     }
 }

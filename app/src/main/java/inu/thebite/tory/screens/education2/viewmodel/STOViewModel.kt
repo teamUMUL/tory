@@ -8,6 +8,7 @@ import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
+import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
@@ -145,10 +146,11 @@ class STOViewModel : ViewModel() {
 
     fun deletePoint(
         selectedSTO: StoResponse,
+        deletePointRequest: DeletePointRequest
     ){
         viewModelScope.launch {
             try {
-                repo.deletePoint(selectedSTO)
+                repo.deletePoint(selectedSTO, deletePointRequest)
             }catch (e: Exception){
                 Log.e("failed to delete Point", e.message.toString())
             }

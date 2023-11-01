@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.database.education.EducationEntity
 import inu.thebite.tory.model.point.AddPointRequest
+import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
@@ -334,7 +335,7 @@ fun STODetailTableAndGameResult(
                                 ),
                                 onClick = {
                                     if(buttonItem == "삭제"){
-                                        stoViewModel.deletePoint(selectedSTO = selectedSTO)
+                                        stoViewModel.deletePoint(selectedSTO = selectedSTO, deletePointRequest = DeletePointRequest(registrant = "테스트"))
                                     }
                                     if(points.size < selectedSTO.count){
                                         when (buttonItem) {
