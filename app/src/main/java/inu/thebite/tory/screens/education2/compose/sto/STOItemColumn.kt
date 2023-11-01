@@ -382,10 +382,8 @@ fun STOItemColumn(
                                                 selectedSTO = selectedSTO,
                                                 setSelectedSTOStatus = {
                                                     if(it == sto.status){
-//                                                        selectedSTOStatus.value = ""
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, "준비중")
                                                     } else {
-//                                                        selectedSTOStatus.value = it
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                     }
                                                     stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
@@ -478,12 +476,12 @@ fun STOItemColumn(
                                                     )
                                             ) {
                                                 STODetailTableAndGameResult(
-                                                    selectedSTO = sto,
+                                                    selectedSTO = selectedSTO,
                                                     points = points,
                                                     stoViewModel = stoViewModel,
                                                     setSelectedSTOStatus = {
-                                                        stoViewModel.setSelectedSTOStatus(sto, it)
-                                                        stoViewModel.getSTOsByLTO(selectedLTO = sto.lto)
+                                                        stoViewModel.setSelectedSTOStatus(selectedSTO, it)
+                                                        stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
                                                         stoViewModel.addRound(selectedSTO = selectedSTO, registrant = "테스트")
                                                     }
                                                 )
