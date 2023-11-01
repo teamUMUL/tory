@@ -482,7 +482,6 @@ fun STOItemColumn(
                                                     setSelectedSTOStatus = {
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                         stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
-                                                        stoViewModel.addRound(selectedSTO = selectedSTO, registrant = "테스트")
                                                     }
                                                 )
                                                 if(selectedLTO.game != "교육 선택 안함"){

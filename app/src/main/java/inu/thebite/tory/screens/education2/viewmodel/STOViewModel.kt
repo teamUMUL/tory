@@ -160,12 +160,16 @@ class STOViewModel : ViewModel() {
 
     fun addRound(
         selectedSTO: StoResponse,
-        registrant : String
+        registrant : String,
+        plusRate : Float,
+        minusRate : Float
     ){
         viewModelScope.launch {
             try {
                 repo.addRound(selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
-                    registrant = registrant
+                    registrant = registrant,
+                    plusRate = plusRate,
+                    minusRate = minusRate
                 ))
             }catch (e: Exception){
                 Log.e("failed to add Round", e.message.toString())

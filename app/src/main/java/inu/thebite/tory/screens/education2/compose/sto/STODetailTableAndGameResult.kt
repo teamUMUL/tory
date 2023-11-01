@@ -269,6 +269,14 @@ fun STODetailTableAndGameResult(
                                             setSelectedSTOStatus("진행중")
                                             //--------------
                                         }
+                                        val plusRate = (points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100
+                                        val minusRate = (points.count { it == "-" }.toFloat()/selectedSTO.count.toFloat())*100
+                                        stoViewModel.addRound(
+                                            selectedSTO = selectedSTO,
+                                            registrant = "테스트",
+                                            plusRate = plusRate,
+                                            minusRate = minusRate
+                                        )
 
 //                                        selectedSTODetailGameDataIndex.intValue = 0
 
