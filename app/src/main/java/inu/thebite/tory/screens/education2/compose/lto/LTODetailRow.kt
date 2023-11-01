@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -21,11 +25,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.R
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 
@@ -81,6 +87,27 @@ fun LTODetailRow(
                 }
             )
             Spacer(modifier = Modifier.width(10.dp))
+            OutlinedButton(
+                modifier = Modifier
+                    .size(40.dp),
+                border = BorderStroke(1.dp, Color.Black),
+                shape = RoundedCornerShape(5.dp),
+                onClick = {
+                    if(ltoViewModel.ltoGraphList.value.isNullOrEmpty()){
+                        ltoViewModel.getLTOGraph(selectedLTO)
+                    } else {
+                        ltoViewModel.clearLTOGraphList()
+                    }
+                },
+                contentPadding = PaddingValues(2.dp)
+            ){
+                Icon(
+                    modifier = Modifier
+                        .size(35.dp),
+                    painter = painterResource(id = R.drawable.icon_chart),
+                    contentDescription = null,
+                    tint = Color.Black)
+            }
             OutlinedButton(
                 modifier = Modifier
                     .weight(1.5f)

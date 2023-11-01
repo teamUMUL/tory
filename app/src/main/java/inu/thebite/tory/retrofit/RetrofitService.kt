@@ -106,7 +106,7 @@ interface RetrofitService {
     suspend fun getLtoList(): List<LtoResponse>
 
     @GET("/ltos/{ltoId}/graphs")
-    suspend fun getLtoGraph() : List<LtoGraphResponse>
+    suspend fun getLtoGraph(@Path("ltoId") ltoId: Long) : List<LtoGraphResponse>
 
     @DELETE("/ltos/{ltoId}")
     suspend fun deleteLto(@Path("ltoId") ltoId: Long): Response<Void>

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
@@ -27,6 +28,8 @@ class LTOViewModel: ViewModel() {
     private val _selectedLTO = MutableStateFlow<LtoResponse?>(null)
     val selectedLTO = _selectedLTO.asStateFlow()
 
+    private val _ltoGraphList: MutableStateFlow<List<LtoGraphResponse>?> = MutableStateFlow(null)
+    val ltoGraphList = _ltoGraphList.asStateFlow()
 
     fun setSelectedLTO(ltoEntity: LtoResponse) {
 
@@ -51,6 +54,10 @@ class LTOViewModel: ViewModel() {
 
     fun clearSelectedCenter() {
         _selectedLTO.value = null
+    }
+
+    fun clearLTOGraphList(){
+        _ltoGraphList.value = null
     }
     init {
         getAllLTOs()
@@ -164,6 +171,19 @@ class LTOViewModel: ViewModel() {
                 setSelectedLTO(
                     foundLTO
                 )
+            }
+        }
+    }
+
+    fun getLTOGraph(
+        selectedLTO: LtoResponse
+    ){
+        viewModelScope.launch {
+            try {
+                val allLTOGraphList = repo.getLTOGraph(selectedLTO)
+                _ltoGraphList.value = allLTOGraphList
+            } catch (e: Exception) {
+                Log.e("failed to get LTO Graph List", e.message.toString())
             }
         }
     }

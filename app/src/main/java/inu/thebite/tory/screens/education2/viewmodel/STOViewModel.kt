@@ -172,7 +172,14 @@ class STOViewModel : ViewModel() {
         }
     }
 
-
+    fun findSTOById(
+        selectedSTOId: Long
+    ) : StoResponse?{
+        val foundSTO = allSTOs.value!!.find {
+            it.id == selectedSTOId
+        }
+        return foundSTO
+    }
 
     fun updateSTO(
         selectedSTO: StoResponse,

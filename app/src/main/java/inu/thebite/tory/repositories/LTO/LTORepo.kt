@@ -1,6 +1,7 @@
 package inu.thebite.tory.repositories.LTO
 
 import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
@@ -18,4 +19,5 @@ interface LTORepo {
 
     suspend fun deleteLTO(selectedLTO: LtoResponse)
 
+    suspend fun getLTOGraph(selectedLTO : LtoResponse) : List<LtoGraphResponse>
 }
