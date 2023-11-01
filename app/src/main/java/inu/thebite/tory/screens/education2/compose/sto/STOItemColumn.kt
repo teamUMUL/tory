@@ -410,7 +410,7 @@ fun STOItemColumn(
                                                                     )
                                                                     //타겟 아이템 설정 확인
                                                                     if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
-                                                                        //타겟 아이템 설정 후 랜덤 유무 확인
+                                                                        //타겟 아이템 설정 후 랜덤 유무 설정
                                                                         if(dragAndDropViewModel.mainItem.value.isNotNull()){
                                                                             //선택한 메인 아이템이 있을 경우 랜덤게임이 아니라고 설정
                                                                             dragAndDropViewModel.isNotRandomGame()
@@ -432,6 +432,20 @@ fun STOItemColumn(
                                                                     dragAndDropViewModel.setTargetItems(
                                                                         imageViewModel.findImagesByNames(selectedSTO.imageList)
                                                                     )
+                                                                    //타겟 아이템 설정 확인
+                                                                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
+                                                                        //타겟 아이템 설정 후 랜덤 유무 확인
+                                                                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                                                                            dragAndDropViewModel.isNotRandomGame()
+                                                                        } else {
+                                                                            //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
+                                                                            dragAndDropViewModel.setMainItem(
+                                                                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                                                            )
+                                                                            dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                                                            dragAndDropViewModel.isRandomGame()
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
 
