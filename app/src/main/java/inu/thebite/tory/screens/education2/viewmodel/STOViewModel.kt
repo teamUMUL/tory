@@ -118,6 +118,10 @@ class STOViewModel : ViewModel() {
         }
     }
 
+    fun clearPointList(){
+        _points.value = null
+    }
+
     fun addPoint(
         selectedSTO: StoResponse,
         addPointRequest: AddPointRequest

@@ -336,11 +336,11 @@ fun STOItemColumn(
                                     ) {
                                         if (selectedSTO == sto) {
                                             stoViewModel.clearSelectedSTO()
-                                            educationViewModel.clearSelectedEducation()
+                                            stoViewModel.clearPointList()
                                             selectedSTOStatus.value = ""
                                         } else {
                                             stoViewModel.setSelectedSTO(sto)
-                                            educationViewModel.setSelectedEducation(selectedSTO = sto)
+                                            stoViewModel.getPointList(sto)
 //                                        selectedSTOStatus.value = selectedSTO!!.status
                                         }
                                     },
