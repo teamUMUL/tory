@@ -442,9 +442,9 @@ fun STOItemColumn(
                                                                             dragAndDropViewModel.setMainItem(
                                                                                 dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
                                                                             )
-                                                                            dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
                                                                             dragAndDropViewModel.isRandomGame()
                                                                         }
+                                                                        dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
                                                                         setGameDialog(true)
 
                                                                     } else {
