@@ -266,7 +266,7 @@ fun STODetailTableAndGameResult(
                                         //+비율이 90%이상인 경우 자동으로 준거완료 설정
                                         var status = "준비중"
                                         if((points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100 >= 90f){
-                                            status = "준거 완료"
+                                            status = "준거 도달"
                                         }else{
                                             status = "진행중"
                                             //--------------
