@@ -348,9 +348,10 @@ fun STODetailTableAndGameResult(
                                             "P" -> {
                                                 stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "P", registrant = "테스트"))
                                             }
-
+                                            else -> {
+                                                stoViewModel.deletePoint(selectedSTO = selectedSTO, deletePointRequest = DeletePointRequest(registrant = "테스트"))
+                                            }
                                         }
-
                                     }
 
                                 },
