@@ -77,7 +77,7 @@ class STOViewModel : ViewModel() {
                 repo.updateStoStatus(selectedSTO, updateSTOStatus)
             }
             getAllSTOs()
-            getSTOsByLTO(selectedSTO.lto)
+//            getSTOsByLTO(selectedSTO.lto)
         }
     }
     fun getSTOsByLTO(
@@ -150,7 +150,7 @@ class STOViewModel : ViewModel() {
     ){
         viewModelScope.launch {
             try {
-                repo.deletePoint(selectedSTO, deletePointRequest)
+                repo.deletePoint(selectedSTO)
             }catch (e: Exception){
                 Log.e("failed to delete Point", e.message.toString())
             }

@@ -65,7 +65,7 @@ class STORepoImpl: STORepo {
         stoRetrofit.updateStoRound(stoId = selectedSTO.id, updateStoRoundRequest = updateStoRoundRequest)
     }
 
-    override suspend fun deletePoint(selectedSTO: StoResponse, deletePointRequest: DeletePointRequest) {
-        stoRetrofit.deletePoint(stoId = selectedSTO.id, deletePointRequest = deletePointRequest)
+    override suspend fun deletePoint(selectedSTO: StoResponse) {
+        stoRetrofit.deletePoint(stoId = selectedSTO.id)
     }
 }

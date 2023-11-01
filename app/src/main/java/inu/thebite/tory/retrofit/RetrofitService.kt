@@ -29,6 +29,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -148,8 +149,8 @@ interface RetrofitService {
 //    @PATCH("/stos/{stoId}/points")
 //    suspend fun updatePoint(@Path("stoId") stoId: Long, @Body updatePointRequest: UpdatePointRequest) : Response<List<PointResponse>>
 
-    @DELETE("stos/{stoId}/points")
-    suspend fun deletePoint(@Path("stoId") stoId: Long, @Body deletePointRequest: DeletePointRequest) : Response<Void>
+    @DELETE("/stos/{stoId}/points")
+    suspend fun deletePoint(@Path("stoId") stoId: Long) : Response<Void>
 
     @GET("/stos/{stoId}/points")
     suspend fun getPointList(@Path("stoId") stoId: Long) : List<String>
