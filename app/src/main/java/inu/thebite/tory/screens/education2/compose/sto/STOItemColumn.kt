@@ -483,6 +483,8 @@ fun STOItemColumn(
                                                     setSelectedSTOStatus = {
                                                         selectedSTOStatus.value = it
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
+                                                        selectedSTO.status = it
+                                                        stoViewModel.setSelectedSTO(selectedSTO)
                                                     }
                                                 )
                                                 if(selectedLTO.game != "교육 선택 안함"){
