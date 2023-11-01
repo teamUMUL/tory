@@ -52,6 +52,7 @@ import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import kotlinx.coroutines.delay
 
 @SuppressLint("SimpleDateFormat")
 @Composable

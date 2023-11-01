@@ -10,6 +10,9 @@ data class UpdateStoRoundRequest(
     @SerializedName("minusRate")
     var minusRate : Float,
 
+    @SerializedName("status")
+    var status : String,
+
     @SerializedName("registrant")
     var registrant : String
 )
