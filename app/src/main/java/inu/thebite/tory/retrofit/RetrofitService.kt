@@ -13,6 +13,7 @@ import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.point.AddPointRequest
+import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.point.PointResponse
 import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
@@ -148,7 +149,7 @@ interface RetrofitService {
 //    suspend fun updatePoint(@Path("stoId") stoId: Long, @Body updatePointRequest: UpdatePointRequest) : Response<List<PointResponse>>
 
     @DELETE("stos/{stoId}/points")
-    suspend fun deletePoint(@Path("stoId") stoId: Long) : Response<Void>
+    suspend fun deletePoint(@Path("stoId") stoId: Long, @Body deletePointRequest: DeletePointRequest) : Response<Void>
 
     @GET("/stos/{stoId}/points")
     suspend fun getPointList(@Path("stoId") stoId: Long) : List<String>
