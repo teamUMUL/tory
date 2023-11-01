@@ -333,8 +333,10 @@ fun STODetailTableAndGameResult(
                                     }
                                 ),
                                 onClick = {
+                                    if(buttonItem == "삭제"){
+                                        stoViewModel.deletePoint(selectedSTO = selectedSTO)
+                                    }
                                     if(points.size < selectedSTO.count){
-
                                         when (buttonItem) {
                                             "+" -> {
                                                 stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "+", registrant = "테스트"))
@@ -345,9 +347,7 @@ fun STODetailTableAndGameResult(
                                             "P" -> {
                                                 stoViewModel.addPoint(selectedSTO = selectedSTO, addPointRequest = AddPointRequest(result = "P", registrant = "테스트"))
                                             }
-                                            else -> {
-                                                stoViewModel.deletePoint(selectedSTO = selectedSTO)
-                                            }
+
                                         }
 
                                     }
