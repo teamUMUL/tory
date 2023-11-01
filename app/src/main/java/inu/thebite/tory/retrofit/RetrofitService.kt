@@ -132,6 +132,9 @@ interface RetrofitService {
     @PATCH("/stos/{stoId}/round")
     suspend fun updateStoRound(@Path("stoId") stoId: Long, @Body updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
 
+    @PATCH("/stos/{stoId}/hit/round")
+    suspend fun updateStoHitRound(@Path("stoId") stoId: Long, @Body updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
+
     @GET("/stos")
     suspend fun getStoList(): List<StoResponse>
 
