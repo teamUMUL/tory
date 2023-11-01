@@ -171,6 +171,7 @@ class STOViewModel : ViewModel() {
                 Log.e("failed to add Round", e.message.toString())
             }
             getPointList(selectedSTO)
+            getAllSTOs()
         }
     }
 
