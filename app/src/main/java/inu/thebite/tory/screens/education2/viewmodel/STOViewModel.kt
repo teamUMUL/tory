@@ -167,12 +167,22 @@ class STOViewModel : ViewModel() {
     ){
         viewModelScope.launch {
             try {
-                repo.addRound(selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
-                    registrant = registrant,
-                    plusRate = plusRate,
-                    minusRate = minusRate,
-                    status = status
-                ))
+                if (status == "준거 도달"){
+                    repo.addRoundHit(selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
+                        registrant = registrant,
+                        plusRate = plusRate,
+                        minusRate = minusRate,
+                        status = status
+                    ))
+                } else {
+                    repo.addRound(selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
+                        registrant = registrant,
+                        plusRate = plusRate,
+                        minusRate = minusRate,
+                        status = status
+                    ))
+                }
+
             }catch (e: Exception){
                 Log.e("failed to add Round", e.message.toString())
             }
