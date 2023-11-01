@@ -483,7 +483,6 @@ fun STOItemColumn(
                                                     stoViewModel = stoViewModel,
                                                     setSelectedSTOStatus = {
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
-                                                        stoViewModel.setSelectedSTO(sto)
                                                         stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
                                                     }
                                                 )
