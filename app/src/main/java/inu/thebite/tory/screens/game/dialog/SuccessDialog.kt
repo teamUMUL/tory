@@ -89,9 +89,11 @@ fun SuccessDialog(
                                     dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
                                 } else {
                                     if(dragAndDropViewModel.isRandomGame){
-                                        dragAndDropViewModel.restartGeneralMode(
-                                            imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
-                                        )
+                                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                        imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                                            dragAndDropViewModel.setMainItem(foundImage)
+                                            dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                        }
                                     } else {
                                         dragAndDropViewModel.restartGeneralMode(
                                             imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
@@ -126,9 +128,11 @@ fun SuccessDialog(
                                     dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
                                 } else {
                                     if(dragAndDropViewModel.isRandomGame){
-                                        dragAndDropViewModel.restartGeneralMode(
-                                            imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
-                                        )
+                                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                        imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                                            dragAndDropViewModel.setMainItem(foundImage)
+                                            dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                        }
                                     } else {
                                         dragAndDropViewModel.restartGeneralMode(
                                             imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
@@ -218,9 +222,11 @@ fun SuccessAnimation(
             dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
         } else {
             if(dragAndDropViewModel.isRandomGame){
-                dragAndDropViewModel.restartGeneralMode(
-                    imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
-                )
+                val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                    dragAndDropViewModel.setMainItem(foundImage)
+                    dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                }
             } else {
                 dragAndDropViewModel.restartGeneralMode(
                     imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)

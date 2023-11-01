@@ -79,9 +79,7 @@ fun GameScreen(
                 if(dragAndDropViewModel.isRandomGame){
                     val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
                     imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
-                        dragAndDropViewModel.setMainItem(
-                            foundImage
-                        )
+                        dragAndDropViewModel.setMainItem(foundImage)
                         dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value!!)
                     }
                 }
@@ -93,12 +91,15 @@ fun GameScreen(
             if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
                 stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
                 if(dragAndDropViewModel.isRandomGame){
-                    dragAndDropViewModel.restartGeneralMode(
-                        imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
-                    )
+                    val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                    imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                        dragAndDropViewModel.setMainItem(foundImage)
+                        dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                    }
+
                 } else {
                     dragAndDropViewModel.restartGeneralMode(
-                        imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
+                        imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.firstMainItem.value!!.category.name)
                     )
                 }
                 gameViewModel.clearOneGameResult()
@@ -141,16 +142,18 @@ fun GameScreen(
                 if(points.size < selectedSTO.count){
                     if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
                         setFirstSuccessImage(dragAndDropViewModel.firstMainItem.value!!)
-                        setSecondSuccessImage(dragAndDropViewModel.secondMainItem.value!!)
+                        setSecondSuccessImage(imageViewModel.findImageByName(dragAndDropViewModel.secondMainItem.value!!.name))
                         setSuccessDialog(true)
                     }
                     if(gameViewModel.oneGameResult.value != "+"){
                         stoViewModel.addPoint(selectedSTO, AddPointRequest(gameViewModel.oneGameResult.value!!, registrant = "테스트"))
                     }
                     if(dragAndDropViewModel.isRandomGame){
-                        dragAndDropViewModel.restartGeneralMode(
-                            imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
-                        )
+                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                        imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                            dragAndDropViewModel.setMainItem(foundImage)
+                            dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                        }
                     } else {
                         dragAndDropViewModel.restartGeneralMode(
                             imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)

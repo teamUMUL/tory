@@ -132,7 +132,7 @@ fun GeneralGameScreen(
                             AsyncImage(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(
-                                        if(dragAndDropViewModel.mainItem.value!!.category.name == gameCategory.category.name){
+                                        if(dragAndDropViewModel.firstMainItem.value!!.category.name == gameCategory.category.name){
                                             dragAndDropViewModel.secondMainItem.value!!.url
                                         } else {
                                             gameCategory.url
@@ -227,7 +227,7 @@ fun GeneralGameScreen(
                                 AsyncImage(
                                     model = ImageRequest.Builder(LocalContext.current)
                                         .data(
-                                            if(dragAndDropViewModel.mainItem.value!!.category.name == gameCategory.category.name){
+                                            if(dragAndDropViewModel.firstMainItem.value!!.category.name == gameCategory.category.name){
                                                 dragAndDropViewModel.secondMainItem.value!!.url
                                             } else {
                                                 gameCategory.url
@@ -314,7 +314,7 @@ fun GeneralGameScreen(
                                 AsyncImage(
                                     model = ImageRequest.Builder(LocalContext.current)
                                         .data(
-                                            if(dragAndDropViewModel.mainItem.value!!.category.name == gameCategory.category.name){
+                                            if(dragAndDropViewModel.firstMainItem.value!!.category.name == gameCategory.category.name){
                                                 dragAndDropViewModel.secondMainItem.value!!.url
                                             } else {
                                                 gameCategory.url
@@ -351,7 +351,7 @@ fun GeneralGameScreen(
                         .size(cardSize)
                         .padding(bottom = 20.dp)
                     ,
-                    data = dragAndDropViewModel.mainItem.value,
+                    data = dragAndDropViewModel.firstMainItem.value,
                     viewModel = dragAndDropViewModel,
                     timerStart = timerStart,
                     timerRestart = timerRestart,
