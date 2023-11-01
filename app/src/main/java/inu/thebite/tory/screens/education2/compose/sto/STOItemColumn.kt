@@ -272,6 +272,9 @@ fun STOItemColumn(
         }
     }
 
+    LaunchedEffect(stos){
+        selectedSTO?.let { stoViewModel.updateSelectedSTO(it) }
+    }
 
 
     Column(
@@ -385,8 +388,7 @@ fun STOItemColumn(
 //                                                        selectedSTOStatus.value = it
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                     }
-                                                    selectedSTO.status = it
-                                                    stoViewModel.setSelectedSTO(selectedSTO)
+                                                    stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
                                                 }
                                             )
                                             STOSettingButtons(
@@ -482,6 +484,7 @@ fun STOItemColumn(
                                                     setSelectedSTOStatus = {
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                         stoViewModel.setSelectedSTO(sto)
+                                                        stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
                                                     }
                                                 )
                                                 if(selectedLTO.game != "교육 선택 안함"){

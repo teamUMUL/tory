@@ -40,6 +40,12 @@ class STOViewModel : ViewModel() {
         _selectedSTO.value = stoEntity
     }
 
+    fun updateSelectedSTO(stoEntity: StoResponse){
+        _selectedSTO.value = stos.value!!.find {
+            it.id == stoEntity.id
+        }
+    }
+
 
     fun clearSelectedSTO() {
         _selectedSTO.value = null
