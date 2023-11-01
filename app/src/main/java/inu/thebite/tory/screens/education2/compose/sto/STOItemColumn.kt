@@ -87,7 +87,7 @@ fun STOItemColumn(
 
     val mainItem by dragAndDropViewModel.mainItem.collectAsState()
 
-    val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
+//    val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
 
     val selectedEducation by educationViewModel.selectedEducation.collectAsState()
     val (updateSTODialog, setUpdateSTODialog) = remember {
@@ -249,16 +249,16 @@ fun STOItemColumn(
 
     LaunchedEffect(selectedSTO){
         selectedSTO?.let { selectedSTO ->
-            selectedSTOStatus.value = selectedSTO.status
+//            selectedSTOStatus.value = selectedSTO.status
             stoViewModel.getPointList(selectedSTO)
         }
     }
 
-    LaunchedEffect(selectedSTOStatus.value){
-        selectedLTO?.let {selectedLTO ->
-            stoViewModel.getSTOsByLTO(selectedLTO)
-        }
-    }
+//    LaunchedEffect(selectedSTOStatus.value){
+//        selectedLTO?.let {selectedLTO ->
+//            stoViewModel.getSTOsByLTO(selectedLTO)
+//        }
+//    }
 
     LaunchedEffect(selectedLTO){
         selectedLTO?.let { selectedLTO ->
@@ -337,7 +337,7 @@ fun STOItemColumn(
                                         if (selectedSTO == sto) {
                                             stoViewModel.clearSelectedSTO()
                                             stoViewModel.clearPointList()
-                                            selectedSTOStatus.value = ""
+//                                            selectedSTOStatus.value = ""
                                         } else {
                                             stoViewModel.setSelectedSTO(sto)
                                             stoViewModel.getPointList(sto)
@@ -377,13 +377,12 @@ fun STOItemColumn(
                                             STOStatusButtons(
                                                 modifier = Modifier.weight(4f),
                                                 selectedSTO = selectedSTO,
-                                                selectedSTOStatus = selectedSTOStatus,
                                                 setSelectedSTOStatus = {
-                                                    if(it == selectedSTOStatus.value){
-                                                        selectedSTOStatus.value = ""
-                                                        stoViewModel.setSelectedSTOStatus(selectedSTO, "")
+                                                    if(it == sto.status){
+//                                                        selectedSTOStatus.value = ""
+                                                        stoViewModel.setSelectedSTOStatus(selectedSTO, "준비중")
                                                     } else {
-                                                        selectedSTOStatus.value = it
+//                                                        selectedSTOStatus.value = it
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                     }
                                                     selectedSTO.status = it
@@ -481,10 +480,8 @@ fun STOItemColumn(
                                                     points = points,
                                                     stoViewModel = stoViewModel,
                                                     setSelectedSTOStatus = {
-                                                        selectedSTOStatus.value = it
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
-                                                        selectedSTO.status = it
-                                                        stoViewModel.setSelectedSTO(selectedSTO)
+                                                        stoViewModel.setSelectedSTO(sto)
                                                     }
                                                 )
                                                 if(selectedLTO.game != "교육 선택 안함"){

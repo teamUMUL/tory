@@ -24,7 +24,6 @@ fun STOStatusButtons(
     modifier : Modifier,
     selectedSTO : StoResponse,
     setSelectedSTOStatus : (String) -> Unit,
-    selectedSTOStatus : MutableState<String>
 ){
     val cornerRadius = 8.dp
     val stoStatusList = listOf<String>(
@@ -40,8 +39,8 @@ fun STOStatusButtons(
         stoStatusList.forEachIndexed { index, item ->
             OutlinedButton(
                 onClick = {
-                    if(item == selectedSTOStatus.value){
-                        setSelectedSTOStatus("")
+                    if(item == selectedSTO.status){
+                        setSelectedSTOStatus("준비중")
                     } else {
                         setSelectedSTOStatus(item)
                     }
