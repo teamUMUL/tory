@@ -445,6 +445,10 @@ fun STOItemColumn(
                                                                             dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
                                                                             dragAndDropViewModel.isRandomGame()
                                                                         }
+                                                                        setGameDialog(true)
+
+                                                                    } else {
+                                                                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
                                                                     }
                                                                 }
                                                             }
