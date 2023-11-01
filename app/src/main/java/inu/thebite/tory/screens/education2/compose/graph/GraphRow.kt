@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.education2.compose.graph
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ fun GraphRow(
     LazyRow(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = Color.White)
             .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
             .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
     ) {

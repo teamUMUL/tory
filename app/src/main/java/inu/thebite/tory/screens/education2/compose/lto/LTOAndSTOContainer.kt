@@ -78,8 +78,6 @@ fun LTOAndSTOContainer(
             Dialog(
                 properties = DialogProperties(
                     usePlatformDefaultWidth = false,
-                    dismissOnBackPress = false,
-                    dismissOnClickOutside = false
                 ),
                 onDismissRequest = { setIsLTOGraphOn(false) }
             ){

@@ -263,11 +263,12 @@ fun STODetailTableAndGameResult(
                                     onClick = {
                                         //+비율이 90%이상인 경우 자동으로 준거완료 설정
                                         if((points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100 >= 90f){
-                                            setSelectedSTOStatus("준거 도달")
+                                            stoViewModel.setSelectedSTOStatus(selectedSTO, "준거 도달")
                                         }else{
-                                            setSelectedSTOStatus("진행중")
+                                            stoViewModel.setSelectedSTOStatus(selectedSTO, "진행중")
                                             //--------------
                                         }
+                                        stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
                                         stoViewModel.addRound(selectedSTO = selectedSTO, registrant = "테스트")
 //                                        selectedSTODetailGameDataIndex.intValue = 0
 
