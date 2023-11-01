@@ -268,7 +268,7 @@ fun STODetailTableAndGameResult(
                                             setSelectedSTOStatus("진행중")
                                             //--------------
                                         }
-                                        stoViewModel.addRound(selectedSTO = selectedSTO)
+                                        stoViewModel.addRound(selectedSTO = selectedSTO, registrant = "테스트")
 //                                        selectedSTODetailGameDataIndex.intValue = 0
 
 //

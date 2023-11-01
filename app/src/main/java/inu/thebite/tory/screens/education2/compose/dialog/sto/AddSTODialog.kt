@@ -158,7 +158,8 @@ fun AddSTODialog(
                                 urgeType = "",
                                 urgeContent = stoMethodInputValue.text,
                                 enforceContent = stoScheduleInputValue.text,
-                                memo = stoMemoInputValue.text
+                                memo = stoMemoInputValue.text,
+                                registrant = "테스트"
                             )
                         )
                         educationViewModel.createEducation(

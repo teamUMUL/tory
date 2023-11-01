@@ -6,6 +6,7 @@ import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
+import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import kotlinx.coroutines.flow.Flow
 
@@ -29,7 +30,7 @@ interface STORepo {
 
     suspend fun addPoint(selectedSTO: StoResponse, addPointRequest: AddPointRequest)
 
-    suspend fun addRound(selectedSTO: StoResponse)
+    suspend fun addRound(selectedSTO: StoResponse, updateStoRoundRequest: UpdateStoRoundRequest)
 
     suspend fun deletePoint(selectedSTO: StoResponse)
 }

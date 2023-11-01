@@ -6,6 +6,7 @@ import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
+import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.retrofit.RetrofitApi
 import kotlinx.coroutines.flow.Flow
@@ -59,8 +60,8 @@ class STORepoImpl: STORepo {
         stoRetrofit.addPoint(stoId = selectedSTO.id, addPointRequest = addPointRequest)
     }
 
-    override suspend fun addRound(selectedSTO: StoResponse) {
-        stoRetrofit.updateStoRound(stoId = selectedSTO.id)
+    override suspend fun addRound(selectedSTO: StoResponse, updateStoRoundRequest: UpdateStoRoundRequest) {
+        stoRetrofit.updateStoRound(stoId = selectedSTO.id, updateStoRoundRequest = updateStoRoundRequest)
     }
 
     override suspend fun deletePoint(selectedSTO: StoResponse) {

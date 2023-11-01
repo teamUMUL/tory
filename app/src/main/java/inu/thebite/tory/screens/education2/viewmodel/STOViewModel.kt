@@ -12,6 +12,7 @@ import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
+import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.repositories.STO.STORepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -157,10 +158,13 @@ class STOViewModel : ViewModel() {
 
     fun addRound(
         selectedSTO: StoResponse,
+        registrant : String
     ){
         viewModelScope.launch {
             try {
-                repo.addRound(selectedSTO)
+                repo.addRound(selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
+                    registrant = registrant
+                ))
             }catch (e: Exception){
                 Log.e("failed to add Round", e.message.toString())
             }
