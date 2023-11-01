@@ -264,10 +264,11 @@ fun STODetailTableAndGameResult(
                                         .padding(vertical = 5.dp),
                                     onClick = {
                                         //+비율이 90%이상인 경우 자동으로 준거완료 설정
+                                        var status = "준비중"
                                         if((points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100 >= 90f){
-                                            setSelectedSTOStatus("준거 도달")
+                                            status = "준거 완료"
                                         }else{
-                                            setSelectedSTOStatus("진행중")
+                                            status = "진행중"
                                             //--------------
                                         }
                                         val plusRate = (points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100
@@ -276,7 +277,8 @@ fun STODetailTableAndGameResult(
                                             selectedSTO = selectedSTO,
                                             registrant = "테스트",
                                             plusRate = plusRate,
-                                            minusRate = minusRate
+                                            minusRate = minusRate,
+                                            status = status
                                         )
 
 //                                        selectedSTODetailGameDataIndex.intValue = 0
