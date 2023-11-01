@@ -35,10 +35,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
+import inu.thebite.tory.screens.education2.compose.graph.GraphRow
 import inu.thebite.tory.screens.education2.compose.sto.STOItemColumn
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
@@ -65,7 +68,25 @@ fun LTOAndSTOContainer(
     val (addSTODialog, setAddSTODialog) = remember {
         mutableStateOf(false)
     }
+    val ltoGraphList by ltoViewModel.ltoGraphList.collectAsState()
 
+    val (isLTOGraphOn, setIsLTOGraphOn) = remember {
+        mutableStateOf(false)
+    }
+    if(isLTOGraphOn){
+        ltoGraphList?.let {ltoGraphList ->
+            Dialog(
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false,
+                    dismissOnBackPress = false,
+                    dismissOnClickOutside = false
+                ),
+                onDismissRequest = { setIsLTOGraphOn(false) }
+            ){
+                GraphRow(stos = ltoGraphList, stoViewModel = stoViewModel)
+            }
+        }
+    }
     Row(modifier = Modifier.fillMaxSize()) {
         LTOItemColumn(
             context = context,
@@ -89,7 +110,9 @@ fun LTOAndSTOContainer(
                     ltoViewModel = ltoViewModel,
                     selectedLTOStatus = selectedLTOStatus,
                     selectedLTO = selectedLTO,
-                    setAddSTODialog = {setAddSTODialog(it)}
+                    setAddSTODialog = {setAddSTODialog(it)},
+                    setIsLTOGraphOn = {setIsLTOGraphOn(it)},
+                    isLTOGraphOn = isLTOGraphOn
                 )
                 Divider(
                     thickness = 4.dp,

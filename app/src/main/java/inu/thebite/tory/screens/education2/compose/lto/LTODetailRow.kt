@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
@@ -41,7 +42,9 @@ fun LTODetailRow(
     selectedLTO: LtoResponse,
     ltoViewModel : LTOViewModel,
     selectedLTOStatus : MutableState<String>,
-    setAddSTODialog : (Boolean) -> Unit
+    setAddSTODialog : (Boolean) -> Unit,
+    setIsLTOGraphOn : (Boolean) -> Unit,
+    isLTOGraphOn : Boolean
 ){
 
     val ltos by ltoViewModel.ltos.collectAsState()
@@ -93,10 +96,12 @@ fun LTODetailRow(
                 border = BorderStroke(1.dp, Color.Black),
                 shape = RoundedCornerShape(5.dp),
                 onClick = {
-                    if(ltoViewModel.ltoGraphList.value.isNullOrEmpty()){
-                        ltoViewModel.getLTOGraph(selectedLTO)
-                    } else {
+                    if(isLTOGraphOn){
                         ltoViewModel.clearLTOGraphList()
+                        setIsLTOGraphOn(false)
+                    } else {
+                        ltoViewModel.getLTOGraph(selectedLTO)
+                        setIsLTOGraphOn(true)
                     }
                 },
                 contentPadding = PaddingValues(2.dp)

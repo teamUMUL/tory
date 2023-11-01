@@ -9,9 +9,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import inu.thebite.tory.screens.education2.compose.dev.DEVItemRow
 import inu.thebite.tory.screens.education2.compose.graph.GraphRow
 import inu.thebite.tory.screens.education2.compose.lto.LTOAndSTOContainer
@@ -34,11 +38,10 @@ fun NewEducationScreen(
     educationViewModel : EducationViewModel
 ){
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
-    val ltoGraphList by ltoViewModel.ltoGraphList.collectAsState()
+
     Column(modifier = Modifier
         .fillMaxSize()
-        .verticalScroll(scrollState)) {
+    ){
         DEVItemRow(
             devViewModel = devViewModel,
             ltoViewModel = ltoViewModel
@@ -54,9 +57,7 @@ fun NewEducationScreen(
             dragAndDropViewModel = dragAndDropViewModel,
             gameViewModel = gameViewModel
         )
-        ltoGraphList?.let {ltoGraphList ->
-            GraphRow(stos = ltoGraphList, stoViewModel = stoViewModel)
-        }
+
     }
 
 }

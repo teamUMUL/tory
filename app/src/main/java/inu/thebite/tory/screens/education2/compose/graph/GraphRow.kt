@@ -46,7 +46,7 @@ fun GraphRow(
 ){
     LazyRow(
         modifier = Modifier
-            .height(600.dp)
+            .fillMaxSize()
             .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
             .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
     ) {
