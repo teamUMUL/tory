@@ -78,8 +78,6 @@ fun STOItemColumn(
 ){
     val context = LocalContext.current
 
-    val allLTOs by ltoViewModel.allLTOs.collectAsState()
-    val ltos by ltoViewModel.ltos.collectAsState()
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
 
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
@@ -87,11 +85,8 @@ fun STOItemColumn(
     val allSTOs by stoViewModel.allSTOs.collectAsState()
     val points by stoViewModel.points.collectAsState()
 
-
     val mainItem by dragAndDropViewModel.mainItem.collectAsState()
 
-
-    val selectedSTODetailGameDataIndex = remember { mutableIntStateOf(0) }
     val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
 
     val selectedEducation by educationViewModel.selectedEducation.collectAsState()
@@ -238,11 +233,9 @@ fun STOItemColumn(
                                     selectedSTO = selectedSTO,
                                     selectedLTO = selectedLTO,
                                     points = points,
-                                    selectedSTODetailGameDataIndex = selectedSTODetailGameDataIndex,
                                     timerStart = timerStart,
                                     timerRestart = timerRestart,
                                     resetGameButtonIndex = {setGameButton1Index(-1)},
-                                    setSelectedSTODetailGameDataIndex = {selectedSTODetailGameDataIndex.intValue = it},
                                     setIsCardSelectEnd = {setIsCardSelectEnd(it)},
                                     isCardSelectEnd = isCardSelectEnd
                                 )
@@ -301,12 +294,6 @@ fun STOItemColumn(
                                 color = if (selectedSTO == sto) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
                                 shape = RoundedCornerShape(8.dp)
                             )
-//                        .clickable(
-//                            interactionSource = remember { MutableInteractionSource() },
-//                            indication = null
-//                        ) {
-//
-//                        }
                             .animateContentSize(
                                 animationSpec = tween(
                                     durationMillis = 300,
@@ -458,23 +445,24 @@ fun STOItemColumn(
                                 }
 
                             }
-                            selectedSTO?.let { selectedSTO ->
-                                if(selectedSTO.id == sto.id){
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(700.dp)
-                                            .border(
-                                                width = 2.dp,
-                                                color = MaterialTheme.colorScheme.primary,
-                                                shape = RoundedCornerShape(8.dp)
-                                            )
-                                            .background(
-                                                color = Color.Transparent,
-                                                shape = RoundedCornerShape(8.dp)
-                                            )
-                                    ) {
-                                            points?.let {points ->
+                            selectedLTO?.let { selectedLTO ->
+                                selectedSTO?.let { selectedSTO ->
+                                    points?.let { points ->
+                                        if(selectedSTO.id == sto.id){
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(700.dp)
+                                                    .border(
+                                                        width = 2.dp,
+                                                        color = MaterialTheme.colorScheme.primary,
+                                                        shape = RoundedCornerShape(8.dp)
+                                                    )
+                                                    .background(
+                                                        color = Color.Transparent,
+                                                        shape = RoundedCornerShape(8.dp)
+                                                    )
+                                            ) {
                                                 STODetailTableAndGameResult(
                                                     selectedSTO = sto,
                                                     points = points,
@@ -486,32 +474,29 @@ fun STOItemColumn(
                                                         stoViewModel.setSelectedSTO(selectedSTO)
                                                     }
                                                 )
-                                            }
-                                        selectedLTO?.let {selectedLTO ->
-                                            if(selectedLTO.game != "교육 선택 안함"){
-                                                GameReadyRow(
-                                                    mainItem = mainItem,
-                                                    selectedSTO = selectedSTO,
-                                                    setAddGameItem = {setAddGameItemDialog(it)},
-                                                    dragAndDropViewModel = dragAndDropViewModel,
-                                                    imageViewModel = imageViewModel
-                                                )
+                                                if(selectedLTO.game != "교육 선택 안함"){
+                                                    GameReadyRow(
+                                                        mainItem = mainItem,
+                                                        selectedSTO = selectedSTO,
+                                                        setAddGameItem = {setAddGameItemDialog(it)},
+                                                        dragAndDropViewModel = dragAndDropViewModel,
+                                                        imageViewModel = imageViewModel
+                                                    )
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-
                         }
                     }
-
                 }
+
             }
         }
-
-
     }
 }
+
 
 
 fun getRandomIndex(itemSize: Int): Int {

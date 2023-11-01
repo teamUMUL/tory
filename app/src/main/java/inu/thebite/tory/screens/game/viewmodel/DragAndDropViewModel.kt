@@ -117,7 +117,7 @@ class DragAndDropViewModel :ViewModel() {
 
     }
 
-    fun restartSameMode(context: Context, allImageList : List<ImageResponse>){
+    fun restartSameMode(allImageList : List<ImageResponse>){
         _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
 
         _targetItems.value = targetItems.value!!.map { gameItem ->
@@ -128,7 +128,7 @@ class DragAndDropViewModel :ViewModel() {
         isCorrect = false
     }
 
-    fun restartGeneralMode(context: Context, imagesByCategory : List<ImageResponse>){
+    fun restartGeneralMode(imagesByCategory : List<ImageResponse>){
         _targetItems.value = _targetItems.value!!.shuffled(Random(System.currentTimeMillis()))
 
         resetMainItemsGeneralMode(imagesByCategory)
@@ -166,7 +166,6 @@ class DragAndDropViewModel :ViewModel() {
     }
 
     fun updateGameItemGeneralMode(updatedItem: ImageResponse) {
-
         _secondMainItem.value = updatedItem
     }
 

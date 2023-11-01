@@ -2,8 +2,6 @@ package inu.thebite.tory.screens.game
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +32,7 @@ import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
+import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -48,6 +47,7 @@ fun GeneralGameScreen(
     isCardSelectEnd : Boolean,
     dragAndDropViewModel: DragAndDropViewModel,
     gameViewModel : GameViewModel,
+    imageViewModel : ImageViewModel,
     resetGameButtonIndex : () -> Unit,
     setIsCardSelectEnd : (Boolean) -> Unit,
 //    setBeforeCircleImage : (Int) -> Unit
@@ -83,16 +83,15 @@ fun GeneralGameScreen(
                                 .size(cardSize)
                         ) { isInBound, dragInGameItem ->
                             if(dragInGameItem != null){
-//                                setBeforeCircleImage(dragAndDropViewModel.secondMainItem.value!!.image)
                                 LaunchedEffect(key1 = dragInGameItem){
-                                    //드래그해서 들어온 아이템의 이름과 드래그한 곳의 카테고리가 같은 경우에 맞다는 판정
+                                    //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                     if(dragInGameItem.category.name == gameCategory.category.name){
-//                                        dragAndDropViewModel.updateGameItemGeneralMode(
-//                                            GameItem(
-//                                                dragInGameItem.name,
-//                                                R.drawable.ellipse
-//                                            )
-//                                        )
+                                        dragAndDropViewModel.updateGameItemGeneralMode(
+                                            dragInGameItem.copy(
+                                                url = imageViewModel.findImageByName(imageName = "Correct")?.url
+                                                    ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                            )
+                                        )
                                         dragAndDropViewModel.isCorrect()
                                         when (oneGameResult) {
                                             "P" -> {
@@ -108,9 +107,7 @@ fun GeneralGameScreen(
                                     }
                                     //여기는 틀린 경우에 들어갈 행동
                                     else{
-
                                         when (oneGameResult) {
-
                                             "P" -> {
                                                 gameViewModel.setOneGameResult("P")
                                             }
@@ -121,7 +118,6 @@ fun GeneralGameScreen(
                                                 gameViewModel.setOneGameResult("-")
                                             }
                                         }
-
                                     }
                                     timerRestart.value = true
                                     timerStart.value = false
@@ -130,10 +126,7 @@ fun GeneralGameScreen(
                                         gameViewModel.setOneGameResult("+")
                                     } else {
                                         setIsCardSelectEnd(true)
-
                                     }
-
-
                                 }
                             }
                             AsyncImage(
@@ -179,16 +172,15 @@ fun GeneralGameScreen(
                                     .size(cardSize)
                             ) { isInBound, dragInGameItem ->
                                 if(dragInGameItem != null){
-//                                setBeforeCircleImage(dragAndDropViewModel.secondMainItem.value!!.image)
                                     LaunchedEffect(key1 = dragInGameItem){
-                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 카테고리가 같은 경우에 맞다는 판정
+                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                         if(dragInGameItem.category.name == gameCategory.category.name){
-//                                        dragAndDropViewModel.updateGameItemGeneralMode(
-//                                            GameItem(
-//                                                dragInGameItem.name,
-//                                                R.drawable.ellipse
-//                                            )
-//                                        )
+                                            dragAndDropViewModel.updateGameItemGeneralMode(
+                                                dragInGameItem.copy(
+                                                    url = imageViewModel.findImageByName(imageName = "Correct")?.url
+                                                        ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                )
+                                            )
                                             dragAndDropViewModel.isCorrect()
                                             when (oneGameResult) {
                                                 "P" -> {
@@ -267,16 +259,15 @@ fun GeneralGameScreen(
                                     .size(cardSize)
                             ) { isInBound, dragInGameItem ->
                                 if(dragInGameItem != null){
-//                                setBeforeCircleImage(dragAndDropViewModel.secondMainItem.value!!.image)
                                     LaunchedEffect(key1 = dragInGameItem){
-                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 카테고리가 같은 경우에 맞다는 판정
+                                        //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                         if(dragInGameItem.category.name == gameCategory.category.name){
-//                                        dragAndDropViewModel.updateGameItemGeneralMode(
-//                                            GameItem(
-//                                                dragInGameItem.name,
-//                                                R.drawable.ellipse
-//                                            )
-//                                        )
+                                            dragAndDropViewModel.updateGameItemGeneralMode(
+                                                dragInGameItem.copy(
+                                                    url = imageViewModel.findImageByName(imageName = "Correct")?.url
+                                                        ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                )
+                                            )
                                             dragAndDropViewModel.isCorrect()
                                             when (oneGameResult) {
                                                 "P" -> {

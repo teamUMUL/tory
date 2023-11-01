@@ -86,16 +86,14 @@ fun SuccessDialog(
                                 setSelectedButton("P")
                                 setSuccessDialog(false)
                                 if(selectedLTO.game == "같은 사진 매칭"){
-                                    dragAndDropViewModel.restartSameMode(context = context, imageViewModel.allImages.value?: emptyList())
+                                    dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
                                 } else {
                                     if(dragAndDropViewModel.isRandomGame){
                                         dragAndDropViewModel.restartGeneralMode(
-                                            context = context,
                                             imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
                                         )
                                     } else {
                                         dragAndDropViewModel.restartGeneralMode(
-                                            context = context,
                                             imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
                                         )
                                     }
@@ -125,16 +123,14 @@ fun SuccessDialog(
                                 setSelectedButton("C")
                                 setSuccessDialog(false)
                                 if(selectedLTO.game == "같은 사진 매칭"){
-                                    dragAndDropViewModel.restartSameMode(context = context, imageViewModel.allImages.value?: emptyList())
+                                    dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
                                 } else {
                                     if(dragAndDropViewModel.isRandomGame){
                                         dragAndDropViewModel.restartGeneralMode(
-                                            context = context,
                                             imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
                                         )
                                     } else {
                                         dragAndDropViewModel.restartGeneralMode(
-                                            context = context,
                                             imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
                                         )
                                     }
@@ -219,16 +215,14 @@ fun SuccessAnimation(
         )
         delay(1000)
         if(selectedLTO.game == "같은 사진 매칭"){
-            dragAndDropViewModel.restartSameMode(context = context, imageViewModel.allImages.value?: emptyList())
+            dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
         } else {
             if(dragAndDropViewModel.isRandomGame){
                 dragAndDropViewModel.restartGeneralMode(
-                    context = context,
                     imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
                 )
             } else {
                 dragAndDropViewModel.restartGeneralMode(
-                    context = context,
                     imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
                 )
             }

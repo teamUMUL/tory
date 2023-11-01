@@ -86,7 +86,7 @@ fun GameReadyRow(
                             .build(),
                         placeholder = painterResource(id = R.drawable.icon_edit),
                         contentDescription = null,
-                        contentScale = ContentScale.Crop,
+//                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxHeight()
                             .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)

@@ -57,30 +57,9 @@ import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 fun STODetailTableAndGameResult(
     selectedSTO: StoResponse,
     points: List<String>,
-//    selectedSTODetailGameDataIndex: MutableIntState,
     stoViewModel: STOViewModel,
     setSelectedSTOStatus : (String) -> Unit
 ){
-
-//    var plusNum by remember {
-//        mutableIntStateOf(0)
-//    }
-//
-//    var pNum by remember {
-//        mutableIntStateOf(0)
-//    }
-//
-//    var minusNum by remember {
-//        mutableIntStateOf(0)
-//    }
-
-
-
-    LaunchedEffect(Unit){
-//        plusNum = points.count { it == "+" }
-//        pNum = points.count { it == "p" }
-//        minusNum = points.count { it == "-" }
-    }
     val STODetailTitles =
         listOf<String>(
             "STO 이름",
@@ -118,17 +97,6 @@ fun STODetailTableAndGameResult(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-//                                .height(
-//                                    if (STODetailTitles.indexOf(stoDetailItem) != 6){
-//                                        if(STODetailTitles.indexOf(stoDetailItem) == 1){
-//                                            120.dp
-//                                        } else {
-//                                            40.dp
-//                                        }
-//                                    } else {
-//                                        300.dp
-//                                    }
-//                                )
                         ) {
                             val selectedSTODetail = listOf(
                                 selectedSTO.name,
@@ -245,11 +213,7 @@ fun STODetailTableAndGameResult(
                                         modifier = Modifier
                                             .padding(2.dp)
                                             .width(65.dp)
-                                            .fillMaxHeight(0.3f)
-                                            .clickable {
-//                                                selectedSTODetailGameDataIndex.intValue =
-//                                                    (5 * verticalIndex) + horizonIndex
-                                            },
+                                            .fillMaxHeight(0.3f),
                                         shape = RoundedCornerShape(16.dp),
                                         colors = CardDefaults.cardColors(
                                             containerColor =

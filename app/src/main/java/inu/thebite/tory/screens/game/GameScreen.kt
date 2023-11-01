@@ -39,8 +39,6 @@ fun GameScreen(
     timerStart : MutableState<Boolean>,
     timerRestart : MutableState<Boolean>,
     points : List<String>,
-    selectedSTODetailGameDataIndex : MutableIntState,
-    setSelectedSTODetailGameDataIndex : (Int) -> Unit,
     resetGameButtonIndex : () -> Unit,
     setIsCardSelectEnd : (Boolean) -> Unit,
     isCardSelectEnd : Boolean
@@ -84,47 +82,26 @@ fun GameScreen(
                         dragAndDropViewModel.setMainItem(
                             foundImage
                         )
+                        dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value!!)
                     }
                 }
                 gameViewModel.clearOneGameResult()
-//                selectedSTO?.let { selectedSTO ->
-//                    val changeList = selectedSTO.gameResult.toMutableList()
-//                    changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
-//                    selectedSTO.gameResult = changeList
-//                    stoViewModel.updateSTO(selectedSTO)
-//                    gameViewModel.setGameResultList(changeList)
-//                    setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
-//                    if(dragAndDropViewModel.isRandomGame){
-//                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-//                        dragAndDropViewModel.setMainItem(
-//                            randomMainItem.copy(
-//                                image = getResourceIdByName(randomMainItem.name, context)
-//                            )
-//                        )
-//                    }
-//                    gameViewModel.clearOneGameResult()
-//                }
             }
         }
         //성공 시 축하 다이얼로그가 종료 후 데이터 추가하는 경우
         if(selectedLTO.game == "일반화 매칭"){
             if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
-//                //-,P 저장
-//                val changeList = selectedSTO!!.gameResult.toMutableList()
-//                changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
-//                selectedSTO.gameResult = changeList
-//                stoViewModel.updateSTO(selectedSTO)
-//                gameViewModel.setGameResultList(changeList)
-//                setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
-//
-//                if(dragAndDropViewModel.isRandomGame){
-//                    val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-//                    dragAndDropViewModel.setMainItem(randomMainItem)
-//                    dragAndDropViewModel.setTwoMainDifferentImageInCategory(context, randomMainItem.name)
-//
-//                }
-//                //이미지 변경(target에 있는 동일한 카테고리)
-//                gameViewModel.clearOneGameResult()
+                stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
+                if(dragAndDropViewModel.isRandomGame){
+                    dragAndDropViewModel.restartGeneralMode(
+                        imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
+                    )
+                } else {
+                    dragAndDropViewModel.restartGeneralMode(
+                        imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
+                    )
+                }
+                gameViewModel.clearOneGameResult()
             }
         }
 
@@ -141,13 +118,7 @@ fun GameScreen(
                         setSuccessDialog(true)
                     }
                     if (gameViewModel.oneGameResult.value != "+"){
-                        stoViewModel.addPoint(
-                            selectedSTO,
-                            AddPointRequest(
-                                result = gameViewModel.oneGameResult.value!!,
-                                registrant = "테스트"
-                            )
-                        )
+                        stoViewModel.addPoint(selectedSTO, AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
                         if(dragAndDropViewModel.isRandomGame){
                             val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
                             imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
@@ -158,49 +129,7 @@ fun GameScreen(
                         }
                         gameViewModel.clearOneGameResult()
                     }
-                    //                    if (gameViewModel.oneGameResult.value != "+"){
-//                        val changeList = selectedSTO.gameResult.toMutableList()
-//                        changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
-//                        selectedSTO.gameResult = changeList
-//                        stoViewModel.updateSTO(selectedSTO)
-//                        gameViewModel.setGameResultList(changeList)
-//                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
-//                        if(dragAndDropViewModel.isRandomGame){
-//                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-//                            dragAndDropViewModel.setMainItem(
-//                                randomMainItem.copy(
-//                                    image = getResourceIdByName(randomMainItem.name, context)
-//                                )
-//                            )
-//                        }
-//                        gameViewModel.clearOneGameResult()
-//                    }
-//                }
                 }
-//                if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
-//                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-//                        setFirstSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
-//                        setSecondSuccessImage(dragAndDropViewModel.mainItem.value!!.image)
-//                        setSuccessDialog(true)
-//                    }
-//                    if (gameViewModel.oneGameResult.value != "+"){
-//                        val changeList = selectedSTO.gameResult.toMutableList()
-//                        changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
-//                        selectedSTO.gameResult = changeList
-//                        stoViewModel.updateSTO(selectedSTO)
-//                        gameViewModel.setGameResultList(changeList)
-//                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
-//                        if(dragAndDropViewModel.isRandomGame){
-//                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-//                            dragAndDropViewModel.setMainItem(
-//                                randomMainItem.copy(
-//                                    image = getResourceIdByName(randomMainItem.name, context)
-//                                )
-//                            )
-//                        }
-//                        gameViewModel.clearOneGameResult()
-//                    }
-//                }
             }
         }
     }
@@ -209,32 +138,26 @@ fun GameScreen(
     if(selectedLTO.game == "일반화 매칭"){
         LaunchedEffect(isCardSelectEnd){
             if(isCardSelectEnd){
-//                if (selectedSTODetailGameDataIndex.intValue < selectedSTO!!.gameResult.size) {
-//                    //축하 이팩트
-//                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-//                        setFirstSuccessImage(dragAndDropViewModel.firstMainItem.value!!.image)
-//                        setSecondSuccessImage(beforeCircleImage)
-//                        setSuccessDialog(true)
-//                    }
-//                    if (gameViewModel.oneGameResult.value != "+"){
-//                        //-,P 저장
-//                        val changeList = selectedSTO.gameResult.toMutableList()
-//                        changeList[selectedSTODetailGameDataIndex.intValue] = gameViewModel.oneGameResult.value!!
-//                        selectedSTO.gameResult = changeList
-//                        stoViewModel.updateSTO(selectedSTO)
-//                        gameViewModel.setGameResultList(changeList)
-//                        setSelectedSTODetailGameDataIndex(selectedSTODetailGameDataIndex.intValue+1)
-//
-//                        if(dragAndDropViewModel.isRandomGame){
-//                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-//                            dragAndDropViewModel.setMainItem(randomMainItem)
-//                            dragAndDropViewModel.setTwoMainDifferentImageInCategory(context, randomMainItem.name)
-//
-//                        }
-//                        //이미지 변경(target에 있는 동일한 카테고리)
-//                        gameViewModel.clearOneGameResult()
-//                    }
-//                }
+                if(points.size < selectedSTO.count){
+                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
+                        setFirstSuccessImage(dragAndDropViewModel.firstMainItem.value!!)
+                        setSecondSuccessImage(dragAndDropViewModel.secondMainItem.value!!)
+                        setSuccessDialog(true)
+                    }
+                    if(gameViewModel.oneGameResult.value != "+"){
+                        stoViewModel.addPoint(selectedSTO, AddPointRequest(gameViewModel.oneGameResult.value!!, registrant = "테스트"))
+                    }
+                    if(dragAndDropViewModel.isRandomGame){
+                        dragAndDropViewModel.restartGeneralMode(
+                            imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)].category.name)
+                        )
+                    } else {
+                        dragAndDropViewModel.restartGeneralMode(
+                            imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
+                        )
+                    }
+                    gameViewModel.clearOneGameResult()
+                }
             }
         }
     }
@@ -279,6 +202,7 @@ fun GameScreen(
                         isCardSelectEnd = isCardSelectEnd,
                         dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel,
+                        imageViewModel = imageViewModel,
                         resetGameButtonIndex = {resetGameButtonIndex()},
                         setIsCardSelectEnd = {setIsCardSelectEnd(it)},
 //                        setBeforeCircleImage = {setBeforeCircleImage(it)}
