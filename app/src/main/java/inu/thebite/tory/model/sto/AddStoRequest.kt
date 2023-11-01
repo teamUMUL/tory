@@ -26,6 +26,9 @@ data class AddStoRequest(
     var enforceContent: String,
 
     @SerializedName("memo")
-    var memo: String
+    var memo: String,
+
+    @SerializedName("registrant")
+    var registrant: String
 
 )

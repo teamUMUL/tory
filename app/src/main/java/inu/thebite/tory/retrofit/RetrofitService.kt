@@ -18,6 +18,7 @@ import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
+import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
@@ -127,7 +128,7 @@ interface RetrofitService {
     suspend fun updateImageList(@Path("stoId") stoId: Long, @Body updateImageListRequest: UpdateImageListRequest) : Response<ImageResponse>
 
     @PATCH("/stos/{stoId}/round")
-    suspend fun updateStoRound(@Path("stoId") stoId: Long) : Response<StoResponse>
+    suspend fun updateStoRound(@Path("stoId") stoId: Long, @Body updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
 
     @GET("/stos")
     suspend fun getStoList(): List<StoResponse>
