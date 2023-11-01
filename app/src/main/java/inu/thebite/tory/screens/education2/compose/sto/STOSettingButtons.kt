@@ -36,8 +36,6 @@ fun STOSettingButtons(
     modifier : Modifier,
     setUpdateSTODialog : (Boolean) -> Unit,
     stoViewModel: STOViewModel,
-    educationViewModel: EducationViewModel,
-    selectedEducation : EducationEntity,
     selectedSTO : StoResponse,
     gameStart : () -> Unit
 ){
@@ -53,7 +51,6 @@ fun STOSettingButtons(
             shape = RoundedCornerShape(5.dp),
             onClick = {
                 stoViewModel.deleteSTO(selectedSTO)
-                educationViewModel.deleteEducation(selectedEducation)
             },
             contentPadding = PaddingValues(2.dp)
         ){

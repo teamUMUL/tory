@@ -390,79 +390,74 @@ fun STOItemColumn(
                                                     stoViewModel.setSelectedSTO(selectedSTO)
                                                 }
                                             )
-                                            selectedEducation?.let {selectedEducation ->
-                                                STOSettingButtons(
-                                                    modifier = Modifier.weight(2.5f),
-                                                    setUpdateSTODialog = {
-                                                        setUpdateSTODialog(it)
-                                                    },
-                                                    stoViewModel = stoViewModel,
-                                                    selectedSTO = selectedSTO,
-                                                    educationViewModel = educationViewModel,
-                                                    selectedEducation = selectedEducation,
-                                                    gameStart = {
-                                                        selectedLTO?.let {selectedLTO ->
-                                                            when(selectedLTO.game){
-                                                                "같은 사진 매칭" -> {
-                                                                    //타겟 아이템 설정
-                                                                    dragAndDropViewModel.setTargetItems(
-                                                                        imageViewModel.findImagesByNames(selectedSTO.imageList)
-                                                                    )
-                                                                    //타겟 아이템 설정 확인
-                                                                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
-                                                                        //타겟 아이템 설정 후 랜덤 유무 설정
-                                                                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
-                                                                            //선택한 메인 아이템이 있을 경우 랜덤게임이 아니라고 설정
-                                                                            dragAndDropViewModel.isNotRandomGame()
-                                                                        } else {
-                                                                            //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
-                                                                            dragAndDropViewModel.setMainItem(
-                                                                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                                                                            )
-                                                                            dragAndDropViewModel.isRandomGame()
-                                                                        }
-
-                                                                        setGameDialog(true)
+                                            STOSettingButtons(
+                                                modifier = Modifier.weight(2.5f),
+                                                setUpdateSTODialog = {
+                                                    setUpdateSTODialog(it)
+                                                },
+                                                stoViewModel = stoViewModel,
+                                                selectedSTO = selectedSTO,
+                                                gameStart = {
+                                                    selectedLTO?.let {selectedLTO ->
+                                                        when(selectedLTO.game){
+                                                            "같은 사진 매칭" -> {
+                                                                //타겟 아이템 설정
+                                                                dragAndDropViewModel.setTargetItems(
+                                                                    imageViewModel.findImagesByNames(selectedSTO.imageList)
+                                                                )
+                                                                //타겟 아이템 설정 확인
+                                                                if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
+                                                                    //타겟 아이템 설정 후 랜덤 유무 설정
+                                                                    if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                                                                        //선택한 메인 아이템이 있을 경우 랜덤게임이 아니라고 설정
+                                                                        dragAndDropViewModel.isNotRandomGame()
                                                                     } else {
-                                                                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                                                                        //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
+                                                                        dragAndDropViewModel.setMainItem(
+                                                                            dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                                                        )
+                                                                        dragAndDropViewModel.isRandomGame()
                                                                     }
-                                                                }
-                                                                "일반화 매칭" -> {
-                                                                    //타겟 아이템 설정
-                                                                    dragAndDropViewModel.setTargetItems(
-                                                                        imageViewModel.findImagesByNames(selectedSTO.imageList)
-                                                                    )
-                                                                    //타겟 아이템 설정 확인
-                                                                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
-                                                                        //타겟 아이템 설정 후 랜덤 유무 확인
-                                                                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
-                                                                            dragAndDropViewModel.isNotRandomGame()
-                                                                        } else {
-                                                                            //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
-                                                                            dragAndDropViewModel.setMainItem(
-                                                                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                                                                            )
-                                                                            dragAndDropViewModel.isRandomGame()
-                                                                        }
-                                                                        dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
-                                                                        setGameDialog(true)
 
-                                                                    } else {
-                                                                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
-                                                                    }
+                                                                    setGameDialog(true)
+                                                                } else {
+                                                                    Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
                                                                 }
                                                             }
+                                                            "일반화 매칭" -> {
+                                                                //타겟 아이템 설정
+                                                                dragAndDropViewModel.setTargetItems(
+                                                                    imageViewModel.findImagesByNames(selectedSTO.imageList)
+                                                                )
+                                                                //타겟 아이템 설정 확인
+                                                                if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
+                                                                    //타겟 아이템 설정 후 랜덤 유무 확인
+                                                                    if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                                                                        dragAndDropViewModel.isNotRandomGame()
+                                                                    } else {
+                                                                        //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
+                                                                        dragAndDropViewModel.setMainItem(
+                                                                            dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                                                        )
+                                                                        dragAndDropViewModel.isRandomGame()
+                                                                    }
+                                                                    dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                                                    setGameDialog(true)
 
+                                                                } else {
+                                                                    Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                )
-                                            }
+                                                }
+                                            )
                                             Spacer(modifier = Modifier.width(10.dp))
+                                            }
                                         }
                                     }
-                                }
 
-                            }
+                                }
                             selectedLTO?.let { selectedLTO ->
                                 selectedSTO?.let { selectedSTO ->
                                     points?.let { points ->
