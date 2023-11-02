@@ -72,10 +72,10 @@ fun pieChartPreview(
 
             PieChart(
                 modifier = Modifier
-                    .size(150.dp),
+                    .size(160.dp),
                 input = listOf(
                     PieChartInput(
-                        color = Color(0xFF97DFFC),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number = 3,
                         size = Size(width = radius*1.3f, height = radius*1.3f),
@@ -84,7 +84,7 @@ fun pieChartPreview(
 
                     ),
                     PieChartInput(
-                        color = Color(0xFF93CAF6),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number = 2,
                         size = Size(width = radius*1.2f, height = radius*1.2f ),
@@ -92,7 +92,7 @@ fun pieChartPreview(
                         description = "매칭"
                     ),
                     PieChartInput(
-                        color = Color(0xFF8EB5F0),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number = 5,
                         size = Size(width = radius*1.5f, height = radius*1.5f),
@@ -100,7 +100,7 @@ fun pieChartPreview(
                         description = "동작"
                     ),
                     PieChartInput(
-                        color = Color(0xFF858AE3),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number = 8,
                         size = Size(width = radius*1.8f, height = radius*1.8f),
@@ -108,7 +108,7 @@ fun pieChartPreview(
                         description = "언어"
                     ),
                     PieChartInput(
-                        color = Color(0xFF7364D2),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number =4,
                         size = Size(width = radius*1.4f, height = radius*1.4f),
@@ -116,15 +116,15 @@ fun pieChartPreview(
                         description = "변별"
                     ),
                     PieChartInput(
-                        color = Color(0xFF613DC1),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number = 0,
-                        size = Size(width = radius*0f, height = radius*0f),
-                        topLeft = radius*0f ,
+                        size = Size(width = radius*0.5f, height = radius*0.5f),
+                        topLeft = radius*0.5f ,
                         description = "지시"
                     ),
                     PieChartInput(
-                        color = Color(0xFF5829A7),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number = 1,
                         size = Size(width = radius*1.1f, height = radius*1.1f),
@@ -132,27 +132,27 @@ fun pieChartPreview(
                         description = "명명"
                     ),
                     PieChartInput(
-                        color = Color(0xFF4E148C),
+                        color = Color(0xFF0047B3),
                         value = 10,
                         number = 0,
-                        size = Size(width = radius*0f, height = radius*0f),
-                        topLeft = radius*0f ,
+                        size = Size(width = radius*0.5f, height = radius*0.5f),
+                        topLeft = radius*0.5f ,
                         description = "요구"
                     ),
                     PieChartInput(
-                        color = Color(0xFF461177),
+                        color = Color(0xFF0047B3),
                         value = 10,
-                        number = 0,
-                        size = Size(width = radius*0f, height = radius*0f),
-                        topLeft = radius*0f ,
+                        number = 6,
+                        size = Size(width = radius*1.6f, height = radius*1.6f),
+                        topLeft = radius*1.6f ,
                         description = "인트라"
                     ),
                     PieChartInput(
-                        color = Color(0xFF3D0E61),
+                        color = Color(0xFF0047B3),
                         value = 10,
-                        number = 0,
-                        size = Size(width = radius*0f, height = radius*0f),
-                        topLeft = radius*0f ,
+                        number = 1,
+                        size = Size(width = radius*1.1f, height = radius*1.1f),
+                        topLeft = radius*1.1f ,
                         description = "사회성"
                     ),
                 ),
@@ -244,7 +244,7 @@ fun PieChart(
                     circleCenter.y,
                     radius,
                     Paint().apply {
-                        color = LightGray.toArgb()
+                        color = Color(0xffeeeeee).toArgb()
 //                        setShadowLayer(10f,0f,0f, Black.toArgb())
                     }
                 )
@@ -307,23 +307,6 @@ fun PieChart(
                     }
                 }
                 if(pieChartInput.isTapped){
-                    val tabRotation = currentStartAngle - angleToDraw - 90f
-//                    rotate(tabRotation){
-//                        drawRoundRect(
-//                            topLeft = circleCenter,
-//                            size = Size(12f,radius*1.2f),
-//                            color = white, //탭했을 떄 나오는 선
-//                            cornerRadius = CornerRadius(15f,15f)
-//                        )
-//                    }
-//                    rotate(tabRotation+angleToDraw){
-//                        drawRoundRect(
-//                            topLeft = circleCenter,
-//                            size = Size(12f,radius*1.2f),
-//                            color = white,
-//                            cornerRadius = CornerRadius(15f,15f)
-//                        )
-//                    }
                     rotate(rotateAngle){
                         drawContext.canvas.nativeCanvas.apply {
                             drawText(
@@ -343,41 +326,7 @@ fun PieChart(
 
                 }
             }
-
-//            if(inputList.first().isTapped){   // 1번째 부채콜을 터치했을 때  선 한쪽 추가
-//                rotate(-90f){
-//                    drawRoundRect(
-//                        topLeft = circleCenter,
-//                        size = Size(12f,radius*1.2f),
-//                        color = white,
-//                        cornerRadius = CornerRadius(15f,15f)
-//                    )
-//                }
-//            }
-//            drawContext.canvas.nativeCanvas.apply {
-//                drawCircle(
-//                    circleCenter.x,
-//                    circleCenter.y,
-//                    radius,
-//                    Paint().apply {
-//                        color = white.copy(alpha = 0.6f).toArgb()
-////                        setShadowLayer(10f,0f,0f, Black.toArgb())
-//                    }
-//                )
-//            }
-
-
-
         }
-//        Text(
-//            centerText,
-//            modifier = Modifier
-//                .width(Dp(innerRadius/1.5f))
-//                .padding(25.dp),
-//            fontWeight = FontWeight.SemiBold,
-//            fontSize = 17.sp,
-//            textAlign = TextAlign.Center
-//        )
 
     }
 }
