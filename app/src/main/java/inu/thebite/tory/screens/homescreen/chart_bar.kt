@@ -350,19 +350,8 @@ fun BarGraph(
                                         .fillMaxHeight(graphBarHeight)
                                         .background(barColor_01)
                                 )
-
-//                            Box(
-//                                modifier = Modifier
-//                                    .clip(barShap)
-//                                    .padding(20.dp)
-//                                    .width(6.dp)
-//                                    .fillMaxHeight(graphBarHeight)
-//                                    .background(barColor_01)
-//                            )
                             }
 
-
-                            // scale x-axis and bottom part of graph
                             Column(
                                 modifier = Modifier
                                     .height(xAxisScaleHeight),
@@ -370,7 +359,7 @@ fun BarGraph(
                                 horizontalAlignment = CenterHorizontally
                             ) {
 
-                                // small vertical line joining the horizontal x-axis line
+
                                 Box(
                                     modifier = Modifier
                                         .clip(
@@ -419,13 +408,6 @@ fun BarGraph(
                             mutableStateOf(false)
                         }
 
-//                        val graphBarHeight by animateFloatAsState(
-//                            targetValue = if (animationTriggered) value else 0f,
-//                            animationSpec = tween(
-//                                durationMillis = 1000,
-//                                delayMillis = 0
-//                            )
-//                        )
                         val graphBarHeight_02 by animateFloatAsState(
                             targetValue = if (animationTriggered) value else 0f,
                             animationSpec = tween(
@@ -474,7 +456,6 @@ fun BarGraph(
 
             }
 
-            // horizontal line on x-axis below the graph
             Column(      // x축
                 modifier = Modifier
                     .fillMaxWidth()
@@ -499,8 +480,4 @@ fun BarGraph(
 
     }
 
-}
-
-private fun normalizeDataList(dataList: List<Int>, maxValue: Int): List<Float> {
-    return dataList.map { it.toFloat() / maxValue }
 }

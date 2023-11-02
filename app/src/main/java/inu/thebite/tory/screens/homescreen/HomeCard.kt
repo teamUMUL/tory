@@ -35,28 +35,22 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import inu.thebite.tory.ChildViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.SegmentedControl
 import inu.thebite.tory.screens.homescreen.dialog.ChainDialog
 import inu.thebite.tory.screens.homescreen.dialog.ChildDialog
 import inu.thebite.tory.screens.homescreen.dialog.ClassDialog
-import inu.thebite.tory.screens.homescreen.dialog.SuccessDialog
+
 
 @Composable
 fun ChainCard(
@@ -154,8 +148,6 @@ fun ClassCard(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
             onConfirm = { configText ->
-                // Handle dialog confirmation here
-                // configText contains the user input
                 isDialogVisible = false},
             className = className,
             setClassName = {setClassName(it)}
@@ -164,7 +156,7 @@ fun ClassCard(
 
 
     Box(modifier = modifier   //카드 하얀 배경
-//        .height(103.dp)
+
         .shadow(
             elevation = 4.dp,
             spotColor = Color(0x40000000),
@@ -300,10 +292,6 @@ fun ChildrenCard(
                     letterSpacing = 0.28.sp,
                     textAlign = TextAlign.Center)
             )
-
-
-
-
         }
     }
 

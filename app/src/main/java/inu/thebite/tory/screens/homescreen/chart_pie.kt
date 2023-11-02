@@ -1,57 +1,30 @@
 package inu.thebite.tory.screens.homescreen
 import android.graphics.Paint
-import android.os.Bundle
-import android.accounts.AuthenticatorDescription
-import android.text.AutoText
-import android.text.BoringLayout
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ButtonColors
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.ui.theme.Black
-import inu.thebite.tory.ui.theme.LightGray
-import inu.thebite.tory.ui.theme.blueGray
-import inu.thebite.tory.ui.theme.brightBlue
 import inu.thebite.tory.ui.theme.gray
-import inu.thebite.tory.ui.theme.green
-import inu.thebite.tory.ui.theme.orange
-import inu.thebite.tory.ui.theme.purple
-import inu.thebite.tory.ui.theme.redOrange
 import inu.thebite.tory.ui.theme.white
 import kotlin.math.PI
-import kotlin.math.atan
 import kotlin.math.atan2
 
 
@@ -72,7 +45,15 @@ fun pieChartPreview(
 
             PieChart(
                 modifier = Modifier
-                    .size(160.dp),
+                    .size(160.dp),  // 파이차트 전체 사이즈
+
+                // size - 한 조각의 크기
+                // topleft - 시작지점 설정
+                //--> 최대 크기를 10으로 놓고 횟수(number)로 계산
+                // 만약 number: 3 이면 size의 width 와 height : radius* 1.3f,  topleft: radius* 1.3f
+                //만약 number :0이라면 사이즈와 시작지점 모두 radius*0.5f로 설정
+
+
                 input = listOf(
                     PieChartInput(
                         color = Color(0xFF0047B3),
@@ -166,9 +147,8 @@ fun PieChart(
     modifier: Modifier = Modifier,
     radius:Float = 120f,  //색 원
     innerRadius:Float = 15f,  //중앙 하얀 원
-    transparentWidth:Float = 35f, //하얀 원 테두리
     input:List<PieChartInput>,
-    centerText:String = "" //하얀 원 중앙에 들어가는 텍스트
+
 ) {
     var circleCenter by remember {
         mutableStateOf(Offset.Zero)
@@ -245,7 +225,7 @@ fun PieChart(
                     radius,
                     Paint().apply {
                         color = Color(0xffeeeeee).toArgb()
-//                        setShadowLayer(10f,0f,0f, Black.toArgb())
+
                     }
                 )
             }
