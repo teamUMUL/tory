@@ -64,7 +64,7 @@ fun ChainCard(
         )
     }
     Box(modifier = modifier   //카드 하얀 배경
-//        .height(103.dp)
+        .height(50.dp)
         .shadow(
             elevation = 4.dp,
             spotColor = Color(0x40000000),
@@ -77,15 +77,15 @@ fun ChainCard(
 
         Row(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(12.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(modifier= Modifier
 
-                .width(28.dp)
+                .width(21.dp)
                 .align(Alignment.CenterVertically)
-                .height(32.dp),
+                .height(24.dp),
                 painter = painterResource(id = R.drawable.center_icon),
                 contentDescription = "null",
                 contentScale = ContentScale.Crop)
@@ -95,7 +95,7 @@ fun ChainCard(
                 .padding(top = 2.dp),
                 text = "Center",
                 style = TextStyle(
-                    fontSize = 14.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight(500),
                     color = Color(0xFFA6ACBE),
                     textAlign = TextAlign.Center,
@@ -105,12 +105,11 @@ fun ChainCard(
             Text(
                 modifier = Modifier
                     .width(140.dp)
-
                     .height(32.dp),
                 text = selectedCenter?.name ?: "미선택",
                 style = TextStyle(
-                    fontSize = 22.sp,
-                    lineHeight = 24.sp,
+                    fontSize = 16.sp,
+                    lineHeight = 20.sp,
                     fontWeight = FontWeight(600),
                     color = Color(0xFF0047B3),
                     letterSpacing = 0.28.sp,
@@ -148,7 +147,7 @@ fun ClassCard(
 
 
     Box(modifier = modifier   //카드 하얀 배경
-//        .height(103.dp)
+        .height(50.dp)
         .shadow(
             elevation = 4.dp,
             spotColor = Color(0x40000000),
@@ -161,14 +160,14 @@ fun ClassCard(
 
         Row(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(12.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(modifier= Modifier
-                .width(28.dp)
+                .width(22.dp)
                 .align(Alignment.CenterVertically)
-                .height(32.dp),
+                .height(26.dp),
                 painter = painterResource(id = R.drawable.class_icon),
                 contentDescription = "null",
                 contentScale = ContentScale.Fit)
@@ -179,7 +178,7 @@ fun ClassCard(
                 .padding(top = 2.dp),
                 text = "Class",
                 style = TextStyle(
-                    fontSize = 14.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight(500),
                     color = Color(0xFFA6ACBE),
                     textAlign = TextAlign.Center,
@@ -193,8 +192,8 @@ fun ClassCard(
                     .height(32.dp),
                 text = selectedChildClass?.name ?: "미선택",
                 style = TextStyle(
-                    fontSize = 22.sp,
-                    lineHeight = 24.sp,
+                    fontSize = 16.sp,
+                    lineHeight = 20.sp,
                     fontWeight = FontWeight(600),
                     color = Color(0xFF0047B3),
                     letterSpacing = 0.28.sp,
@@ -227,7 +226,7 @@ fun ChildrenCard(
     }
 
     Box(modifier = modifier   //카드 하얀 배경
-//        .height(103.dp)
+        .height(50.dp)
         .shadow(
             elevation = 4.dp,
             spotColor = Color(0x40000000),
@@ -240,14 +239,14 @@ fun ChildrenCard(
 
         Row(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(12.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(modifier= Modifier
-                .width(28.dp)
+                .width(20.dp)
                 .align(Alignment.CenterVertically)
-                .height(32.dp),
+                .height(20.dp),
                 painter = painterResource(id = R.drawable.child_icon),
                 contentDescription = "null",
                 contentScale = ContentScale.Fit)
@@ -258,7 +257,7 @@ fun ChildrenCard(
                 .padding(top = 2.dp),
                 text = "Child",
                 style = TextStyle(
-                    fontSize = 14.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight(500),
                     color = Color(0xFFA6ACBE),
                     textAlign = TextAlign.Center,
@@ -268,12 +267,11 @@ fun ChildrenCard(
             Text(
                 modifier = Modifier
                     .width(140.dp)
-
                     .height(32.dp),
                 text = selectedChild?.name ?: "미선택",
                 style = TextStyle(
-                    fontSize = 22.sp,
-                    lineHeight = 24.sp,
+                    fontSize = 16.sp,
+                    lineHeight = 20.sp,
                     fontWeight = FontWeight(600),
                     color = Color(0xFF0047B3),
                     letterSpacing = 0.28.sp,
