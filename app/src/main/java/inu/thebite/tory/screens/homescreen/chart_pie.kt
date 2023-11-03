@@ -47,12 +47,14 @@ fun pieChartPreview(
 
             PieChart(
                 modifier = Modifier
-                    .size(150.dp),// 파이차트 전체 사이즈
+                    .size(170.dp)
+                    .padding(top = 40.dp),// 파이차트 전체 사이즈
 
                 // size - 한 조각의 크기
                 // topleft - 시작지점 설정
-                //--> 최대 크기를 10으로 놓고 횟수(number)로 계산
+                //--> 최대 크기를 15으로 놓고 횟수(number)로 계산
                 // 만약 number: 3 이면 size의 width 와 height : radius* 1.3f,  topleft: radius* 1.3f
+                // size의 width or height= radius* (1 + number/10)f, topleft = radius* (1 + number/10)f
                 //만약 number :0이라면 사이즈와 시작지점 모두 radius*0.5f로 설정
 
                 input = listOf(
@@ -68,9 +70,9 @@ fun pieChartPreview(
                     PieChartInput(
                         color = Color(0xFF461177),
                         value = 10,
-                        number = 2,
-                        size = Size(width = radius*1.2f, height = radius*1.2f ),
-                        topLeft = radius*1.2f ,
+                        number = 12,
+                        size = Size(width = radius*2.2f, height = radius*2.2f ),
+                        topLeft = radius*2.2f ,
                         description = "매칭"
                     ),
                     PieChartInput(
@@ -84,9 +86,9 @@ fun pieChartPreview(
                     PieChartInput(
                         color = Color(0xFF5829A7),
                         value = 10,
-                        number = 8,
-                        size = Size(width = radius*1.8f, height = radius*1.8f),
-                        topLeft = radius*1.8f ,
+                        number = 10,
+                        size = Size(width = radius*2f, height = radius*2f),
+                        topLeft = radius*2f ,
                         description = "언어"
                     ),
                     PieChartInput(
@@ -146,11 +148,9 @@ fun pieChartPreview(
 @Composable
 fun PieChart(
     modifier: Modifier = Modifier,
-    radius: Float = 120f,  //색 원
-    innerRadius: Float = 15f,  //중앙 하얀 원
-    transparentWidth: Float = 35f, //하얀 원 테두리
+    radius: Float = 150f,  //색 원
+    innerRadius: Float = 20f,  //중앙 하얀 원
     input: List<PieChartInput>,
-    centerText: String = "" //하얀 원 중앙에 들어가는 텍스트
 ) {
     var circleCenter by remember {
         mutableStateOf(Offset.Zero)

@@ -71,7 +71,7 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(3f)
+                        .weight(4f)
 //                    .height(112.dp)
                         .padding(start = 16.dp, end = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -106,9 +106,9 @@ fun HomeScreen(
                             ambientColor = Color(0x40000000)
                         )
                         .weight(1f)
-                        .width(100.dp)
+                        .width(60.dp)
                         .padding(end = 16.dp)
-                        .height(40.dp)
+                        .height(60.dp)
                         .background(
                             color = Color(0xFF0047B3),
                             shape = RoundedCornerShape(size = 10.dp)
@@ -116,7 +116,7 @@ fun HomeScreen(
 
                 ) {
                     Text(
-                        text = "LTO & STO",
+                        text = "LTO & STO & PLAY",
                         style = TextStyle(color = Color(0xFFFFFFFF), background = Color(0xFF0047B3))
                     )
                 }

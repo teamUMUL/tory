@@ -43,7 +43,7 @@ fun chart_bar(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(modifier = Modifier
+        Row(modifier = Modifier  // 해더 부분
             .padding(top = 10.dp, start = 30.dp, end = 20.dp, bottom = 30.dp)
             .height(30.dp),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -140,7 +140,7 @@ fun CustomBarGraph() {
         val dataList_02= mutableListOf( 13, 10, 4, 7, 2, 20, 1, 3, 5, 6)
         val floatValue_01 = mutableListOf<Float>()
         val floatValue_02 = mutableListOf<Float>()
-        val datesList = mutableListOf( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        val datesList = mutableListOf(1,2,3,4,5,6,7,8,9,10)
 
         dataList_01.forEachIndexed { index, value ->
 
@@ -199,7 +199,7 @@ fun BarGraph(
 
 
     //X축 스케일의 하단 높이
-    val xAxisScaleHeight = 40.dp
+    val xAxisScaleHeight = 30.dp
 
     val yAxisScaleSpacing by remember {
         mutableStateOf(100f)
@@ -208,7 +208,6 @@ fun BarGraph(
         mutableStateOf(100.dp)
     }
 
-    // bar shape
     val barShap =
         when (roundType) {
             BarType.CIRCULAR_TYPE -> CircleShape
@@ -230,8 +229,8 @@ fun BarGraph(
     // 점선
     val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
     // x축 수평선을 연결하는 x축 눈금 위의 수직선 높이
-    val lineHeightXAxis = 10.dp
-    val horizontalLineHeight = 5.dp
+//    val lineHeightXAxis = 10.dp
+    val horizontalLineHeight = 2.dp
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -258,11 +257,11 @@ fun BarGraph(
                         drawText(
                             round(barData.min() + yAxisScaleText * i).toString(),
                             30f,
-                            size.height - yAxisScaleSpacing - i * size.height / 3f,
+                            size.height - yAxisScaleSpacing - i * size.height / 3.4f,
                             textPaint
                         )
                     }
-                    yCoordinates.add(size.height - yAxisScaleSpacing - i * size.height / 3f)
+                    yCoordinates.add(size.height - yAxisScaleSpacing - i * size.height / 3.4f)
                 }
 
                 // 수평 점선
@@ -330,7 +329,6 @@ fun BarGraph(
                             Box(
                                 modifier = Modifier
                                     .padding(bottom = 5.dp)
-//                                .clip(barShap)
                                     .width(15.dp)
                                     .height(height - 10.dp)
                                     .background(Color.Transparent),
@@ -344,7 +342,6 @@ fun BarGraph(
                                         .fillMaxHeight(graphBarHeight_02)
                                         .background(barColor_01)
                                 )
-//
                             }
 
 
@@ -415,27 +412,27 @@ fun BarGraph(
                             ) {
 
 
-                                Box(
-                                    modifier = Modifier
-                                        .clip(
-                                            RoundedCornerShape(
-                                                bottomStart = 2.dp,
-                                                bottomEnd = 2.dp
-                                            )
-                                        )
-                                        .padding(end = 10.dp)
-                                        .width(horizontalLineHeight)
-                                        .height(lineHeightXAxis)
-                                        .background(color = Color.Gray)
-                                )
+//                                Box(
+//                                    modifier = Modifier
+//                                        .clip(
+//                                            RoundedCornerShape(
+//                                                bottomStart = 2.dp,
+//                                                bottomEnd = 2.dp
+//                                            )
+//                                        )
+//                                        .padding(end = 10.dp)
+//                                        .width(horizontalLineHeight)
+//                                        .height(lineHeightXAxis)
+//                                        .background(color = Color.Gray)
+//                                )
                                 // scale x-axis
                                 Text(
                                     modifier = Modifier.padding(bottom = 3.dp),
                                     text = xAxisScaleData[index].toString(),
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
-                                    textAlign = TextAlign.Center,
-                                    color = Color.Black
+                                    textAlign = TextAlign.Start,
+                                    color = Color.Gray
                                 )
 
                             }

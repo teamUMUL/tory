@@ -47,88 +47,92 @@ fun childInfor(
 //            .height(440.dp)
             .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
             .padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier= Modifier
                 .fillMaxSize()
-                .padding(start = 25.dp, bottom = 15.dp, top = 15.dp, end = 25.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
+                .padding(start = 25.dp, end = 25.dp),
                 horizontalAlignment = Alignment.Start,
             ) {
-                pieChartPreview()
+                pieChartPreview(modifier = Modifier. weight(1f))
 //                Image(modifier = Modifier
 //                    .width(180.dp)
 //                    .height(180.dp),
 //                    painter = painterResource(id = R.drawable.chart_round),
 //                    contentDescription ="null",
 //                    contentScale = ContentScale.Fit)
-                Text(
-                    text = "이름",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3))
-                )
-                Text(
-                    text = "김토리",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
-
+                Column(modifier = Modifier. weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top))
+                    {
+                    Text(
+                        text = "이름",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3)
                         )
-                )
-                Text(
-                    text = "생년월일",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3),
+                    )
+                    Text(
+                        text = "김토리",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
 
-                        )
-                )
-                Text(
-                    text = "2020-01-10",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
+                            )
+                    )
+                    Text(
+                        text = "생년월일",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3),
 
+                            )
+                    )
+                    Text(
+                        text = "2020-01-10",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
+
+                            )
+                    )
+                    Text(
+                        text = "프로그램 기간",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3),
                         )
-                )
-                Text(
-                    text = "프로그램 기간",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3),
                     )
-                )
-                Text(
-                    text = "2023-01-01~2023-01-01",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
+                    Text(
+                        text = "2023-01-01~2023-01-01",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
+                        )
                     )
-                )
-                Text(
-                    text = "특징",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3),
+                    Text(
+                        text = "특징",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3),
+                        )
                     )
-                )
-                Text(
-                    text = "발달지연",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
+                    Text(
+                        text = "발달지연",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -137,7 +141,7 @@ fun childInfor(
 fun reportList(){
     Row (
         Modifier
-            .padding(4.dp)
+            .padding(top = 4.dp)
             .fillMaxWidth()
             .height(78.dp)
     ){
@@ -149,12 +153,12 @@ fun reportList(){
                     spotColor = Color(0x40000000),
                     ambientColor = Color(0x40000000)
                 )
-                .clickable {  }
+                .clickable { }
                 .height(70.dp)
                 .background(color = Color.Transparent, shape = RoundedCornerShape(size = 10.dp)),painter = painterResource(id = R.drawable.backgroun_btn), contentDescription = "null")
             Text(style = TextStyle(color = Color(0xFF0047B3), fontSize = 20.sp), fontWeight = FontWeight(400),text = "상담일지")
         }
-        Spacer(modifier = Modifier.width(30.dp))
+        Spacer(modifier = Modifier.width(15.dp))
         Box(modifier = Modifier.weight(1f),
             contentAlignment = Alignment.Center){
             Image(modifier = Modifier
@@ -164,11 +168,11 @@ fun reportList(){
                     ambientColor = Color(0x40000000)
                 )
                 .height(70.dp)
-                .clickable {  }
+                .clickable { }
                 .background(color = Color.Transparent, shape = RoundedCornerShape(size = 10.dp)),painter = painterResource(id = R.drawable.backgroun_btn), contentDescription = "null")
             Text(style = TextStyle(color = Color(0xFF0047B3), fontSize = 20.sp), fontWeight = FontWeight(400),text = "아동영상")
         }
-        Spacer(modifier = Modifier.width(30.dp))
+        Spacer(modifier = Modifier.width(15.dp))
         Box(modifier = Modifier.weight(1f),
             contentAlignment = Alignment.Center){
             Image(modifier = Modifier
@@ -178,43 +182,38 @@ fun reportList(){
                     ambientColor = Color(0x40000000)
                 )
                 .height(70.dp)
-                .clickable {  }
+                .clickable { }
                 .background(color = Color.Transparent, shape = RoundedCornerShape(size = 10.dp)),painter = painterResource(id = R.drawable.backgroun_btn), contentDescription = "null")
             Text(style = TextStyle(color = Color(0xFF0047B3), fontSize = 20.sp), fontWeight = FontWeight(400),text = "완료목록")
         }
 
-        Spacer(modifier = Modifier.width(30.dp))
-        Button(onClick = { /* Define the click action here */ },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7F5AF0)),
-            modifier = Modifier
+        Spacer(modifier = Modifier.width(15.dp))
+        Box(modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.Center){
+            Image(modifier = Modifier
                 .shadow(
                     elevation = 4.dp,
                     spotColor = Color(0x40000000),
                     ambientColor = Color(0x40000000)
                 )
-                .weight(1f)
-                .height(55.dp)
-                .background(color = Color(0xFF7F5AF0), shape = RoundedCornerShape(size = 10.dp))
-
-        ){
-            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 20.sp), fontWeight = FontWeight(400),text = "그래프")
+                .height(70.dp)
+                .clickable { }
+                .background(color = Color.Transparent, shape = RoundedCornerShape(size = 10.dp)),painter = painterResource(id = R.drawable.backgroun_btn), contentDescription = "null")
+            Text(style = TextStyle(color = Color(0xFF0047B3), fontSize = 20.sp), fontWeight = FontWeight(400),text = "그래프")
         }
-        Spacer(modifier = Modifier.width(30.dp))
-        Button(
-            onClick = { /* Define the click action here */ },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7F5AF0)),
-            modifier = Modifier
+        Spacer(modifier = Modifier.width(15.dp))
+        Box(modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.Center){
+            Image(modifier = Modifier
                 .shadow(
                     elevation = 4.dp,
                     spotColor = Color(0x40000000),
                     ambientColor = Color(0x40000000)
                 )
-                .weight(1f)
-                .height(55.dp)
-                .background(color = Color(0xFF7F5AF0), shape = RoundedCornerShape(size = 10.dp))
-
-        ){
-            Text(style = TextStyle(color = Color(0xffffffff), fontSize = 16.sp), textAlign = TextAlign.Center, fontWeight = FontWeight(400),text = "크리테리아\n그래프")
+                .height(70.dp)
+                .clickable { }
+                .background(color = Color.Transparent, shape = RoundedCornerShape(size = 10.dp)),painter = painterResource(id = R.drawable.backgroun_btn), contentDescription = "null")
+            Text(style = TextStyle(color = Color(0xff0047B3), fontSize = 14.sp), textAlign = TextAlign.Center, fontWeight = FontWeight(500),text = "크리테리아\n그래프")
         }
 
     }
