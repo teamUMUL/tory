@@ -8,5 +8,8 @@ data class LtoGraphResponse(
     var stoId: Long,
 
     @SerializedName("result")
-    var result: List<List<Float>>
+    var result: List<Float>,
+
+    @SerializedName("date")
+    var date: List<String>
 )
