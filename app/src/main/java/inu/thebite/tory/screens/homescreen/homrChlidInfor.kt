@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.homescreen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun childInfor(
     modifier: Modifier = Modifier,
@@ -62,79 +64,82 @@ fun childInfor(
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
                 horizontalAlignment = Alignment.Start,
             ) {
-                pieChartPreview()
+                pieChartPreview(modifier = Modifier.weight(1f))
 //                Image(modifier = Modifier
 //                    .width(180.dp)
 //                    .height(180.dp),
 //                    painter = painterResource(id = R.drawable.chart_round),
 //                    contentDescription ="null",
 //                    contentScale = ContentScale.Fit)
-                Text(
-                    text = "이름",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3))
-                )
-                Text(
-                    text = selectedChildInfo?.name ?: "",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
-
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "이름",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3)
                         )
-                )
-                Text(
-                    text = "생년월일",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3),
+                    )
+                    Text(
+                        text = selectedChildInfo?.name ?: "",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
 
-                        )
-                )
-                Text(
-                    text = selectedChildInfo?.birth ?: "",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
+                            )
+                    )
+                    Text(
+                        text = "생년월일",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3),
 
+                            )
+                    )
+                    Text(
+                        text = selectedChildInfo?.birth ?: "",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
+
+                            )
+                    )
+                    Text(
+                        text = "프로그램 기간",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3),
                         )
-                )
-                Text(
-                    text = "프로그램 기간",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3),
                     )
-                )
-                Text(
-                    text = "${selectedChildInfo?.startDate ?: ""}~${selectedChildInfo?.endDate ?: ""}",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
+                    Text(
+                        text = "${selectedChildInfo?.startDate ?: ""}~${selectedChildInfo?.endDate ?: ""}",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
+                        )
                     )
-                )
-                Text(
-                    text = "특징",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF0047B3),
+                    Text(
+                        text = "특징",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF0047B3),
+                        )
                     )
-                )
-                Text(
-                    text = selectedChildInfo?.etc ?: "",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
+                    Text(
+                        text = selectedChildInfo?.etc ?: "",
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFF000000),
+                        )
                     )
-                )
+                }
             }
         }
 
