@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.homescreen
+package inu.thebite.tory.screens.teachingboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,14 +29,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.R
-import inu.thebite.tory.screens.homescreen.dialog.CenterDialog
+import inu.thebite.tory.screens.teachingboard.dialog.CenterDialog
 
-import inu.thebite.tory.screens.homescreen.dialog.ChildDialog
-import inu.thebite.tory.screens.homescreen.dialog.ClassDialog
+import inu.thebite.tory.screens.teachingboard.dialog.ChildDialog
+import inu.thebite.tory.screens.teachingboard.dialog.ClassDialog
 
 @Composable
 fun ChainCard(

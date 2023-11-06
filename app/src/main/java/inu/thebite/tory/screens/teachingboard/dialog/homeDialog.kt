@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.homescreen.dialog
+package inu.thebite.tory.screens.teachingboard.dialog
 
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.BorderStroke
@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.CenterControl
-import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.ChildClassControl
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.ChildInfoControl
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.R
 
 @Composable

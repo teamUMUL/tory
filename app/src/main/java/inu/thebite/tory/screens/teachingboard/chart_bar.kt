@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.homescreen
+package inu.thebite.tory.screens.teachingboard
 import android.graphics.Paint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable

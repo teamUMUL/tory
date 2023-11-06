@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.homescreen
+package inu.thebite.tory.screens.teachingboard
 
 enum class BarType {
     CIRCULAR_TYPE,

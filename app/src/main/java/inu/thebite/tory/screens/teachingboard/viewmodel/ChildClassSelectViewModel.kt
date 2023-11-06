@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.homescreen.viewmodel
+package inu.thebite.tory.screens.teachingboard.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

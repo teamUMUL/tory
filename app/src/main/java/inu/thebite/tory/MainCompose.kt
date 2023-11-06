@@ -44,7 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
-import inu.thebite.tory.screens.centerhomescreen.CenterHomeScreen
+import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
@@ -52,11 +52,10 @@ import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
-import inu.thebite.tory.screens.homescreen.CenterHome
-import inu.thebite.tory.screens.homescreen.HomeScreen
-import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.screens.teachingboard.HomeScreen
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
@@ -259,25 +258,25 @@ fun MainCompose(
     }
 
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentNavBackStackEntry?.destination?.route ?: AllDestinations.CENTERHOME
+    val currentRoute = currentNavBackStackEntry?.destination?.route ?: AllDestinations.CENTERDASHBOARD
     val navigationActions = remember(navController){
         AppNavigationActions(navController)
     }
     val currentRouteToKorean = when(currentRoute){
-        "CenterHome" -> {
-            "센터 홈"
+        "CenterDashBoard" -> {
+            "Center Dashboard"
         }
-        "Home" -> {
-            "홈"
+        "TeachingBoard" -> {
+            "Teaching Board"
         }
         "Education" -> {
-            "교육"
+            "Education"
         }
         "READY" -> {
-            "수업준비"
+            "Ready"
         }
         "Setting" -> {
-            "관리"
+            "Management"
         }
         else -> {
             currentRoute
@@ -286,8 +285,8 @@ fun MainCompose(
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(
             route = currentRoute,
-            navigateToCenterHome = { navigationActions.navigateToCenterHome()},
-            navigateToHome = { navigationActions.navigateToHome()},
+            navigateToCenterDashboard = { navigationActions.navigateToCenterDashboard()},
+            navigateToTeachingBoard = { navigationActions.navigateToTeachingBoard()},
             navigateToSetting = { navigationActions.navigateToSetting()},
             navigateToEducation = { navigationActions.navigateToEducation()},
             navigateToReady = { navigationActions.navigateToReady()},
@@ -344,11 +343,14 @@ fun MainCompose(
             }, modifier = Modifier
         ) {
             NavHost(
-                navController = navController, startDestination = AllDestinations.CENTERHOME, modifier = modifier.padding(it)
+                navController = navController, startDestination = AllDestinations.CENTERDASHBOARD, modifier = modifier.padding(it)
             ) {
-                composable(AllDestinations.CENTERHOME) {
-                    CenterHomeScreen(
-                        navigateToHome = {navController.navigate(AllDestinations.HOME)}
+                composable(AllDestinations.CENTERDASHBOARD) {
+                    CenterDashboardScreen(
+                        centerViewModel = centerViewModel,
+                        childClassViewModel = childClassViewModel,
+                        childInfoViewModel = childInfoViewModel,
+                        navigateToTeachingBoard = {navController.navigate(AllDestinations.TEACHINGBOARD)}
                     )
 //                    CenterHome(
 //                        centerSelectViewModel = centerSelectViewModel,
@@ -357,7 +359,7 @@ fun MainCompose(
 //                    )
                 }
 
-                composable(AllDestinations.HOME) {
+                composable(AllDestinations.TEACHINGBOARD) {
                     HomeScreen(
                         centerSelectViewModel = centerSelectViewModel,
                         childClassSelectViewModel = childClassSelectViewModel,

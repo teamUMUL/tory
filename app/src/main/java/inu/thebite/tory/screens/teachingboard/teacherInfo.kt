@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.homescreen
+package inu.thebite.tory.screens.teachingboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -50,15 +49,9 @@ fun TeacherInfor(
             .padding(start = 25.dp, end = 25.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(modifier= Modifier. weight(1f),painter = painterResource(id = R.drawable.teacher_image), contentDescription ="" )
-//                Image(modifier = Modifier
-//                    .width(180.dp)
-//                    .height(180.dp),
-//                    painter = painterResource(id = R.drawable.chart_round),
-//                    contentDescription ="null",
-//                    contentScale = ContentScale.Fit)
+            Image(modifier= Modifier. weight(1f).fillMaxSize().padding(16.dp),painter = painterResource(id = R.drawable.teacher_image), contentDescription ="" )
             Column(modifier = Modifier. weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top))
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top))
             {
                 Text(
                     text = "이름/ 자격",
@@ -111,13 +104,12 @@ fun TeacherInfor(
                         color = Color(0xFF000000),
                     )
                 )
-                Spacer(modifier = Modifier. height(20.dp))
+                Spacer(modifier = Modifier. height(25.dp))
                 Button(
                     onClick = { /* Define the click action here */ },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCECECE)),
                     modifier = Modifier  //lto & sto button
                         .fillMaxWidth()
-                        .height(24.dp)
                         .background(
                             color = Color(0xFFcecece),
                             shape = RoundedCornerShape(size = 10.dp)
@@ -126,7 +118,7 @@ fun TeacherInfor(
                 ) {
                     Text(
                         text = "edit",
-                        style = TextStyle(color = Color(0xFFFFFFFF), background = Color(0xFFcecece))
+                        style = TextStyle(color = Color(0xFFFFFFFF), fontSize = 16.sp, background = Color(0xFFcecece))
                     )
                 }
             }
@@ -134,3 +126,4 @@ fun TeacherInfor(
     }
 
 }
+

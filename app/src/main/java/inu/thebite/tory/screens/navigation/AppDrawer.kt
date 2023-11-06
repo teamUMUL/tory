@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,8 +35,8 @@ import inu.thebite.tory.R
 fun AppDrawer(
     route: String,
     modifier: Modifier = Modifier,
-    navigateToCenterHome: () -> Unit = {},
-    navigateToHome: () -> Unit = {},
+    navigateToCenterDashboard: () -> Unit = {},
+    navigateToTeachingBoard: () -> Unit = {},
     navigateToSetting: () -> Unit = {},
     navigateToEducation: () -> Unit = {},
     navigateToReady: () -> Unit = {},
@@ -49,29 +48,28 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = {
                 Text(
-                    text = stringResource(id = R.string.centerHome)
+                    text = stringResource(id = R.string.centerDashboard)
                 )
             },
-            selected = route == AllDestinations.CENTERHOME,
+            selected = route == AllDestinations.CENTERDASHBOARD,
             onClick = {
-                navigateToCenterHome()
+                navigateToCenterDashboard()
                 closeDrawer()
             },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null)},
-            shape = MaterialTheme.shapes.small
+            icon = { Icon(painter = painterResource(id = R.drawable.icon_centerboard), contentDescription = null)},
         )
         NavigationDrawerItem(
             label = {
                 Text(
-                    text = stringResource(id = R.string.home)
+                    text = stringResource(id = R.string.teachingBoard)
                 )
             },
-            selected = route == AllDestinations.HOME,
+            selected = route == AllDestinations.TEACHINGBOARD,
             onClick = {
-                navigateToHome()
+                navigateToTeachingBoard()
                 closeDrawer()
             },
-            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null)},
+            icon = { Icon(painter = painterResource(R.drawable.icon_teachingboard), contentDescription = null)},
             shape = MaterialTheme.shapes.small
         )
         NavigationDrawerItem(
@@ -151,7 +149,7 @@ fun DrawerHeader(modifier: Modifier) {
 @Preview
 @Composable
 fun DrawerHeaderPreview(){
-    AppDrawer(modifier = Modifier, route = AllDestinations.HOME)
+    AppDrawer(modifier = Modifier, route = AllDestinations.TEACHINGBOARD)
 }
 
 

@@ -14,9 +14,9 @@ import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
-import inu.thebite.tory.screens.homescreen.viewmodel.CenterSelectViewModel
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
-import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 //import inu.thebite.tory.screens.education.GameViewModel
 //import inu.thebite.tory.screens.education.LTOViewModel
