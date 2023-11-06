@@ -48,6 +48,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
 import inu.thebite.tory.screens.education2.compose.graph.GraphRow
+import inu.thebite.tory.screens.education2.compose.graph.GraphTopBar
 import inu.thebite.tory.screens.education2.compose.sto.STOItemColumn
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
@@ -152,25 +153,3 @@ fun LTOAndSTOContainer(
 
 
 
-@Composable
-fun GraphTopBar(
-    setIsLTOGraphOn : (Boolean) -> Unit
-){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.1f),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            modifier = Modifier
-                .size(60.dp)
-                .padding(10.dp)
-                .clickable {
-                    setIsLTOGraphOn(false)
-                },
-            painter = painterResource(id = R.drawable.icon_back),
-            contentDescription = null
-        )
-    }
-}

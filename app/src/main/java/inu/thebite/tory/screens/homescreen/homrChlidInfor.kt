@@ -19,6 +19,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -31,11 +33,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
 
 @Composable
 fun childInfor(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    childSelectViewModel : ChildSelectViewModel
 ) {
+    val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
 
         Row(modifier= modifier
             .shadow(
@@ -71,7 +77,7 @@ fun childInfor(
                         color = Color(0xFF0047B3))
                 )
                 Text(
-                    text = "김토리",
+                    text = selectedChildInfo?.name ?: "",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
@@ -89,7 +95,7 @@ fun childInfor(
                         )
                 )
                 Text(
-                    text = "2020-01-10",
+                    text = selectedChildInfo?.birth ?: "",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
@@ -106,7 +112,7 @@ fun childInfor(
                     )
                 )
                 Text(
-                    text = "2023-01-01~2023-01-01",
+                    text = "${selectedChildInfo?.startDate ?: ""}~${selectedChildInfo?.endDate ?: ""}",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
@@ -122,7 +128,7 @@ fun childInfor(
                     )
                 )
                 Text(
-                    text = "발달지연",
+                    text = selectedChildInfo?.etc ?: "",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),

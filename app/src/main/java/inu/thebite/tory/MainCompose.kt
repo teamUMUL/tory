@@ -344,7 +344,8 @@ fun MainCompose(
                     HomeScreen(
                         centerSelectViewModel = centerSelectViewModel,
                         childClassSelectViewModel = childClassSelectViewModel,
-                        childSelectViewModel = childSelectViewModel
+                        childSelectViewModel = childSelectViewModel,
+                        navigateToEducation = {navController.navigate(AllDestinations.EDUCATION)}
                     )
                 }
 
