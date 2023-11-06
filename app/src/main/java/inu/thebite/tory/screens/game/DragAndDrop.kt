@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -35,6 +36,7 @@ internal val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
 fun DraggableScreen(
     modifier: Modifier = Modifier,
     selectedLTO : LtoResponse,
+    cardSize : Dp,
     dragAndDropViewModel: DragAndDropViewModel,
     timerRestart : MutableState<Boolean>,
     content: @Composable BoxScope.() -> Unit,
@@ -57,8 +59,8 @@ fun DraggableScreen(
                     Box(modifier = Modifier
                         .graphicsLayer {
                             val offset = (state.dragPosition + state.dragOffset)
-                            scaleX = 1.3f
-                            scaleY = 1.3f
+                            scaleX = 1.0f
+                            scaleY = 1.0f
                             alpha = if (targetSize == IntSize.Zero) 0f else .9f
                             translationX = offset.x.minus(targetSize.width / 2)
                             translationY = offset.y.minus(targetSize.height / 2)
@@ -75,8 +77,8 @@ fun DraggableScreen(
                                     .build(),
                                 placeholder = painterResource(id = R.drawable.icon_edit),
                                 contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.size(300.dp),
+//                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.size(cardSize),
                             )
                         } else if(selectedLTO.game == "일반화 매칭") {
                             AsyncImage(
@@ -86,8 +88,8 @@ fun DraggableScreen(
                                     .build(),
                                 placeholder = painterResource(id = R.drawable.icon_edit),
                                 contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.size(300.dp),
+//                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.size(cardSize),
                             )
                         }
 //                    state.draggableComposable?.invoke()

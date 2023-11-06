@@ -154,10 +154,10 @@ fun GameScreen(
                             val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
                             imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
                                 dragAndDropViewModel.setMainItem(foundImage)
-                                dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                dragAndDropViewModel.resetMainItemsGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
                             }
                         } else {
-                            dragAndDropViewModel.restartGeneralMode(
+                            dragAndDropViewModel.resetMainItemsGeneralMode(
                                 imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
                             )
                         }

@@ -60,7 +60,7 @@ fun childInfor(
         ) {
             Column(modifier= Modifier
                 .fillMaxSize()
-                .padding(start = 25.dp, bottom = 15.dp, top = 15.dp, end = 25.dp),
+                .padding(start = 25.dp, bottom = 15.dp,  end = 25.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
                 horizontalAlignment = Alignment.Start,
             ) {
@@ -71,7 +71,8 @@ fun childInfor(
 //                    painter = painterResource(id = R.drawable.chart_round),
 //                    contentDescription ="null",
 //                    contentScale = ContentScale.Fit)
-                Column(modifier = Modifier.weight(1f)) {
+                Column(modifier = Modifier.weight(1f).padding(top = 30.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = "이름",
                         style = TextStyle(

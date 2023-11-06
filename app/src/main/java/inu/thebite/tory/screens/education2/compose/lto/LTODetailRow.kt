@@ -89,7 +89,6 @@ fun LTODetailRow(
 
                 }
             )
-            Spacer(modifier = Modifier.width(10.dp))
             OutlinedButton(
                 modifier = Modifier
                     .size(40.dp),
@@ -113,6 +112,7 @@ fun LTODetailRow(
                     contentDescription = null,
                     tint = Color.Black)
             }
+            Spacer(modifier = Modifier.width(10.dp))
             OutlinedButton(
                 modifier = Modifier
                     .weight(1.5f)

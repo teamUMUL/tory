@@ -65,7 +65,8 @@ fun SameGameScreen(
             .background(Color.White),
         selectedLTO = selectedLTO,
         dragAndDropViewModel = dragAndDropViewModel,
-        timerRestart = timerRestart
+        timerRestart = timerRestart,
+        cardSize = cardSize
     ){
         Column(
             modifier = Modifier
@@ -147,7 +148,7 @@ fun SameGameScreen(
                                     .build(),
                                 placeholder = painterResource(id = R.drawable.icon_edit),
                                 contentDescription = null,
-                                contentScale = ContentScale.Crop,
+//                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(cardSize),
                                 alpha = if(isInBound) 0.5f else 1f
@@ -237,7 +238,7 @@ fun SameGameScreen(
                                         .build(),
                                     placeholder = painterResource(id = R.drawable.icon_edit),
                                     contentDescription = null,
-                                    contentScale = ContentScale.Crop,
+//                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(cardSize),
                                     alpha = if(isInBound) 0.5f else 1f
@@ -320,7 +321,7 @@ fun SameGameScreen(
                                         .build(),
                                     placeholder = painterResource(id = R.drawable.icon_edit),
                                     contentDescription = null,
-                                    contentScale = ContentScale.Crop,
+//                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(cardSize),
                                     alpha = if(isInBound) 0.5f else 1f
@@ -366,7 +367,7 @@ fun SameGameScreen(
                                 .build(),
                             placeholder = painterResource(id = R.drawable.icon_edit),
                             contentDescription = null,
-                            contentScale = ContentScale.Crop,
+//                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(cardSize),
                         )

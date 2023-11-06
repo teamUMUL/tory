@@ -35,7 +35,7 @@ fun pieChartPreview(
     modifier: Modifier = Modifier,
     radius: Float = 240f  //
 ) {
-    val datalist = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    val datalist = mutableListOf(0, 5, 3, 4, 9, 2, 3, 6, 3, 10)
 
     Column(
         modifier = modifier,

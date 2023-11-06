@@ -61,7 +61,8 @@ fun GeneralGameScreen(
             .background(Color.White),
         dragAndDropViewModel = dragAndDropViewModel,
         timerRestart = timerRestart,
-        selectedLTO = selectedLTO
+        selectedLTO = selectedLTO,
+        cardSize = cardSize
     ){
         Column(
             modifier = Modifier
@@ -142,7 +143,7 @@ fun GeneralGameScreen(
                                     .build(),
                                 placeholder = painterResource(id = R.drawable.icon_edit),
                                 contentDescription = null,
-                                contentScale = ContentScale.Crop,
+//                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(cardSize),
                                 alpha = if(isInBound) 0.5f else 1f
@@ -237,7 +238,7 @@ fun GeneralGameScreen(
                                         .build(),
                                     placeholder = painterResource(id = R.drawable.icon_edit),
                                     contentDescription = null,
-                                    contentScale = ContentScale.Crop,
+//                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(cardSize),
                                     alpha = if(isInBound) 0.5f else 1f
@@ -324,7 +325,7 @@ fun GeneralGameScreen(
                                         .build(),
                                     placeholder = painterResource(id = R.drawable.icon_edit),
                                     contentDescription = null,
-                                    contentScale = ContentScale.Crop,
+//                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(cardSize),
                                     alpha = if(isInBound) 0.5f else 1f
