@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.ui.theme.LightGray
 import inu.thebite.tory.ui.theme.gray
-import inu.thebite.tory.ui.theme.white
 import kotlin.math.PI
 import kotlin.math.atan2
 
@@ -36,6 +35,8 @@ fun pieChartPreview(
     modifier: Modifier = Modifier,
     radius: Float = 240f  //
 ) {
+    val datalist = mutableListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -44,6 +45,7 @@ fun pieChartPreview(
         Box(
             modifier = Modifier
         ) {
+
 
             PieChart(
                 modifier = Modifier
@@ -61,82 +63,82 @@ fun pieChartPreview(
                     PieChartInput(
                         color = Color(0xFF3D0E61),
                         value = 10,
-                        number = 3,
-                        size = Size(width = radius*1.3f, height = radius*1.3f),
-                        topLeft = radius*1.3f ,
+                        number = datalist[0],
+                        size = Size(width = radius*(1 + datalist[0] /10.0f), height = radius*(1 + datalist[0] /10.0f)),
+                        topLeft = radius*(1 + datalist[0] /10.0f) ,
                         description = "학습준비"
 
                     ),
                     PieChartInput(
                         color = Color(0xFF461177),
                         value = 10,
-                        number = 12,
-                        size = Size(width = radius*2.2f, height = radius*2.2f ),
-                        topLeft = radius*2.2f ,
+                        number = datalist[1],
+                        size = Size(width = radius*(1 + datalist[1] /10.0f), height = radius*(1 + datalist[1] /10.0f)),
+                        topLeft = radius*(1 + datalist[1] /10.0f),
                         description = "매칭"
                     ),
                     PieChartInput(
                         color = Color(0xFF4E148C),
                         value = 10,
-                        number = 5,
-                        size = Size(width = radius*1.5f, height = radius*1.5f),
-                        topLeft = radius*1.5f ,
+                        number = datalist[2],
+                        size = Size(width = radius*(1 + datalist[2] /10.0f), height = radius*(1 + datalist[2] /10.0f)),
+                        topLeft = radius*(1 + datalist[2] /10.0f),
                         description = "동작"
                     ),
                     PieChartInput(
                         color = Color(0xFF5829A7),
                         value = 10,
-                        number = 10,
-                        size = Size(width = radius*2f, height = radius*2f),
-                        topLeft = radius*2f ,
+                        number = datalist[3],
+                        size = Size(width = radius*(1 + datalist[3] /10.0f), height = radius*(1 + datalist[3] /10.0f)),
+                        topLeft = radius*(1 + datalist[3] /10.0f),
                         description = "언어"
                     ),
                     PieChartInput(
                         color = Color(0xFF613DC1),
                         value = 10,
-                        number =4,
-                        size = Size(width = radius*1.4f, height = radius*1.4f),
-                        topLeft = radius*1.4f ,
+                        number = datalist[4],
+                        size = Size(width = radius*(1 + datalist[4] /10.0f), height = radius*(1 + datalist[4] /10.0f)),
+                        topLeft = radius*(1 + datalist[4] /10.0f),
                         description = "변별"
                     ),
                     PieChartInput(
                         color = Color(0xFF7364D2),
                         value = 10,
-                        number = 0,
-                        size = Size(width = radius*0.5f, height = radius*0.5f),
-                        topLeft = radius*0.5f ,
+                        number = datalist[5],
+                        size = Size(width = radius*(1 + datalist[5] /10.0f), height = radius*(1 + datalist[5] /10.0f)),
+                        topLeft = radius*(1 + datalist[5] /10.0f),
                         description = "지시"
                     ),
                     PieChartInput(
                         color = Color(0xFF858AE3),
                         value = 10,
-                        number = 1,
-                        size = Size(width = radius*1.1f, height = radius*1.1f),
-                        topLeft = radius*1.1f ,
+                        number = datalist[6],
+                        size = Size(width = radius*(1 + datalist[6] /10.0f), height = radius*(1 + datalist[6] /10.0f)),
+                        topLeft = radius*(1 + datalist[6] /10.0f),
                         description = "명명"
                     ),
                     PieChartInput(
                         color = Color(0xFF8EB5F0),
                         value = 10,
-                        number = 0,
-                        size = Size(width = radius*0.5f, height = radius*0.5f),
-                        topLeft = radius*0.5f ,
+                        number = datalist[7],
+                        size = Size(width = radius*(1 + datalist[7] /10.0f), height = radius*(1 + datalist[7] /10.0f)),
+                        topLeft = radius*(1 + datalist[7] /10.0f),
                         description = "요구"
                     ),
                     PieChartInput(
                         color = Color(0xFF93CAF6),
                         value = 10,
-                        number = 6,
-                        size = Size(width = radius*1.6f, height = radius*1.6f),
-                        topLeft = radius*1.6f ,
+                        number = datalist[8],
+                        size = Size(width = radius*(1 + datalist[8] /10.0f), height = radius*(1 + datalist[8] /10.0f)),
+                        topLeft = radius*(1 + datalist[8] /10.0f),
                         description = "인트라"
                     ),
                     PieChartInput(
                         color = Color(0xFF97DFFC),
                         value = 10,
-                        number = 1,
-                        size = Size(width = radius*1.1f, height = radius*1.1f),
-                        topLeft = radius*1.1f ,
+                        number = datalist[9],
+                        size = Size(width = radius*(1 + datalist[9] /10.0f), height = radius*(1 + datalist[9] /10.0f)),
+                        topLeft = radius*(1 + datalist[9] /10.0f),
                         description = "사회성"
                     ),
                 )
@@ -144,6 +146,15 @@ fun pieChartPreview(
         }
     }
 }
+data class PieChartInput(
+    val color: Color,
+    val value: Int,
+    val number: Int?,
+    val size: Size,
+    val topLeft: Float,
+    val description: String,
+    val isTapped: Boolean = false
+)
 
 @Composable
 fun PieChart(
@@ -314,12 +325,5 @@ fun PieChart(
     }
 }
 
-data class PieChartInput(
-    val color: Color,
-    val value: Int,
-    val number: Int,
-    val size: Size,
-    val topLeft: Float,
-    val description: String,
-    val isTapped: Boolean = false
-)
+
+
