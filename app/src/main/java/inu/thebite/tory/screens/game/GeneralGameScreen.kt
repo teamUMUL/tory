@@ -87,7 +87,7 @@ fun GeneralGameScreen(
                                     //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                     if(dragInGameItem.category.name == gameCategory.category.name){
                                         dragAndDropViewModel.updateGameItemGeneralMode(
-                                            gameCategory.copy(
+                                            dragAndDropViewModel.secondMainItem.value!!.copy(
                                                 url = imageViewModel.findImageByName(imageName = "Correct")?.url
                                                     ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
                                             )
@@ -176,7 +176,7 @@ fun GeneralGameScreen(
                                         //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                         if(dragInGameItem.category.name == gameCategory.category.name){
                                             dragAndDropViewModel.updateGameItemGeneralMode(
-                                                dragInGameItem.copy(
+                                                dragAndDropViewModel.secondMainItem.value!!.copy(
                                                     url = imageViewModel.findImageByName(imageName = "Correct")?.url
                                                         ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
                                                 )
@@ -263,7 +263,7 @@ fun GeneralGameScreen(
                                         //드래그해서 들어온 아이템의 이름과 드래그한 곳의 이름이 같은 경우에 맞다는 판정
                                         if(dragInGameItem.category.name == gameCategory.category.name){
                                             dragAndDropViewModel.updateGameItemGeneralMode(
-                                                dragInGameItem.copy(
+                                                dragAndDropViewModel.secondMainItem.value!!.copy(
                                                     url = imageViewModel.findImageByName(imageName = "Correct")?.url
                                                         ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
                                                 )
