@@ -32,7 +32,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     centerSelectViewModel: CenterSelectViewModel,
     childClassSelectViewModel: ChildClassSelectViewModel,
-    childSelectViewModel: ChildSelectViewModel
+    childSelectViewModel: ChildSelectViewModel,
+    navigateToEducation : () -> Unit,
 ){
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -64,7 +65,9 @@ fun HomeScreen(
                 //            Spacer(modifier = Modifier.width(590.dp))
 
                 Button(
-                    onClick = { /* Define the click action here */ },
+                    onClick = {
+                        navigateToEducation()
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
                     modifier = Modifier  //lto & sto button
                         .shadow(
