@@ -126,7 +126,7 @@ fun HomeScreen(
                     .height(446.dp)
                     .padding(start = 12.dp)
             ) {
-                childInfor(modifier = Modifier.weight(1f))
+                childInfor(modifier = Modifier.weight(1f), childSelectViewModel = childSelectViewModel)
 
                 Row (modifier = modifier
                     .shadow(
