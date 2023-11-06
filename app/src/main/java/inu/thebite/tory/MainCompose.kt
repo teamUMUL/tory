@@ -44,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.screens.centerhomescreen.CenterHomeScreen
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
@@ -258,11 +259,14 @@ fun MainCompose(
     }
 
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentNavBackStackEntry?.destination?.route ?: AllDestinations.HOME
+    val currentRoute = currentNavBackStackEntry?.destination?.route ?: AllDestinations.CENTERHOME
     val navigationActions = remember(navController){
         AppNavigationActions(navController)
     }
     val currentRouteToKorean = when(currentRoute){
+        "CenterHome" -> {
+            "센터 홈"
+        }
         "Home" -> {
             "홈"
         }
@@ -282,6 +286,7 @@ fun MainCompose(
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(
             route = currentRoute,
+            navigateToCenterHome = { navigationActions.navigateToCenterHome()},
             navigateToHome = { navigationActions.navigateToHome()},
             navigateToSetting = { navigationActions.navigateToSetting()},
             navigateToEducation = { navigationActions.navigateToEducation()},
@@ -339,8 +344,16 @@ fun MainCompose(
             }, modifier = Modifier
         ) {
             NavHost(
-                navController = navController, startDestination = AllDestinations.HOME, modifier = modifier.padding(it)
+                navController = navController, startDestination = AllDestinations.CENTERHOME, modifier = modifier.padding(it)
             ) {
+                composable(AllDestinations.CENTERHOME) {
+                    CenterHomeScreen()
+//                    CenterHome(
+//                        centerSelectViewModel = centerSelectViewModel,
+//                        childClassSelectViewModel = childClassSelectViewModel,
+//                        childSelectViewModel = childSelectViewModel
+//                    )
+                }
 
                 composable(AllDestinations.HOME) {
                     HomeScreen(

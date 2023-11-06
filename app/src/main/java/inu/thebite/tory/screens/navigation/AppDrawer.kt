@@ -36,6 +36,7 @@ import inu.thebite.tory.R
 fun AppDrawer(
     route: String,
     modifier: Modifier = Modifier,
+    navigateToCenterHome: () -> Unit = {},
     navigateToHome: () -> Unit = {},
     navigateToSetting: () -> Unit = {},
     navigateToEducation: () -> Unit = {},
@@ -45,6 +46,20 @@ fun AppDrawer(
     ModalDrawerSheet(modifier = Modifier) {
         DrawerHeader(modifier)
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
+        NavigationDrawerItem(
+            label = {
+                Text(
+                    text = stringResource(id = R.string.centerHome)
+                )
+            },
+            selected = route == AllDestinations.CENTERHOME,
+            onClick = {
+                navigateToCenterHome()
+                closeDrawer()
+            },
+            icon = { Icon(imageVector = Icons.Default.Home, contentDescription = null)},
+            shape = MaterialTheme.shapes.small
+        )
         NavigationDrawerItem(
             label = {
                 Text(
