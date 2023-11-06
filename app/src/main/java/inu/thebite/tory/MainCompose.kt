@@ -347,7 +347,9 @@ fun MainCompose(
                 navController = navController, startDestination = AllDestinations.CENTERHOME, modifier = modifier.padding(it)
             ) {
                 composable(AllDestinations.CENTERHOME) {
-                    CenterHomeScreen()
+                    CenterHomeScreen(
+                        navigateToHome = {navController.navigate(AllDestinations.HOME)}
+                    )
 //                    CenterHome(
 //                        centerSelectViewModel = centerSelectViewModel,
 //                        childClassSelectViewModel = childClassSelectViewModel,
