@@ -2,6 +2,7 @@ package inu.thebite.tory.screens.game
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -143,6 +144,8 @@ fun GameScreen(
                     if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
                         setFirstSuccessImage(imageViewModel.findImageByName(dragAndDropViewModel.firstMainItem.value!!.name))
                         setSecondSuccessImage(imageViewModel.findImageByName(dragAndDropViewModel.secondMainItem.value!!.name))
+                        Log.d("reset", "addSecondImage")
+                        Log.d("reset", dragAndDropViewModel.secondMainItem.value!!.name)
                         setSuccessDialog(true)
                     }
                     if(gameViewModel.oneGameResult.value != "+"){

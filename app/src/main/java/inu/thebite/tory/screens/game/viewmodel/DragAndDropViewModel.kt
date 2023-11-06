@@ -139,6 +139,7 @@ class DragAndDropViewModel :ViewModel() {
         val shuffledImagesByCategory = imagesByCategory.shuffled(Random(System.currentTimeMillis()))
         setFirstMainItem(shuffledImagesByCategory[0])
         setSecondMainItem(shuffledImagesByCategory[1])
+        Log.d("reset", "resetMainItemGeneralMode")
     }
 
     fun stopDragging(){
