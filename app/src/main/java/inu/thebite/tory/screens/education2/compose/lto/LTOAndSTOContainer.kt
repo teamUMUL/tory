@@ -2,6 +2,8 @@ package inu.thebite.tory.screens.education2.compose.lto
 
 import android.content.Context
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,10 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -30,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
+import inu.thebite.tory.R
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
@@ -81,7 +87,17 @@ fun LTOAndSTOContainer(
                 ),
                 onDismissRequest = { setIsLTOGraphOn(false) }
             ){
-                GraphRow(stos = ltoGraphList, stoViewModel = stoViewModel)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.White),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    GraphTopBar(
+                        setIsLTOGraphOn = {setIsLTOGraphOn(it)}
+                    )
+                    GraphRow(stos = ltoGraphList, stoViewModel = stoViewModel)
+                }
             }
         }
     }
@@ -136,3 +152,25 @@ fun LTOAndSTOContainer(
 
 
 
+@Composable
+fun GraphTopBar(
+    setIsLTOGraphOn : (Boolean) -> Unit
+){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.1f),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(60.dp)
+                .padding(10.dp)
+                .clickable {
+                    setIsLTOGraphOn(false)
+                },
+            painter = painterResource(id = R.drawable.icon_back),
+            contentDescription = null
+        )
+    }
+}
