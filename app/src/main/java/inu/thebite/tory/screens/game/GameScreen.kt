@@ -141,7 +141,7 @@ fun GameScreen(
             if(isCardSelectEnd){
                 if(points.size < selectedSTO.count){
                     if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-                        setFirstSuccessImage(dragAndDropViewModel.firstMainItem.value!!)
+                        setFirstSuccessImage(imageViewModel.findImageByName(dragAndDropViewModel.firstMainItem.value!!.name))
                         setSecondSuccessImage(imageViewModel.findImageByName(dragAndDropViewModel.secondMainItem.value!!.name))
                         setSuccessDialog(true)
                     }
