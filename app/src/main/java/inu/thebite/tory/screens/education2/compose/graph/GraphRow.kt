@@ -53,12 +53,23 @@ fun GraphRow(
             .border(4.dp, MaterialTheme.colorScheme.tertiary, RoundedCornerShape(8.dp))
     ) {
             items(stos){ sto ->
+                val plusList = mutableListOf<Float>()
+                val minusList = mutableListOf<Float>()
+                sto.result.forEachIndexed { index, data ->
+                    if (index % 2 == 0) {
+                        // If the index is even, add it to plusList
+                        plusList.add(data)
+                    } else {
+                        // If the index is odd, add it to minusList
+                        minusList.add(data)
+                    }
+                }
                 var stoName = ""
                 stoViewModel.findSTOById(sto.stoId)?.let {
                     stoName = it.name
                 }
                 val stoId = sto.stoId
-                if(sto.result[0].isNotEmpty()){
+                if(plusList.isNotEmpty()){
                     val steps = 5
                     var plusIndex = 0f
                     var minusIndex = 0f
@@ -67,38 +78,38 @@ fun GraphRow(
                     var minLineIndex = 0f
 
                     val limitLine = mutableListOf<Point>()
-                    for(a in sto.result[0]){
+                    for(a in plusList){
                         limitLine.add(Point(limitLineIndex, 100f))
                         limitLineIndex += 1f
                     }
                     val minLine = mutableListOf<Point>()
-                    for(a in sto.result[0]){
+                    for(a in plusList){
                         minLine.add(Point(minLineIndex, 0f))
                         minLineIndex += 1f
                     }
                     val successLine = mutableListOf<Point>()
-                    for(b in sto.result[0]){
+                    for(b in plusList){
                         successLine.add(Point(successLineIndex, 90f))
                         successLineIndex += 1f
                     }
                     val pointsData1 = mutableListOf<Point>()
-                    for(plus in sto.result[0]){
+                    for(plus in plusList){
                         pointsData1.add(Point(plusIndex, plus.toInt().toFloat()))
                         Log.e("성공값", plus.toInt().toFloat().toString())
                         plusIndex += 1f
                     }
                     val pointsData2 = mutableListOf<Point>()
-                    for(minus in sto.result[1]){
+                    for(minus in minusList){
                         pointsData2.add(Point(minusIndex, minus.toInt().toFloat()))
                         Log.e("실패값", minus.toInt().toFloat().toString())
                         minusIndex += 1f
                     }
-//                    val xAxisLabelList = sto.date
+                    val xAxisLabelList = sto.date
                     val xAxisData = AxisData.Builder()
                         .axisStepSize(50.dp)
                         .backgroundColor(Color.Transparent)
                         .steps(pointsData1.size - 1)
-                        .labelData { i -> "          "/*+formatDateToYYYYMMDD(xAxisLabelList[i]).takeLast(5)*/
+                        .labelData { i -> "          "+xAxisLabelList[i]
                         }
                         .labelAndAxisLinePadding(0.dp)
                         .axisLineColor(Color.Black)
