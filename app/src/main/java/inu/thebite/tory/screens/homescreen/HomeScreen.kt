@@ -102,8 +102,6 @@ fun HomeScreen(
                     onClick = {
                         navigateToEducation()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
-                    onClick = { /* Define the click action here */ },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7F5AF0)),
                     modifier = Modifier  //lto & sto button
                         .shadow(
