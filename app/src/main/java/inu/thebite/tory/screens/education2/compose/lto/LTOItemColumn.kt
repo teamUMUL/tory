@@ -74,10 +74,14 @@ fun LTOItemColumn(
         mutableStateOf(false)
     }
 
+
+
     LaunchedEffect(selectedLTO){
         selectedLTO?.let { selectedLTO ->
             selectedLTOStatus.value = selectedLTO.status
+            ltoViewModel.getLTOGraph(selectedLTO)
         }
+
     }
 
     LaunchedEffect(selectedLTOStatus.value){
