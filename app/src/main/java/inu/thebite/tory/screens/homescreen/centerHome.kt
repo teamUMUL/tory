@@ -20,8 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -35,7 +33,7 @@ import inu.thebite.tory.screens.homescreen.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.homescreen.viewmodel.ChildSelectViewModel
 
 @Composable
-fun HomeScreen(
+fun CenterHome(
     modifier: Modifier = Modifier,
     centerSelectViewModel: CenterSelectViewModel,
     childClassSelectViewModel: ChildClassSelectViewModel,
@@ -47,7 +45,7 @@ fun HomeScreen(
         .background(color = Color(0xFFF3F3F3))
 
     ) {
-        Column(modifier=Modifier.weight(1f)) {
+        Column(modifier= Modifier.weight(1f)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -56,7 +54,7 @@ fun HomeScreen(
 
             ) {
                 Text(
-                    text = "Dash board",
+                    text = "Center Dash Board",
                     modifier = Modifier
                         .width(240.dp)
                         .weight(1f)
@@ -69,33 +67,7 @@ fun HomeScreen(
                         textAlign = TextAlign.Start,
                     )
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(4f)
-//                    .height(112.dp)
-                        .padding(start = 16.dp, end = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
 
-                ) {
-
-                    ChainCard(
-                        modifier = Modifier.weight(1f),
-                        centerSelectViewModel = centerSelectViewModel,
-                        childClassSelectViewModel = childClassSelectViewModel,
-                        childSelectViewModel = childSelectViewModel
-                    )// 지점 선택
-                    ClassCard(
-                        modifier = Modifier.weight(1f),
-                        childClassSelectViewModel = childClassSelectViewModel,
-                        childSelectViewModel = childSelectViewModel
-                    ) //반 선택
-                    ChildrenCard(
-                        modifier = Modifier.weight(1f),
-                        childSelectViewModel = childSelectViewModel
-                    ) //아이 선택
-
-                }
 
                 Button(
                     onClick = { /* Define the click action here */ },
@@ -106,10 +78,7 @@ fun HomeScreen(
                             spotColor = Color(0x40000000),
                             ambientColor = Color(0x40000000)
                         )
-                        .weight(1f)
-                        .width(60.dp)
                         .padding(end = 16.dp)
-                        .height(60.dp)
                         .background(
                             color = Color(0xFF7F5AF0),
                             shape = RoundedCornerShape(size = 10.dp)
@@ -117,60 +86,58 @@ fun HomeScreen(
 
                 ) {
                     Text(
-                        text = "LTO & STO & PLAY",
+                        text = "Teaching Board",
                         style = TextStyle(color = Color(0xFFFFFFFF), background = Color(0xFF7F5AF0))
                     )
                 }
             }
         }
-        Column(modifier = Modifier.weight(1.3f)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-//                    .height(112.dp)
-                    .padding(start = 16.dp, end = 16.dp),
 
-            ) {
-                Image(modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                        .clickable { /* Define the click action here */  },
-                    painter = painterResource(id = R.drawable.recent_list_btn), contentDescription = "Recent List Button")
-                Image(modifier = Modifier
-                        .weight(1f)
-                        .size(700.dp)
-                        .width(810.dp)
-                        .clickable { /* Define the click action here */  },
-                    painter = painterResource(id = R.drawable.report_btn), contentDescription = "Report Button")
 
-            }
-        }
-
-        Column(modifier = Modifier
-            .weight(8f)
-            ) {
+        Column(modifier = Modifier.weight(8f)
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 12.dp)
             ) {
-                childInfor(modifier = Modifier.weight(1f))
+                TeacherInfor(modifier = Modifier.weight(1f))
 
-                Row (modifier = modifier
+                Column(modifier = Modifier
                     .fillMaxHeight()
                     .padding(start = 16.dp, end = 16.dp, bottom = 4.dp)
                     .weight(3f)
                     .fillMaxHeight()
-                    .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
+                    .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
 
-                ) {
+                    ) {
 
-//                    pieChartPreview()
-                    chart_bar()
+                        ChainCard(
+                            modifier = Modifier.weight(1f),
+                            centerSelectViewModel = centerSelectViewModel,
+                            childClassSelectViewModel = childClassSelectViewModel,
+                            childSelectViewModel = childSelectViewModel
+                        )// 지점 선택
+                        ClassCard(
+                            modifier = Modifier.weight(1f),
+                            childClassSelectViewModel = childClassSelectViewModel,
+                            childSelectViewModel = childSelectViewModel
+                        ) //반 선택
+                        ChildrenCard(
+                            modifier = Modifier.weight(1f),
+                            childSelectViewModel = childSelectViewModel
+                        ) //아이 선택
 
+                    }
+                    Row {
 
+                    }
                 }
-
             }
         }
         Column(modifier= Modifier.weight(1f)) {
@@ -186,7 +153,4 @@ fun HomeScreen(
 //            }
 
     }
-
 }
-
-

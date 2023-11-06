@@ -34,10 +34,10 @@ import kotlin.math.atan2
 @Composable
 fun pieChartPreview(
     modifier: Modifier = Modifier,
-    radius: Float = 120f  //
+    radius: Float = 240f  //
 ) {
     Column(
-        modifier = modifier.padding(start = 50.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -47,7 +47,7 @@ fun pieChartPreview(
 
             PieChart(
                 modifier = Modifier
-                    .size(170.dp)
+                    .size(340.dp)
                     .padding(top = 40.dp),// 파이차트 전체 사이즈
 
                 // size - 한 조각의 크기
@@ -148,8 +148,8 @@ fun pieChartPreview(
 @Composable
 fun PieChart(
     modifier: Modifier = Modifier,
-    radius: Float = 150f,  //색 원
-    innerRadius: Float = 20f,  //중앙 하얀 원
+    radius: Float = 240f,  //색 원
+    innerRadius: Float = 120f,  //중앙 하얀 원
     input: List<PieChartInput>,
 ) {
     var circleCenter by remember {
@@ -280,9 +280,9 @@ fun PieChart(
                                 circleCenter.x,
                                 circleCenter.y + (radius - (radius - innerRadius) / 1.5f) * factor,
                                 Paint().apply {
-                                    textSize = 6.sp.toPx()
+                                    textSize = 12.sp.toPx()
                                     textAlign = Paint.Align.CENTER
-                                    color = white.toArgb()
+                                    color = LightGray.toArgb()
                                 }
                             )
                         }
@@ -296,7 +296,7 @@ fun PieChart(
                                 circleCenter.x,
                                 circleCenter.y + radius * 1.3f * factor,
                                 Paint().apply {
-                                    textSize = 10.sp.toPx()
+                                    textSize = 16.sp.toPx()
                                     textAlign = Paint.Align.CENTER
                                     color = gray.toArgb()
                                     isFakeBoldText = true

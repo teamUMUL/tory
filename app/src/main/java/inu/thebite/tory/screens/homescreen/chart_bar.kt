@@ -256,7 +256,7 @@ fun BarGraph(
                     drawContext.canvas.nativeCanvas.apply {
                         drawText(
                             round(barData.min() + yAxisScaleText * i).toString(),
-                            30f,
+                            20f,
                             size.height - yAxisScaleSpacing - i * size.height / 3.4f,
                             textPaint
                         )
@@ -267,7 +267,7 @@ fun BarGraph(
                 // 수평 점선
                 (1..3).forEach {
                     drawLine(
-                        start = Offset(x = yAxisScaleSpacing +30f, y = yCoordinates[it]),
+                        start = Offset(x = yAxisScaleSpacing +20f, y = yCoordinates[it]),
                         end = Offset(x= size.width, y = yCoordinates[it]),
                         color = Color.Gray,
                         strokeWidth = 1f,
@@ -328,7 +328,7 @@ fun BarGraph(
                             // 각각의 그래프
                             Box(
                                 modifier = Modifier
-                                    .padding(bottom = 5.dp)
+//                                    .padding(bottom = 5.dp)
                                     .width(15.dp)
                                     .height(height - 10.dp)
                                     .background(Color.Transparent),
@@ -427,7 +427,7 @@ fun BarGraph(
 //                                )
                                 // scale x-axis
                                 Text(
-                                    modifier = Modifier.padding(bottom = 3.dp),
+                                    modifier = Modifier.padding(bottom = 3.dp, end = 5.dp),
                                     text = xAxisScaleData[index].toString(),
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
