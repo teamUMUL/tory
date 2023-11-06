@@ -79,7 +79,6 @@ fun LTOItemColumn(
     LaunchedEffect(selectedLTO){
         selectedLTO?.let { selectedLTO ->
             selectedLTOStatus.value = selectedLTO.status
-            ltoViewModel.getLTOGraph(selectedLTO)
         }
 
     }
@@ -179,9 +178,11 @@ fun LTOItemColumn(
                                 if (selectedLTO == lto) {
                                     ltoViewModel.clearSelectedCenter()
                                     selectedLTOStatus.value = ""
+                                    ltoViewModel.clearLTOGraphList()
                                 } else {
                                     ltoViewModel.setSelectedLTO(lto)
                                     stoViewModel.getSTOsByLTO(lto)
+                                    ltoViewModel.getLTOGraph(lto)
                                 }
                             },
                         verticalAlignment = Alignment.CenterVertically,
