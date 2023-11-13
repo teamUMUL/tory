@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.input.pointer.pointerInput
@@ -35,7 +36,7 @@ fun pieChartPreview(
     modifier: Modifier = Modifier,
     radius: Float = 240f  //
 ) {
-    val datalist = mutableListOf(0, 5, 3, 4, 9, 2, 3, 6, 3, 10)
+    val datalist = mutableListOf(0, 5, 3, 4, 3, 2, 3, 6, 3, 10)
 
     Column(
         modifier = modifier,
@@ -160,7 +161,7 @@ data class PieChartInput(
 fun PieChart(
     modifier: Modifier = Modifier,
     radius: Float = 240f,  //색 원
-    innerRadius: Float = 120f,  //중앙 하얀 원
+    innerRadius: Float = 200f,  //중앙 하얀 원
     input: List<PieChartInput>,
 ) {
     var circleCenter by remember {
@@ -293,7 +294,7 @@ fun PieChart(
                                 Paint().apply {
                                     textSize = 12.sp.toPx()
                                     textAlign = Paint.Align.CENTER
-                                    color = LightGray.toArgb()
+                                    color = Gray.toArgb()
                                 }
                             )
                         }

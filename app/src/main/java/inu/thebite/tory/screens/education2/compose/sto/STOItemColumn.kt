@@ -390,7 +390,7 @@ fun STOItemColumn(
                                                 }
                                             )
                                             STOSettingButtons(
-                                                modifier = Modifier.weight(2.5f),
+                                                modifier = Modifier.weight(3.0f),
                                                 setUpdateSTODialog = {
                                                     setUpdateSTODialog(it)
                                                 },
