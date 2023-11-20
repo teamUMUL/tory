@@ -206,11 +206,12 @@ fun STODetailTableAndGameResult(
                             ) {
                                 items(5) { horizonIndex ->
                                     var stoGameData = ""
-                                    if(points.size > (5 * verticalIndex) + horizonIndex){
-                                        stoGameData = points[(5 * verticalIndex) + horizonIndex]
-                                    } else {
-                                        stoGameData = "n"
-                                    }
+                                    stoGameData =
+                                        if(points.size > (5 * verticalIndex) + horizonIndex){
+                                            points[(5 * verticalIndex) + horizonIndex]
+                                        } else {
+                                            "n"
+                                        }
                                     Card(
                                         modifier = Modifier
                                             .padding(2.dp)

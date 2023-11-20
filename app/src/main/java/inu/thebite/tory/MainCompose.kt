@@ -3,9 +3,12 @@ package inu.thebite.tory
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,6 +19,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyListItemInfo
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -26,8 +35,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +56,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.schedule.DummySchedule
+import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
@@ -52,23 +69,22 @@ import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
-import inu.thebite.tory.screens.teachingboard.HomeScreen
-import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
-import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
-import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
 import inu.thebite.tory.screens.ready.ReadyScreen
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
+import inu.thebite.tory.screens.setting.SettingScreen
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
-import inu.thebite.tory.screens.setting.SettingScreen
+import inu.thebite.tory.screens.teachingboard.HomeScreen
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -79,20 +95,20 @@ fun MainCompose(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
 //    ltoViewModel : LTOViewModel,
-    centerSelectViewModel : CenterSelectViewModel,
-    childClassSelectViewModel : ChildClassSelectViewModel,
-    childSelectViewModel : ChildSelectViewModel,
+    centerSelectViewModel: CenterSelectViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel,
 //    stoViewModel : STOViewModel,
-    centerViewModel : CenterViewModel,
-    childClassViewModel : ChildClassViewModel,
-    childInfoViewModel : ChildInfoViewModel,
+    centerViewModel: CenterViewModel,
+    childClassViewModel: ChildClassViewModel,
+    childInfoViewModel: ChildInfoViewModel,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
-    educationViewModel : EducationViewModel,
-    stoViewModel : STOViewModel,
-    imageViewModel : ImageViewModel,
+    educationViewModel: EducationViewModel,
+    stoViewModel: STOViewModel,
+    imageViewModel: ImageViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
-    gameViewModel : GameViewModel
+    gameViewModel: GameViewModel
 
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
@@ -116,7 +132,8 @@ fun MainCompose(
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
     val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
 
-    LaunchedEffect(_selectedCenter, allCenters){
+
+    LaunchedEffect(_selectedCenter, allCenters) {
         _selectedCenter?.let {
             childClassSelectViewModel.getChildClassesByCenter(
                 it
@@ -124,7 +141,7 @@ fun MainCompose(
         }
     }
 
-    LaunchedEffect(_selectedChildClass, allChildClasses){
+    LaunchedEffect(_selectedChildClass, allChildClasses) {
         _selectedChildClass?.let { selectedChildClass ->
             childSelectViewModel.getChildInfosByClass(
                 selectedClass = selectedChildClass
@@ -132,15 +149,15 @@ fun MainCompose(
         }
     }
 
-    LaunchedEffect(allChildInfos){
-        _selectedChildClass?.let{selectedChildClass ->
+    LaunchedEffect(allChildInfos) {
+        _selectedChildClass?.let { selectedChildClass ->
             childSelectViewModel.getChildInfosByClass(
                 selectedClass = selectedChildClass
             )
         }
     }
 
-    if(childDialogOpen){
+    if (childDialogOpen) {
         Dialog(
             onDismissRequest = { setChildDialogOpen(false) }
         ) {
@@ -156,11 +173,16 @@ fun MainCompose(
 
             ) {
                 TopAppBar(
-                    title = { Text(text = "유아선택", fontSize = 32.sp, color=Color.Black)},
+                    title = { Text(text = "유아선택", fontSize = 32.sp, color = Color.Black) },
                     modifier = Modifier.fillMaxWidth(),
                     actions = {
                         IconButton(onClick = { setChildDialogOpen(false) }) {
-                            Icon(imageVector = Icons.Default.Close, contentDescription = null, modifier = Modifier.size(36.dp), tint = Color.Black)
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                modifier = Modifier.size(36.dp),
+                                tint = Color.Black
+                            )
                         }
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
@@ -172,7 +194,7 @@ fun MainCompose(
                     verticalArrangement = Arrangement.Top
 
                 ) {
-                    allCenters?.let{
+                    allCenters?.let {
                         Text(
                             text = "센터",
                             fontWeight = FontWeight.SemiBold,
@@ -190,7 +212,7 @@ fun MainCompose(
 
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    childClasses?.let{ childClasses ->
+                    childClasses?.let { childClasses ->
                         Text(
                             text = "반",
                             fontWeight = FontWeight.SemiBold,
@@ -224,7 +246,7 @@ fun MainCompose(
                     Spacer(modifier = Modifier.height(10.dp))
                     _selectedCenter?.let { selectedCenter ->
                         _selectedChildInfo?.let { selectedChildInfo ->
-                            _selectedChildClass?.let{selectedChildClass ->
+                            _selectedChildClass?.let { selectedChildClass ->
                                 Button(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -235,13 +257,15 @@ fun MainCompose(
                                     ),
                                     onClick = {
                                         centerSelectViewModel.setSelectedCenter(selectedCenter)
-                                        childClassSelectViewModel.setSelectedChildClass(selectedChildClass)
+                                        childClassSelectViewModel.setSelectedChildClass(
+                                            selectedChildClass
+                                        )
                                         childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
 //                                        ltoViewModel.clearSelectedLTO()
 //                                        stoViewModel.clearSelectedSTO()
                                         setChildDialogOpen(false)
                                     }
-                                ){
+                                ) {
                                     Text(
                                         text = "선택하기",
                                         fontSize = 20.sp
@@ -258,26 +282,32 @@ fun MainCompose(
     }
 
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentNavBackStackEntry?.destination?.route ?: AllDestinations.CENTERDASHBOARD
-    val navigationActions = remember(navController){
+    val currentRoute =
+        currentNavBackStackEntry?.destination?.route ?: AllDestinations.CENTERDASHBOARD
+    val navigationActions = remember(navController) {
         AppNavigationActions(navController)
     }
-    val currentRouteToKorean = when(currentRoute){
+    val currentRouteToKorean = when (currentRoute) {
         "CenterDashBoard" -> {
             "Center Dashboard"
         }
+
         "TeachingBoard" -> {
             "Teaching Board"
         }
+
         "Education" -> {
             "Education"
         }
+
         "READY" -> {
             "Ready"
         }
+
         "Setting" -> {
             "Management"
         }
+
         else -> {
             currentRoute
         }
@@ -285,12 +315,12 @@ fun MainCompose(
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(
             route = currentRoute,
-            navigateToCenterDashboard = { navigationActions.navigateToCenterDashboard()},
-            navigateToTeachingBoard = { navigationActions.navigateToTeachingBoard()},
-            navigateToSetting = { navigationActions.navigateToSetting()},
-            navigateToEducation = { navigationActions.navigateToEducation()},
-            navigateToReady = { navigationActions.navigateToReady()},
-            closeDrawer = { coroutineScope.launch { drawerState.close() }},
+            navigateToCenterDashboard = { navigationActions.navigateToCenterDashboard() },
+            navigateToTeachingBoard = { navigationActions.navigateToTeachingBoard() },
+            navigateToSetting = { navigationActions.navigateToSetting() },
+            navigateToEducation = { navigationActions.navigateToEducation() },
+            navigateToReady = { navigationActions.navigateToReady() },
+            closeDrawer = { coroutineScope.launch { drawerState.close() } },
             modifier = Modifier
         )
     }, drawerState = drawerState) {
@@ -300,57 +330,169 @@ fun MainCompose(
                     title = { Text(text = currentRouteToKorean) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color(0xFFEFEFEF))
-                    ,
+                        .background(color = Color(0xFFEFEFEF)),
                     navigationIcon = {
                         IconButton(onClick = {
                             coroutineScope.launch { drawerState.open() }
                         },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.Menu, contentDescription = null
-                            )
-                        })
+                            content = {
+                                Icon(
+                                    imageVector = Icons.Default.Menu, contentDescription = null
+                                )
+                            })
                     },
                     actions = {
-                        Box(modifier = Modifier
-                            .height(50.dp)
-                        ){
-
+                        Box(
+                            modifier = Modifier
+                                .height(50.dp)
+                        ) {
                             Row(
-                                modifier = Modifier.fillMaxHeight(),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
                             ) {
-                                Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                    selectedCenter?.let { Text(text = it.name) }
-                                    selectedChildClass?.let { Text(text = " > "+it.name) }
-                                    selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(4f),
+                                    horizontalArrangement = Arrangement.End,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (currentRoute == "Education") {
+                                        val dummyScheduleList = mutableListOf<DummySchedule>()
+                                        val dummySTOList = mutableListOf<StoResponse>()
+                                        for (i in 1..8){
+                                            dummySTOList.add(
+                                                StoResponse(
+                                                    id = i.toLong(),
+                                                    templateNum = i,
+                                                    status = "진행중",
+                                                    name = "같은 사진 매칭(${i} array)",
+                                                    contents = "",
+                                                    count = i,
+                                                    goal = i,
+                                                    goalPercent = i,
+                                                    achievementOrNot = "",
+                                                    urgeType = "",
+                                                    urgeContent = "",
+                                                    enforceContent = "",
+                                                    memo = "",
+                                                    hitGoalDate = "",
+                                                    registerDate = "",
+                                                    delYN = "",
+                                                    round = i,
+                                                    imageList = listOf(),
+                                                    pointList = listOf(),
+                                                    lto = LtoResponse(
+                                                        id = i.toLong(),
+                                                        templateNum = i,
+                                                        status = "",
+                                                        name = "더미용 LTO ${i}",
+                                                        contents = "",
+                                                        game = "",
+                                                        achieveDate = "",
+                                                        registerDate = "",
+                                                        delYN = "",
+                                                        domain = DomainResponse(
+                                                            id = i.toLong(),
+                                                            templateNum = i,
+                                                            type = "",
+                                                            status = "",
+                                                            name = "더미용 Domain ${i}",
+                                                            contents = "",
+                                                            useYN = "",
+                                                            delYN = "",
+                                                            registerDate = ""
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        }
+                                        for (i in 1..8){
+                                                dummyScheduleList.add(
+                                                    DummySchedule(
+                                                        date = "2023/11/${i} (월)",
+                                                        stoList = dummySTOList
+                                                    )
+                                                )
+
+                                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.8f)
+                                                .fillMaxHeight()
+                                                .background(
+                                                    color = Color.White,
+                                                    shape = RoundedCornerShape(10.dp)
+                                                ),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.icon_schedule),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .padding(start = 10.dp)
+                                            )
+                                            val dummyList = List(10){index ->"item $index"}
+                                            DragDropList(items = dummyScheduleList[0].stoList, onMove = {
+                                                fromIndex, toIndex -> dummyList.toMutableList().move(fromIndex, toIndex)
+                                            })
+
+
+
+
+
+                                        }
+                                    }
+
                                 }
-                                IconButton(onClick = {
-                                    setChildDialogOpen(true)
-                                }) {
-                                    Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(1f),
+                                    horizontalArrangement = Arrangement.End,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    Row(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        selectedCenter?.let { Text(text = it.name) }
+                                        selectedChildClass?.let { Text(text = " > " + it.name) }
+                                        selectedChildInfo?.let { Text(text = " > " + it.name) }
+                                    }
+                                    IconButton(onClick = {
+                                        setChildDialogOpen(true)
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_user),
+                                            contentDescription = null
+                                        )
+                                    }
                                 }
                             }
-
-
 
                         }
 
                     },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent))
+                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
+                )
             }, modifier = Modifier
         ) {
             NavHost(
-                navController = navController, startDestination = AllDestinations.CENTERDASHBOARD, modifier = modifier.padding(it)
+                navController = navController,
+                startDestination = AllDestinations.CENTERDASHBOARD,
+                modifier = modifier.padding(it)
             ) {
                 composable(AllDestinations.CENTERDASHBOARD) {
                     CenterDashboardScreen(
                         centerViewModel = centerViewModel,
                         childClassViewModel = childClassViewModel,
                         childInfoViewModel = childInfoViewModel,
-                        navigateToTeachingBoard = {navController.navigate(AllDestinations.TEACHINGBOARD)}
+                        navigateToTeachingBoard = { navController.navigate(AllDestinations.TEACHINGBOARD) }
                     )
 //                    CenterHome(
 //                        centerSelectViewModel = centerSelectViewModel,
@@ -364,7 +506,7 @@ fun MainCompose(
                         centerSelectViewModel = centerSelectViewModel,
                         childClassSelectViewModel = childClassSelectViewModel,
                         childSelectViewModel = childSelectViewModel,
-                        navigateToEducation = {navController.navigate(AllDestinations.EDUCATION)}
+                        navigateToEducation = { navController.navigate(AllDestinations.EDUCATION) }
                     )
 //                    CenterHome(
 //                        centerSelectViewModel = centerSelectViewModel,
@@ -380,9 +522,9 @@ fun MainCompose(
                         educationViewModel = educationViewModel,
                         stoViewModel = stoViewModel,
                         imageViewModel = imageViewModel,
-                        dragAndDropViewModel =  dragAndDropViewModel,
+                        dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel
-                        )
+                    )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,
 //                        childSelectViewModel = childSelectViewModel,
@@ -403,7 +545,7 @@ fun MainCompose(
                     )
                 }
 
-                composable(AllDestinations.READY){
+                composable(AllDestinations.READY) {
                     ReadyScreen(
                         imageViewModel = imageViewModel
                     )
@@ -424,13 +566,13 @@ fun CenterControl(
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
     @ColorRes color: Int = R.color.light_gray,
-){
+) {
     Row(
         modifier = Modifier
     ) {
-        items.forEachIndexed{ index, item ->
+        items.forEachIndexed { index, item ->
             OutlinedButton(
-                modifier = when(index){
+                modifier = when (index) {
                     0 -> {
                         if (useFixedWidth) {
                             Modifier
@@ -444,8 +586,9 @@ fun CenterControl(
                                 .zIndex(if (selectedCenter == item) 1f else 0f)
                         }
                     }
+
                     else -> {
-                        if(useFixedWidth){
+                        if (useFixedWidth) {
                             Modifier
                                 .width(itemWidth)
                                 .offset((-1 * index).dp, 0.dp)
@@ -459,7 +602,7 @@ fun CenterControl(
                     }
                 },
                 onClick = {
-                    if(selectedCenter == item){
+                    if (selectedCenter == item) {
                         centerSelectViewModel.clearTempSelectedCenter()
                         childClassSelectViewModel.clearChildClasses()
                     } else {
@@ -470,7 +613,7 @@ fun CenterControl(
                     childClassSelectViewModel.clearTempSelectedChildClass()
                     childSelectViewModel.clearTempSelectedChildInfo()
                 },
-                shape = when(index) {
+                shape = when (index) {
                     //왼쪽 바깥
                     0 -> RoundedCornerShape(
                         topStartPercent = cornerRadius,
@@ -494,7 +637,7 @@ fun CenterControl(
                     )
                 },
                 border = BorderStroke(
-                    1.dp, if (selectedCenter == item){
+                    1.dp, if (selectedCenter == item) {
                         colorResource(id = color)
                     } else {
                         colorResource(id = color).copy(alpha = 0.75f)
@@ -526,6 +669,7 @@ fun CenterControl(
         }
     }
 }
+
 @Composable
 fun ChildClassControl(
     items: List<ChildClassResponse>,
@@ -536,13 +680,13 @@ fun ChildClassControl(
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
     @ColorRes color: Int = R.color.light_gray,
-){
+) {
     Row(
         modifier = Modifier
     ) {
-        items.forEachIndexed{ index, item ->
+        items.forEachIndexed { index, item ->
             OutlinedButton(
-                modifier = when(index){
+                modifier = when (index) {
                     0 -> {
                         if (useFixedWidth) {
                             Modifier
@@ -556,8 +700,9 @@ fun ChildClassControl(
                                 .zIndex(if (selectedChildClass == item) 1f else 0f)
                         }
                     }
+
                     else -> {
-                        if(useFixedWidth){
+                        if (useFixedWidth) {
                             Modifier
                                 .width(itemWidth)
                                 .offset((-1 * index).dp, 0.dp)
@@ -571,7 +716,7 @@ fun ChildClassControl(
                     }
                 },
                 onClick = {
-                    if(selectedChildClass == item){
+                    if (selectedChildClass == item) {
                         childClassSelectViewModel.clearTempSelectedChildClass()
 
                     } else {
@@ -583,7 +728,7 @@ fun ChildClassControl(
                     childSelectViewModel.clearTempSelectedChildInfo()
                     childSelectViewModel.clearChildInfos()
                 },
-                shape = when(index) {
+                shape = when (index) {
                     //왼쪽 바깥
                     0 -> RoundedCornerShape(
                         topStartPercent = cornerRadius,
@@ -607,7 +752,7 @@ fun ChildClassControl(
                     )
                 },
                 border = BorderStroke(
-                    1.dp, if (selectedChildClass == item){
+                    1.dp, if (selectedChildClass == item) {
                         colorResource(id = color)
                     } else {
                         colorResource(id = color).copy(alpha = 0.75f)
@@ -649,13 +794,13 @@ fun ChildInfoControl(
     itemWidth: Dp = 120.dp,
     cornerRadius: Int = 10,
     @ColorRes color: Int = R.color.light_gray,
-){
+) {
     Row(
         modifier = Modifier
     ) {
-        items.forEachIndexed{ index, item ->
+        items.forEachIndexed { index, item ->
             OutlinedButton(
-                modifier = when(index){
+                modifier = when (index) {
                     0 -> {
                         if (useFixedWidth) {
                             Modifier
@@ -669,8 +814,9 @@ fun ChildInfoControl(
                                 .zIndex(if (selectedChildInfo == item) 1f else 0f)
                         }
                     }
+
                     else -> {
-                        if(useFixedWidth){
+                        if (useFixedWidth) {
                             Modifier
                                 .width(itemWidth)
                                 .offset((-1 * index).dp, 0.dp)
@@ -684,13 +830,13 @@ fun ChildInfoControl(
                     }
                 },
                 onClick = {
-                    if(selectedChildInfo == item){
+                    if (selectedChildInfo == item) {
                         childSelectViewModel.clearTempSelectedChildInfo()
                     } else {
                         childSelectViewModel.setTempSelectedChildInfo(item)
                     }
                 },
-                shape = when(index) {
+                shape = when (index) {
                     //왼쪽 바깥
                     0 -> RoundedCornerShape(
                         topStartPercent = cornerRadius,
@@ -714,7 +860,7 @@ fun ChildInfoControl(
                     )
                 },
                 border = BorderStroke(
-                    1.dp, if (selectedChildInfo == item){
+                    1.dp, if (selectedChildInfo == item) {
                         colorResource(id = color)
                     } else {
                         colorResource(id = color).copy(alpha = 0.75f)
@@ -746,3 +892,5 @@ fun ChildInfoControl(
         }
     }
 }
+
+
