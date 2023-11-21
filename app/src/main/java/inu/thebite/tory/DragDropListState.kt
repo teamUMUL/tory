@@ -30,6 +30,9 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -52,7 +55,10 @@ fun <T> MutableList<T>.move(from:Int, to:Int){
 fun DragDropList(
     items: List<StoResponse>,
     onMove: (Int, Int) -> Unit,
-    modifier : Modifier = Modifier
+    modifier : Modifier = Modifier,
+    devViewModel: DEVViewModel,
+    ltoViewModel: LTOViewModel,
+    stoViewModel: STOViewModel,
 ) {
     val scope = rememberCoroutineScope()
     var overScrollJob by remember { mutableStateOf<Job?>(null)}
@@ -101,7 +107,11 @@ fun DragDropList(
                         horizontal = 10.dp,
                         vertical = 3.dp
                     ),
-                onClick = {},
+                onClick = {
+//                    devViewModel.setSelectedDEV(item.lto.domain)
+//                    ltoViewModel.setSelectedLTO(item.lto)
+//                    stoViewModel.setSelectedSTO(item)
+                },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = when(item.status){

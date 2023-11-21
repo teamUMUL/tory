@@ -40,7 +40,7 @@ fun chart_bar(
         modifier= Modifier
             .padding(8.dp)
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(modifier = Modifier  // 해더 부분
@@ -234,7 +234,7 @@ fun BarGraph(
 
     Box(
         modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.TopStart
+        contentAlignment = Alignment.BottomStart
     ) {
 
         // y축 스케일과 y축 스케일을 나타내는 그래프의 가로 점선

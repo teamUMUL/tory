@@ -104,7 +104,7 @@ fun DEVItemRow(
                                 Text(text = dev.name)
                             },
                             onClick = {
-                                devViewModel.setSelectedCenter(dev)
+                                devViewModel.setSelectedDEV(dev)
                                 isExpanded = false
                                 ltoViewModel.getLTOsByDEV(dev)
                             }

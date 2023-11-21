@@ -61,6 +61,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.schedule.DummySchedule
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.schedule.ScheduleTopBar
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
@@ -312,6 +313,66 @@ fun MainCompose(
             currentRoute
         }
     }
+
+    val dummyScheduleList = mutableListOf<DummySchedule>()
+    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
+    for (i in 1..8){
+        dummySTOList.add(
+            StoResponse(
+                id = i.toLong(),
+                templateNum = i,
+                status = "진행중",
+                name = "같은 사진 매칭(${i} array)",
+                contents = "",
+                count = i,
+                goal = i,
+                goalPercent = i,
+                achievementOrNot = "",
+                urgeType = "",
+                urgeContent = "",
+                enforceContent = "",
+                memo = "",
+                hitGoalDate = "",
+                registerDate = "",
+                delYN = "",
+                round = i,
+                imageList = listOf(),
+                pointList = listOf(),
+                lto = LtoResponse(
+                    id = i.toLong(),
+                    templateNum = i,
+                    status = "",
+                    name = "더미용 LTO ${i}",
+                    contents = "",
+                    game = "",
+                    achieveDate = "",
+                    registerDate = "",
+                    delYN = "",
+                    domain = DomainResponse(
+                        id = i.toLong(),
+                        templateNum = i,
+                        type = "",
+                        status = "",
+                        name = "더미용 Domain ${i}",
+                        contents = "",
+                        useYN = "",
+                        delYN = "",
+                        registerDate = ""
+                    )
+                )
+            )
+        )
+    }
+    for (i in 1..8){
+        dummyScheduleList.add(
+            DummySchedule(
+                date = "2023/11/${i} (월)",
+                stoList = dummySTOList
+            )
+        )
+
+    }
+
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(
             route = currentRoute,
@@ -351,102 +412,14 @@ fun MainCompose(
                                     .fillMaxWidth()
                                     .fillMaxHeight()
                             ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(4f),
-                                    horizontalArrangement = Arrangement.End,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if (currentRoute == "Education") {
-                                        val dummyScheduleList = mutableListOf<DummySchedule>()
-                                        val dummySTOList = mutableListOf<StoResponse>()
-                                        for (i in 1..8){
-                                            dummySTOList.add(
-                                                StoResponse(
-                                                    id = i.toLong(),
-                                                    templateNum = i,
-                                                    status = "진행중",
-                                                    name = "같은 사진 매칭(${i} array)",
-                                                    contents = "",
-                                                    count = i,
-                                                    goal = i,
-                                                    goalPercent = i,
-                                                    achievementOrNot = "",
-                                                    urgeType = "",
-                                                    urgeContent = "",
-                                                    enforceContent = "",
-                                                    memo = "",
-                                                    hitGoalDate = "",
-                                                    registerDate = "",
-                                                    delYN = "",
-                                                    round = i,
-                                                    imageList = listOf(),
-                                                    pointList = listOf(),
-                                                    lto = LtoResponse(
-                                                        id = i.toLong(),
-                                                        templateNum = i,
-                                                        status = "",
-                                                        name = "더미용 LTO ${i}",
-                                                        contents = "",
-                                                        game = "",
-                                                        achieveDate = "",
-                                                        registerDate = "",
-                                                        delYN = "",
-                                                        domain = DomainResponse(
-                                                            id = i.toLong(),
-                                                            templateNum = i,
-                                                            type = "",
-                                                            status = "",
-                                                            name = "더미용 Domain ${i}",
-                                                            contents = "",
-                                                            useYN = "",
-                                                            delYN = "",
-                                                            registerDate = ""
-                                                        )
-                                                    )
-                                                )
-                                            )
-                                        }
-                                        for (i in 1..8){
-                                                dummyScheduleList.add(
-                                                    DummySchedule(
-                                                        date = "2023/11/${i} (월)",
-                                                        stoList = dummySTOList
-                                                    )
-                                                )
-
-                                        }
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth(0.8f)
-                                                .fillMaxHeight()
-                                                .background(
-                                                    color = Color.White,
-                                                    shape = RoundedCornerShape(10.dp)
-                                                ),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.icon_schedule),
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .padding(start = 10.dp)
-                                            )
-                                            val dummyList = List(10){index ->"item $index"}
-                                            DragDropList(items = dummyScheduleList[0].stoList, onMove = {
-                                                fromIndex, toIndex -> dummyList.toMutableList().move(fromIndex, toIndex)
-                                            })
-
-
-
-
-
-                                        }
-                                    }
-
-                                }
+                                ScheduleTopBar(
+                                    modifier = Modifier.weight(4f),
+                                    currentRoute = currentRoute,
+                                    dummySTOList = dummySTOList,
+                                    devViewModel = devViewModel,
+                                    ltoViewModel = ltoViewModel,
+                                    stoViewModel = stoViewModel
+                                )
 
                                 Row(
                                     modifier = Modifier

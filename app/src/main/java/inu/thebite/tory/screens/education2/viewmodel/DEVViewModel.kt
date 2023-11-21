@@ -23,7 +23,7 @@ class DEVViewModel : ViewModel() {
     val selectedDEV = _selectedDEV.asStateFlow()
 
 
-    fun setSelectedCenter(devEntity: DomainResponse) {
+    fun setSelectedDEV(devEntity: DomainResponse) {
 
         _selectedDEV.value = devEntity
     }
