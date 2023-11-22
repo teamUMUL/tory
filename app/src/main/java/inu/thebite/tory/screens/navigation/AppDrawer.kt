@@ -39,6 +39,7 @@ fun AppDrawer(
     navigateToTeachingBoard: () -> Unit = {},
     navigateToSetting: () -> Unit = {},
     navigateToEducation: () -> Unit = {},
+    navigateToNotice: () -> Unit = {},
     navigateToReady: () -> Unit = {},
     closeDrawer: () -> Unit = {}
 ) {
@@ -56,7 +57,8 @@ fun AppDrawer(
                 navigateToCenterDashboard()
                 closeDrawer()
             },
-            icon = { Icon(painter = painterResource(id = R.drawable.icon_centerboard), contentDescription = null)},
+            icon = { Icon(painter = painterResource(id = R.drawable.icon_centerboard), contentDescription = null, modifier = Modifier.size(30.dp))},
+            shape = MaterialTheme.shapes.small
         )
         NavigationDrawerItem(
             label = {
@@ -84,6 +86,20 @@ fun AppDrawer(
                 closeDrawer()
             },
             icon = { Icon(painter = painterResource(id = R.drawable.icon_book), contentDescription = null)},
+            shape = MaterialTheme.shapes.small
+        )
+        NavigationDrawerItem(
+            label = {
+                Text(
+                    text = stringResource(id = R.string.notice),
+                )
+            },
+            selected = route == AllDestinations.NOTICE,
+            onClick = {
+                navigateToNotice()
+                closeDrawer()
+            },
+            icon = { Icon(painter = painterResource(id = R.drawable.icon_calendar), contentDescription = null)},
             shape = MaterialTheme.shapes.small
         )
         NavigationDrawerItem(

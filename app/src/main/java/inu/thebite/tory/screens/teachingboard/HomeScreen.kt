@@ -47,6 +47,7 @@ fun HomeScreen(
     childClassSelectViewModel: ChildClassSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
     navigateToEducation: () -> Unit,
+    navigateToNotice: () -> Unit,
 ) {
 
 
@@ -156,7 +157,9 @@ fun HomeScreen(
                         .weight(1f)
                         .size(700.dp)
                         .width(810.dp)
-                        .clickable { /* Define the click action here */ },
+                        .clickable {
+                            navigateToNotice()
+                        },
                     painter = painterResource(id = R.drawable.report_btn),
                     contentDescription = "Report Button"
                 )

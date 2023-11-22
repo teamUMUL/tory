@@ -88,7 +88,7 @@ fun DashboardGraph(
         val xAxisLabelList = dateList
         val xAxisData = AxisData.Builder()
             .shouldDrawAxisLineTillEnd(true)
-            .axisStepSize(35.dp)
+            .axisStepSize(40.dp)
             .backgroundColor(Color.Transparent)
             .steps(pointsData1.size - 1)
             .labelData { i -> "          "+xAxisLabelList[i]
@@ -106,15 +106,17 @@ fun DashboardGraph(
             .axisStepSize(30.dp)
             .backgroundColor(Color.Transparent)
             .labelData { i ->
-                val yScale = 100 / steps
-                val yLabel = (i * yScale).toString()+"%"
-                yLabel
+//                val yScale = 100 / steps
+//                val yLabel = (i * yScale).toString()+"%"
+//                yLabel
+                " "
             }
             .labelAndAxisLinePadding(30.dp)
             .axisLineColor(Color.Black)
             .axisLabelColor(Color.Black)
-            .startPadding(10.dp)
+//            .startPadding(0.dp)
             .backgroundColor(Color.White)
+            .axisOffset(-20.dp)
             .build()
 
         val lineChardData = LineChartData(

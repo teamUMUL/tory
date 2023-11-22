@@ -85,7 +85,6 @@ fun RecentLTOTopBar(
                     fontFamily = fontFamily_Inter,
                     fontWeight = FontWeight(600),
                     color = Color(0xFF0047B3),
-
                     letterSpacing = 0.24.sp,
                 )
             )

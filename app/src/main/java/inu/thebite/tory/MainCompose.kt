@@ -43,6 +43,7 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -73,6 +74,7 @@ import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
+import inu.thebite.tory.screens.notice.NoticeScreen
 import inu.thebite.tory.screens.ready.ReadyScreen
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.screens.setting.SettingScreen
@@ -83,6 +85,7 @@ import inu.thebite.tory.screens.teachingboard.HomeScreen
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -301,6 +304,10 @@ fun MainCompose(
             "Education"
         }
 
+        "NoticeBoard" -> {
+            "Notice Board"
+        }
+
         "READY" -> {
             "Ready"
         }
@@ -380,6 +387,7 @@ fun MainCompose(
             navigateToTeachingBoard = { navigationActions.navigateToTeachingBoard() },
             navigateToSetting = { navigationActions.navigateToSetting() },
             navigateToEducation = { navigationActions.navigateToEducation() },
+            navigateToNotice = { navigationActions.navigateToNotice() },
             navigateToReady = { navigationActions.navigateToReady() },
             closeDrawer = { coroutineScope.launch { drawerState.close() } },
             modifier = Modifier
@@ -388,17 +396,102 @@ fun MainCompose(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = currentRouteToKorean) },
+                    title = { Text(
+                        text = currentRouteToKorean,
+                        color = when(currentRoute){
+                            AllDestinations.CENTERDASHBOARD -> {
+                                Color.Black
+                            }
+                            AllDestinations.TEACHINGBOARD -> {
+                                Color.Black
+                            }
+                            AllDestinations.EDUCATION -> {
+                                Color.Black
+                            }
+                            AllDestinations.NOTICE ->{
+                                Color.White
+                            }
+                            AllDestinations.READY -> {
+                                Color.Black
+                            }
+                            AllDestinations.SETTING -> {
+                                Color.Black
+                            }
+                            else -> {
+                                Color.Black
+                            }
+                        },
+                        style = TextStyle(
+                            fontSize = 28.sp,
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFFFFFFFF),
+
+                            )
+                    ) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color(0xFFEFEFEF)),
+                        .background(
+                            color = when (currentRoute) {
+                                AllDestinations.CENTERDASHBOARD -> {
+                                    Color(0xFFEFEFEF)
+                                }
+
+                                AllDestinations.TEACHINGBOARD -> {
+                                    Color(0xFFEFEFEF)
+                                }
+
+                                AllDestinations.EDUCATION -> {
+                                    Color(0xFFEFEFEF)
+                                }
+
+                                AllDestinations.NOTICE -> {
+                                    Color(0xFF7F5AF0)
+                                }
+
+                                AllDestinations.READY -> {
+                                    Color(0xFFEFEFEF)
+                                }
+
+                                AllDestinations.SETTING -> {
+                                    Color(0xFFEFEFEF)
+                                }
+
+                                else -> {
+                                    Color(0xFFEFEFEF)
+                                }
+                            }
+                        ),
                     navigationIcon = {
                         IconButton(onClick = {
                             coroutineScope.launch { drawerState.open() }
                         },
                             content = {
                                 Icon(
-                                    imageVector = Icons.Default.Menu, contentDescription = null
+                                    imageVector = Icons.Default.Menu, contentDescription = null,
+                                    tint = when(currentRoute){
+                                        AllDestinations.CENTERDASHBOARD -> {
+                                            Color.Black
+                                        }
+                                        AllDestinations.TEACHINGBOARD -> {
+                                            Color.Black
+                                        }
+                                        AllDestinations.EDUCATION -> {
+                                            Color.Black
+                                        }
+                                        AllDestinations.NOTICE ->{
+                                            Color.White
+                                        }
+                                        AllDestinations.READY -> {
+                                            Color.Black
+                                        }
+                                        AllDestinations.SETTING -> {
+                                            Color.Black
+                                        }
+                                        else -> {
+                                            Color.Black
+                                        }
+                                    }
                                 )
                             })
                     },
@@ -407,46 +500,163 @@ fun MainCompose(
                             modifier = Modifier
                                 .height(50.dp)
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                            ) {
-                                ScheduleTopBar(
-                                    modifier = Modifier.weight(4f),
-                                    currentRoute = currentRoute,
-                                    dummySTOList = dummySTOList,
-                                    devViewModel = devViewModel,
-                                    ltoViewModel = ltoViewModel,
-                                    stoViewModel = stoViewModel
-                                )
+                            when(currentRoute){
 
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(1f),
-                                    horizontalArrangement = Arrangement.End,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-
+                                AllDestinations.CENTERDASHBOARD -> {
                                     Row(
                                         modifier = Modifier.fillMaxHeight(),
+                                        horizontalArrangement = Arrangement.End,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        selectedCenter?.let { Text(text = it.name) }
-                                        selectedChildClass?.let { Text(text = " > " + it.name) }
-                                        selectedChildInfo?.let { Text(text = " > " + it.name) }
+                                        Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                                            selectedCenter?.let { Text(text = it.name) }
+                                            selectedChildClass?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                        }
+                                        IconButton(onClick = {
+                                            setChildDialogOpen(true)
+                                        }) {
+                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
+                                        }
                                     }
-                                    IconButton(onClick = {
-                                        setChildDialogOpen(true)
-                                    }) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.icon_user),
-                                            contentDescription = null
+                                }
+                                AllDestinations.TEACHINGBOARD -> {
+                                    Row(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                                            selectedCenter?.let { Text(text = it.name) }
+                                            selectedChildClass?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                        }
+                                        IconButton(onClick = {
+                                            setChildDialogOpen(true)
+                                        }) {
+                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
+                                        }
+                                    }
+                                }
+                                AllDestinations.EDUCATION -> {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .fillMaxHeight()
+                                    ) {
+                                        ScheduleTopBar(
+                                            modifier = Modifier.weight(4f),
+                                            currentRoute = currentRoute,
+                                            dummySTOList = dummySTOList,
+                                            devViewModel = devViewModel,
+                                            ltoViewModel = ltoViewModel,
+                                            stoViewModel = stoViewModel
                                         )
+
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .weight(1f),
+                                            horizontalArrangement = Arrangement.End,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+
+                                            Row(
+                                                modifier = Modifier.fillMaxHeight(),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                selectedCenter?.let { Text(text = it.name) }
+                                                selectedChildClass?.let { Text(text = " > " + it.name) }
+                                                selectedChildInfo?.let { Text(text = " > " + it.name) }
+                                            }
+                                            IconButton(onClick = {
+                                                setChildDialogOpen(true)
+                                            }) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.icon_user),
+                                                    contentDescription = null
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                AllDestinations.NOTICE ->{
+//                                    Row(
+//                                        modifier = Modifier
+//                                            .fillMaxWidth()
+//                                            .fillMaxHeight()
+//                                            .background(color = Color(0xFF7F5AF0)),
+//                                        verticalAlignment = Alignment.CenterVertically,
+//                                        horizontalArrangement = Arrangement.SpaceBetween
+//                                    ) {
+//                                        Text(
+//                                            text = "Notice board",
+//                                            style = TextStyle(
+//                                                fontSize = 33.sp,
+//                                                fontFamily = fontFamily_Inter,
+//                                                fontWeight = FontWeight(400),
+//                                                color = Color(0xFFFFFFFF),
+//                                            ),
+//                                            modifier = Modifier
+//                                                .padding(start = 100.dp)
+//                                        )
+//                                    }
+                                    Row(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                                            selectedCenter?.let { Text(text = it.name) }
+                                            selectedChildClass?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                        }
+                                        IconButton(onClick = {
+                                            setChildDialogOpen(true)
+                                        }) {
+                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null, tint = Color.White)
+                                        }
+                                    }
+                                }
+                                AllDestinations.READY -> {
+                                    Row(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                                            selectedCenter?.let { Text(text = it.name) }
+                                            selectedChildClass?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                        }
+                                        IconButton(onClick = {
+                                            setChildDialogOpen(true)
+                                        }) {
+                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
+                                        }
+                                    }
+                                }
+                                AllDestinations.SETTING -> {
+                                    Row(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+                                            selectedCenter?.let { Text(text = it.name) }
+                                            selectedChildClass?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                        }
+                                        IconButton(onClick = {
+                                            setChildDialogOpen(true)
+                                        }) {
+                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
+                                        }
                                     }
                                 }
                             }
+
 
                         }
 
@@ -479,7 +689,8 @@ fun MainCompose(
                         centerSelectViewModel = centerSelectViewModel,
                         childClassSelectViewModel = childClassSelectViewModel,
                         childSelectViewModel = childSelectViewModel,
-                        navigateToEducation = { navController.navigate(AllDestinations.EDUCATION) }
+                        navigateToEducation = { navController.navigate(AllDestinations.EDUCATION) },
+                        navigateToNotice = {navController.navigate(AllDestinations.NOTICE)}
                     )
 //                    CenterHome(
 //                        centerSelectViewModel = centerSelectViewModel,
@@ -508,6 +719,10 @@ fun MainCompose(
 //                        dragAndDropViewModel = dragAndDropViewModel,
 //                        gameViewModel = gameViewModel
 //                    )
+                }
+
+                composable(AllDestinations.NOTICE) {
+                    NoticeScreen()
                 }
 
                 composable(AllDestinations.SETTING) {

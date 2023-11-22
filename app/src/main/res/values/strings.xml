@@ -4,5 +4,6 @@
     <string name="teachingBoard">Teaching Board</string>
     <string name="setting">Management</string>
     <string name="ready">Ready</string>
+    <string name="notice">Notice</string>
     <string name="education">Education</string>
 </resources>
