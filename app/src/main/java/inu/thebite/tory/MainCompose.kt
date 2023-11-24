@@ -37,8 +37,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
@@ -75,6 +77,7 @@ import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
 import inu.thebite.tory.screens.notice.NoticeScreen
+import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.ReadyScreen
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.screens.setting.SettingScreen
@@ -112,8 +115,8 @@ fun MainCompose(
     stoViewModel: STOViewModel,
     imageViewModel: ImageViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
-    gameViewModel: GameViewModel
-
+    gameViewModel: GameViewModel,
+    noticeViewModel: NoticeViewModel
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
 ) {
@@ -379,7 +382,12 @@ fun MainCompose(
         )
 
     }
-
+    val purpleGradient = Brush.horizontalGradient(
+        colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
+    )
+    val whiteBackground = Brush.horizontalGradient(
+        colors = listOf(Color(0xFFEFEFEF), Color(0xFFEFEFEF))
+    )
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(
             route = currentRoute,
@@ -432,33 +440,33 @@ fun MainCompose(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = when (currentRoute) {
+                            brush = when (currentRoute) {
                                 AllDestinations.CENTERDASHBOARD -> {
-                                    Color(0xFFEFEFEF)
+                                    whiteBackground
                                 }
 
                                 AllDestinations.TEACHINGBOARD -> {
-                                    Color(0xFFEFEFEF)
+                                    whiteBackground
                                 }
 
                                 AllDestinations.EDUCATION -> {
-                                    Color(0xFFEFEFEF)
+                                    whiteBackground
                                 }
 
                                 AllDestinations.NOTICE -> {
-                                    Color(0xFF7F5AF0)
+                                    purpleGradient
                                 }
 
                                 AllDestinations.READY -> {
-                                    Color(0xFFEFEFEF)
+                                    whiteBackground
                                 }
 
                                 AllDestinations.SETTING -> {
-                                    Color(0xFFEFEFEF)
+                                    whiteBackground
                                 }
 
                                 else -> {
-                                    Color(0xFFEFEFEF)
+                                    whiteBackground
                                 }
                             }
                         ),
@@ -722,7 +730,9 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.NOTICE) {
-                    NoticeScreen()
+                    NoticeScreen(
+                        noticeViewModel = noticeViewModel
+                    )
                 }
 
                 composable(AllDestinations.SETTING) {

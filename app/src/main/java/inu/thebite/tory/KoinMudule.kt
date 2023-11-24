@@ -10,6 +10,7 @@ import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
+import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
@@ -59,6 +60,9 @@ val viewModelModule = module {
     }
     viewModel<GameViewModel>{
         GameViewModel()
+    }
+    viewModel<NoticeViewModel> {
+        NoticeViewModel()
     }
 //    viewModel<GameViewModel> {
 //        GameViewModel()
