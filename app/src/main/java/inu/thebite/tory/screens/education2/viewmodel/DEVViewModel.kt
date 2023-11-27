@@ -7,6 +7,7 @@ import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.repositories.DEV.DEVRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DEVViewModel : ViewModel() {
@@ -24,8 +25,9 @@ class DEVViewModel : ViewModel() {
 
 
     fun setSelectedDEV(devEntity: DomainResponse) {
-
-        _selectedDEV.value = devEntity
+        _selectedDEV.update {
+            devEntity
+        }
     }
 
     fun clearSelectedCenter() {
@@ -33,7 +35,7 @@ class DEVViewModel : ViewModel() {
     }
     init {
         getAllDEVs()
-//        setDummyDEVData()
+        setDummyDEVData()
     }
 
     fun setDummyDEVData(){
@@ -53,6 +55,9 @@ class DEVViewModel : ViewModel() {
             dummyDataList.add(dummyData)
         }
         _allDEVs.value = dummyDataList
+        _selectedDEV.update {
+            allDEVs.value!!.first()
+        }
     }
 
 

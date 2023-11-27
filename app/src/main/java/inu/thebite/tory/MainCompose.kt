@@ -331,7 +331,7 @@ fun MainCompose(
             StoResponse(
                 id = i.toLong(),
                 templateNum = i,
-                status = "진행중",
+                status = "준거 도달",
                 name = "같은 사진 매칭(${i} array)",
                 contents = "",
                 count = i,
@@ -414,7 +414,7 @@ fun MainCompose(
                                 Color.Black
                             }
                             AllDestinations.EDUCATION -> {
-                                Color.Black
+                                Color.White
                             }
                             AllDestinations.NOTICE ->{
                                 Color.White
@@ -450,7 +450,7 @@ fun MainCompose(
                                 }
 
                                 AllDestinations.EDUCATION -> {
-                                    whiteBackground
+                                    purpleGradient
                                 }
 
                                 AllDestinations.NOTICE -> {
@@ -485,7 +485,7 @@ fun MainCompose(
                                             Color.Black
                                         }
                                         AllDestinations.EDUCATION -> {
-                                            Color.Black
+                                            Color.White
                                         }
                                         AllDestinations.NOTICE ->{
                                             Color.White
@@ -583,7 +583,8 @@ fun MainCompose(
                                             }) {
                                                 Icon(
                                                     painter = painterResource(id = R.drawable.icon_user),
-                                                    contentDescription = null
+                                                    contentDescription = null,
+                                                    tint = Color.White
                                                 )
                                             }
                                         }

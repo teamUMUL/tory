@@ -61,39 +61,44 @@ class LTOViewModel: ViewModel() {
     }
     init {
         getAllLTOs()
-//        setLTODummyData()
+        setLTODummyData()
     }
 
     fun setLTODummyData(){
-        _ltos.update {
-            val filteredChildClasses = mutableListOf<LtoResponse>()
+        _allLTOs.update {
+            val filteredLTOs = mutableListOf<LtoResponse>()
             for(i in 1..10){
-                filteredChildClasses.add(
-                    LtoResponse(
-                        id = i.toLong(),
-                        templateNum = i,
-                        status = "",
-                        name = "$i. 예시 데이터 LTO",
-                        contents = i.toString(),
-                        game = "",
-                        achieveDate = "",
-                        registerDate = "",
-                        delYN = "",
-                        domain = DomainResponse(
-                            id = i.toLong(),
-                            templateNum = i,
-                            type = "",
+                for (j in 1..10){
+                    filteredLTOs.add(
+                        LtoResponse(
+                            id = j.toLong(),
+                            templateNum = j,
                             status = "",
-                            name = i.toString(),
-                            contents = "",
-                            useYN = "",
+                            name = "$j. 예시 데이터 LTO",
+                            contents = j.toString(),
+                            game = "",
+                            achieveDate = "",
+                            registerDate = "",
                             delYN = "",
-                            registerDate = ""
+                            domain = DomainResponse(
+                                id = i.toLong(),
+                                templateNum = i,
+                                type = "",
+                                status = "",
+                                name = "$i. 예시 데이터 DEV",
+                                contents = "",
+                                useYN = "",
+                                delYN = "",
+                                registerDate = ""
+                            )
                         )
                     )
-                )
+                }
             }
-            filteredChildClasses
+            filteredLTOs
+        }
+        _selectedLTO.update {
+            allLTOs.value!!.first()
         }
     }
     fun getAllLTOs(){

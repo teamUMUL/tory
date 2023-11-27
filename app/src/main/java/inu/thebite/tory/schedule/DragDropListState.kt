@@ -1,4 +1,4 @@
-package inu.thebite.tory
+package inu.thebite.tory.schedule
 
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
@@ -28,11 +28,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -105,29 +110,29 @@ fun DragDropList(
                     }
                     .padding(
                         horizontal = 10.dp,
-                        vertical = 3.dp
+                        vertical = 10.dp
                     ),
                 onClick = {
 //                    devViewModel.setSelectedDEV(item.lto.domain)
 //                    ltoViewModel.setSelectedLTO(item.lto)
 //                    stoViewModel.setSelectedSTO(item)
                 },
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = when(item.status){
                         "진행중" -> {
-                            Color.Blue.copy(alpha = 0.1f)
+                            Color(0xFFC0E9EF)
                         }
                         "준거 도달" -> {
-                            Color.Green.copy(alpha = 0.1f)
+                            Color(0xFFCCEFC0)
 
                         }
                         "중지" -> {
-                            Color.Red.copy(alpha = 0.1f)
+                            Color(0xFFEFC0C0)
 
                         }
                         else -> {
-                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                            MaterialTheme.colorScheme.tertiary
                         }
                     },
                     contentColor = Color.Black
@@ -136,7 +141,14 @@ fun DragDropList(
             ) {
                 Text(
                     text = item.name,
-                    maxLines = 1
+                    maxLines = 1,
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF3A3A3A),
+                        textAlign = TextAlign.Center,
+                    )
                 )
             }
         }

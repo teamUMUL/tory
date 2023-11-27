@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
+import inu.thebite.tory.model.point.PointResponse
 import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
@@ -38,11 +40,12 @@ class STOViewModel : ViewModel() {
     val points = _points.asStateFlow()
 
     fun setSelectedSTO(stoEntity: StoResponse) {
-
-        _selectedSTO.value = stoEntity
+        _selectedSTO.update {
+            stoEntity
+        }
     }
 
-    fun updateSelectedSTO(stoEntity: StoResponse){
+    fun updateSelectedSTO(stoEntity: StoResponse) {
         _selectedSTO.value = stos.value!!.find {
             it.id == stoEntity.id
         }
@@ -52,11 +55,82 @@ class STOViewModel : ViewModel() {
     fun clearSelectedSTO() {
         _selectedSTO.value = null
     }
+
     init {
         getAllSTOs()
+        getDummySTO()
     }
 
-    fun getAllSTOs(){
+    fun getDummySTO() {
+        _allSTOs.update {
+            val filteredSTO = mutableListOf<StoResponse>()
+            for (i in 1..10) {
+                for (j in 1..10) {
+                    for (k in 1..10) {
+                        filteredSTO.add(
+                            StoResponse(
+                                id = k.toLong(),
+                                templateNum = k,
+                                status = "",
+                                name = "$k 번째 예시 데이터 STO",
+                                contents = "3 Array\n목표아이템 : 공, 블럭, 색연필\n예시아이템 : 색연필",
+                                count = 20,
+                                goal = 90,
+                                goalPercent = 90,
+                                achievementOrNot = "",
+                                urgeType = "",
+                                urgeContent = "",
+                                enforceContent = "",
+                                memo = "",
+                                hitGoalDate = "",
+                                registerDate = "2023/11/07 AM 9:21",
+                                delYN = "",
+                                round = 0,
+                                imageList = emptyList(),
+                                pointList = emptyList(),
+                                lto = LtoResponse(
+                                    id = j.toLong(),
+                                    templateNum = j,
+                                    status = "",
+                                    name = "$j. 예시 데이터 LTO",
+                                    contents = j.toString(),
+                                    game = "",
+                                    achieveDate = "",
+                                    registerDate = "",
+                                    delYN = "",
+                                    domain = DomainResponse(
+                                        id = i.toLong(),
+                                        templateNum = i,
+                                        type = "",
+                                        status = "",
+                                        name = "$i. 예시 데이터 DEV",
+                                        contents = "",
+                                        useYN = "",
+                                        delYN = "",
+                                        registerDate = ""
+                                    )
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+            filteredSTO
+        }
+        _selectedSTO.update {
+            allSTOs.value!!.first()
+        }
+    }
+
+    fun getSTOsByLTOWithReturn(
+        selectedLTO: LtoResponse
+    ): List<StoResponse>?{
+        return allSTOs.value!!.filter {
+            it.lto == selectedLTO
+        }
+    }
+
+    fun getAllSTOs() {
         viewModelScope.launch {
             try {
                 val allSTOs = repo.getStoList()
@@ -66,12 +140,13 @@ class STOViewModel : ViewModel() {
             }
         }
     }
-    fun setSelectedSTOStatus(selectedSTO: StoResponse, changeState : String) {
+
+    fun setSelectedSTOStatus(selectedSTO: StoResponse, changeState: String) {
         viewModelScope.launch {
             val updateSTOStatus = UpdateStoStatusRequest(
                 status = changeState
             )
-            if(changeState == "준거 도달"){
+            if (changeState == "준거 도달") {
                 repo.updateStoHitStatus(selectedSTO, updateSTOStatus)
             } else {
                 repo.updateStoStatus(selectedSTO, updateSTOStatus)
@@ -80,10 +155,11 @@ class STOViewModel : ViewModel() {
 //            getSTOsByLTO(selectedSTO.lto)
         }
     }
+
     fun getSTOsByLTO(
         selectedLTO: LtoResponse,
-    ){
-        if(selectedLTO.isNotNull()){
+    ) {
+        if (selectedLTO.isNotNull()) {
             _stos.update {
 
                 val filteredSTOs = allSTOs.value!!.filter {
@@ -91,15 +167,15 @@ class STOViewModel : ViewModel() {
                 }
                 filteredSTOs
             }
-        }else{
+        } else {
             _stos.update { null }
         }
     }
 
     fun createSTO(
         selectedLTO: LtoResponse,
-        newSTO : AddStoRequest
-    ){
+        newSTO: AddStoRequest
+    ) {
         viewModelScope.launch {
             try {
                 repo.addSto(
@@ -115,29 +191,29 @@ class STOViewModel : ViewModel() {
 
     fun getPointList(
         selectedSTO: StoResponse
-    ){
+    ) {
         viewModelScope.launch {
             try {
                 val points = repo.getPointList(selectedSTO)
                 _points.value = points
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("failed to get Point List", e.message.toString())
             }
         }
     }
 
-    fun clearPointList(){
+    fun clearPointList() {
         _points.value = null
     }
 
     fun addPoint(
         selectedSTO: StoResponse,
         addPointRequest: AddPointRequest
-    ){
+    ) {
         viewModelScope.launch {
             try {
                 repo.addPoint(selectedSTO, addPointRequest)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("failed to add Point", e.message.toString())
             }
             getPointList(selectedSTO)
@@ -147,11 +223,11 @@ class STOViewModel : ViewModel() {
     fun deletePoint(
         selectedSTO: StoResponse,
         deletePointRequest: DeletePointRequest
-    ){
+    ) {
         viewModelScope.launch {
             try {
                 repo.deletePoint(selectedSTO)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("failed to delete Point", e.message.toString())
             }
             getPointList(selectedSTO)
@@ -160,30 +236,34 @@ class STOViewModel : ViewModel() {
 
     fun addRound(
         selectedSTO: StoResponse,
-        registrant : String,
-        plusRate : Float,
-        minusRate : Float,
-        status : String,
-    ){
+        registrant: String,
+        plusRate: Float,
+        minusRate: Float,
+        status: String,
+    ) {
         viewModelScope.launch {
             try {
-                if (status == "준거 도달"){
-                    repo.addRoundHit(selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
-                        registrant = registrant,
-                        plusRate = plusRate,
-                        minusRate = minusRate,
-                        status = status
-                    ))
+                if (status == "준거 도달") {
+                    repo.addRoundHit(
+                        selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
+                            registrant = registrant,
+                            plusRate = plusRate,
+                            minusRate = minusRate,
+                            status = status
+                        )
+                    )
                 } else {
-                    repo.addRound(selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
-                        registrant = registrant,
-                        plusRate = plusRate,
-                        minusRate = minusRate,
-                        status = status
-                    ))
+                    repo.addRound(
+                        selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
+                            registrant = registrant,
+                            plusRate = plusRate,
+                            minusRate = minusRate,
+                            status = status
+                        )
+                    )
                 }
 
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("failed to add Round", e.message.toString())
             }
             getPointList(selectedSTO)
@@ -193,7 +273,7 @@ class STOViewModel : ViewModel() {
 
     fun findSTOById(
         selectedSTOId: Long
-    ) : StoResponse?{
+    ): StoResponse? {
         val foundSTO = allSTOs.value!!.find {
             it.id == selectedSTOId
         }
@@ -202,8 +282,8 @@ class STOViewModel : ViewModel() {
 
     fun updateSTO(
         selectedSTO: StoResponse,
-        updateSTO : UpdateStoRequest
-    ){
+        updateSTO: UpdateStoRequest
+    ) {
         viewModelScope.launch {
             try {
                 repo.updateSto(
@@ -220,8 +300,8 @@ class STOViewModel : ViewModel() {
 
     fun updateSTOImageList(
         selectedSTO: StoResponse,
-        updateImageList : List<String>
-    ){
+        updateImageList: List<String>
+    ) {
         viewModelScope.launch {
             try {
                 repo.updateImageList(
@@ -230,7 +310,7 @@ class STOViewModel : ViewModel() {
                         imageList = updateImageList
                     )
                 )
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("failed to update STO ImageList", e.message.toString())
             }
             getAllSTOs()
@@ -240,21 +320,22 @@ class STOViewModel : ViewModel() {
 
     fun updateSelectedSTO(
         selectedSTOId: Long
-    ){
+    ) {
         viewModelScope.launch {
             val foundSTO = allSTOs.value!!.find {
                 it.id == selectedSTOId
             }
-            foundSTO?.let {foundSTO ->
+            foundSTO?.let { foundSTO ->
                 setSelectedSTO(
                     foundSTO
                 )
             }
         }
     }
+
     fun deleteSTO(
-        selectedSTO : StoResponse
-    ){
+        selectedSTO: StoResponse
+    ) {
         viewModelScope.launch {
             try {
                 repo.deleteSto(
