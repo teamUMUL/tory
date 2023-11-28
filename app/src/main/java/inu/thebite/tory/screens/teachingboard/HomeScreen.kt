@@ -34,6 +34,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.teachingboard.recentlto.RecentLTOScreen
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
@@ -46,6 +48,8 @@ fun HomeScreen(
     centerSelectViewModel: CenterSelectViewModel,
     childClassSelectViewModel: ChildClassSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
+    devViewModel: DEVViewModel,
+    ltoViewModel: LTOViewModel,
     navigateToEducation: () -> Unit,
     navigateToNotice: () -> Unit,
 ) {
@@ -192,7 +196,10 @@ fun HomeScreen(
                         )
 
                 ) {
-                    HorizonPager()
+                    HorizonPager(
+                        devViewModel = devViewModel,
+                        ltoViewModel = ltoViewModel
+                    )
 //                    pieChartPreview()
 
 
@@ -220,6 +227,8 @@ fun HomeScreen(
 @Composable
 fun HorizonPager(
     modifier: Modifier = Modifier,
+    devViewModel: DEVViewModel,
+    ltoViewModel: LTOViewModel
 
     ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
@@ -237,7 +246,10 @@ fun HorizonPager(
         ) { index ->
             when (index) {
                 0 -> {
-                    chart_bar()
+                    chart_bar(
+                        devViewModel = devViewModel,
+                        ltoViewModel = ltoViewModel
+                    )
                 }
 
                 1 -> {

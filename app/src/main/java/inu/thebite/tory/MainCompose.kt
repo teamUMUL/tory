@@ -697,6 +697,8 @@ fun MainCompose(
                         centerSelectViewModel = centerSelectViewModel,
                         childClassSelectViewModel = childClassSelectViewModel,
                         childSelectViewModel = childSelectViewModel,
+                        devViewModel = devViewModel,
+                        ltoViewModel = ltoViewModel,
                         navigateToEducation = { navController.navigate(AllDestinations.EDUCATION) },
                         navigateToNotice = {navController.navigate(AllDestinations.NOTICE)}
                     )
