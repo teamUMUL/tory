@@ -108,7 +108,6 @@ fun STOItemColumn(
                 stoViewModel = stoViewModel,
                 selectedSTO = selectedSTO,
                 setUpdateSTOItem = {setUpdateSTODialog(it)},
-                setSelectedTryNum = {}
             )
         }
     } else {
@@ -124,7 +123,6 @@ fun STOItemColumn(
                 setAddSTOItem = {setAddSTODialog(it)},
                 stoViewModel = stoViewModel,
                 selectedLTO = selectedLTO,
-                educationViewModel = educationViewModel
             )
         }
     }

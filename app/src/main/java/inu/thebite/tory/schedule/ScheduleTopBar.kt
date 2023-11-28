@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,11 +27,12 @@ import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 fun ScheduleTopBar(
     modifier : Modifier = Modifier,
     currentRoute : String,
-    dummySTOList : MutableList<StoResponse>,
+//    dummySTOList : MutableList<StoResponse>,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
+    val schedule by stoViewModel.schedule.collectAsState()
 
     Row(
         modifier = modifier
@@ -58,16 +61,17 @@ fun ScheduleTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-
-                DragDropList(
-                    items = dummySTOList,
-                    onMove = { fromIndex, toIndex ->
-                        dummySTOList.move(fromIndex, toIndex)
-                    },
-                    devViewModel = devViewModel,
-                    ltoViewModel = ltoViewModel,
-                    stoViewModel = stoViewModel
-                )
+                schedule?.let {schedule ->
+                    DragDropList(
+                        items = schedule,
+                        onMove = { fromIndex, toIndex ->
+                            stoViewModel.moveSchedule(fromIndex, toIndex)
+                        },
+                        devViewModel = devViewModel,
+                        ltoViewModel = ltoViewModel,
+                        stoViewModel = stoViewModel
+                    )
+                }
 
 
 

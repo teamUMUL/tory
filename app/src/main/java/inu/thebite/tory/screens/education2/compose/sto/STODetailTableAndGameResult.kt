@@ -3,13 +3,11 @@ package inu.thebite.tory.screens.education2.compose.sto
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,30 +27,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.database.education.EducationEntity
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.model.sto.UpdateStoRequest
-import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
+import inu.thebite.tory.screens.education2.compose.sto2.TableCell
+import inu.thebite.tory.screens.education2.compose.sto2.TableCellWithLeftLine
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
-import kotlinx.coroutines.delay
 
 @SuppressLint("SimpleDateFormat")
 @Composable
@@ -404,44 +391,4 @@ fun STODetailTableAndGameResult(
 
 
     }
-}
-
-@Composable
-fun RowScope.TableCell(
-    text: String,
-    weight: Float
-) {
-    Text(
-        text = text,
-        Modifier
-            .weight(weight)
-            .padding(8.dp)
-    )
-
-}
-
-@Composable
-fun RowScope.TableCellWithLeftLine(
-    text: String,
-    weight: Float
-) {
-    Text(
-        text = text,
-        Modifier
-            .weight(weight)
-            .padding(8.dp)
-            .drawBehind {
-                val strokeWidth = 4f
-                val x = size.width - strokeWidth
-                val y = size.height - strokeWidth
-                //left line
-                drawLine(
-                    color = Color(0xFF888888),
-                    start = Offset(0f - 10f, 0f - 20f), //(0,0) at top-left point of the box
-                    end = Offset(0f - 10f, y + 22f),//bottom-left point of the box
-                    strokeWidth = strokeWidth
-                )
-            }
-    )
-
 }

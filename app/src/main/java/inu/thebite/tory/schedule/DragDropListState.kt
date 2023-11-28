@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +70,8 @@ fun DragDropList(
     var overScrollJob by remember { mutableStateOf<Job?>(null)}
     val dragDropListState = rememberDragDropListState(onMove = onMove)
 
+    val schedule by stoViewModel.schedule.collectAsState()
+
     LazyRow(
         modifier = Modifier
             .pointerInput(Unit){
@@ -113,9 +116,9 @@ fun DragDropList(
                         vertical = 10.dp
                     ),
                 onClick = {
-//                    devViewModel.setSelectedDEV(item.lto.domain)
-//                    ltoViewModel.setSelectedLTO(item.lto)
-//                    stoViewModel.setSelectedSTO(item)
+                    devViewModel.setSelectedDEV(item.lto.domain)
+                    ltoViewModel.setSelectedLTO(item.lto)
+                    stoViewModel.setSelectedSTO(item)
                 },
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(

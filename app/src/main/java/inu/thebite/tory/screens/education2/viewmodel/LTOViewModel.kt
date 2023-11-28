@@ -32,8 +32,9 @@ class LTOViewModel: ViewModel() {
     val ltoGraphList = _ltoGraphList.asStateFlow()
 
     fun setSelectedLTO(ltoEntity: LtoResponse) {
-
-        _selectedLTO.value = ltoEntity
+        _selectedLTO.update {
+            ltoEntity
+        }
     }
 
     fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
@@ -73,7 +74,7 @@ class LTOViewModel: ViewModel() {
                         LtoResponse(
                             id = j.toLong(),
                             templateNum = j,
-                            status = "",
+                            status = "진행중",
                             name = "$j. 예시 데이터 LTO",
                             contents = j.toString(),
                             game = "",

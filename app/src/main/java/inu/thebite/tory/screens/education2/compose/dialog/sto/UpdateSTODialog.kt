@@ -56,7 +56,6 @@ fun UpdateSTODialog(
     stoViewModel: STOViewModel,
     selectedSTO: StoResponse,
     setUpdateSTOItem : (Boolean) -> Unit,
-    setSelectedTryNum : (Int) -> Unit
 ) {
     val addSTOScrollState = rememberScrollState()
 

@@ -64,7 +64,6 @@ import java.sql.Date
 fun AddSTODialog(
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
-    educationViewModel: EducationViewModel,
     selectedLTO : LtoResponse,
 ) {
     val addSTOScrollState = rememberScrollState()
@@ -161,11 +160,6 @@ fun AddSTODialog(
                                 memo = stoMemoInputValue.text,
                                 registrant = "테스트"
                             )
-                        )
-                        educationViewModel.createEducation(
-                            selectedSTOName = stoNameInputValue.text,
-                            educationList = List(stoTryNum.value){"n"},
-                            roundNum = 1
                         )
                         stoNameInputValue = TextFieldValue("")
                         stoContentInputValue = TextFieldValue("")

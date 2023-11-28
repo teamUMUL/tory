@@ -33,6 +33,9 @@ class STOViewModel : ViewModel() {
     private val _stos: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
     val stos = _stos.asStateFlow()
 
+    private val _schedule: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
+    val schedule = _schedule.asStateFlow()
+
     private val _selectedSTO = MutableStateFlow<StoResponse?>(null)
     val selectedSTO = _selectedSTO.asStateFlow()
 
@@ -71,7 +74,7 @@ class STOViewModel : ViewModel() {
                             StoResponse(
                                 id = k.toLong(),
                                 templateNum = k,
-                                status = "",
+                                status = "준거 도달",
                                 name = "$k 번째 예시 데이터 STO",
                                 contents = "3 Array\n목표아이템 : 공, 블럭, 색연필\n예시아이템 : 색연필",
                                 count = 20,
@@ -91,7 +94,7 @@ class STOViewModel : ViewModel() {
                                 lto = LtoResponse(
                                     id = j.toLong(),
                                     templateNum = j,
-                                    status = "",
+                                    status = "진행중",
                                     name = "$j. 예시 데이터 LTO",
                                     contents = j.toString(),
                                     game = "",
@@ -120,6 +123,45 @@ class STOViewModel : ViewModel() {
         _selectedSTO.update {
             allSTOs.value!!.first()
         }
+    }
+
+    fun addSchedule(stoEntity: StoResponse){
+        _schedule.update {
+            val beforeSchedule = schedule.value?.let {schedule ->
+                schedule.toMutableList()
+            } ?: mutableListOf()
+            beforeSchedule.add(stoEntity)
+            beforeSchedule
+        }
+    }
+
+    fun deleteSchedule(stoEntity: StoResponse){
+        _schedule.update {
+            val beforeSchedule = schedule.value?.let {schedule ->
+                schedule.toMutableList()
+            } ?: mutableListOf()
+            beforeSchedule.remove(stoEntity)
+            beforeSchedule
+        }
+    }
+
+    fun moveSchedule(fromIndex: Int, toIndex: Int){
+        _schedule.update { currentSchedule ->
+            currentSchedule?.let {
+                // 새로운 리스트를 만들어 기존의 리스트를 복사합니다.
+                val updatedSchedule = it.toMutableList()
+
+                // 안전하게 범위 내의 인덱스인지 확인합니다.
+                if (fromIndex in updatedSchedule.indices && toIndex in updatedSchedule.indices) {
+                    // fromIndex와 toIndex의 항목을 서로 교환합니다.
+                    val temp = updatedSchedule[fromIndex]
+                    updatedSchedule[fromIndex] = updatedSchedule[toIndex]
+                    updatedSchedule[toIndex] = temp
+                }
+                updatedSchedule
+            }
+        }
+
     }
 
     fun getSTOsByLTOWithReturn(

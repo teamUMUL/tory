@@ -555,7 +555,6 @@ fun MainCompose(
                                         ScheduleTopBar(
                                             modifier = Modifier.weight(4f),
                                             currentRoute = currentRoute,
-                                            dummySTOList = dummySTOList,
                                             devViewModel = devViewModel,
                                             ltoViewModel = ltoViewModel,
                                             stoViewModel = stoViewModel
