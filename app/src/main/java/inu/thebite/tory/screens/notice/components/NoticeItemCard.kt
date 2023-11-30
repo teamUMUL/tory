@@ -20,10 +20,12 @@ import androidx.compose.ui.unit.dp
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.notice.NoticeViewModel
 
 @Composable
 fun LTOItem(
     lto: LtoResponse,
+    noticeViewModel: NoticeViewModel
 ) {
     val context = LocalContext.current
     val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
@@ -98,7 +100,9 @@ fun LTOItem(
                 .background(color = Color(0xFFE7EBF0), shape = RoundedCornerShape(size = 10.dp))
         ) {
             NoticeItemTopBar(lto = lto, gradient = gradient, expandedState = expandedState)
-            NoticeItemTextField()
+            NoticeItemTextField(
+                noticeViewModel = noticeViewModel
+            )
         }
         AnimatedVisibility(visible = expandedState.value) {
             NoticeItemGraphRow(dummySTOList = dummySTOList)

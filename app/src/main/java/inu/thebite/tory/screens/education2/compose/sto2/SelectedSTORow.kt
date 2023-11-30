@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.todo.TodoListRequest
+import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.compose.dialog.sto.UpdateSTODialog
 import inu.thebite.tory.screens.education2.screen.replaceNewLineWithSpace
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
@@ -55,8 +57,9 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun SelectedSTORow(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
-    schedule: List<StoResponse>?,
-    stoViewModel: STOViewModel
+    todoList: List<StoResponse>?,
+    stoViewModel: STOViewModel,
+    todoViewModel: TodoViewModel
 ) {
     val context = LocalContext.current
 
@@ -233,13 +236,13 @@ fun SelectedSTORow(
                 }
                 IconButton(
                     onClick = {
-                        schedule?.let { schedule ->
-                            if (schedule.contains(selectedSTO)){
-                                stoViewModel.deleteSchedule(stoEntity = selectedSTO)
+                        todoList?.let { todoList ->
+                            if (todoList.contains(selectedSTO)){
+                                //삭제
                             } else {
-                                stoViewModel.addSchedule(stoEntity = selectedSTO)
+                                todoViewModel.addTodoList(studentId = 1L, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
                             }
-                        } ?: stoViewModel.addSchedule(stoEntity = selectedSTO)
+                        } ?: todoViewModel.addTodoList(studentId = 1L, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
                     }
                 ) {
 
@@ -254,7 +257,7 @@ fun SelectedSTORow(
                                     drawContent()
                                     drawRect(
                                         brush =
-                                        schedule?.let { schedule ->
+                                        todoList?.let { schedule ->
                                             if (schedule.contains(selectedSTO)) purpleGradient else gray
                                         } ?: gray,
                                         blendMode = BlendMode.SrcAtop

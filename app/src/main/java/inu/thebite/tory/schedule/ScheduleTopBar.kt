@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,21 +19,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.R
-import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 
 @Composable
 fun ScheduleTopBar(
-    modifier : Modifier = Modifier,
-    currentRoute : String,
+    modifier: Modifier = Modifier,
+    currentRoute: String,
 //    dummySTOList : MutableList<StoResponse>,
+    todoViewModel: TodoViewModel,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
-    val schedule by stoViewModel.schedule.collectAsState()
+    val todoList by todoViewModel.todoList.collectAsState()
+    val tempTodoList by todoViewModel.tempTodoList.collectAsState()
+
+    LaunchedEffect(todoList){
+        todoViewModel.updateTempTodoList()
+    }
 
     Row(
         modifier = modifier
@@ -61,20 +68,27 @@ fun ScheduleTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                schedule?.let {schedule ->
+                tempTodoList?.let { schedule ->
                     DragDropList(
                         items = schedule,
                         onMove = { fromIndex, toIndex ->
-                            stoViewModel.moveSchedule(fromIndex, toIndex)
+                            todoViewModel.moveTempTodoList(fromIndex, toIndex)
+                        },
+                        onDragEnd = {
+                            tempTodoList?.let { tempTodoList ->
+                                todoViewModel.updateTodoList(
+                                    studentId = 1L,
+                                    updateTodoList = UpdateTodoList(
+                                        tempTodoList.map { it.id }
+                                    )
+                                )
+                            }
                         },
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,
                         stoViewModel = stoViewModel
                     )
                 }
-
-
-
 
 
             }

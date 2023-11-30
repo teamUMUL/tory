@@ -65,6 +65,7 @@ import inu.thebite.tory.model.schedule.DummySchedule
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.schedule.ScheduleTopBar
+import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
@@ -116,7 +117,8 @@ fun MainCompose(
     imageViewModel: ImageViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
     gameViewModel: GameViewModel,
-    noticeViewModel: NoticeViewModel
+    noticeViewModel: NoticeViewModel,
+    todoViewModel: TodoViewModel
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
 ) {
@@ -557,7 +559,8 @@ fun MainCompose(
                                             currentRoute = currentRoute,
                                             devViewModel = devViewModel,
                                             ltoViewModel = ltoViewModel,
-                                            stoViewModel = stoViewModel
+                                            stoViewModel = stoViewModel,
+                                            todoViewModel = todoViewModel
                                         )
 
 
@@ -717,7 +720,8 @@ fun MainCompose(
                         stoViewModel = stoViewModel,
                         imageViewModel = imageViewModel,
                         dragAndDropViewModel = dragAndDropViewModel,
-                        gameViewModel = gameViewModel
+                        gameViewModel = gameViewModel,
+                        todoViewModel = todoViewModel
                     )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,

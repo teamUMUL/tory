@@ -61,6 +61,7 @@ fun <T> MutableList<T>.move(from:Int, to:Int){
 fun DragDropList(
     items: List<StoResponse>,
     onMove: (Int, Int) -> Unit,
+    onDragEnd: () -> Unit,
     modifier : Modifier = Modifier,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
@@ -70,7 +71,6 @@ fun DragDropList(
     var overScrollJob by remember { mutableStateOf<Job?>(null)}
     val dragDropListState = rememberDragDropListState(onMove = onMove)
 
-    val schedule by stoViewModel.schedule.collectAsState()
 
     LazyRow(
         modifier = Modifier
@@ -93,7 +93,10 @@ fun DragDropList(
                             } ?: kotlin.run { overScrollJob?.cancel() }
                     },
                     onDragStart = {offset ->  dragDropListState.onDragStart(offset)},
-                    onDragEnd = {dragDropListState.onDragInterrupted()},
+                    onDragEnd = {
+                        dragDropListState.onDragInterrupted()
+                        onDragEnd()
+                    },
                     onDragCancel = {dragDropListState.onDragInterrupted()}
                 )
             },

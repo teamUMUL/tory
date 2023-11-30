@@ -22,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.compose.LTOAndSTOSelector
 import inu.thebite.tory.screens.education2.compose.SelectedLTOAndSTOInfo
 import inu.thebite.tory.screens.education2.compose.dev.DEVSelector
@@ -42,7 +43,8 @@ fun NewEducationScreen(
     imageViewModel: ImageViewModel,
     gameViewModel: GameViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
-    educationViewModel: EducationViewModel
+    educationViewModel: EducationViewModel,
+    todoViewModel: TodoViewModel
 ) {
     val context = LocalContext.current
 
@@ -54,7 +56,8 @@ fun NewEducationScreen(
 
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val points by stoViewModel.points.collectAsState()
-    val schedule by stoViewModel.schedule.collectAsState()
+
+    val todoList by todoViewModel.todoList.collectAsState()
 
     LaunchedEffect(selectedDEV) {
         selectedDEV?.let { ltoViewModel.getLTOsByDEV(selectedDEV = it) }
@@ -106,10 +109,11 @@ fun NewEducationScreen(
                 allLTOs = allLTOs,
                 selectedSTO = selectedSTO,
                 points = points,
-                schedule = schedule,
+                todoList = todoList,
                 imageViewModel = imageViewModel,
                 stoViewModel = stoViewModel,
-                ltoViewModel = ltoViewModel
+                ltoViewModel = ltoViewModel,
+                todoViewModel = todoViewModel
             )
 
         }

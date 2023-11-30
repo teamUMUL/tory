@@ -11,39 +11,72 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.R
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education2.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.notice.NoticeDate
+import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.notice.extractDate
 import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 
 @Composable
 fun NoticeInfoColumn(
     selectedDate: NoticeDate,
+    noticeViewModel: NoticeViewModel
 ) {
     val gradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
     )
 
+    val isTodayCommentReadOnly = remember {
+        mutableStateOf(true)
+    }
+
+    var todayComment by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue("오늘은 LTO 1, LTO 2를 실시했습니다. \n오늘 실시한 LTO 1, LTO 2와 관련된 교육을 가정에서도 진행해주시면 더욱 효과적입니다. "))
+    }
+    val focusRequester = FocusRequester()
 
     val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
     for (i in 1..8) {
@@ -207,11 +240,14 @@ fun NoticeInfoColumn(
                     ) {
                         BasicTextField(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(5.dp),
-                            value = "오늘은 LTO 1, LTO 2를 실시했습니다. \n오늘 실시한 LTO 1, LTO 2와 관련된 교육을 가정에서도 진행해주시면 더욱 효과적입니다. ",
-                            onValueChange = {},
-                            readOnly = true,
+                                .weight(1f)
+                                .padding(5.dp)
+                                .focusRequester(focusRequester),
+                            value = todayComment,
+                            onValueChange = {
+                                todayComment = it
+                            },
+                            readOnly = isTodayCommentReadOnly.value,
                             textStyle = TextStyle(
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp,
@@ -220,14 +256,76 @@ fun NoticeInfoColumn(
                                 color = Color(0xFF0047B3),
                                 letterSpacing = 0.16.sp,
                                 textAlign = TextAlign.Start,
-                            )
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.None,
+                                autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                            ),
+                            onTextLayout = {textLayoutResult ->
+                                if (todayComment.selection.collapsed && todayComment.selection.start != textLayoutResult.lineCount) {
+                                    // 커서를 텍스트의 끝으로 이동
+                                    todayComment = todayComment.copy(selection = TextRange(todayComment.text.length))
+                                }
+                            }
                         )
+                        if (isTodayCommentReadOnly.value){
+                            Box(
+                                modifier = Modifier
+                                    .clickableWithNoRipple {
+                                        isTodayCommentReadOnly.value = !isTodayCommentReadOnly.value
+                                        focusRequester.requestFocus()
+                                    }
+                                    .padding(top = 15.dp, end = 15.dp)
+                                    .size(32.dp)
+                                    .background(color = Color(0xFF7F5AF0), shape = CircleShape),
+                                contentAlignment = Alignment.Center
+                            ){
+                                    Icon(painter = painterResource(id = R.drawable.icon_write), contentDescription = null, tint = Color.White)
+
+                            }
+                        } else {
+                            Button(
+                                onClick = {
+                                    isTodayCommentReadOnly.value = !isTodayCommentReadOnly.value
+                                    noticeViewModel.updateTodayComment(
+                                        studentId = 1L,
+                                        date = "2023/11/01 (월)",
+                                        addCommentRequest = AddCommentRequest(
+                                            comment = todayComment.text
+                                        )
+                                    )
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF7F5AF0),
+                                    contentColor = Color.White
+                                ),
+                                modifier = Modifier
+                                    .padding(top = 15.dp, end = 15.dp)
+                            ){
+                                Text(
+                                    text = "저장하기",
+                                    style = TextStyle(
+                                        fontSize = 15.sp,
+                                        lineHeight = 15.sp,
+                                        fontFamily = fontFamily_Lato,
+                                        fontWeight = FontWeight(400),
+                                        color = Color(0xFFFFFFFF),
+                                    )
+                                )
+                            }
+
+                        }
+
                     }
                 }
             }
         }
         items(uniqueLTOList) { lto ->
-            LTOItem(lto = lto)
+            LTOItem(
+                lto = lto,
+                noticeViewModel = noticeViewModel
+            )
         }
     }
 }

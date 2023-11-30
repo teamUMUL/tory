@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
@@ -58,6 +59,7 @@ class MainActivity : ComponentActivity() {
                     val dragAndDropViewModel: DragAndDropViewModel = koinViewModel()
                     val gameViewModel : GameViewModel = koinViewModel()
                     val noticeViewModel : NoticeViewModel = koinViewModel()
+                    val todoViewModel : TodoViewModel = koinViewModel()
 //                    val dragAndDropViewModel : DragAndDropViewModel = koinViewModel()
 //                    val gameViewModel : GameViewModel = koinViewModel()
                     MainCompose(
@@ -76,7 +78,8 @@ class MainActivity : ComponentActivity() {
                         imageViewModel = imageViewModel,
                         dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel,
-                        noticeViewModel = noticeViewModel
+                        noticeViewModel = noticeViewModel,
+                        todoViewModel = todoViewModel
 //                        dragAndDropViewModel = dragAndDropViewModel,
 //                        gameViewModel = gameViewModel
                     )
