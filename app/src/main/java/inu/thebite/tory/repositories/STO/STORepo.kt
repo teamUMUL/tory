@@ -10,6 +10,7 @@ import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 interface STORepo {
 
@@ -19,7 +20,7 @@ interface STORepo {
 
     suspend fun updateStoHitStatus(stoInfo: StoResponse, updateStoStatusRequest: UpdateStoStatusRequest)
 
-    suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest)
+    suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest) : Response<StoResponse>
 
     suspend fun updateImageList(stoInfo: StoResponse, updateImageListRequest: UpdateImageListRequest)
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.repositories.STO.STORepoImpl
 import inu.thebite.tory.repositories.notice.NoticeRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

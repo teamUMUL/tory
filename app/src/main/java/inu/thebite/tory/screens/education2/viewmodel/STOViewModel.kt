@@ -18,14 +18,29 @@ import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.repositories.STO.STORepoImpl
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class STOViewModel : ViewModel() {
     private val repo: STORepoImpl = STORepoImpl()
-
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+        Log.e("STOViewModel", "Error: ${exception.localizedMessage}")
+    }
+    private fun <T> performNetworkOperation(operation: suspend () -> T) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            try {
+                val response = operation()
+                // 상태 업데이트 로직
+            } catch (e: Exception) {
+                Log.e("STOViewModel", "Network call failed: ${e.localizedMessage}")
+            }
+        }
+    }
 
     private val _allSTOs: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
     val allSTOs = _allSTOs.asStateFlow()
@@ -59,6 +74,30 @@ class STOViewModel : ViewModel() {
     init {
         getAllSTOs()
         getDummySTO()
+        observeAllSTOs()
+    }
+
+    private fun observeAllSTOs() {
+        viewModelScope.launch {
+            allSTOs.onEach { allSTOs ->
+                updateSTOsAndSelectedSTO(allSTOs)
+            }.collect()
+        }
+    }
+
+    private fun updateSTOsAndSelectedSTO(allSTOs: List<StoResponse>?) {
+        allSTOs?.let {allSTOs ->
+            _stos.update {
+                allSTOs.filter { sto ->
+                    stos.value?.any { it.id == sto.id } == true
+                }
+            }
+            _selectedSTO.update {
+                allSTOs.find { sto ->
+                    selectedSTO.value?.id == sto.id
+                }
+            }
+        }
     }
 
     fun getDummySTO() {
@@ -135,8 +174,9 @@ class STOViewModel : ViewModel() {
     fun getAllSTOs() {
         viewModelScope.launch {
             try {
-                val allSTOs = repo.getStoList()
-                _allSTOs.value = allSTOs
+                _allSTOs.update {
+                    repo.getStoList()
+                }
             } catch (e: Exception) {
                 Log.e("failed to get all STOs", e.message.toString())
             }
@@ -288,15 +328,23 @@ class STOViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                repo.updateSto(
-                    stoInfo = selectedSTO,
-                    updateStoRequest = updateSTO
-                )
+                val response = repo.updateSto(stoInfo = selectedSTO, updateStoRequest = updateSTO)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it}
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 업데이트 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
                 Log.e("failed to update STO", e.message.toString())
             }
-            getAllSTOs()
-            getSTOsByLTO(selectedSTO.lto)
         }
     }
 
