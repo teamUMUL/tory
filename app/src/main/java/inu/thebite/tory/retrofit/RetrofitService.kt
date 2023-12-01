@@ -21,6 +21,7 @@ import inu.thebite.tory.model.point.PointResponse
 import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
@@ -176,7 +177,7 @@ interface RetrofitService {
     suspend fun updateTodoList(@Path("studentId") studentId: Long, @Body updateTodoList: UpdateTodoList) : Response<TodoResponse>
 
     @GET("/todos/{studentId}")
-    suspend fun getTodoList(@Path("studentId") studentId: Long) : List<String>
+    suspend fun getTodoList(@Path("studentId") studentId: Long) : List<StoSummaryResponse>
 
     /**
      * Notice Api = 오늘의 총평 부분 알림장
@@ -200,7 +201,7 @@ interface RetrofitService {
     suspend fun updateComment(@Path("studentId") studentId: Long, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>
 
     @GET("/details/{studentId}")
-    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("date") date: String) : Response<DetailResponse>
+    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("date") date: String) : Response<List<DetailResponse>>
 
 
 
