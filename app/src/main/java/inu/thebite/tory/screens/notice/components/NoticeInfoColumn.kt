@@ -48,11 +48,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.screen.clickableWithNoRipple
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.notice.extractDate
@@ -63,7 +65,9 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @Composable
 fun NoticeInfoColumn(
     selectedDate: NoticeDate,
-    noticeViewModel: NoticeViewModel
+    selectedNoticeDetailList :  List<DetailResponse>,
+    noticeViewModel: NoticeViewModel,
+    stoViewModel: STOViewModel
 ) {
     val gradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
@@ -74,59 +78,60 @@ fun NoticeInfoColumn(
     }
 
     var todayComment by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("오늘은 LTO 1, LTO 2를 실시했습니다. \n오늘 실시한 LTO 1, LTO 2와 관련된 교육을 가정에서도 진행해주시면 더욱 효과적입니다. "))
+        mutableStateOf(TextFieldValue(selectedNoticeDetailList.first().comment))
     }
     val focusRequester = FocusRequester()
 
-    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
-    for (i in 1..8) {
-        dummySTOList.add(
-            StoResponse(
-                id = i.toLong(),
-                templateNum = i,
-                status = "진행중",
-                name = "같은 사진 매칭(${i} array)",
-                contents = "",
-                count = i,
-                goal = i,
-                goalPercent = i,
-                achievementOrNot = "",
-                urgeType = "",
-                urgeContent = "",
-                enforceContent = "",
-                memo = "",
-                hitGoalDate = "",
-                registerDate = "",
-                delYN = "",
-                round = i,
-                imageList = listOf(),
-                pointList = listOf(),
-                lto = LtoResponse(
-                    id = i.toLong(),
-                    templateNum = i,
-                    status = "",
-                    name = "더미용 LTO ${i}",
-                    contents = "",
-                    game = "",
-                    achieveDate = "",
-                    registerDate = "",
-                    delYN = "",
-                    domain = DomainResponse(
-                        id = i.toLong(),
-                        templateNum = i,
-                        type = "",
-                        status = "",
-                        name = "더미용 Domain ${i}",
-                        contents = "",
-                        useYN = "",
-                        delYN = "",
-                        registerDate = ""
-                    )
-                )
-            )
-        )
-    }
-    val uniqueLTOList = dummySTOList.map { it.lto }.distinctBy { it.id }
+//    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
+//    for (i in 1..8) {
+//        dummySTOList.add(
+//            StoResponse(
+//                id = i.toLong(),
+//                templateNum = i,
+//                status = "진행중",
+//                name = "같은 사진 매칭(${i} array)",
+//                contents = "",
+//                count = i,
+//                goal = i,
+//                goalPercent = i,
+//                achievementOrNot = "",
+//                urgeType = "",
+//                urgeContent = "",
+//                enforceContent = "",
+//                memo = "",
+//                hitGoalDate = "",
+//                registerDate = "",
+//                delYN = "",
+//                round = i,
+//                imageList = listOf(),
+//                pointList = listOf(),
+//                lto = LtoResponse(
+//                    id = i.toLong(),
+//                    templateNum = i,
+//                    status = "",
+//                    name = "더미용 LTO ${i}",
+//                    contents = "",
+//                    game = "",
+//                    achieveDate = "",
+//                    registerDate = "",
+//                    delYN = "",
+//                    domain = DomainResponse(
+//                        id = i.toLong(),
+//                        templateNum = i,
+//                        type = "",
+//                        status = "",
+//                        name = "더미용 Domain ${i}",
+//                        contents = "",
+//                        useYN = "",
+//                        delYN = "",
+//                        registerDate = ""
+//                    )
+//                )
+//            )
+//        )
+//    }
+    val selectedNoticeSTOList = stoViewModel.findSTOsByIds(selectedNoticeDetailList.map { it.stoId })
+    val uniqueLTOList = selectedNoticeSTOList.map { it.lto }.distinctBy { it.id }
     LazyColumn {
         item {
             Column(

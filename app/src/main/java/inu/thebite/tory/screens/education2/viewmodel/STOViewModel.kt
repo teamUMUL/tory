@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -320,6 +321,14 @@ class STOViewModel : ViewModel() {
             it.id == selectedSTOId
         }
         return foundSTO
+    }
+
+    fun findSTOsByIds(
+        selectedSTOsIds: List<Long>
+    ): List<StoResponse> {
+        return allSTOs.value!!.filter { sto ->
+            selectedSTOsIds.contains(sto.id)
+        }
     }
 
     fun updateSTO(

@@ -25,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.components.NoticeDateColumn
 import inu.thebite.tory.screens.notice.components.NoticeInfoColumn
 import inu.thebite.tory.screens.notice.components.extractYearsAndMonths
@@ -32,45 +33,27 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
 fun NoticeScreen(
-    noticeViewModel: NoticeViewModel
+    noticeViewModel: NoticeViewModel,
+    stoViewModel: STOViewModel
 ) {
     val selectedNoticeDates by noticeViewModel.selectedNoticeDates.collectAsState()
+    val selectedNoticeDate by noticeViewModel.selectedNoticeDate.collectAsState()
+    val selectedNoticeDetailList by noticeViewModel.selectedNoticeDetailList.collectAsState()
 
-    val dummyDateList = mutableListOf<NoticeDate>()
-    for (i in 1..10) {
-        for (j in 1..20) {
-            dummyDateList.add(
-                NoticeDate(
-                    year = "2023",
-                    month = i.toString(),
-                    date = j.toString(),
-                    day = "월"
-                )
-            )
-        }
-    }
-    val (dummyYearList, dummyMonthList) = extractYearsAndMonths(dummyDateList)
-
-    var selectedDate by remember { mutableStateOf(dummyDateList.last()) }
-    var selectedYear by remember { mutableStateOf(dummyYearList.first()) }
-    var selectedMonth by remember { mutableStateOf(dummyMonthList.first()) }
+    var selectedYear by remember { mutableStateOf("") }
+    var selectedMonth by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedYear, month = selectedMonth)
-//        noticeViewModel.setSelectedNoticeDates(
-//            allDates = dummyDateList,
-//            selectedYear = selectedYear,
-//            selectedMonth = selectedMonth
-//        )
+//        selectedNoticeDates?.let {selectedNoticeDates ->
+//            noticeViewModel.getNoticeDateList(studentId = 1L, year = extractYearsAndMonths(selectedNoticeDates).first.first(), month = extractYearsAndMonths(selectedNoticeDates).second.first())
+//        }
     }
 
-    LaunchedEffect(selectedYear, selectedMonth) {
-        noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedYear, month = selectedMonth)
-//        noticeViewModel.setSelectedNoticeDates(
-//            allDates = dummyDateList,
-//            selectedYear = selectedYear,
-//            selectedMonth = selectedMonth
-//        )
+    LaunchedEffect(selectedNoticeDate) {
+        selectedNoticeDate?.let {selectedNoticeDate ->
+            noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedNoticeDate.year, month = selectedNoticeDate.month)
+            noticeViewModel.getDetailList(studentId = 1L, date = "${selectedNoticeDate.year}/${selectedNoticeDate.month}/${selectedNoticeDate.date} ${selectedNoticeDate.day}")
+        }
     }
 
 
@@ -86,17 +69,17 @@ fun NoticeScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             selectedNoticeDates?.let { selectedNoticeDates ->
-                NoticeDateColumn(
-                    dummyMonthList = dummyMonthList,
-                    dummyYearList = dummyYearList,
-                    selectedDateList = selectedNoticeDates,
-                    selectedDate = selectedDate,
-                    setSelectedDate = { selectedDate = it },
-                    selectedYear = selectedYear,
-                    setSelectedYear = { selectedYear = it },
-                    selectedMonth = selectedMonth,
-                    setSelectedMonth = { selectedMonth = it }
-                )
+                selectedNoticeDate?.let {
+                    NoticeDateColumn(
+                        selectedNoticeDates = selectedNoticeDates,
+                        selectedDate = it,
+                        setSelectedDate = {  },
+                        selectedYear = selectedYear,
+                        setSelectedYear = { selectedYear = it },
+                        selectedMonth = selectedMonth,
+                        setSelectedMonth = { selectedMonth = it },
+                    )
+                }
             } ?: Text(
                     text = "보고서가 존재하지 않습니다",
                     style = TextStyle(
@@ -117,12 +100,19 @@ fun NoticeScreen(
                 .weight(8f)
                 .fillMaxHeight()
         ) {
-            if (selectedDate.date.isNotEmpty()) {
-                NoticeInfoColumn(
-                    selectedDate = selectedDate,
-                    noticeViewModel = noticeViewModel
-                )
+            selectedNoticeDate?.let { selectedNoticeDate ->
+                if (selectedNoticeDate.date.isNotEmpty()) {
+                    selectedNoticeDetailList?.let {selectedNoticeDetailList ->
+                        NoticeInfoColumn(
+                            selectedDate = selectedNoticeDate,
+                            selectedNoticeDetailList = selectedNoticeDetailList,
+                            noticeViewModel = noticeViewModel,
+                            stoViewModel = stoViewModel
+                        )
+                    }
+                }
             }
+
         }
     }
 

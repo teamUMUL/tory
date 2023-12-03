@@ -3,6 +3,7 @@ package inu.thebite.tory.screens.notice
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.sto.StoResponse
@@ -19,8 +20,11 @@ class NoticeViewModel : ViewModel() {
     private val _selectedNoticeDates: MutableStateFlow<List<NoticeDate>?> = MutableStateFlow(null)
     val selectedNoticeDates = _selectedNoticeDates.asStateFlow()
 
-    private val _selectedNoticeSTOs: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
-    val selectedNoticeSTOs = _selectedNoticeSTOs.asStateFlow()
+    private val _selectedNoticeDate: MutableStateFlow<NoticeDate?> = MutableStateFlow(null)
+    val selectedNoticeDate = _selectedNoticeDate.asStateFlow()
+
+    private val _selectedNoticeDetailList: MutableStateFlow<List<DetailResponse>?> = MutableStateFlow(null)
+    val selectedNoticeDetailList = _selectedNoticeDetailList.asStateFlow()
 
     private val _selectedNoticeLTOs: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
     val selectedNoticeLTOs = _selectedNoticeLTOs.asStateFlow()
@@ -41,8 +45,15 @@ class NoticeViewModel : ViewModel() {
 //            }
 //        }
 //    }
-
-
+    init {
+    }
+    fun setSelectedNoticeDate(
+        noticeDate: NoticeDate
+    ){
+        _selectedNoticeDate.update {
+            noticeDate
+        }
+    }
 
     fun getNoticeDateList(
         studentId: Long,
@@ -50,20 +61,17 @@ class NoticeViewModel : ViewModel() {
         month: String
     ){
         viewModelScope.launch {
-//            try {
-//                _selectedNoticeDates.update {
-//                    val rawDate = repo.getNoticeDateList(
-//                        studentId = studentId,
-//                        year = year,
-//                        month = month
-//                    )
-//                    NoticeDate(
-////                        year = rawDate[],
-//                    )
-//                }
-//            } catch (e: Exception) {
-//                Log.e("failed to get NoticeDateList", e.message.toString())
-//            }
+            try {
+                val stringDates = repo.getNoticeDateList(
+                    studentId = studentId,
+                    year = year,
+                    month = month
+                )
+                val noticeDates = parseDateStrings(stringDates)
+                _selectedNoticeDates.update { noticeDates }
+            } catch (e: Exception) {
+                Log.e("failed to get NoticeDateList", e.message.toString())
+            }
         }
     }
 
@@ -129,14 +137,30 @@ class NoticeViewModel : ViewModel() {
     ){
         try {
             viewModelScope.launch {
-//                _selectedNoticeSTOs.update {
-//                    repo.getDetailList(studentId = studentId, date = date)
-//                }
+                val response = repo.getDetailList(studentId = studentId, date = date)
+
+                if (response.isSuccessful){
+                    val updatedDetailList = response.body() ?: throw  Exception("DetailList 정보가 비어있습니다.")
+
+                    _selectedNoticeDetailList.update {
+                        updatedDetailList
+                    }
+                }
             }
         } catch (e: Exception){
             Log.e("failed to get DetailList", e.message.toString())
         }
     }
+}
 
-
+fun parseDateStrings(dateStrings: List<String>): List<NoticeDate> {
+    return dateStrings.map { dateString ->
+        val parts = dateString.split("/", " ")
+        NoticeDate(
+            year = parts[0],
+            month = parts[1],
+            date = parts[2],
+            day = parts[3]
+        )
+    }
 }

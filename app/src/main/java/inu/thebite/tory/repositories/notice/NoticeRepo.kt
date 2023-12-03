@@ -17,6 +17,6 @@ interface NoticeRepo {
 
     suspend fun updateLTOComment(studentId: Long, date: String, stoId: Long, addCommentRequest: AddCommentRequest)
 
-    suspend fun getDetailList(studentId: Long, date: String) : Response<DetailResponse>
+    suspend fun getDetailList(studentId: Long, date: String) : Response<List<DetailResponse>>
 
 }

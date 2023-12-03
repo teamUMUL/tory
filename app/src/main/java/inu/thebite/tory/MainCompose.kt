@@ -737,7 +737,8 @@ fun MainCompose(
 
                 composable(AllDestinations.NOTICE) {
                     NoticeScreen(
-                        noticeViewModel = noticeViewModel
+                        noticeViewModel = noticeViewModel,
+                        stoViewModel = stoViewModel
                     )
                 }
 

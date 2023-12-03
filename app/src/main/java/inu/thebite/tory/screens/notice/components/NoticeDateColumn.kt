@@ -31,6 +31,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,6 +50,7 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
@@ -56,16 +58,16 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoticeDateColumn(
-    dummyMonthList: List<String>,
-    dummyYearList: List<String>,
-    selectedDateList: List<NoticeDate>,
+    selectedNoticeDates: List<NoticeDate>,
     selectedDate: NoticeDate,
     setSelectedDate: (NoticeDate) -> Unit,
     selectedYear: String,
     setSelectedYear: (String) -> Unit,
     selectedMonth: String,
-    setSelectedMonth: (String) -> Unit
+    setSelectedMonth: (String) -> Unit,
 ) {
+    val yearList = extractYearsAndMonths(selectedNoticeDates).first
+    val monthList = extractYearsAndMonths(selectedNoticeDates).second
 
 
     val isYearExpanded = remember {
@@ -104,11 +106,11 @@ fun NoticeDateColumn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                ExposedSelector(isExpanded = isYearExpanded, selectedString = selectedYear, itemList = dummyYearList, onClick = {setSelectedYear(it)}, width = 70.dp)
+                ExposedSelector(isExpanded = isYearExpanded, selectedString = selectedYear, itemList = yearList, onClick = {setSelectedYear(it)}, width = 70.dp)
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(text = "년")
                 Spacer(modifier = Modifier.width(10.dp))
-                ExposedSelector(isExpanded = isMonthExpanded, selectedString = selectedMonth, itemList = dummyMonthList, onClick = {setSelectedMonth(it)}, width = 50.dp)
+                ExposedSelector(isExpanded = isMonthExpanded, selectedString = selectedMonth, itemList = monthList, onClick = {setSelectedMonth(it)}, width = 50.dp)
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(text = "월")
             }
@@ -127,7 +129,7 @@ fun NoticeDateColumn(
                     .padding(start = 15.dp, top = 9.dp, bottom = 9.dp)
             )
         }
-        items(selectedDateList) { date ->
+        items(selectedNoticeDates) { date ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
