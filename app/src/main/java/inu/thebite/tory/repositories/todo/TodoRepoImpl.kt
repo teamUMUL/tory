@@ -1,5 +1,6 @@
 package inu.thebite.tory.repositories.todo
 
+import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.todo.TodoListRequest
 import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.retrofit.RetrofitApi
@@ -16,7 +17,7 @@ class TodoRepoImpl : TodoRepo {
         todoRetrofit.updateTodoList(studentId = studentId, updateTodoList = updateTodoList)
     }
 
-    override suspend fun getTodoList(studentId: Long): List<String> {
+    override suspend fun getTodoList(studentId: Long): List<StoSummaryResponse> {
         return todoRetrofit.getTodoList(studentId = studentId)
     }
 }
