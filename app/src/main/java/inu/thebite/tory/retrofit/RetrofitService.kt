@@ -21,6 +21,7 @@ import inu.thebite.tory.model.point.PointResponse
 import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
@@ -29,6 +30,7 @@ import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
 import inu.thebite.tory.model.student.UpdateStudentRequest
 import inu.thebite.tory.model.todo.TodoListRequest
+import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
 import retrofit2.Response
 import retrofit2.http.Body
@@ -168,20 +170,20 @@ interface RetrofitService {
      * TodoList Api
      */
     @POST("/todos/{studentId}")
-    suspend fun addTodoList(@Path("studentId") studentId: Long, @Body todoListRequest: TodoListRequest) : Response<Void>
+    suspend fun addTodoList(@Path("studentId") studentId: Long, @Body todoListRequest: TodoListRequest) : Response<TodoResponse>
 
     // TodoList update == TodoList delete
     @PATCH("/todos/{studentId}")
-    suspend fun updateTodoList(@Path("studentId") studentId: Long, @Body updateTodoList: UpdateTodoList) : Response<Void>
+    suspend fun updateTodoList(@Path("studentId") studentId: Long, @Body updateTodoList: UpdateTodoList) : Response<TodoResponse>
 
     @GET("/todos/{studentId}")
-    suspend fun getTodoList(@Path("studentId") studentId: Long) : List<String>
+    suspend fun getTodoList(@Path("studentId") studentId: Long) : List<StoSummaryResponse>
 
     /**
      * Notice Api = 오늘의 총평 부분 알림장
      */
     @PATCH("/notices/{studentId}")
-    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("date") date: String, @Body addCommentRequest: AddCommentRequest) : Response<Void>
+    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("date") date: String, @Body addCommentRequest: AddCommentRequest) : Response<NoticeResponse>
 
     @GET("/notices/{studentId}/dateList")
     suspend fun getNoticeDateList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String) : List<String>
@@ -193,13 +195,13 @@ interface RetrofitService {
      * Detail Api = 각 LTO 상세 부분 알림장
      */
     @POST("/details/{studentId}")
-    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("date") date: String, @Query("stoId") stoId: Long) : Response<Void>
+    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("date") date: String, @Query("stoId") stoId: Long) : Response<DetailResponse>
 
     @PATCH("/details/{studentId}")
-    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<Void>
+    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>
 
     @GET("/details/{studentId}")
-    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("date") date: String) : Response<DetailResponse>
+    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("date") date: String) : Response<List<DetailResponse>>
 
 
 

@@ -55,7 +55,7 @@ fun NoticeScreen(
     var selectedYear by remember { mutableStateOf(dummyYearList.first()) }
     var selectedMonth by remember { mutableStateOf(dummyMonthList.first()) }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedYear, month = selectedMonth)
 //        noticeViewModel.setSelectedNoticeDates(
 //            allDates = dummyDateList,
@@ -64,7 +64,7 @@ fun NoticeScreen(
 //        )
     }
 
-    LaunchedEffect(selectedYear, selectedMonth){
+    LaunchedEffect(selectedYear, selectedMonth) {
         noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedYear, month = selectedMonth)
 //        noticeViewModel.setSelectedNoticeDates(
 //            allDates = dummyDateList,
@@ -85,7 +85,7 @@ fun NoticeScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            selectedNoticeDates?.let {selectedNoticeDates ->
+            selectedNoticeDates?.let { selectedNoticeDates ->
                 NoticeDateColumn(
                     dummyMonthList = dummyMonthList,
                     dummyYearList = dummyYearList,
@@ -107,9 +107,11 @@ fun NoticeScreen(
                     )
                 )
         }
-        Divider(modifier = Modifier
-            .width(1.dp)
-            .fillMaxHeight(), color = Color.LightGray)
+        Divider(
+            modifier = Modifier
+                .width(1.dp)
+                .fillMaxHeight(), color = Color.LightGray
+        )
         Row(
             modifier = Modifier
                 .weight(8f)
@@ -127,15 +129,17 @@ fun NoticeScreen(
 }
 
 
-
 fun extractDate(input: String): String {
     // 연도를 포함한 처음 5자리를 건너뛰고, 그 다음 5자리 (월/일)를 가져옵니다.
     return input.substring(5, 10)
 }
 
 
-
-fun filterDatesByYearAndMonth(dateList: List<NoticeDate>, year: String, month: String): List<NoticeDate> {
+fun filterDatesByYearAndMonth(
+    dateList: List<NoticeDate>,
+    year: String,
+    month: String
+): List<NoticeDate> {
     return dateList.filter {
         it.year == year && it.month == month
     }
