@@ -51,7 +51,7 @@ interface RetrofitService {
     @PATCH("/centers/{centerId}")
     suspend fun updateCenter(@Path("centerId")  centerId: Long, @Body updateCenterRequest: CenterRequest): Response<CenterResponse>
 
-    @GET("/centers")
+    @GET("/centers/abcde")
     suspend fun getCenterList(): List<CenterResponse>
 
     @DELETE("/centers/{centerId}")
@@ -66,6 +66,12 @@ interface RetrofitService {
 
     @GET("/classes")
     suspend fun getAllClassList(): List<ChildClassResponse>
+
+    /**
+     * 센터별 반 api
+     */
+    @GET("/{centerId}/classes")
+    suspend fun getClassListByCenter(@Path("centerId") centerId: Long): List<ChildClassResponse>
 
     @DELETE("/classes/{classId}")
     suspend fun deleteClass(@Path("classId") classId: Long): Response<Void>
@@ -115,6 +121,12 @@ interface RetrofitService {
     @GET("/ltos")
     suspend fun getLtoList(): List<LtoResponse>
 
+    /**
+     * 학생 별로 LTO 리스트 가져오는 Api
+     */
+    @GET("/1/ltos")
+    suspend fun getLtoListByStudent(): List<LtoResponse>
+
     @GET("/ltos/{ltoId}/graphs")
     suspend fun getLtoGraph(@Path("ltoId") ltoId: Long) : List<LtoGraphResponse>
 
@@ -145,6 +157,12 @@ interface RetrofitService {
 
     @GET("/stos")
     suspend fun getStoList(): List<StoResponse>
+
+    /**
+     * LTO별로 STO 리스트 가져오기 api
+     */
+    @GET("/{ltoId}/stos")
+    suspend fun getStoListByLto(@Path("ltoId") ltoId: Long) : List<StoResponse>
 
     @DELETE("/stos/{stoId}")
     suspend fun deleteSto(@Path("stoId") stoId: Long): Response<Void>
