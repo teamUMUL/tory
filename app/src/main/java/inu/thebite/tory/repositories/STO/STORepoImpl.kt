@@ -46,8 +46,8 @@ class STORepoImpl: STORepo {
         stoRetrofit.updateImageList(stoId = stoInfo.id, updateImageListRequest = updateImageListRequest)
     }
 
-    override suspend fun getStoList(): List<StoResponse> {
-        return stoRetrofit.getStoList()
+    override suspend fun getStoList(ltoId: Long): List<StoResponse> {
+        return stoRetrofit.getStoListByLto(ltoId = ltoId)
     }
 
     override suspend fun deleteSto(stoInfo: StoResponse) {

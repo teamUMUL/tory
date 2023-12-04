@@ -4,14 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
-import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
-import inu.thebite.tory.model.point.PointResponse
-import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
@@ -22,7 +18,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -73,7 +68,7 @@ class STOViewModel : ViewModel() {
     }
 
     init {
-        getAllSTOs()
+//        getSTOsByLTO()
 //        getDummySTO()
         observeAllSTOs()
     }
@@ -172,11 +167,13 @@ class STOViewModel : ViewModel() {
         }
     }
 
-    fun getAllSTOs() {
+    fun getSTOsByLTO(
+        ltoId: Long
+    ) {
         viewModelScope.launch {
             try {
                 _allSTOs.update {
-                    repo.getStoList()
+                    repo.getStoList(ltoId)
                 }
             } catch (e: Exception) {
                 Log.e("failed to get all STOs", e.message.toString())
@@ -194,7 +191,7 @@ class STOViewModel : ViewModel() {
             } else {
                 repo.updateStoStatus(selectedSTO, updateSTOStatus)
             }
-            getAllSTOs()
+//            getSTOsByLTO()
 //            getSTOsByLTO(selectedSTO.lto)
         }
     }
@@ -202,16 +199,14 @@ class STOViewModel : ViewModel() {
     fun getSTOsByLTO(
         selectedLTO: LtoResponse,
     ) {
-        if (selectedLTO.isNotNull()) {
-            _stos.update {
-
-                val filteredSTOs = allSTOs.value!!.filter {
-                    it.lto.id == selectedLTO.id
+        viewModelScope.launch {
+            try {
+                _allSTOs.update {
+                    repo.getStoList(selectedLTO.id)
                 }
-                filteredSTOs
+            } catch (e: Exception) {
+                Log.e("failed to get all STOs", e.message.toString())
             }
-        } else {
-            _stos.update { null }
         }
     }
 
@@ -228,7 +223,7 @@ class STOViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to create STO", e.message.toString())
             }
-            getAllSTOs()
+//            getSTOsByLTO()
         }
     }
 
@@ -310,7 +305,7 @@ class STOViewModel : ViewModel() {
                 Log.e("failed to add Round", e.message.toString())
             }
             getPointList(selectedSTO)
-            getAllSTOs()
+//            getSTOsByLTO()
         }
     }
 
@@ -372,8 +367,8 @@ class STOViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to update STO ImageList", e.message.toString())
             }
-            getAllSTOs()
-            getSTOsByLTO(selectedSTO.lto)
+//            getSTOsByLTO()
+//            getSTOsByLTO(selectedSTO.lto)
         }
     }
 
@@ -403,7 +398,7 @@ class STOViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to delete STO", e.message.toString())
             }
-            getAllSTOs()
+//            getSTOsByLTO()
         }
     }
 }

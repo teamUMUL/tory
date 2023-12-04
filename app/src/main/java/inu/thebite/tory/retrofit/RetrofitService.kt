@@ -118,8 +118,8 @@ interface RetrofitService {
     @PATCH("/ltos/{ltoId}")
     suspend fun updateLto(@Path("ltoId") ltoId: Long, @Body ltoRequest: LtoRequest) : Response<LtoResponse>
 
-    @GET("/ltos")
-    suspend fun getLtoList(): List<LtoResponse>
+//    @GET("/ltos")
+//    suspend fun getLtoList(): List<LtoResponse>
 
     /**
      * 학생 별로 LTO 리스트 가져오는 Api
@@ -155,8 +155,8 @@ interface RetrofitService {
     @PATCH("/stos/{stoId}/hit/round")
     suspend fun updateStoHitRound(@Path("stoId") stoId: Long, @Body updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
 
-    @GET("/stos")
-    suspend fun getStoList(): List<StoResponse>
+//    @GET("/stos")
+//    suspend fun getStoList(): List<StoResponse>
 
     /**
      * LTO별로 STO 리스트 가져오기 api
