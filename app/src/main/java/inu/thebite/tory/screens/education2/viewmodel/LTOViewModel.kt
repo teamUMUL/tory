@@ -133,6 +133,7 @@ class LTOViewModel: ViewModel() {
     ){
         viewModelScope.launch {
             try {
+                Log.d("getLtosByStudent", repo.getLTOsByStudent(domainId = domainId).toString())
                 _allLTOs.update {
                     repo.getLTOsByStudent(domainId = domainId)
                 }
