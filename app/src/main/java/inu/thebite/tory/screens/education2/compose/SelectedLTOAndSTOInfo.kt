@@ -20,6 +20,7 @@ import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 @Composable
 fun SelectedLTOAndSTOInfo(
     allLTOs: List<LtoResponse>?,
+    selectedLTO: LtoResponse?,
     selectedSTO: StoResponse?,
     points: List<String>?,
     todoList: List<StoSummaryResponse>?,
@@ -35,7 +36,7 @@ fun SelectedLTOAndSTOInfo(
         SelectedLTORow(
             modifier = Modifier.weight(0.5f),
             allLTOs = allLTOs,
-            selectedSTO = selectedSTO,
+            selectedLTO = selectedLTO,
             ltoViewModel = ltoViewModel,
             stoViewModel = stoViewModel
         )

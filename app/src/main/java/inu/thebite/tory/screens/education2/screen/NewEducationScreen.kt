@@ -86,6 +86,7 @@ fun NewEducationScreen(
                     modifier = Modifier
                         .weight(9.5f),
                     selectedDEV = selectedDEV,
+                    selectedLTO = selectedLTO,
                     selectedSTO = selectedSTO,
                     ltos = it,
                     ltoViewModel = ltoViewModel,
@@ -105,6 +106,7 @@ fun NewEducationScreen(
         ) {
             SelectedLTOAndSTOInfo(
                 allLTOs = allLTOs,
+                selectedLTO = selectedLTO,
                 selectedSTO = selectedSTO,
                 points = points,
                 todoList = todoList,

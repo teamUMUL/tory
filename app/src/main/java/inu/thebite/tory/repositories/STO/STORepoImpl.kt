@@ -17,22 +17,22 @@ class STORepoImpl: STORepo {
 
     private val stoRetrofit = RetrofitApi.apiService
 
-    override suspend fun addSto(ltoInfo: LtoResponse, addStoRequest: AddStoRequest) {
-        stoRetrofit.addSto(ltoId = ltoInfo.id, addStoRequest = addStoRequest)
+    override suspend fun addSto(ltoInfo: LtoResponse, addStoRequest: AddStoRequest): Response<StoResponse> {
+        return stoRetrofit.addSto(ltoId = ltoInfo.id, addStoRequest = addStoRequest)
     }
 
     override suspend fun updateStoStatus(
         stoInfo: StoResponse,
         updateStoStatusRequest: UpdateStoStatusRequest
-    ) {
-        stoRetrofit.updateStoStatus(stoId = stoInfo.id, updateStoStatusRequest = updateStoStatusRequest)
+    ) : Response<StoResponse>{
+        return stoRetrofit.updateStoStatus(stoId = stoInfo.id, updateStoStatusRequest = updateStoStatusRequest)
     }
 
     override suspend fun updateStoHitStatus(
         stoInfo: StoResponse,
         updateStoStatusRequest: UpdateStoStatusRequest
-    ) {
-        stoRetrofit.updateStoHitStatus(stoId = stoInfo.id, updateStoStatusRequest = updateStoStatusRequest)
+    ) : Response<StoResponse>{
+        return stoRetrofit.updateStoHitStatus(stoId = stoInfo.id, updateStoStatusRequest = updateStoStatusRequest)
     }
 
     override suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest) : Response<StoResponse> {
@@ -50,8 +50,8 @@ class STORepoImpl: STORepo {
         return stoRetrofit.getStoListByLto(ltoId = ltoId)
     }
 
-    override suspend fun deleteSto(stoInfo: StoResponse) {
-        stoRetrofit.deleteSto(stoId = stoInfo.id)
+    override suspend fun deleteSto(stoInfo: StoResponse) : Response<Boolean>{
+        return stoRetrofit.deleteSto(stoId = stoInfo.id)
     }
 
     override suspend fun getPointList(selectedSTO: StoResponse): List<String> {

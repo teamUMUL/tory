@@ -51,7 +51,7 @@ class LTOViewModel: ViewModel() {
             }
 
 //            getLTOsByDomain()
-            getLTOsByDEV(selectedLTO.domain)
+//            getLTOsByDEV(selectedLTO.domain)
         }
     }
 
@@ -160,22 +160,31 @@ class LTOViewModel: ViewModel() {
         }
     }
 
-    fun createLTO(
+    fun addLTO(
         selectedDEV : DomainResponse,
         newLTO : LtoRequest
     ){
         viewModelScope.launch {
             try {
-                Log.d("selectedDEV", selectedDEV.toString())
-                Log.d("newLTO", newLTO.toString())
-                repo.createLTO(
-                    selectedDEV = selectedDEV,
-                    newLTO = newLTO
-                )
+                val response = repo.createLTO(selectedDEV = selectedDEV, newLTO = newLTO)
+
+                if (response.isSuccessful) {
+                    val newLTOResponse = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    _allLTOs.update { currentLTOs ->
+                        currentLTOs?.let {
+                            // 현재 LTO 리스트가 null이 아니면 새 STO를 추가
+                            it + newLTOResponse
+                        } ?: listOf(newLTOResponse) // 현재 LTO 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("LTO 추가 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
-                Log.e("failed to create LTO", e.message.toString())
+                Log.e("failed to add STO", e.message.toString())
             }
-//            getLTOsByDomain()
         }
     }
 
@@ -196,7 +205,7 @@ class LTOViewModel: ViewModel() {
                     }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
-                    throw Exception("STO 업데이트 실패: $errorBody")
+                    throw Exception("LTO 업데이트 실패: $errorBody")
                 }
 
             } catch (e: Exception) {
@@ -205,20 +214,20 @@ class LTOViewModel: ViewModel() {
         }
     }
 
-    fun updateSelectedLTO(
-        selectedLTOId : Long
-    ){
-        viewModelScope.launch {
-            val foundLTO = allLTOs.value!!.find {
-                it.id == selectedLTOId
-            }
-            foundLTO?.let {foundLTO ->
-                setSelectedLTO(
-                    foundLTO
-                )
-            }
-        }
-    }
+//    fun updateSelectedLTO(
+//        selectedLTOId : Long
+//    ){
+//        viewModelScope.launch {
+//            val foundLTO = allLTOs.value!!.find {
+//                it.id == selectedLTOId
+//            }
+//            foundLTO?.let {foundLTO ->
+//                setSelectedLTO(
+//                    foundLTO
+//                )
+//            }
+//        }
+//    }
 
     fun getLTOGraph(
         selectedLTO: LtoResponse
@@ -233,18 +242,30 @@ class LTOViewModel: ViewModel() {
         }
     }
 
+
     fun deleteLTO(
         selectedLTO : LtoResponse
     ){
         viewModelScope.launch {
             try {
-                repo.deleteLTO(
-                    selectedLTO = selectedLTO,
-                )
+                val response = repo.deleteLTO(selectedLTO = selectedLTO)
+
+                if (response.isSuccessful) {
+                    val isDeleted = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    if(isDeleted){
+                        _allLTOs.update {currentLTOs ->
+                            currentLTOs?.filterNot { it.id == selectedLTO.id }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("LTO 식제 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
                 Log.e("failed to delete LTO", e.message.toString())
             }
-//            getLTOsByDomain()
         }
     }
 }

@@ -24,7 +24,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun SelectedLTORow(
     modifier: Modifier = Modifier,
     allLTOs: List<LtoResponse>?,
-    selectedSTO: StoResponse?,
+    selectedLTO: LtoResponse?,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
@@ -34,9 +34,9 @@ fun SelectedLTORow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        selectedSTO?.let { selectedSTO ->
+        selectedLTO?.let { selectedLTO ->
             Text(
-                text = selectedSTO.lto.name,
+                text = selectedLTO.name,
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontFamily = fontFamily_Lato,
@@ -49,7 +49,7 @@ fun SelectedLTORow(
                 overflow = TextOverflow.Ellipsis
             )
             LTOButtons(
-                selectedLTO = selectedSTO.lto,
+                selectedLTO = selectedLTO,
                 ltoViewModel = ltoViewModel,
                 stoViewModel = stoViewModel
             )

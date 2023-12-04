@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,6 +47,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education2.compose.sto2.STOSelector
+import inu.thebite.tory.screens.education2.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
@@ -55,6 +58,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun LTOAndSTOSelector(
     modifier: Modifier = Modifier,
     selectedDEV: DomainResponse?,
+    selectedLTO: LtoResponse?,
     selectedSTO: StoResponse?,
     ltos: List<LtoResponse>,
     ltoViewModel: LTOViewModel,
@@ -73,6 +77,29 @@ fun LTOAndSTOSelector(
                 setAddLTOItem = {setAddLTODialog(it)},
                 selectedDEV = selectedDEV,
                 ltoViewModel = ltoViewModel
+            )
+        }
+    }
+
+    val (deleteLTODialog, setDeleteLTODialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (deleteLTODialog){
+        selectedLTO?.let { selectedLTO ->
+            AlertDialog(
+                title = {Text(text = "LTO : ${selectedLTO.name} 삭제하시겠습니까?")},
+                onDismissRequest = {setDeleteLTODialog(false)},
+                confirmButton = { TextButton(onClick = {
+                    ltoViewModel.deleteLTO(selectedLTO = selectedLTO)
+                }) {
+                    Text(text = "삭제")
+                }
+                },
+                dismissButton = { TextButton(onClick = { setDeleteLTODialog(false) }) {
+                    Text(text = "닫기")
+                }
+                }
             )
         }
     }
@@ -160,6 +187,17 @@ fun LTOAndSTOSelector(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
+                        if (selectedLTO == lto) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_delete),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .clickableWithNoRipple {
+                                        setDeleteLTODialog(true)
+                                    }
+                            )
+                        }
                     }
                     AnimatedVisibility(visible = expandedState.value) {
                         STOSelector(

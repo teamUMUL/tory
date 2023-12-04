@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class STOViewModel : ViewModel() {
     private val repo: STORepoImpl = STORepoImpl()
@@ -182,14 +183,34 @@ class STOViewModel : ViewModel() {
 
     fun setSelectedSTOStatus(selectedSTO: StoResponse, changeState: String) {
         viewModelScope.launch {
-            val updateSTOStatus = UpdateStoStatusRequest(
-                status = changeState
-            )
-            if (changeState == "준거 도달") {
-                repo.updateStoHitStatus(selectedSTO, updateSTOStatus)
-            } else {
-                repo.updateStoStatus(selectedSTO, updateSTOStatus)
+            try {
+                val updateSTOStatus = UpdateStoStatusRequest(
+                    status = changeState
+                )
+                val response = if (changeState == "준거 도달") {
+                    repo.updateStoHitStatus(selectedSTO, updateSTOStatus)
+                } else {
+                    repo.updateStoStatus(selectedSTO, updateSTOStatus)
+                }
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update { currentSTOs ->
+                        currentSTOs?.map { sto ->
+                            if(sto.id == selectedSTO.id) updatedSTO else sto
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 상태 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO Status", e.message.toString())
             }
+
+
 //            getSTOsByLTO()
 //            getSTOsByLTO(selectedSTO.lto)
         }
@@ -217,14 +238,25 @@ class STOViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                repo.addSto(
-                    ltoInfo = selectedLTO,
-                    addStoRequest = newSTO
-                )
+                val response = repo.addSto(ltoInfo = selectedLTO, addStoRequest = newSTO)
+
+                if (response.isSuccessful) {
+                    val newStoResponse = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update { currentSTOs ->
+                        currentSTOs?.let {
+                            // 현재 STO 리스트가 null이 아니면 새 STO를 추가
+                            it + newStoResponse
+                        } ?: listOf(newStoResponse) // 현재 STO 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 추가 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
-                Log.e("failed to create STO", e.message.toString())
+                Log.e("failed to add STO", e.message.toString())
             }
-//            getSTOsByLTO()
         }
     }
 
@@ -393,13 +425,24 @@ class STOViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                repo.deleteSto(
-                    stoInfo = selectedSTO,
-                )
+                val response = repo.deleteSto(stoInfo = selectedSTO)
+
+                if (response.isSuccessful) {
+                    val isDeleted = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    if(isDeleted){
+                        _allSTOs.update {currentSTOs ->
+                            currentSTOs?.filterNot { it.id == selectedSTO.id }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 식제 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
                 Log.e("failed to delete STO", e.message.toString())
             }
-//            getSTOsByLTO()
         }
     }
 }

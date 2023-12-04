@@ -100,13 +100,7 @@ fun STOSelector(
                         )
                     }
 
-                    if (selectedSTO == sto) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_delete),
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
+
                 }
             }
         }

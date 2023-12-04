@@ -178,7 +178,7 @@ fun AddLTODialog(
                 onClick = {
                     if(ltoInputValue.text.isNotEmpty()){
                         //LTO 추가 코드
-                        ltoViewModel.createLTO(
+                        ltoViewModel.addLTO(
                             selectedDEV = selectedDEV,
                             newLTO = LtoRequest(
                                 name = ltoInputValue.text,

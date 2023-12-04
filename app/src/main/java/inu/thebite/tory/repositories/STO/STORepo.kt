@@ -12,11 +12,11 @@ import retrofit2.Response
 
 interface STORepo {
 
-    suspend fun addSto(ltoInfo: LtoResponse, addStoRequest: AddStoRequest)
+    suspend fun addSto(ltoInfo: LtoResponse, addStoRequest: AddStoRequest) : Response<StoResponse>
 
-    suspend fun updateStoStatus(stoInfo: StoResponse, updateStoStatusRequest: UpdateStoStatusRequest)
+    suspend fun updateStoStatus(stoInfo: StoResponse, updateStoStatusRequest: UpdateStoStatusRequest) : Response<StoResponse>
 
-    suspend fun updateStoHitStatus(stoInfo: StoResponse, updateStoStatusRequest: UpdateStoStatusRequest)
+    suspend fun updateStoHitStatus(stoInfo: StoResponse, updateStoStatusRequest: UpdateStoStatusRequest) : Response<StoResponse>
 
     suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest) : Response<StoResponse>
 
@@ -24,7 +24,7 @@ interface STORepo {
 
     suspend fun getSTOsByLTO(ltoId: Long): List<StoResponse>
 
-    suspend fun deleteSto(stoInfo: StoResponse)
+    suspend fun deleteSto(stoInfo: StoResponse) : Response<Boolean>
 
     suspend fun getPointList(selectedSTO : StoResponse) : List<String>
 

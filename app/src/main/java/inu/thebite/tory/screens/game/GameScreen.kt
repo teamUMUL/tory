@@ -20,12 +20,12 @@ import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.screens.education2.compose.sto.getRandomIndex
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.game.dialog.SuccessDialog
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
+import kotlin.random.Random
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -223,4 +223,8 @@ fun GameScreen(
     }
 
 
+}
+
+fun getRandomIndex(itemSize: Int): Int {
+    return Random.nextInt(0, itemSize)
 }
