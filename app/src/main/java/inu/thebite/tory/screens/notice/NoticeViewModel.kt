@@ -122,12 +122,27 @@ class NoticeViewModel : ViewModel() {
         date: String,
         stoId: Long
     ){
-        try {
-            viewModelScope.launch {
-                repo.addDetail(studentId = studentId, date = date, stoId = stoId)
+        viewModelScope.launch {
+            try {
+                val response = repo.addDetail(studentId = studentId, date = date, stoId = stoId)
+
+                if (response.isSuccessful) {
+                    val newDetailResponse = response.body() ?: throw Exception("Detail 정보가 비어있습니다.")
+                    _selectedNoticeDetailList.update { currentSTOs ->
+                        currentSTOs?.let {
+                            // 현재 STO 리스트가 null이 아니면 새 STO를 추가
+                            it + newDetailResponse
+                        } ?: listOf(newDetailResponse) // 현재 STO 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Detail 추가 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to add Detail", e.message.toString())
             }
-        } catch (e: Exception){
-            Log.e("failed to add Detail", e.message.toString())
         }
     }
 

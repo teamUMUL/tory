@@ -45,18 +45,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
-import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.model.lto.LtoResponse
-import inu.thebite.tory.model.schedule.DummySchedule
-import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.schedule.ScheduleTopBar
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
-import inu.thebite.tory.screens.education2.screen.NewEducationScreen
-import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
-import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
-import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.screens.education.screen.NewEducationScreen
+import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.navigation.AllDestinations
@@ -703,7 +699,8 @@ fun MainCompose(
                         imageViewModel = imageViewModel,
                         dragAndDropViewModel = dragAndDropViewModel,
                         gameViewModel = gameViewModel,
-                        todoViewModel = todoViewModel
+                        todoViewModel = todoViewModel,
+                        noticeViewModel = noticeViewModel
                     )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,

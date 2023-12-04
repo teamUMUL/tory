@@ -1,0 +1,281 @@
+package inu.thebite.tory.screens.education.viewmodel
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.LtoGraphResponse
+import inu.thebite.tory.model.lto.LtoRequest
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.repositories.LTO.LTORepoImpl
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class LTOViewModel: ViewModel() {
+    private val repo: LTORepoImpl = LTORepoImpl()
+
+
+    private val _allLTOs: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
+    val allLTOs = _allLTOs.asStateFlow()
+
+    private val _selectedLTO = MutableStateFlow<LtoResponse?>(null)
+    val selectedLTO = _selectedLTO.asStateFlow()
+
+    private val _ltoGraphList: MutableStateFlow<List<LtoGraphResponse>?> = MutableStateFlow(null)
+    val ltoGraphList = _ltoGraphList.asStateFlow()
+
+    fun setSelectedLTO(ltoEntity: LtoResponse) {
+        _selectedLTO.update {
+            ltoEntity
+        }
+    }
+
+    fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
+        viewModelScope.launch {
+            try {
+                val updateLtoStatusRequest = UpdateLtoStatusRequest(
+                    status = changeState
+                )
+                val response = if (changeState == "준거 도달") {
+                    repo.updateLtoHitStatus(selectedLTO = selectedLTO, updateLtoStatusRequest = updateLtoStatusRequest)
+                } else {
+                    repo.updateLTOStatus(selectedLTO = selectedLTO, updateLtoStatusRequest = updateLtoStatusRequest)
+                }
+
+                if (response.isSuccessful) {
+                    val updatedLTO = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    _allLTOs.update { currentLTOs ->
+                        currentLTOs?.map { lto ->
+                            if(lto.id == selectedLTO.id) updatedLTO else lto
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("LTO 상태 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update LTO Status", e.message.toString())
+            }
+        }
+    }
+
+    fun clearSelectedCenter() {
+        _selectedLTO.value = null
+    }
+
+    fun clearLTOGraphList(){
+        _ltoGraphList.value = null
+    }
+    init {
+//        setLTODummyData()
+        observeAllLTOs()
+    }
+
+    private fun observeAllLTOs() {
+        viewModelScope.launch {
+            allLTOs.onEach { allLTOs ->
+                updateLTOsAndSelectedLTO(allLTOs)
+            }.collect()
+        }
+    }
+
+    private fun updateLTOsAndSelectedLTO(allLTOs: List<LtoResponse>?) {
+        allLTOs?.let {allLTOs ->
+            _selectedLTO.update {
+                allLTOs.find { lto ->
+                    selectedLTO.value?.id == lto.id
+                }
+            }
+        }
+    }
+
+    fun setLTODummyData(){
+        _allLTOs.update {
+            val filteredLTOs = mutableListOf<LtoResponse>()
+            for(i in 1..10){
+                for (j in 1..10){
+                    filteredLTOs.add(
+                        LtoResponse(
+                            id = j.toLong(),
+                            templateNum = j,
+                            status = "진행중",
+                            name = "$j. 예시 데이터 LTO",
+                            contents = j.toString(),
+                            game = "",
+                            achieveDate = "",
+                            registerDate = "",
+                            delYN = "",
+                            domain = DomainResponse(
+                                id = i.toLong(),
+                                templateNum = i,
+                                type = "",
+                                status = "",
+                                name = "$i. 예시 데이터 DEV",
+                                contents = "",
+                                useYN = "",
+                                delYN = "",
+                                registerDate = ""
+                            ),
+                            student = StudentResponse(
+                                id = 1L,
+                                name = "",
+                                birth ="",
+                                etc = "",
+                                parentName = "",
+                                startDate = "",
+                                endDate = "",
+                                registerDate = "",
+                                childClass = ChildClassResponse(
+                                    id = 1L,
+                                    name = "",
+                                    center = CenterResponse(
+                                        id = 1L,
+                                        name = ""
+                                    )
+                                )
+                            )
+                        )
+                    )
+                }
+            }
+            filteredLTOs
+        }
+        _selectedLTO.update {
+            allLTOs.value!!.first()
+        }
+    }
+    fun getLTOsByDomain(
+        domainId : Long
+    ){
+        viewModelScope.launch {
+            try {
+                Log.d("getLtosByStudent", repo.getLTOsByStudent(domainId = domainId).toString())
+                _allLTOs.update {
+                    repo.getLTOsByStudent(domainId = domainId)
+                }
+            } catch (e: Exception) {
+                Log.e("failed to get all LTOs", e.message.toString())
+            }
+        }
+    }
+
+    fun addLTO(
+        selectedDEV : DomainResponse,
+        newLTO : LtoRequest
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.createLTO(selectedDEV = selectedDEV, newLTO = newLTO)
+
+                if (response.isSuccessful) {
+                    val newLTOResponse = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    _allLTOs.update { currentLTOs ->
+                        currentLTOs?.let {
+                            // 현재 LTO 리스트가 null이 아니면 새 STO를 추가
+                            it + newLTOResponse
+                        } ?: listOf(newLTOResponse) // 현재 LTO 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("LTO 추가 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to add STO", e.message.toString())
+            }
+        }
+    }
+
+    fun updateLTO(
+        selectedLTO : LtoResponse,
+        updateLTO : LtoRequest
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.updateLto(selectedLTO = selectedLTO, ltoRequest = updateLTO)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    _allLTOs.update {
+                        allLTOs.value?.let { allLTOs ->
+                            allLTOs.map { if (it.id == updatedSTO.id) updatedSTO else it}
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("LTO 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO", e.message.toString())
+            }
+        }
+    }
+
+//    fun updateSelectedLTO(
+//        selectedLTOId : Long
+//    ){
+//        viewModelScope.launch {
+//            val foundLTO = allLTOs.value!!.find {
+//                it.id == selectedLTOId
+//            }
+//            foundLTO?.let {foundLTO ->
+//                setSelectedLTO(
+//                    foundLTO
+//                )
+//            }
+//        }
+//    }
+
+    fun getLTOGraph(
+        selectedLTO: LtoResponse
+    ){
+        viewModelScope.launch {
+            try {
+                _ltoGraphList.update {
+                    repo.getLTOGraph(selectedLTO)
+                }
+            } catch (e: Exception) {
+                Log.e("failed to get LTO Graph List", e.message.toString())
+            }
+        }
+    }
+
+
+    fun deleteLTO(
+        selectedLTO : LtoResponse
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.deleteLTO(selectedLTO = selectedLTO)
+
+                if (response.isSuccessful) {
+                    val isDeleted = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    if(isDeleted){
+                        _allLTOs.update {currentLTOs ->
+                            currentLTOs?.filterNot { it.id == selectedLTO.id }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("LTO 식제 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to delete LTO", e.message.toString())
+            }
+        }
+    }
+}

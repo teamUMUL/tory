@@ -26,8 +26,8 @@ class NoticeRepoImpl : NoticeRepo {
         return noticeRetrofit.getNotice(studentId = studentId, date = date)
     }
 
-    override suspend fun addDetail(studentId: Long, date: String, stoId: Long) {
-        noticeRetrofit.addDetail(studentId = studentId, date = date, stoId = stoId)
+    override suspend fun addDetail(studentId: Long, date: String, stoId: Long) : Response<DetailResponse> {
+        return noticeRetrofit.addDetail(studentId = studentId, date = date, stoId = stoId)
     }
 
     override suspend fun getDetailList(studentId: Long, date: String): Response<List<DetailResponse>> {

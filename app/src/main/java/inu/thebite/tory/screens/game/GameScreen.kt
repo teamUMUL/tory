@@ -6,11 +6,9 @@ import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
@@ -20,12 +18,12 @@ import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.screens.education2.compose.sto.getRandomIndex
-import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.game.dialog.SuccessDialog
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
+import kotlin.random.Random
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -223,4 +221,8 @@ fun GameScreen(
     }
 
 
+}
+
+fun getRandomIndex(itemSize: Int): Int {
+    return Random.nextInt(0, itemSize)
 }
