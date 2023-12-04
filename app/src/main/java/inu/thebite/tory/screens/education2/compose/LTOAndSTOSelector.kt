@@ -163,7 +163,6 @@ fun LTOAndSTOSelector(
                     }
                     AnimatedVisibility(visible = expandedState.value) {
                         STOSelector(
-                            lto = lto,
                             stoViewModel = stoViewModel
                         )
                     }

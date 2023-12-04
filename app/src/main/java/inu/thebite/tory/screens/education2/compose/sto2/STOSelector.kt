@@ -34,15 +34,14 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
 fun STOSelector(
-    lto: LtoResponse,
     stoViewModel: STOViewModel
 ) {
-    val stos = stoViewModel.getSTOsByLTOWithReturn(lto)
+    val allSTOs by stoViewModel.allSTOs.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     Column(
     ) {
-        stos?.let { stos ->
-            stos.forEachIndexed { index, sto ->
+        allSTOs?.let { allSTOs ->
+            allSTOs.forEachIndexed { index, sto ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

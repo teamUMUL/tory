@@ -159,27 +159,27 @@ class STOViewModel : ViewModel() {
 
 
 
-    fun getSTOsByLTOWithReturn(
-        selectedLTO: LtoResponse
-    ): List<StoResponse>?{
-        return allSTOs.value!!.filter {
-            it.lto == selectedLTO
-        }
-    }
+//    fun getSTOsByLTOWithReturn(
+//        selectedLTO: LtoResponse
+//    ): List<StoResponse>?{
+//        return allSTOs.value!!.filter {
+//            it.lto == selectedLTO
+//        }
+//    }
 
-    fun getSTOsByLTO(
-        ltoId: Long
-    ) {
-        viewModelScope.launch {
-            try {
-                _allSTOs.update {
-                    repo.getStoList(ltoId)
-                }
-            } catch (e: Exception) {
-                Log.e("failed to get all STOs", e.message.toString())
-            }
-        }
-    }
+//    fun getSTOsByLTO(
+//        ltoId: Long
+//    ) {
+//        viewModelScope.launch {
+//            try {
+//                _allSTOs.update {
+//                    repo.getStoList(ltoId)
+//                }
+//            } catch (e: Exception) {
+//                Log.e("failed to get all STOs", e.message.toString())
+//            }
+//        }
+//    }
 
     fun setSelectedSTOStatus(selectedSTO: StoResponse, changeState: String) {
         viewModelScope.launch {
