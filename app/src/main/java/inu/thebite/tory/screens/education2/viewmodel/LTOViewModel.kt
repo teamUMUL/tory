@@ -64,44 +64,44 @@ class LTOViewModel: ViewModel() {
         getAllLTOs()
 //        setLTODummyData()
     }
-
-    fun setLTODummyData(){
-        _allLTOs.update {
-            val filteredLTOs = mutableListOf<LtoResponse>()
-            for(i in 1..10){
-                for (j in 1..10){
-                    filteredLTOs.add(
-                        LtoResponse(
-                            id = j.toLong(),
-                            templateNum = j,
-                            status = "진행중",
-                            name = "$j. 예시 데이터 LTO",
-                            contents = j.toString(),
-                            game = "",
-                            achieveDate = "",
-                            registerDate = "",
-                            delYN = "",
-                            domain = DomainResponse(
-                                id = i.toLong(),
-                                templateNum = i,
-                                type = "",
-                                status = "",
-                                name = "$i. 예시 데이터 DEV",
-                                contents = "",
-                                useYN = "",
-                                delYN = "",
-                                registerDate = ""
-                            )
-                        )
-                    )
-                }
-            }
-            filteredLTOs
-        }
-        _selectedLTO.update {
-            allLTOs.value!!.first()
-        }
-    }
+//
+//    fun setLTODummyData(){
+//        _allLTOs.update {
+//            val filteredLTOs = mutableListOf<LtoResponse>()
+//            for(i in 1..10){
+//                for (j in 1..10){
+//                    filteredLTOs.add(
+//                        LtoResponse(
+//                            id = j.toLong(),
+//                            templateNum = j,
+//                            status = "진행중",
+//                            name = "$j. 예시 데이터 LTO",
+//                            contents = j.toString(),
+//                            game = "",
+//                            achieveDate = "",
+//                            registerDate = "",
+//                            delYN = "",
+//                            domain = DomainResponse(
+//                                id = i.toLong(),
+//                                templateNum = i,
+//                                type = "",
+//                                status = "",
+//                                name = "$i. 예시 데이터 DEV",
+//                                contents = "",
+//                                useYN = "",
+//                                delYN = "",
+//                                registerDate = ""
+//                            )
+//                        )
+//                    )
+//                }
+//            }
+//            filteredLTOs
+//        }
+//        _selectedLTO.update {
+//            allLTOs.value!!.first()
+//        }
+//    }
     fun getAllLTOs(){
         viewModelScope.launch {
             try {
@@ -116,6 +116,7 @@ class LTOViewModel: ViewModel() {
     fun getLTOsByDEV(
         selectedDEV: DomainResponse,
     ){
+        Log.d("AllLto", allLTOs.value.toString())
         if(selectedDEV.isNotNull()){
             _ltos.update {
                 val filteredLTOs = allLTOs.value!!.filter {

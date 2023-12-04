@@ -101,66 +101,66 @@ class STOViewModel : ViewModel() {
         }
     }
 
-    fun getDummySTO() {
-        _allSTOs.update {
-            val filteredSTO = mutableListOf<StoResponse>()
-            for (i in 1..10) {
-                for (j in 1..10) {
-                    for (k in 1..10) {
-                        filteredSTO.add(
-                            StoResponse(
-                                id = k.toLong(),
-                                templateNum = k,
-                                status = "준거 도달",
-                                name = "$k 번째 예시 데이터 STO",
-                                contents = "3 Array\n목표아이템 : 공, 블럭, 색연필\n예시아이템 : 색연필",
-                                count = 20,
-                                goal = 90,
-                                goalPercent = 90,
-                                achievementOrNot = "",
-                                urgeType = "",
-                                urgeContent = "",
-                                enforceContent = "",
-                                memo = "",
-                                hitGoalDate = "",
-                                registerDate = "2023/11/07 AM 9:21",
-                                delYN = "",
-                                round = 0,
-                                imageList = emptyList(),
-                                pointList = emptyList(),
-                                lto = LtoResponse(
-                                    id = j.toLong(),
-                                    templateNum = j,
-                                    status = "진행중",
-                                    name = "$j. 예시 데이터 LTO",
-                                    contents = j.toString(),
-                                    game = "",
-                                    achieveDate = "",
-                                    registerDate = "",
-                                    delYN = "",
-                                    domain = DomainResponse(
-                                        id = i.toLong(),
-                                        templateNum = i,
-                                        type = "",
-                                        status = "",
-                                        name = "$i. 예시 데이터 DEV",
-                                        contents = "",
-                                        useYN = "",
-                                        delYN = "",
-                                        registerDate = ""
-                                    )
-                                )
-                            )
-                        )
-                    }
-                }
-            }
-            filteredSTO
-        }
-        _selectedSTO.update {
-            allSTOs.value!!.first()
-        }
-    }
+//    fun getDummySTO() {
+//        _allSTOs.update {
+//            val filteredSTO = mutableListOf<StoResponse>()
+//            for (i in 1..10) {
+//                for (j in 1..10) {
+//                    for (k in 1..10) {
+//                        filteredSTO.add(
+//                            StoResponse(
+//                                id = k.toLong(),
+//                                templateNum = k,
+//                                status = "준거 도달",
+//                                name = "$k 번째 예시 데이터 STO",
+//                                contents = "3 Array\n목표아이템 : 공, 블럭, 색연필\n예시아이템 : 색연필",
+//                                count = 20,
+//                                goal = 90,
+//                                goalPercent = 90,
+//                                achievementOrNot = "",
+//                                urgeType = "",
+//                                urgeContent = "",
+//                                enforceContent = "",
+//                                memo = "",
+//                                hitGoalDate = "",
+//                                registerDate = "2023/11/07 AM 9:21",
+//                                delYN = "",
+//                                round = 0,
+//                                imageList = emptyList(),
+//                                pointList = emptyList(),
+//                                lto = LtoResponse(
+//                                    id = j.toLong(),
+//                                    templateNum = j,
+//                                    status = "진행중",
+//                                    name = "$j. 예시 데이터 LTO",
+//                                    contents = j.toString(),
+//                                    game = "",
+//                                    achieveDate = "",
+//                                    registerDate = "",
+//                                    delYN = "",
+//                                    domain = DomainResponse(
+//                                        id = i.toLong(),
+//                                        templateNum = i,
+//                                        type = "",
+//                                        status = "",
+//                                        name = "$i. 예시 데이터 DEV",
+//                                        contents = "",
+//                                        useYN = "",
+//                                        delYN = "",
+//                                        registerDate = ""
+//                                    )
+//                                )
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+//            filteredSTO
+//        }
+//        _selectedSTO.update {
+//            allSTOs.value!!.first()
+//        }
+//    }
 
 
 

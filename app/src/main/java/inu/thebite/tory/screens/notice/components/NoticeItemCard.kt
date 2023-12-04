@@ -28,54 +28,54 @@ fun LTOItem(
     noticeViewModel: NoticeViewModel
 ) {
     val context = LocalContext.current
-    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
-    for (i in 1..8) {
-        dummySTOList.add(
-            StoResponse(
-                id = i.toLong(),
-                templateNum = i,
-                status = "진행중",
-                name = "같은 사진 매칭(${i} array)ssssssssasasasasss",
-                contents = "",
-                count = i,
-                goal = i,
-                goalPercent = i,
-                achievementOrNot = "",
-                urgeType = "",
-                urgeContent = "",
-                enforceContent = "",
-                memo = "",
-                hitGoalDate = "",
-                registerDate = "",
-                delYN = "",
-                round = i,
-                imageList = listOf(),
-                pointList = listOf(),
-                lto = LtoResponse(
-                    id = i.toLong(),
-                    templateNum = i,
-                    status = "",
-                    name = "더미용 LTO ${i}",
-                    contents = "",
-                    game = "",
-                    achieveDate = "",
-                    registerDate = "",
-                    delYN = "",
-                    domain = DomainResponse(
-                        id = i.toLong(),
-                        templateNum = i,
-                        type = "",
-                        status = "",
-                        name = "더미용 Domain ${i}",
-                        contents = "",
-                        useYN = "",
-                        delYN = "",
-                        registerDate = ""
-                    )
-                )
-            )
-        )
-    }
+//    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
+//    for (i in 1..8) {
+//        dummySTOList.add(
+//            StoResponse(
+//                id = i.toLong(),
+//                templateNum = i,
+//                status = "진행중",
+//                name = "같은 사진 매칭(${i} array)ssssssssasasasasss",
+//                contents = "",
+//                count = i,
+//                goal = i,
+//                goalPercent = i,
+//                achievementOrNot = "",
+//                urgeType = "",
+//                urgeContent = "",
+//                enforceContent = "",
+//                memo = "",
+//                hitGoalDate = "",
+//                registerDate = "",
+//                delYN = "",
+//                round = i,
+//                imageList = listOf(),
+//                pointList = listOf(),
+//                lto = LtoResponse(
+//                    id = i.toLong(),
+//                    templateNum = i,
+//                    status = "",
+//                    name = "더미용 LTO ${i}",
+//                    contents = "",
+//                    game = "",
+//                    achieveDate = "",
+//                    registerDate = "",
+//                    delYN = "",
+//                    domain = DomainResponse(
+//                        id = i.toLong(),
+//                        templateNum = i,
+//                        type = "",
+//                        status = "",
+//                        name = "더미용 Domain ${i}",
+//                        contents = "",
+//                        useYN = "",
+//                        delYN = "",
+//                        registerDate = ""
+//                    )
+//                )
+//            )
+//        )
+//    }
 
     val gradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
@@ -105,7 +105,7 @@ fun LTOItem(
             )
         }
         AnimatedVisibility(visible = expandedState.value) {
-            NoticeItemGraphRow(dummySTOList = dummySTOList)
+//            NoticeItemGraphRow(dummySTOList = dummySTOList)
         }
 
     }
