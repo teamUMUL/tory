@@ -22,7 +22,7 @@ interface STORepo {
 
     suspend fun updateImageList(stoInfo: StoResponse, updateImageListRequest: UpdateImageListRequest)
 
-    suspend fun getSTOsByLTO(ltoId: Long): Response<List<StoResponse>>
+    suspend fun getSTOsByLTO(ltoId: Long): List<StoResponse>
 
     suspend fun deleteSto(stoInfo: StoResponse)
 

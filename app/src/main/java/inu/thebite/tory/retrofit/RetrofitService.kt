@@ -162,7 +162,7 @@ interface RetrofitService {
      * LTO별로 STO 리스트 가져오기 api
      */
     @GET("/{ltoId}/stos")
-    suspend fun getStoListByLto(@Path("ltoId") ltoId: Long) : Response<List<StoResponse>>
+    suspend fun getStoListByLto(@Path("ltoId") ltoId: Long) : List<StoResponse>
 
     @DELETE("/stos/{stoId}")
     suspend fun deleteSto(@Path("stoId") stoId: Long): Response<Void>
