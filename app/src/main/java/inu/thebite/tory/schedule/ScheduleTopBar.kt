@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,9 +19,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.todo.UpdateTodoList
-import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
-import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
-import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
+import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 
 @Composable
 fun ScheduleTopBar(

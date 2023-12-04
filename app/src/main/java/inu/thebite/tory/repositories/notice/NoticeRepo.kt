@@ -13,7 +13,7 @@ interface NoticeRepo {
 
     suspend fun getNotice(studentId: Long, date: String) : Response<NoticeResponse>
 
-    suspend fun addDetail(studentId: Long, date: String, stoId: Long)
+    suspend fun addDetail(studentId: Long, date: String, stoId: Long) : Response<DetailResponse>
 
     suspend fun updateLTOComment(studentId: Long, date: String, stoId: Long, addCommentRequest: AddCommentRequest)
 

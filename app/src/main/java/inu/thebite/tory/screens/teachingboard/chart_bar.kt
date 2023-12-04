@@ -33,10 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.yml.charts.axis.AxisConfig
 import co.yml.charts.axis.AxisData
-import co.yml.charts.axis.Gravity
-import co.yml.charts.common.model.AccessibilityConfig
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.LineChart
@@ -47,8 +44,8 @@ import co.yml.charts.ui.linechart.model.LineChartData
 import co.yml.charts.ui.linechart.model.LinePlotData
 import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.LineType
-import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
-import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Montserrat
 import kotlin.math.round
 
