@@ -87,7 +87,12 @@ fun LTOButtons(
                 OutlinedButton(
                     modifier = Modifier
                         .padding(vertical = 10.dp, horizontal = 2.dp),
-                    onClick = {},
+                    onClick = {
+                        ltoViewModel.setSelectedLTOStatus(
+                            selectedLTO = selectedLTO,
+                            changeState = button
+                        )
+                    },
                     border = BorderStroke(
                         width = 1.dp,
                         color = when (button) {

@@ -57,13 +57,13 @@ fun EducationResultTable(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .weight(7f)
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        ) {
-            selectedSTO?.let { selectedSTO ->
+        selectedSTO?.let { selectedSTO ->
+            LazyColumn(
+                modifier = Modifier
+                    .weight(7f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+            ) {
                 points?.let { points ->
                     items(selectedSTO.count / 5) { verticalIndex ->
                         LazyRow(
@@ -117,156 +117,158 @@ fun EducationResultTable(
                     }
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier
-                .weight(2f)
-                .fillMaxWidth()
-                .padding(vertical = 5.dp)
-                .background(Color(0xFFD1D1D1)),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(30.dp)
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier
+                    .weight(2f)
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp)
+                    .background(Color(0xFFD1D1D1)),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(30.dp)
 
-        ) {
-            val pointButtons = listOf("+", "-", "P", "삭제")
-            Spacer(modifier = Modifier.width(1.dp))
-            pointButtons.forEach { button ->
-                Button(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clickableWithNoRipple {
-                            selectedSTO?.let { selectedSTO ->
-                                when(button){
-                                    "+" -> {
-                                        stoViewModel.addPoint(
-                                            selectedSTO = selectedSTO,
-                                            addPointRequest = AddPointRequest(
-                                                result = "+",
-                                                registrant = "Test"
+            ) {
+                val pointButtons = listOf("+", "-", "P", "삭제")
+                Spacer(modifier = Modifier.width(1.dp))
+                pointButtons.forEach { button ->
+                    Button(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clickableWithNoRipple {
+                                selectedSTO?.let { selectedSTO ->
+                                    when(button){
+                                        "+" -> {
+                                            stoViewModel.addPoint(
+                                                selectedSTO = selectedSTO,
+                                                addPointRequest = AddPointRequest(
+                                                    result = "+",
+                                                    registrant = "Test"
+                                                )
                                             )
-                                        )
-                                    }
-                                    "-" -> {
-                                        stoViewModel.addPoint(
-                                            selectedSTO = selectedSTO,
-                                            addPointRequest = AddPointRequest(
-                                                result = "-",
-                                                registrant = "Test"
+                                        }
+                                        "-" -> {
+                                            stoViewModel.addPoint(
+                                                selectedSTO = selectedSTO,
+                                                addPointRequest = AddPointRequest(
+                                                    result = "-",
+                                                    registrant = "Test"
+                                                )
                                             )
-                                        )
-                                    }
-                                    "P" -> {
-                                        stoViewModel.addPoint(
-                                            selectedSTO = selectedSTO,
-                                            addPointRequest = AddPointRequest(
-                                                result = "P",
-                                                registrant = "Test"
+                                        }
+                                        "P" -> {
+                                            stoViewModel.addPoint(
+                                                selectedSTO = selectedSTO,
+                                                addPointRequest = AddPointRequest(
+                                                    result = "P",
+                                                    registrant = "Test"
+                                                )
                                             )
-                                        )
-                                    }
-                                    "삭제" -> {
-                                        stoViewModel.deletePoint(
-                                            selectedSTO = selectedSTO,
-                                            deletePointRequest = DeletePointRequest(
-                                                registrant = "Test"
+                                        }
+                                        "삭제" -> {
+                                            stoViewModel.deletePoint(
+                                                selectedSTO = selectedSTO,
+                                                deletePointRequest = DeletePointRequest(
+                                                    registrant = "Test"
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 }
+                            },
+                        onClick = { /*TODO*/ },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = when(button){
+                                "+" -> {
+                                    Color(0xFF34C648)
+                                }
+                                "-" -> {
+                                    Color(0xFFFC605C)
+                                }
+                                "P" -> {
+                                    Color(0xFFFCBB40)
+                                }
+                                else -> {
+                                    Color(0xFF777777)
+                                }
                             }
-                        },
-                    onClick = { /*TODO*/ },
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = when(button){
-                            "+" -> {
-                                Color(0xFF34C648)
-                            }
-                            "-" -> {
-                                Color(0xFFFC605C)
-                            }
-                            "P" -> {
-                                Color(0xFFFCBB40)
+                        ),
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        when(button){
+                            "삭제" -> {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.icon_delete),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp)
+                                )
                             }
                             else -> {
-                                Color(0xFF777777)
+                                Text(
+                                    text = button,
+                                    style = TextStyle(
+                                        fontSize = 24.sp,
+                                        fontFamily = fontFamily_Inter,
+                                        fontWeight = FontWeight(600),
+                                        color = Color(0xFFFFFFFF),
+
+                                        )
+                                )
                             }
                         }
-                    ),
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    when(button){
-                        "삭제" -> {
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon_delete),
-                                contentDescription = null,
-                                modifier = Modifier.size(22.dp)
-                            )
-                        }
-                        else -> {
-                            Text(
-                                text = button,
-                                style = TextStyle(
-                                    fontSize = 24.sp,
-                                    fontFamily = fontFamily_Inter,
-                                    fontWeight = FontWeight(600),
-                                    color = Color(0xFFFFFFFF),
-
+                    }
+                }
+                Spacer(modifier = Modifier.width(1.dp))
+            }
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                selectedSTO?.let { selectedSTO ->
+                    points?.let { points ->
+                        if (points.size == selectedSTO.count){
+                            OutlinedButton(
+                                onClick = {
+                                    val status = if((points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100 >= 90f){
+                                        "준거 도달"
+                                    }else{
+                                        "진행중"
+                                    }
+                                    val plusRate = (points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100
+                                    val minusRate = (points.count { it == "-" }.toFloat()/selectedSTO.count.toFloat())*100
+                                    stoViewModel.addRound(
+                                        selectedSTO = selectedSTO,
+                                        registrant = "테스트",
+                                        plusRate = plusRate,
+                                        minusRate = minusRate,
+                                        status = status
                                     )
-                            )
+                                },
+                                contentPadding = PaddingValues(horizontal = 60.dp, vertical = 10.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE))
+                            ) {
+                                Text(
+                                    text = "회차 추가",
+                                    style = TextStyle(
+                                        fontSize = 14.sp,
+                                        fontFamily = fontFamily_Lato,
+                                        fontWeight = FontWeight(900),
+                                        color = Color(0xFF000000),
+                                    )
+                                )
+                            }
                         }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.width(1.dp))
-        }
-        Row(
-            modifier = Modifier
-                .weight(1f)
-        ) {
-            selectedSTO?.let { selectedSTO ->
-                points?.let { points ->
-                    if (points.size == selectedSTO.count){
-                        OutlinedButton(
-                            onClick = {
-                                val status = if((points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100 >= 90f){
-                                    "준거 도달"
-                                }else{
-                                    "진행중"
-                                }
-                                val plusRate = (points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100
-                                val minusRate = (points.count { it == "-" }.toFloat()/selectedSTO.count.toFloat())*100
-                                stoViewModel.addRound(
-                                    selectedSTO = selectedSTO,
-                                    registrant = "테스트",
-                                    plusRate = plusRate,
-                                    minusRate = minusRate,
-                                    status = status
-                                )
-                            },
-                            contentPadding = PaddingValues(horizontal = 60.dp, vertical = 10.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE))
-                        ) {
-                            Text(
-                                text = "회차 추가",
-                                style = TextStyle(
-                                    fontSize = 14.sp,
-                                    fontFamily = fontFamily_Lato,
-                                    fontWeight = FontWeight(900),
-                                    color = Color(0xFF000000),
-                                )
-                            )
-                        }
-                    }
-                }
-            }
 
 
+            }
+
         }
+
 
 
     }

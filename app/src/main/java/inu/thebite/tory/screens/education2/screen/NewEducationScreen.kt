@@ -143,7 +143,7 @@ fun LTOAndSTONull(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "데이터 없음",
+            text = "발달영역을 선택해주세요",
             style = TextStyle(
                 fontSize = 35.sp,
                 lineHeight = 22.sp,

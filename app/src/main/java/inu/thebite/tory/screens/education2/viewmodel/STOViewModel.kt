@@ -27,22 +27,9 @@ class STOViewModel : ViewModel() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.e("STOViewModel", "Error: ${exception.localizedMessage}")
     }
-    private fun <T> performNetworkOperation(operation: suspend () -> T) {
-        viewModelScope.launch(coroutineExceptionHandler) {
-            try {
-                val response = operation()
-                // 상태 업데이트 로직
-            } catch (e: Exception) {
-                Log.e("STOViewModel", "Network call failed: ${e.localizedMessage}")
-            }
-        }
-    }
 
     private val _allSTOs: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
     val allSTOs = _allSTOs.asStateFlow()
-
-    private val _stos: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
-    val stos = _stos.asStateFlow()
 
     private val _selectedSTO = MutableStateFlow<StoResponse?>(null)
     val selectedSTO = _selectedSTO.asStateFlow()
@@ -56,19 +43,11 @@ class STOViewModel : ViewModel() {
         }
     }
 
-    fun updateSelectedSTO(stoEntity: StoResponse) {
-        _selectedSTO.value = stos.value!!.find {
-            it.id == stoEntity.id
-        }
-    }
-
-
     fun clearSelectedSTO() {
         _selectedSTO.value = null
     }
 
     init {
-//        getSTOsByLTO()
 //        getDummySTO()
         observeAllSTOs()
     }
@@ -83,11 +62,6 @@ class STOViewModel : ViewModel() {
 
     private fun updateSTOsAndSelectedSTO(allSTOs: List<StoResponse>?) {
         allSTOs?.let {allSTOs ->
-            _stos.update {
-                allSTOs.filter { sto ->
-                    stos.value?.any { it.id == sto.id } == true
-                }
-            }
             _selectedSTO.update {
                 allSTOs.find { sto ->
                     selectedSTO.value?.id == sto.id
@@ -157,30 +131,6 @@ class STOViewModel : ViewModel() {
 //        }
 //    }
 
-
-
-//    fun getSTOsByLTOWithReturn(
-//        selectedLTO: LtoResponse
-//    ): List<StoResponse>?{
-//        return allSTOs.value!!.filter {
-//            it.lto == selectedLTO
-//        }
-//    }
-
-//    fun getSTOsByLTO(
-//        ltoId: Long
-//    ) {
-//        viewModelScope.launch {
-//            try {
-//                _allSTOs.update {
-//                    repo.getStoList(ltoId)
-//                }
-//            } catch (e: Exception) {
-//                Log.e("failed to get all STOs", e.message.toString())
-//            }
-//        }
-//    }
-
     fun setSelectedSTOStatus(selectedSTO: StoResponse, changeState: String) {
         viewModelScope.launch {
             try {
@@ -209,10 +159,6 @@ class STOViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to update STO Status", e.message.toString())
             }
-
-
-//            getSTOsByLTO()
-//            getSTOsByLTO(selectedSTO.lto)
         }
     }
 
@@ -221,10 +167,10 @@ class STOViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                    Log.d("getStosByLto", repo.getSTOsByLTO(ltoId = selectedLTO.id).toString())
-                    _allSTOs.update {
-                        repo.getSTOsByLTO(ltoId = selectedLTO.id)
-                    }
+                Log.d("getStosByLto", repo.getSTOsByLTO(ltoId = selectedLTO.id).toString())
+                _allSTOs.update {
+                    repo.getSTOsByLTO(ltoId = selectedLTO.id)
+                }
 
             } catch (e: Exception) {
                 Log.e("failed to get STOs", e.message.toString())
@@ -338,7 +284,6 @@ class STOViewModel : ViewModel() {
                 Log.e("failed to add Round", e.message.toString())
             }
             getPointList(selectedSTO)
-//            getSTOsByLTO()
         }
     }
 

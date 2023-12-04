@@ -13,6 +13,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,33 +33,35 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @Composable
 fun SelectedSTOEducationReadyAndResult(
     selectedSTO: StoResponse?,
-    points: List<String>?,
+//    points: List<String>?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel
 ) {
+    val points by stoViewModel.points.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(start = 20.dp, top = 50.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "교육결과",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = fontFamily_Lato,
-                    fontWeight = FontWeight(900),
-                    color = Color(0xFF1D1C1D),
+        selectedSTO?.let { selectedSTO ->
 
-                    )
-            )
-            selectedSTO?.let { selectedSTO ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 20.dp, top = 50.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "교육결과",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = fontFamily_Lato,
+                        fontWeight = FontWeight(900),
+                        color = Color(0xFF1D1C1D),
+
+                        )
+                )
                 Row(
                     modifier = Modifier
                         .padding(end = 40.dp),
@@ -74,7 +78,12 @@ fun SelectedSTOEducationReadyAndResult(
                         OutlinedButton(
                             modifier = Modifier
                                 .padding(horizontal = 2.dp),
-                            onClick = {},
+                            onClick = {
+                                stoViewModel.setSelectedSTOStatus(
+                                    selectedSTO = selectedSTO,
+                                    changeState = button
+                                )
+                            },
                             border = BorderStroke(
                                 width = 1.dp,
                                 color = when (button) {
@@ -122,43 +131,53 @@ fun SelectedSTOEducationReadyAndResult(
                         }
                     }
                 }
-            }
 
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.75f)
-                .padding(horizontal = 30.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+            }
             Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.75f)
+                    .padding(horizontal = 30.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "정반응 :  ${points?.count { it == "+" } ?: "0"}",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = fontFamily_Inter,
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFF606060),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Text(
+                        text = "정반응 :  ${points?.count { it == "+" } ?: "0"}",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFF606060),
 
-                        )
-                )
-                Text(
-                    text = "촉구 :  ${points?.count { it == "P" } ?: "0"}",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = fontFamily_Inter,
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFF606060),
+                            )
+                    )
+                    Text(
+                        text = "촉구 :  ${points?.count { it == "P" } ?: "0"}",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFF606060),
 
-                        )
-                )
+                            )
+                    )
+                    Text(
+                        text = "미반응 :  ${points?.count { it == "-" } ?: "0"}",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFF606060),
+
+                            )
+                    )
+                }
                 Text(
-                    text = "미반응 :  ${points?.count { it == "-" } ?: "0"}",
+                    text = "회차 :  ${selectedSTO?.round ?: "0"}",
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontFamily = fontFamily_Inter,
@@ -168,40 +187,31 @@ fun SelectedSTOEducationReadyAndResult(
                         )
                 )
             }
-            Text(
-                text = "회차 :  ${selectedSTO?.round ?: "0"}",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = fontFamily_Inter,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF606060),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(5.5f),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                EducationResultTable(
+                    selectedSTO = selectedSTO,
+                    points = points,
+                    stoViewModel = stoViewModel
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 30.dp)
+                    .weight(2.75f)
+            ) {
+                CardSelector(
+                    imageViewModel = imageViewModel,
+                    selectedSTO = selectedSTO
+                )
 
-                    )
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(5.5f),
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            EducationResultTable(
-                selectedSTO = selectedSTO,
-                points = points,
-                stoViewModel = stoViewModel
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 30.dp)
-                .weight(2.75f)
-        ) {
-            CardSelector(
-                imageViewModel = imageViewModel,
-                selectedSTO = selectedSTO
-            )
+            }
         }
     }
 }

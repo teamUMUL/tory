@@ -4,11 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.sto.UpdateStoStatusRequest
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.repositories.LTO.LTORepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,9 +28,6 @@ class LTOViewModel: ViewModel() {
     private val _allLTOs: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
     val allLTOs = _allLTOs.asStateFlow()
 
-    private val _ltos: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
-    val ltos = _ltos.asStateFlow()
-
     private val _selectedLTO = MutableStateFlow<LtoResponse?>(null)
     val selectedLTO = _selectedLTO.asStateFlow()
 
@@ -41,17 +42,32 @@ class LTOViewModel: ViewModel() {
 
     fun setSelectedLTOStatus(selectedLTO: LtoResponse, changeState : String) {
         viewModelScope.launch {
-            val updateLTOStatus = UpdateLtoStatusRequest(
-                status = changeState
-            )
-            if(changeState == "완료"){
-                repo.updateLtoHitStatus(selectedLTO, updateLTOStatus)
-            } else {
-                repo.updateLTOStatus(selectedLTO, updateLTOStatus)
-            }
+            try {
+                val updateLtoStatusRequest = UpdateLtoStatusRequest(
+                    status = changeState
+                )
+                val response = if (changeState == "준거 도달") {
+                    repo.updateLtoHitStatus(selectedLTO = selectedLTO, updateLtoStatusRequest = updateLtoStatusRequest)
+                } else {
+                    repo.updateLTOStatus(selectedLTO = selectedLTO, updateLtoStatusRequest = updateLtoStatusRequest)
+                }
 
-//            getLTOsByDomain()
-//            getLTOsByDEV(selectedLTO.domain)
+                if (response.isSuccessful) {
+                    val updatedLTO = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    _allLTOs.update { currentLTOs ->
+                        currentLTOs?.map { lto ->
+                            if(lto.id == selectedLTO.id) updatedLTO else lto
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("LTO 상태 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update LTO Status", e.message.toString())
+            }
         }
     }
 
@@ -63,7 +79,6 @@ class LTOViewModel: ViewModel() {
         _ltoGraphList.value = null
     }
     init {
-//        getAllLTOs()
 //        setLTODummyData()
         observeAllLTOs()
     }
@@ -78,11 +93,6 @@ class LTOViewModel: ViewModel() {
 
     private fun updateLTOsAndSelectedLTO(allLTOs: List<LtoResponse>?) {
         allLTOs?.let {allLTOs ->
-            _ltos.update {
-                allLTOs.filter { lto ->
-                    ltos.value?.any { it.id == lto.id } == true
-                }
-            }
             _selectedLTO.update {
                 allLTOs.find { lto ->
                     selectedLTO.value?.id == lto.id
@@ -90,44 +100,62 @@ class LTOViewModel: ViewModel() {
             }
         }
     }
-//
-//    fun setLTODummyData(){
-//        _allLTOs.update {
-//            val filteredLTOs = mutableListOf<LtoResponse>()
-//            for(i in 1..10){
-//                for (j in 1..10){
-//                    filteredLTOs.add(
-//                        LtoResponse(
-//                            id = j.toLong(),
-//                            templateNum = j,
-//                            status = "진행중",
-//                            name = "$j. 예시 데이터 LTO",
-//                            contents = j.toString(),
-//                            game = "",
-//                            achieveDate = "",
-//                            registerDate = "",
-//                            delYN = "",
-//                            domain = DomainResponse(
-//                                id = i.toLong(),
-//                                templateNum = i,
-//                                type = "",
-//                                status = "",
-//                                name = "$i. 예시 데이터 DEV",
-//                                contents = "",
-//                                useYN = "",
-//                                delYN = "",
-//                                registerDate = ""
-//                            )
-//                        )
-//                    )
-//                }
-//            }
-//            filteredLTOs
-//        }
-//        _selectedLTO.update {
-//            allLTOs.value!!.first()
-//        }
-//    }
+
+    fun setLTODummyData(){
+        _allLTOs.update {
+            val filteredLTOs = mutableListOf<LtoResponse>()
+            for(i in 1..10){
+                for (j in 1..10){
+                    filteredLTOs.add(
+                        LtoResponse(
+                            id = j.toLong(),
+                            templateNum = j,
+                            status = "진행중",
+                            name = "$j. 예시 데이터 LTO",
+                            contents = j.toString(),
+                            game = "",
+                            achieveDate = "",
+                            registerDate = "",
+                            delYN = "",
+                            domain = DomainResponse(
+                                id = i.toLong(),
+                                templateNum = i,
+                                type = "",
+                                status = "",
+                                name = "$i. 예시 데이터 DEV",
+                                contents = "",
+                                useYN = "",
+                                delYN = "",
+                                registerDate = ""
+                            ),
+                            student = StudentResponse(
+                                id = 1L,
+                                name = "",
+                                birth ="",
+                                etc = "",
+                                parentName = "",
+                                startDate = "",
+                                endDate = "",
+                                registerDate = "",
+                                childClass = ChildClassResponse(
+                                    id = 1L,
+                                    name = "",
+                                    center = CenterResponse(
+                                        id = 1L,
+                                        name = ""
+                                    )
+                                )
+                            )
+                        )
+                    )
+                }
+            }
+            filteredLTOs
+        }
+        _selectedLTO.update {
+            allLTOs.value!!.first()
+        }
+    }
     fun getLTOsByDomain(
         domainId : Long
     ){
@@ -140,23 +168,6 @@ class LTOViewModel: ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to get all LTOs", e.message.toString())
             }
-        }
-    }
-
-    fun getLTOsByDEV(
-        selectedDEV: DomainResponse,
-    ){
-        Log.d("AllLto", allLTOs.value.toString())
-        if(selectedDEV.isNotNull()){
-            _ltos.update {
-                val filteredLTOs = allLTOs.value!!.filter {
-                    it.domain.id == selectedDEV.id
-                }
-                Log.d("allLTOs", allLTOs.toString())
-                filteredLTOs
-            }
-        }else{
-            _ltos.update { null }
         }
     }
 

@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -27,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,10 +44,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education2.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education2.compose.sto2.STOSelector
 import inu.thebite.tory.screens.education2.screen.clickableWithNoRipple
@@ -52,6 +58,8 @@ import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -66,9 +74,13 @@ fun LTOAndSTOSelector(
 ) {
     val context = LocalContext.current
 
+
+
     val (addLTODialog, setAddLTODialog) = rememberSaveable {
         mutableStateOf(false)
     }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     if(addLTODialog){
         selectedDEV?.let { selectedDEV ->
@@ -163,35 +175,42 @@ fun LTOAndSTOSelector(
                             ) {
                                 expandedState.value = !expandedState.value
                                 ltoViewModel.setSelectedLTO(lto)
+                                scrollToTop(index = ltos.indexOf(lto), listState = listState, coroutineScope = coroutineScope)
                             },
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_arrowdown),
-                            contentDescription = "Drop-Down Arrow",
-                            modifier = Modifier
-                                .rotate(rotationState)
-                                .size(12.dp),
-                            tint = Color.Black
-                        )
-                        Text(
-                            text = lto.name,
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = fontFamily_Lato,
-                                fontWeight = FontWeight(400),
-                                color = Color(0xFF000000),
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon_arrowdown),
+                                contentDescription = "Drop-Down Arrow",
+                                modifier = Modifier
+                                    .rotate(rotationState)
+                                    .size(12.dp),
+                                tint = Color.Black
+                            )
+                            Text(
+                                text = lto.name,
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = fontFamily_Lato,
+                                    fontWeight = FontWeight(400),
+                                    color = Color(0xFF000000),
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+
                         if (selectedLTO == lto) {
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_delete),
                                 contentDescription = null,
-                                tint = Color.White,
+                                tint = Color.Black,
                                 modifier = Modifier
                                     .clickableWithNoRipple {
                                         setDeleteLTODialog(true)
@@ -234,5 +253,10 @@ fun LTOAndSTOSelector(
                     )
             )
         }
+    }
+}
+fun scrollToTop(index: Int, listState: LazyListState, coroutineScope: CoroutineScope) {
+    coroutineScope.launch {
+        listState.animateScrollToItem(index)
     }
 }

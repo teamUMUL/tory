@@ -74,9 +74,7 @@ fun SelectedSTODetail(
         ) {
             SelectedSTOEducationReadyAndResult(
                 selectedSTO = selectedSTO,
-                points = listOf(
-                    "n","+","-","P","n","n","n","n","n","n","n","n","n","n","-","-","-","-","-","-"
-                ),
+//                points = points,
                 imageViewModel = imageViewModel,
                 stoViewModel = stoViewModel
             )
