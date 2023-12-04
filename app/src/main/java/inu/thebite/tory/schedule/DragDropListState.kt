@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
@@ -59,7 +60,7 @@ fun <T> MutableList<T>.move(from:Int, to:Int){
 
 @Composable
 fun DragDropList(
-    items: List<StoResponse>,
+    items: List<StoSummaryResponse>,
     onMove: (Int, Int) -> Unit,
     onDragEnd: () -> Unit,
     modifier : Modifier = Modifier,
@@ -119,9 +120,11 @@ fun DragDropList(
                         vertical = 10.dp
                     ),
                 onClick = {
-                    devViewModel.setSelectedDEV(item.lto.domain)
-                    ltoViewModel.setSelectedLTO(item.lto)
-                    stoViewModel.setSelectedSTO(item)
+                    stoViewModel.findSTOById(item.id)?.let { foundSTO ->
+                        devViewModel.setSelectedDEV(foundSTO.lto.domain)
+                        ltoViewModel.setSelectedLTO(foundSTO.lto)
+                        stoViewModel.setSelectedSTO(foundSTO)
+                    }
                 },
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(

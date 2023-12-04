@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
@@ -15,7 +16,7 @@ fun SelectedSTOInfo(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
     points: List<String>?,
-    todoList: List<StoResponse>?,
+    todoList: List<StoSummaryResponse>?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
     todoViewModel: TodoViewModel

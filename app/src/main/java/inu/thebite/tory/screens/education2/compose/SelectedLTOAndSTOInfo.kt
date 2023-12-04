@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.compose.lto2.SelectedLTORow
 import inu.thebite.tory.screens.education2.compose.sto2.SelectedSTOInfo
@@ -21,7 +22,7 @@ fun SelectedLTOAndSTOInfo(
     allLTOs: List<LtoResponse>?,
     selectedSTO: StoResponse?,
     points: List<String>?,
-    todoList: List<StoResponse>?,
+    todoList: List<StoSummaryResponse>?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
     ltoViewModel: LTOViewModel,

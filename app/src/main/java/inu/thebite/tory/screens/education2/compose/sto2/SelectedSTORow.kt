@@ -45,7 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.todo.TodoListRequest
+import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.compose.dialog.sto.UpdateSTODialog
 import inu.thebite.tory.screens.education2.screen.replaceNewLineWithSpace
@@ -57,7 +59,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun SelectedSTORow(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
-    todoList: List<StoResponse>?,
+    todoList: List<StoSummaryResponse>?,
     stoViewModel: STOViewModel,
     todoViewModel: TodoViewModel
 ) {
@@ -237,8 +239,11 @@ fun SelectedSTORow(
                 IconButton(
                     onClick = {
                         todoList?.let { todoList ->
-                            if (todoList.contains(selectedSTO)){
+                            if (todoList.any { it.id == selectedSTO.id }){
+                                val deleteList = todoList.map { it.id }.toMutableList()
+                                deleteList.remove(selectedSTO.id)
                                 //삭제
+                                todoViewModel.updateTodoList(studentId = 1L, updateTodoList = UpdateTodoList(stoList = deleteList))
                             } else {
                                 todoViewModel.addTodoList(studentId = 1L, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
                             }
@@ -257,8 +262,8 @@ fun SelectedSTORow(
                                     drawContent()
                                     drawRect(
                                         brush =
-                                        todoList?.let { schedule ->
-                                            if (schedule.contains(selectedSTO)) purpleGradient else gray
+                                        todoList?.let { todoList ->
+                                            if (todoList.any { it.id == selectedSTO.id }) purpleGradient else gray
                                         } ?: gray,
                                         blendMode = BlendMode.SrcAtop
                                     )

@@ -37,10 +37,6 @@ fun ScheduleTopBar(
     val todoList by todoViewModel.todoList.collectAsState()
     val tempTodoList by todoViewModel.tempTodoList.collectAsState()
 
-    LaunchedEffect(todoList){
-        todoViewModel.updateTempTodoList()
-    }
-
     Row(
         modifier = modifier
             .fillMaxHeight(),
@@ -68,9 +64,9 @@ fun ScheduleTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                tempTodoList?.let { schedule ->
+                tempTodoList?.let { tempTodoList ->
                     DragDropList(
-                        items = schedule,
+                        items = tempTodoList,
                         onMove = { fromIndex, toIndex ->
                             todoViewModel.moveTempTodoList(fromIndex, toIndex)
                         },
