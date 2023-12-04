@@ -31,8 +31,8 @@ data class LtoResponse(
     @SerializedName("delYN")
     var delYN: String,
 
-    @SerializedName("domainId")
-    var domainId: Long,
+    @SerializedName("domain")
+    var domain: Long,
 
     @SerializedName("studentId")
     var studentId: Long
