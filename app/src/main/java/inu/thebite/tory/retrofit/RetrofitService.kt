@@ -124,8 +124,8 @@ interface RetrofitService {
     /**
      * 학생 별로 LTO 리스트 가져오는 Api
      */
-    @GET("/1/ltos")
-    suspend fun getLtoListByStudent(): List<LtoResponse>
+    @GET("/{domainId}/1/ltos")
+    suspend fun getLtoListByStudent(@Path("domainId") domainId: Long): List<LtoResponse>
 
     @GET("/ltos/{ltoId}/graphs")
     suspend fun getLtoGraph(@Path("ltoId") ltoId: Long) : List<LtoGraphResponse>
