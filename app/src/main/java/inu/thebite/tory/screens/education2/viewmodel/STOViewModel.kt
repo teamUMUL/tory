@@ -74,7 +74,7 @@ class STOViewModel : ViewModel() {
 
     init {
         getAllSTOs()
-        getDummySTO()
+//        getDummySTO()
         observeAllSTOs()
     }
 
