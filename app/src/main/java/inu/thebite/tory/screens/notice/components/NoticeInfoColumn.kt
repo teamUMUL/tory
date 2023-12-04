@@ -28,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -49,15 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.detail.DetailResponse
-import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
-import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.screens.notice.NoticeViewModel
-import inu.thebite.tory.screens.notice.extractDate
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
@@ -131,7 +126,7 @@ fun NoticeInfoColumn(
 //        )
 //    }
     val selectedNoticeSTOList = stoViewModel.findSTOsByIds(selectedNoticeDetailList.map { it.stoId })
-    val uniqueLTOList = selectedNoticeSTOList.map { it.lto }.distinctBy { it.id }
+    val uniqueLTOList = selectedNoticeSTOList.map { it.ltoId }.distinctBy { it.id }
     LazyColumn {
         item {
             Column(

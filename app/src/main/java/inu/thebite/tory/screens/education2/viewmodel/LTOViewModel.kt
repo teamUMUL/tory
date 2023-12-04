@@ -51,7 +51,7 @@ class LTOViewModel: ViewModel() {
             }
 
 //            getLTOsByDomain()
-            getLTOsByDEV(selectedLTO.domain)
+            getLTOsByDEV(selectedLTO.domainId)
         }
     }
 
@@ -150,7 +150,7 @@ class LTOViewModel: ViewModel() {
         if(selectedDEV.isNotNull()){
             _ltos.update {
                 val filteredLTOs = allLTOs.value!!.filter {
-                    it.domain.id == selectedDEV.id
+                    it.domainId.id == selectedDEV.id
                 }
                 Log.d("allLTOs", allLTOs.toString())
                 filteredLTOs

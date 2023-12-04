@@ -1,8 +1,6 @@
 package inu.thebite.tory.model.sto
 
 import com.google.gson.annotations.SerializedName
-import inu.thebite.tory.model.lto.LtoResponse
-import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.point.PointResponse
 
 
@@ -65,7 +63,7 @@ data class StoResponse(
     @SerializedName("pointList")
     var pointList: List<PointResponse>,
 
-    @SerializedName("lto")
-    var lto: LtoResponse
+    @SerializedName("ltoId")
+    var ltoId: Long
 
 )

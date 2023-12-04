@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education2.compose.dialog.lto.AddLTODialog
@@ -88,13 +87,13 @@ fun LTOAndSTOSelector(
         ) {
             items(ltos) { lto ->
                 val expandedState =
-                    rememberSaveable { mutableStateOf(selectedSTO?.let { it.lto == lto } ?: false) }
+                    rememberSaveable { mutableStateOf(selectedSTO?.let { it.ltoId == lto } ?: false) }
                 val rotationState by animateFloatAsState(
                     targetValue = if (expandedState.value) 180f else 0f, label = ""
                 )
                 LaunchedEffect(selectedSTO){
                     selectedSTO?.let { selectedSTO ->
-                        if (selectedSTO.lto == lto){
+                        if (selectedSTO.ltoId == lto){
                             expandedState.value = true
                         }
                     }

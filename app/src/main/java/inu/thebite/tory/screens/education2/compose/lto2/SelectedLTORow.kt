@@ -36,7 +36,7 @@ fun SelectedLTORow(
     ) {
         selectedSTO?.let { selectedSTO ->
             Text(
-                text = selectedSTO.lto.name,
+                text = selectedSTO.ltoId.name,
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontFamily = fontFamily_Lato,
@@ -49,7 +49,7 @@ fun SelectedLTORow(
                 overflow = TextOverflow.Ellipsis
             )
             LTOButtons(
-                selectedLTO = selectedSTO.lto,
+                selectedLTO = selectedSTO.ltoId,
                 ltoViewModel = ltoViewModel,
                 stoViewModel = stoViewModel
             )

@@ -380,7 +380,7 @@ fun STOItemColumn(
                                                     } else {
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
                                                     }
-                                                    stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
+                                                    stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.ltoId)
                                                 }
                                             )
                                             STOSettingButtons(
@@ -475,7 +475,7 @@ fun STOItemColumn(
                                                     stoViewModel = stoViewModel,
                                                     setSelectedSTOStatus = {
                                                         stoViewModel.setSelectedSTOStatus(selectedSTO, it)
-                                                        stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.lto)
+                                                        stoViewModel.getSTOsByLTO(selectedLTO = selectedSTO.ltoId)
                                                     }
                                                 )
                                                 if(selectedLTO.game != "교육 선택 안함"){
