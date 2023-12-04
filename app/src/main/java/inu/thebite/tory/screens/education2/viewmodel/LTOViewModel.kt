@@ -9,7 +9,6 @@ import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
-import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.repositories.LTO.LTORepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -132,8 +131,9 @@ class LTOViewModel: ViewModel() {
     fun getAllLTOs(){
         viewModelScope.launch {
             try {
-                val allLTOs = repo.getAllLTOs()
-                _allLTOs.value = allLTOs
+                _allLTOs.update {
+                    repo.getLTOsByStudent()
+                }
             } catch (e: Exception) {
                 Log.e("failed to get all LTOs", e.message.toString())
             }
