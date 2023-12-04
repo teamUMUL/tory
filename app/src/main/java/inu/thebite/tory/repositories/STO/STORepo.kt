@@ -3,13 +3,11 @@ package inu.thebite.tory.repositories.STO
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
-import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
-import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 interface STORepo {
@@ -24,7 +22,7 @@ interface STORepo {
 
     suspend fun updateImageList(stoInfo: StoResponse, updateImageListRequest: UpdateImageListRequest)
 
-    suspend fun getStoList(ltoId: Long): List<StoResponse>
+    suspend fun getSTOsByLTO(ltoId: Long): Response<List<StoResponse>>
 
     suspend fun deleteSto(stoInfo: StoResponse)
 
