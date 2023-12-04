@@ -50,7 +50,7 @@ class LTOViewModel: ViewModel() {
                 repo.updateLTOStatus(selectedLTO, updateLTOStatus)
             }
 
-            getAllLTOs()
+//            getLTOsByDomain()
             getLTOsByDEV(selectedLTO.domain)
         }
     }
@@ -63,7 +63,7 @@ class LTOViewModel: ViewModel() {
         _ltoGraphList.value = null
     }
     init {
-        getAllLTOs()
+//        getAllLTOs()
 //        setLTODummyData()
         observeAllLTOs()
     }
@@ -128,11 +128,13 @@ class LTOViewModel: ViewModel() {
 //            allLTOs.value!!.first()
 //        }
 //    }
-    fun getAllLTOs(){
+    fun getLTOsByDomain(
+        domainId : Long
+    ){
         viewModelScope.launch {
             try {
                 _allLTOs.update {
-                    repo.getLTOsByStudent()
+                    repo.getLTOsByStudent(domainId = domainId)
                 }
             } catch (e: Exception) {
                 Log.e("failed to get all LTOs", e.message.toString())
@@ -172,7 +174,7 @@ class LTOViewModel: ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to create LTO", e.message.toString())
             }
-            getAllLTOs()
+//            getLTOsByDomain()
         }
     }
 
@@ -241,7 +243,7 @@ class LTOViewModel: ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to delete LTO", e.message.toString())
             }
-            getAllLTOs()
+//            getLTOsByDomain()
         }
     }
 }

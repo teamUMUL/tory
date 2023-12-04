@@ -58,7 +58,7 @@ fun NewEducationScreen(
     val todoList by todoViewModel.todoList.collectAsState()
 
     LaunchedEffect(selectedDEV) {
-        selectedDEV?.let { ltoViewModel.getLTOsByDEV(selectedDEV = it) }
+        selectedDEV?.let { ltoViewModel.getLTOsByDomain(domainId = it.id) }
     }
 
     LaunchedEffect(selectedLTO) {
