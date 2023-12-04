@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
-import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
@@ -53,7 +52,6 @@ class MainActivity : ComponentActivity() {
                     val childInfoViewModel : ChildInfoViewModel = koinViewModel()
                     val devViewModel : DEVViewModel = koinViewModel()
                     val ltoViewModel : LTOViewModel = koinViewModel()
-                    val educationViewModel : EducationViewModel = koinViewModel()
                     val stoViewModel : STOViewModel = koinViewModel()
                     val imageViewModel : ImageViewModel = koinViewModel()
                     val dragAndDropViewModel: DragAndDropViewModel = koinViewModel()
@@ -73,7 +71,6 @@ class MainActivity : ComponentActivity() {
                         childInfoViewModel = childInfoViewModel,
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,
-                        educationViewModel = educationViewModel,
                         stoViewModel = stoViewModel,
                         imageViewModel = imageViewModel,
                         dragAndDropViewModel = dragAndDropViewModel,

@@ -1,7 +1,5 @@
 package inu.thebite.tory.screens.education2.compose.dialog.sto
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -52,13 +50,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
-import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.AddStoRequest
-import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
-import java.sql.Date
 
 @Composable
 fun AddSTODialog(

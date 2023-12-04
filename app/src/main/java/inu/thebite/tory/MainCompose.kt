@@ -3,12 +3,9 @@ package inu.thebite.tory
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,12 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyListItemInfo
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -35,14 +26,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.BrushPainter
-import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -69,7 +55,6 @@ import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
 import inu.thebite.tory.screens.education2.screen.NewEducationScreen
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
-import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
@@ -91,7 +76,6 @@ import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewMode
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
@@ -112,7 +96,6 @@ fun MainCompose(
     childInfoViewModel: ChildInfoViewModel,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
-    educationViewModel: EducationViewModel,
     stoViewModel: STOViewModel,
     imageViewModel: ImageViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
@@ -716,7 +699,6 @@ fun MainCompose(
                     NewEducationScreen(
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,
-                        educationViewModel = educationViewModel,
                         stoViewModel = stoViewModel,
                         imageViewModel = imageViewModel,
                         dragAndDropViewModel = dragAndDropViewModel,

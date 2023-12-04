@@ -27,7 +27,6 @@ import inu.thebite.tory.screens.education2.compose.LTOAndSTOSelector
 import inu.thebite.tory.screens.education2.compose.SelectedLTOAndSTOInfo
 import inu.thebite.tory.screens.education2.compose.dev.DEVSelector
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
-import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
@@ -43,7 +42,6 @@ fun NewEducationScreen(
     imageViewModel: ImageViewModel,
     gameViewModel: GameViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
-    educationViewModel: EducationViewModel,
     todoViewModel: TodoViewModel
 ) {
     val context = LocalContext.current

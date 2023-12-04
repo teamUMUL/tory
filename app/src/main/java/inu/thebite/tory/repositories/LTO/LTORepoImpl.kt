@@ -7,6 +7,7 @@ import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.retrofit.RetrofitApi
+import retrofit2.Response
 
 class LTORepoImpl: LTORepo {
 
@@ -30,8 +31,8 @@ class LTORepoImpl: LTORepo {
         ltoRetrofit.updateLtoHitStatus(ltoId = selectedLTO.id, updateLtoStatusRequest = updateLtoStatusRequest)
     }
 
-    override suspend fun updateLto(selectedLTO: LtoResponse, ltoRequest: LtoRequest) {
-        ltoRetrofit.updateLto(ltoId = selectedLTO.id, ltoRequest = ltoRequest)
+    override suspend fun updateLto(selectedLTO: LtoResponse, ltoRequest: LtoRequest) : Response<LtoResponse> {
+        return ltoRetrofit.updateLto(ltoId = selectedLTO.id, ltoRequest = ltoRequest)
     }
 
     override suspend fun getAllLTOs(): List<LtoResponse> {

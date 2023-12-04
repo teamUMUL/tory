@@ -9,9 +9,12 @@ import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.repositories.LTO.LTORepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -63,6 +66,30 @@ class LTOViewModel: ViewModel() {
     init {
         getAllLTOs()
 //        setLTODummyData()
+        observeAllLTOs()
+    }
+
+    private fun observeAllLTOs() {
+        viewModelScope.launch {
+            allLTOs.onEach { allLTOs ->
+                updateLTOsAndSelectedLTO(allLTOs)
+            }.collect()
+        }
+    }
+
+    private fun updateLTOsAndSelectedLTO(allLTOs: List<LtoResponse>?) {
+        allLTOs?.let {allLTOs ->
+            _ltos.update {
+                allLTOs.filter { lto ->
+                    ltos.value?.any { it.id == lto.id } == true
+                }
+            }
+            _selectedLTO.update {
+                allLTOs.find { lto ->
+                    selectedLTO.value?.id == lto.id
+                }
+            }
+        }
     }
 //
 //    fun setLTODummyData(){
@@ -155,15 +182,23 @@ class LTOViewModel: ViewModel() {
     ){
         viewModelScope.launch {
             try {
-                repo.updateLto(
-                    selectedLTO = selectedLTO,
-                    ltoRequest = updateLTO
-                )
+                val response = repo.updateLto(selectedLTO = selectedLTO, ltoRequest = updateLTO)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    _allLTOs.update {
+                        allLTOs.value?.let { allLTOs ->
+                            allLTOs.map { if (it.id == updatedSTO.id) updatedSTO else it}
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 업데이트 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
-                Log.e("failed to update LTO", e.message.toString())
+                Log.e("failed to update STO", e.message.toString())
             }
-            getAllLTOs()
-            getLTOsByDEV(selectedLTO.domain)
         }
     }
 

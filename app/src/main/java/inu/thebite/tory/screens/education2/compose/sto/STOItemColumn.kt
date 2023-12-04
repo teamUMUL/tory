@@ -33,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -55,7 +54,6 @@ import inu.thebite.tory.screens.education2.compose.dialog.sto.AddGeneralGameItem
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSameGameItemDialog
 import inu.thebite.tory.screens.education2.compose.dialog.sto.AddSTODialog
 import inu.thebite.tory.screens.education2.compose.dialog.sto.UpdateSTODialog
-import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.GameScreen
@@ -68,7 +66,6 @@ import kotlin.random.Random
 @Composable
 fun STOItemColumn(
     ltoViewModel: LTOViewModel,
-    educationViewModel : EducationViewModel,
     stoViewModel: STOViewModel,
     imageViewModel: ImageViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
@@ -89,7 +86,6 @@ fun STOItemColumn(
 
 //    val selectedSTOStatus = rememberSaveable{ mutableStateOf("") }
 
-    val selectedEducation by educationViewModel.selectedEducation.collectAsState()
     val (updateSTODialog, setUpdateSTODialog) = remember {
         mutableStateOf(false)
     }

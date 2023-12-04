@@ -6,7 +6,6 @@ package inu.thebite.tory
 //import inu.thebite.tory.screens.game.DragAndDropViewModel
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education2.viewmodel.DEVViewModel
-import inu.thebite.tory.screens.education2.viewmodel.EducationViewModel
 import inu.thebite.tory.screens.education2.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education2.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
@@ -47,9 +46,7 @@ val viewModelModule = module {
     viewModel<LTOViewModel>{
         LTOViewModel()
     }
-    viewModel<EducationViewModel>{
-        EducationViewModel()
-    }
+
     viewModel<STOViewModel>{
         STOViewModel()
     }
