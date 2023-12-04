@@ -49,7 +49,7 @@ fun NewEducationScreen(
     val selectedDEV by devViewModel.selectedDEV.collectAsState()
 
     val allLTOs by ltoViewModel.allLTOs.collectAsState()
-    val ltos by ltoViewModel.ltos.collectAsState()
+//    val ltos by ltoViewModel.ltos.collectAsState()
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
 
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
@@ -81,7 +81,7 @@ fun NewEducationScreen(
                 ltoViewModel = ltoViewModel
             )
             Divider(thickness = 1.dp, color = Color.LightGray)
-            ltos?.let {
+            allLTOs?.let {
                 LTOAndSTOSelector(
                     modifier = Modifier
                         .weight(9.5f),
