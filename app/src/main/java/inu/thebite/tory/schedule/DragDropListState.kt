@@ -119,9 +119,14 @@ fun DragDropList(
                     ),
                 onClick = {
                     stoViewModel.findSTOById(item.id)?.let { foundSTO ->
-                        devViewModel.setSelectedDEV(foundSTO.ltoId.domain)
-                        ltoViewModel.setSelectedLTO(foundSTO.ltoId)
-                        stoViewModel.setSelectedSTO(foundSTO)
+                        ltoViewModel.findLTOById(foundSTO.ltoId)?.let { foundLTO ->
+                            devViewModel.findDEVById(foundLTO.domainId)?.let { foundDEV ->
+                                devViewModel.setSelectedDEV(foundDEV)
+                                ltoViewModel.setSelectedLTO(foundLTO)
+                                stoViewModel.setSelectedSTO(foundSTO)
+                            }
+                        }
+
                     }
                 },
                 shape = RoundedCornerShape(14.dp),

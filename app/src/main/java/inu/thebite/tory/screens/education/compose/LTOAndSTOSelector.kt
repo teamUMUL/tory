@@ -123,13 +123,13 @@ fun LTOAndSTOSelector(
         ) {
             items(ltos) { lto ->
                 val expandedState =
-                    rememberSaveable { mutableStateOf(selectedSTO?.let { it.ltoId == lto } ?: false) }
+                    rememberSaveable { mutableStateOf(selectedSTO?.let { it.ltoId == lto.id } ?: false) }
                 val rotationState by animateFloatAsState(
                     targetValue = if (expandedState.value) 180f else 0f, label = ""
                 )
                 LaunchedEffect(selectedSTO){
                     selectedSTO?.let { selectedSTO ->
-                        if (selectedSTO.ltoId == lto){
+                        if (selectedSTO.ltoId == lto.id){
                             expandedState.value = true
                         }
                     }

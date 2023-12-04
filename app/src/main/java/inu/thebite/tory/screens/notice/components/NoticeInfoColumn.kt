@@ -50,6 +50,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.screens.notice.NoticeViewModel
@@ -62,7 +63,8 @@ fun NoticeInfoColumn(
     selectedDate: NoticeDate,
     selectedNoticeDetailList :  List<DetailResponse>,
     noticeViewModel: NoticeViewModel,
-    stoViewModel: STOViewModel
+    stoViewModel: STOViewModel,
+    ltoViewModel: LTOViewModel
 ) {
     val gradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
@@ -126,7 +128,8 @@ fun NoticeInfoColumn(
 //        )
 //    }
     val selectedNoticeSTOList = stoViewModel.findSTOsByIds(selectedNoticeDetailList.map { it.stoId })
-    val uniqueLTOList = selectedNoticeSTOList.map { it.ltoId }.distinctBy { it.id }
+    val uniqueLTOIdList = selectedNoticeSTOList.map { it.ltoId }.distinctBy { it }
+    val uniqueLTOList = ltoViewModel.findLTOsByIds(uniqueLTOIdList)
     LazyColumn {
         item {
             Column(

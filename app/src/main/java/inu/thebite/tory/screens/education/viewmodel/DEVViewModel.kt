@@ -72,4 +72,11 @@ class DEVViewModel : ViewModel() {
         }
     }
 
+    fun findDEVById(devId : Long): DomainResponse? {
+        return allDEVs.value!!.find {
+            it.id == devId
+        }
+    }
+
+
 }

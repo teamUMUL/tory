@@ -166,6 +166,7 @@ class STOViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
+                Log.d("selectedSTOs", selectedLTO.toString())
                     _allSTOs.update {
                         repo.getSTOsByLTO(ltoId = selectedLTO.id)
                     }

@@ -6,7 +6,7 @@ import inu.thebite.tory.model.point.PointResponse
 
 data class StoResponse(
 
-    @SerializedName("id")
+    @SerializedName("stoId")
     var id: Long,
 
     @SerializedName("templateNum")

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class LtoResponse(
 
-    @SerializedName("id")
+    @SerializedName("ltoId")
     var id: Long,
 
     @SerializedName("templateNum")
@@ -31,8 +31,8 @@ data class LtoResponse(
     @SerializedName("delYN")
     var delYN: String,
 
-    @SerializedName("domain")
-    var domain: Long,
+    @SerializedName("domainId")
+    var domainId: Long,
 
     @SerializedName("studentId")
     var studentId: Long

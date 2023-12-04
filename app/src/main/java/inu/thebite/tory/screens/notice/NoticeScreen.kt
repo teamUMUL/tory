@@ -22,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.components.NoticeDateColumn
 import inu.thebite.tory.screens.notice.components.NoticeInfoColumn
@@ -30,7 +31,8 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @Composable
 fun NoticeScreen(
     noticeViewModel: NoticeViewModel,
-    stoViewModel: STOViewModel
+    stoViewModel: STOViewModel,
+    ltoViewModel: LTOViewModel
 ) {
     val selectedNoticeDates by noticeViewModel.selectedNoticeDates.collectAsState()
     val selectedNoticeDate by noticeViewModel.selectedNoticeDate.collectAsState()
@@ -103,7 +105,8 @@ fun NoticeScreen(
                             selectedDate = selectedNoticeDate,
                             selectedNoticeDetailList = selectedNoticeDetailList,
                             noticeViewModel = noticeViewModel,
-                            stoViewModel = stoViewModel
+                            stoViewModel = stoViewModel,
+                            ltoViewModel = ltoViewModel
                         )
                     }
                 }

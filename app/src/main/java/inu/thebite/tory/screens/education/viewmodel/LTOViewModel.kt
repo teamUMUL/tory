@@ -99,61 +99,77 @@ class LTOViewModel: ViewModel() {
         }
     }
 
-    fun setLTODummyData(){
-        _allLTOs.update {
-            val filteredLTOs = mutableListOf<LtoResponse>()
-            for(i in 1..10){
-                for (j in 1..10){
-                    filteredLTOs.add(
-                        LtoResponse(
-                            id = j.toLong(),
-                            templateNum = j,
-                            status = "진행중",
-                            name = "$j. 예시 데이터 LTO",
-                            contents = j.toString(),
-                            game = "",
-                            achieveDate = "",
-                            registerDate = "",
-                            delYN = "",
-                            domain = DomainResponse(
-                                id = i.toLong(),
-                                templateNum = i,
-                                type = "",
-                                status = "",
-                                name = "$i. 예시 데이터 DEV",
-                                contents = "",
-                                useYN = "",
-                                delYN = "",
-                                registerDate = ""
-                            ),
-                            student = StudentResponse(
-                                id = 1L,
-                                name = "",
-                                birth ="",
-                                etc = "",
-                                parentName = "",
-                                startDate = "",
-                                endDate = "",
-                                registerDate = "",
-                                childClass = ChildClassResponse(
-                                    id = 1L,
-                                    name = "",
-                                    center = CenterResponse(
-                                        id = 1L,
-                                        name = ""
-                                    )
-                                )
-                            )
-                        )
-                    )
-                }
-            }
-            filteredLTOs
-        }
-        _selectedLTO.update {
-            allLTOs.value!!.first()
+//    fun setLTODummyData(){
+//        _allLTOs.update {
+//            val filteredLTOs = mutableListOf<LtoResponse>()
+//            for(i in 1..10){
+//                for (j in 1..10){
+//                    filteredLTOs.add(
+//                        LtoResponse(
+//                            id = j.toLong(),
+//                            templateNum = j,
+//                            status = "진행중",
+//                            name = "$j. 예시 데이터 LTO",
+//                            contents = j.toString(),
+//                            game = "",
+//                            achieveDate = "",
+//                            registerDate = "",
+//                            delYN = "",
+//                            domain = DomainResponse(
+//                                id = i.toLong(),
+//                                templateNum = i,
+//                                type = "",
+//                                status = "",
+//                                name = "$i. 예시 데이터 DEV",
+//                                contents = "",
+//                                useYN = "",
+//                                delYN = "",
+//                                registerDate = ""
+//                            ),
+//                            student = StudentResponse(
+//                                id = 1L,
+//                                name = "",
+//                                birth ="",
+//                                etc = "",
+//                                parentName = "",
+//                                startDate = "",
+//                                endDate = "",
+//                                registerDate = "",
+//                                childClass = ChildClassResponse(
+//                                    id = 1L,
+//                                    name = "",
+//                                    center = CenterResponse(
+//                                        id = 1L,
+//                                        name = ""
+//                                    )
+//                                )
+//                            )
+//                        )
+//                    )
+//                }
+//            }
+//            filteredLTOs
+//        }
+//        _selectedLTO.update {
+//            allLTOs.value!!.first()
+//        }
+//    }
+    fun findLTOById(
+        ltoId: Long
+    ): LtoResponse? {
+        return allLTOs.value!!.find {
+            it.id == ltoId
         }
     }
+
+    fun findLTOsByIds(
+        ltoIds: List<Long>
+    ): List<LtoResponse> {
+        return allLTOs.value!!.filter {
+            ltoIds.contains(it.id)
+        }
+    }
+
     fun getLTOsByDomain(
         domainId : Long
     ){
