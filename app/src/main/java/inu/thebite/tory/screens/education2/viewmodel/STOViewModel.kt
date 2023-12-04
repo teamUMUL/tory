@@ -3,7 +3,6 @@ package inu.thebite.tory.screens.education2.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
@@ -200,13 +199,21 @@ class STOViewModel : ViewModel() {
         selectedLTO: LtoResponse,
     ) {
         viewModelScope.launch {
-            Log.d("sto", repo.getStoList(selectedLTO.id).toString())
             try {
-                _allSTOs.update {
-                    repo.getStoList(selectedLTO.id)
+                val response = repo.getSTOsByLTO(ltoId = selectedLTO.id)
+
+                if (response.isSuccessful) {
+                    val updatedSTOList = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update {
+                        updatedSTOList
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 가져오기 실패: $errorBody")
                 }
+
             } catch (e: Exception) {
-                Log.e("failed to get all STOs", e.message.toString())
+                Log.e("failed to update STO", e.message.toString())
             }
         }
     }
