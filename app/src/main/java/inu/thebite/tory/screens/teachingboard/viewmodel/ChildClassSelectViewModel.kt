@@ -18,7 +18,7 @@ import java.lang.Exception
 class ChildClassSelectViewModel : ViewModel() {
     private val repo: ChildClassRepoImpl = ChildClassRepoImpl()
 
-    private val _allChildClasses : MutableStateFlow<List<ChildClassResponse>> = MutableStateFlow(emptyList())
+    private val _allChildClasses : MutableStateFlow<List<ChildClassResponse>?> = MutableStateFlow(null)
     val allChildClasses = _allChildClasses.asStateFlow()
 
     private val _childClasses: MutableStateFlow<List<ChildClassResponse>?> = MutableStateFlow(null)
