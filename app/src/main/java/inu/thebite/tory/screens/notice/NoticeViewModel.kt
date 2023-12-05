@@ -77,11 +77,13 @@ class NoticeViewModel : ViewModel() {
 
     fun getNotice(
         studentId: Long,
+        year: String,
+        month: String,
         date: String
     ){
         try {
             viewModelScope.launch {
-                repo.getNotice(studentId = studentId, date = date)
+                repo.getNotice(studentId = studentId, year = year, month = month, date = date)
             }
         } catch (e: Exception){
             Log.e("failed to get Notice", e.message.toString())
@@ -90,12 +92,14 @@ class NoticeViewModel : ViewModel() {
 
     fun updateTodayComment(
         studentId: Long,
+        year: String,
+        month: String,
         date: String,
         addCommentRequest: AddCommentRequest
     ){
         try {
             viewModelScope.launch {
-                repo.updateTodayComment(studentId = studentId, date = date, addCommentRequest = addCommentRequest)
+                repo.updateTodayComment(studentId = studentId, year = year, month = month, date = date, addCommentRequest = addCommentRequest)
             }
         } catch (e: Exception){
             Log.e("failed to update TodayComment", e.message.toString())
@@ -104,13 +108,15 @@ class NoticeViewModel : ViewModel() {
 
     fun updateLTOComment(
         studentId: Long,
+        year: String,
+        month: String,
         date: String,
         stoId: Long,
         addCommentRequest: AddCommentRequest
     ){
         try {
             viewModelScope.launch {
-                repo.updateLTOComment(studentId = studentId, date = date, stoId = stoId,addCommentRequest = addCommentRequest)
+                repo.updateLTOComment(studentId = studentId, year = year, month = month, date = date, stoId = stoId,addCommentRequest = addCommentRequest)
             }
         } catch (e: Exception){
             Log.e("failed to update LTOComment", e.message.toString())
@@ -119,12 +125,14 @@ class NoticeViewModel : ViewModel() {
 
     fun addDetail(
         studentId: Long,
+        year: String,
+        month: String,
         date: String,
         stoId: Long
     ){
         viewModelScope.launch {
             try {
-                val response = repo.addDetail(studentId = studentId, date = date, stoId = stoId)
+                val response = repo.addDetail(studentId = studentId, year = year, month = month, date = date, stoId = stoId)
 
                 if (response.isSuccessful) {
                     val newDetailResponse = response.body() ?: throw Exception("Detail 정보가 비어있습니다.")
@@ -148,11 +156,13 @@ class NoticeViewModel : ViewModel() {
 
     fun getDetailList(
         studentId: Long,
+        year: String,
+        month: String,
         date: String
     ){
         try {
             viewModelScope.launch {
-                val response = repo.getDetailList(studentId = studentId, date = date)
+                val response = repo.getDetailList(studentId = studentId, year = year, month = month, date = date)
 
                 if (response.isSuccessful){
                     val updatedDetailList = response.body() ?: throw  Exception("DetailList 정보가 비어있습니다.")
