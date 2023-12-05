@@ -106,8 +106,8 @@ interface RetrofitService {
     suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>
 
     // lto
-    @POST("/{domainId}/ltos")
-    suspend fun addLto(@Path("domainId") domainId: Long, @Body ltoRequest: LtoRequest): Response<LtoResponse>
+    @POST("/{domainId}/ltos/{studentId}")
+    suspend fun addLto(@Path("domainId") domainId: Long, @Body ltoRequest: LtoRequest, @Path("studentId") studentId: Long): Response<LtoResponse>
 
     @PATCH("/ltos/{ltoId}/status")
     suspend fun updateLtoStatus(@Path("ltoId") ltoId: Long, @Body updateLtoStatusRequest: UpdateLtoStatusRequest): Response<LtoResponse>
@@ -118,8 +118,8 @@ interface RetrofitService {
     @PATCH("/ltos/{ltoId}")
     suspend fun updateLto(@Path("ltoId") ltoId: Long, @Body ltoRequest: LtoRequest) : Response<LtoResponse>
 
-//    @GET("/ltos")
-//    suspend fun getLtoList(): List<LtoResponse>
+    @GET("/{studentId}/ltos")
+    suspend fun getLtoList(@Path("studentId") studentId: Long): List<LtoResponse>
 
     /**
      * 학생 별로 LTO 리스트 가져오는 Api
@@ -155,8 +155,8 @@ interface RetrofitService {
     @PATCH("/stos/{stoId}/hit/round")
     suspend fun updateStoHitRound(@Path("stoId") stoId: Long, @Body updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
 
-//    @GET("/stos")
-//    suspend fun getStoList(): List<StoResponse>
+    @GET("/{studentId}/stos")
+    suspend fun getStoList(@Path("studentId") studentId: Long): List<StoResponse>
 
     /**
      * LTO별로 STO 리스트 가져오기 api
@@ -195,7 +195,7 @@ interface RetrofitService {
     suspend fun updateTodoList(@Path("studentId") studentId: Long, @Body updateTodoList: UpdateTodoList) : Response<TodoResponse>
 
     @GET("/todos/{studentId}")
-    suspend fun getTodoList(@Path("studentId") studentId: Long) : List<StoSummaryResponse>
+    suspend fun getTodoList(@Path("studentId") studentId: Long) : Response<TodoResponse>
 
     /**
      * Notice Api = 오늘의 총평 부분 알림장

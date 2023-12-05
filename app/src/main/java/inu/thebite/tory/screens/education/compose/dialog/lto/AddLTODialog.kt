@@ -184,7 +184,8 @@ fun AddLTODialog(
                                 name = ltoInputValue.text,
                                 contents = "",
                                 game = gameMode
-                            )
+                            ),
+                            studentId = 1L
                         )
                     } else{
                         Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()

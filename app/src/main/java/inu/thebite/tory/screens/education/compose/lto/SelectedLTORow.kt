@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
@@ -23,7 +24,8 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun SelectedLTORow(
     modifier: Modifier = Modifier,
     allLTOs: List<LtoResponse>?,
-    selectedLTO: LtoResponse?,
+    selectedLTO : LtoResponse?,
+    selectedSTO: StoResponse?,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {

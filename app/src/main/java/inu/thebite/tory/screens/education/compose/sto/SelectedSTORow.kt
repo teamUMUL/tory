@@ -46,6 +46,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.todo.TodoListRequest
+import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education.compose.dialog.sto.UpdateSTODialog
@@ -62,7 +63,7 @@ import java.util.Locale
 fun SelectedSTORow(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
-    todoList: List<StoSummaryResponse>?,
+    todoList: TodoResponse?,
     stoViewModel: STOViewModel,
     todoViewModel: TodoViewModel,
     noticeViewModel: NoticeViewModel
@@ -80,6 +81,7 @@ fun SelectedSTORow(
                 onDismissRequest = {setDeleteSTODialog(false)},
                 confirmButton = { TextButton(onClick = {
                     stoViewModel.deleteSTO(selectedSTO = selectedSTO)
+                    setDeleteSTODialog(false)
                 }) {
                     Text(text = "삭제")
                 }},
@@ -243,8 +245,8 @@ fun SelectedSTORow(
                 IconButton(
                     onClick = {
                         todoList?.let { todoList ->
-                            if (todoList.any { it.id == selectedSTO.id }){
-                                val deleteList = todoList.map { it.id }.toMutableList()
+                            if (todoList.stoList.any { it == selectedSTO.id }){
+                                val deleteList = todoList.stoList.map { it }.toMutableList()
                                 deleteList.remove(selectedSTO.id)
                                 //삭제
                                 todoViewModel.updateTodoList(studentId = 1L, updateTodoList = UpdateTodoList(stoList = deleteList))
@@ -267,7 +269,7 @@ fun SelectedSTORow(
                                     drawRect(
                                         brush =
                                         todoList?.let { todoList ->
-                                            if (todoList.any { it.id == selectedSTO.id }) purpleGradient else gray
+                                            if (todoList.stoList.any { it == selectedSTO.id }) purpleGradient else gray
                                         } ?: gray,
                                         blendMode = BlendMode.SrcAtop
                                     )
@@ -307,6 +309,6 @@ fun SelectedSTORow(
 
 fun getCurrentDateFormatted(): String {
     val currentDate = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd E", Locale.KOREAN)
+    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.KOREAN)
     return currentDate.format(formatter)
 }

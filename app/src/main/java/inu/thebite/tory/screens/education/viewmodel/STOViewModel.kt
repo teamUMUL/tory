@@ -30,6 +30,9 @@ class STOViewModel : ViewModel() {
     private val _allSTOs: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
     val allSTOs = _allSTOs.asStateFlow()
 
+    private val _stos: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
+    val stos = _stos.asStateFlow()
+
     private val _selectedSTO = MutableStateFlow<StoResponse?>(null)
     val selectedSTO = _selectedSTO.asStateFlow()
 
@@ -43,7 +46,9 @@ class STOViewModel : ViewModel() {
     }
 
     fun clearSelectedSTO() {
-        _selectedSTO.value = null
+        _selectedSTO.update {
+            null
+        }
     }
 
     init {
@@ -61,10 +66,17 @@ class STOViewModel : ViewModel() {
 
     private fun updateSTOsAndSelectedSTO(allSTOs: List<StoResponse>?) {
         allSTOs?.let {allSTOs ->
+//            _stos.update {currentLTOs ->
+//                Log.d("allLTOs", allLTOs.toString())
+//                allLTOs.filter {lto ->
+//                    currentLTOs?.map { it.id }?.contains(lto.id) == true
+//                }
+//            }
             _selectedSTO.update {
-                allSTOs.find { sto ->
+                val foundSTO = allSTOs.find { sto ->
                     selectedSTO.value?.id == sto.id
                 }
+                foundSTO
             }
         }
     }
@@ -141,9 +153,10 @@ class STOViewModel : ViewModel() {
                 } else {
                     repo.updateStoStatus(selectedSTO, updateSTOStatus)
                 }
-
+                Log.d("response", response.toString())
                 if (response.isSuccessful) {
                     val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    Log.d("updatedSTO", updatedSTO.toString())
                     _allSTOs.update { currentSTOs ->
                         currentSTOs?.map { sto ->
                             if(sto.id == selectedSTO.id) updatedSTO else sto
@@ -161,21 +174,46 @@ class STOViewModel : ViewModel() {
         }
     }
 
-    fun getSTOsByLTO(
-        selectedLTO: LtoResponse,
-    ) {
+    fun getAllSTOs(
+        studentId : Long
+    ){
         viewModelScope.launch {
             try {
-                Log.d("selectedSTOs", selectedLTO.toString())
-                    _allSTOs.update {
-                        repo.getSTOsByLTO(ltoId = selectedLTO.id)
-                    }
+                _allSTOs.update {
+                    repo.getAllSTOs(studentId = studentId)
+                }
 
-            } catch (e: Exception) {
-                Log.e("failed to get STOs", e.message.toString())
+            } catch (e: Exception){
+                Log.e("failed to get all STOs", e.message.toString())
             }
+            Log.d("allSTOs", allSTOs.value.toString())
+
         }
     }
+
+    fun getSTOsByLTO(
+        selectedLTO: LtoResponse,
+    ) : List<StoResponse> {
+        Log.d("allSTOs", allSTOs.value.toString())
+
+        return allSTOs.value?.filter {sto ->
+            sto.ltoId == selectedLTO.id
+        } ?: emptyList()
+    }
+
+//    fun setSTOsByLTO(
+//        selectedLTO: LtoResponse,
+//    ){
+//        try {
+//            _stos.update {
+//                allSTOs.value?.filter {
+//                    it.ltoId == selectedLTO.id
+//                } ?: emptyList()
+//            }
+//        } catch (e: Exception){
+//            Log.e("failed to set STOs By LTO", e.message.toString())
+//        }
+//    }
 
     fun createSTO(
         selectedLTO: LtoResponse,
@@ -298,8 +336,13 @@ class STOViewModel : ViewModel() {
     fun findSTOsByIds(
         selectedSTOsIds: List<Long>
     ): List<StoResponse> {
-        return allSTOs.value!!.filter { sto ->
+        val allStos = allSTOs.value ?: return emptyList()
+
+        // selectedSTOsIds에 따라 allStos를 필터링하고 정렬합니다.
+        return allStos.filter { sto ->
             selectedSTOsIds.contains(sto.id)
+        }.sortedBy { sto ->
+            selectedSTOsIds.indexOf(sto.id)
         }
     }
 

@@ -21,8 +21,8 @@ class ImageViewModel : ViewModel() {
     private val _allCategories: MutableStateFlow<List<String>?> = MutableStateFlow(null)
     val allCategories = _allCategories.asStateFlow()
     init {
-        getAllImages()
-        getAllCategories()
+//        getAllImages()
+//        getAllCategories()
     }
 
     fun getAllImages(){

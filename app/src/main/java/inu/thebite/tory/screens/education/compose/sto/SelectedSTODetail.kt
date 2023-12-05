@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
 
@@ -23,7 +24,8 @@ fun SelectedSTODetail(
     selectedSTO: StoResponse?,
     points: List<String>?,
     imageViewModel: ImageViewModel,
-    stoViewModel: STOViewModel
+    stoViewModel: STOViewModel,
+    noticeViewModel: NoticeViewModel
 ) {
     Row(
         modifier = modifier
@@ -76,7 +78,8 @@ fun SelectedSTODetail(
                 selectedSTO = selectedSTO,
 //                points = points,
                 imageViewModel = imageViewModel,
-                stoViewModel = stoViewModel
+                stoViewModel = stoViewModel,
+                noticeViewModel = noticeViewModel
             )
         }
     }

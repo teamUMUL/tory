@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.screen
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -51,20 +52,29 @@ fun NewEducationScreen(
     val selectedDEV by devViewModel.selectedDEV.collectAsState()
 
     val allLTOs by ltoViewModel.allLTOs.collectAsState()
-//    val ltos by ltoViewModel.ltos.collectAsState()
+    val ltos by ltoViewModel.ltos.collectAsState()
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
 
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val points by stoViewModel.points.collectAsState()
 
-    val todoList by todoViewModel.todoList.collectAsState()
+    val todoList by todoViewModel.todoResponse.collectAsState()
+
+    LaunchedEffect(Unit){
+        todoViewModel.getTodoList(studentId = 1L)
+        ltoViewModel.getAllLTOs(studentId = 1L)
+        stoViewModel.getAllSTOs(studentId = 1L)
+    }
 
     LaunchedEffect(selectedDEV) {
         selectedDEV?.let { ltoViewModel.getLTOsByDomain(domainId = it.id) }
     }
 
     LaunchedEffect(selectedLTO) {
-        selectedLTO?.let { stoViewModel.getSTOsByLTO(selectedLTO = it) }
+//        selectedLTO?.let { stoViewModel.setSTOsByLTO(selectedLTO = it) }
+    }
+    LaunchedEffect(selectedSTO){
+        selectedSTO?.let { stoViewModel.getPointList(selectedSTO = it) }
     }
 
     Row(
@@ -83,7 +93,7 @@ fun NewEducationScreen(
                 ltoViewModel = ltoViewModel
             )
             Divider(thickness = 1.dp, color = Color.LightGray)
-            allLTOs?.let {
+            ltos?.let {
                 LTOAndSTOSelector(
                     modifier = Modifier
                         .weight(9.5f),

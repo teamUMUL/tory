@@ -100,6 +100,7 @@ fun LTOAndSTOSelector(
                 onDismissRequest = {setDeleteLTODialog(false)},
                 confirmButton = { TextButton(onClick = {
                     ltoViewModel.deleteLTO(selectedLTO = selectedLTO)
+                    setDeleteLTODialog(false)
                 }) {
                     Text(text = "삭제")
                 }
@@ -171,6 +172,7 @@ fun LTOAndSTOSelector(
                             ) {
                                 expandedState.value = !expandedState.value
                                 ltoViewModel.setSelectedLTO(lto)
+                                stoViewModel.clearSelectedSTO()
                                 scrollToTop(index = ltos.indexOf(lto), listState = listState, coroutineScope = coroutineScope)
                             },
                         verticalAlignment = Alignment.CenterVertically,
@@ -216,7 +218,9 @@ fun LTOAndSTOSelector(
                     }
                     AnimatedVisibility(visible = expandedState.value) {
                         STOSelector(
-                            stoViewModel = stoViewModel
+                            lto = lto,
+                            stoViewModel = stoViewModel,
+                            ltoViewModel = ltoViewModel
                         )
                     }
                 }

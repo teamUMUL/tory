@@ -40,6 +40,7 @@ import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
@@ -49,6 +50,7 @@ fun EducationResultTable(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
     stoViewModel: STOViewModel,
+    noticeViewModel: NoticeViewModel,
     points: List<String>?
 ){
     Column(
@@ -64,7 +66,6 @@ fun EducationResultTable(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             ) {
-                points?.let { points ->
                     items(selectedSTO.count / 5) { verticalIndex ->
                         LazyRow(
                             modifier = Modifier
@@ -73,13 +74,14 @@ fun EducationResultTable(
                             horizontalArrangement = Arrangement.Center
                         ) {
                             items(5) { horizonIndex ->
-                                var stoGameData = ""
-                                stoGameData =
+                                val stoGameData = points?.let { points ->
                                     if(points.size > (5 * verticalIndex) + horizonIndex){
                                         points[(5 * verticalIndex) + horizonIndex]
                                     } else {
                                         "n"
                                     }
+                                } ?: "n"
+
                                 Card(
                                     modifier = Modifier
                                         .padding(5.dp)
@@ -115,7 +117,6 @@ fun EducationResultTable(
                             }
                         }
                     }
-                }
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(
@@ -135,49 +136,48 @@ fun EducationResultTable(
                         modifier = Modifier
                             .padding(vertical = 8.dp)
                             .weight(1f)
-                            .fillMaxHeight()
-                            .clickableWithNoRipple {
-                                selectedSTO?.let { selectedSTO ->
-                                    when(button){
-                                        "+" -> {
-                                            stoViewModel.addPoint(
-                                                selectedSTO = selectedSTO,
-                                                addPointRequest = AddPointRequest(
-                                                    result = "+",
-                                                    registrant = "Test"
-                                                )
+                            .fillMaxHeight(),
+                        onClick = {
+                            selectedSTO?.let { selectedSTO ->
+                                when(button){
+                                    "+" -> {
+                                        stoViewModel.addPoint(
+                                            selectedSTO = selectedSTO,
+                                            addPointRequest = AddPointRequest(
+                                                result = "+",
+                                                registrant = "Test"
                                             )
-                                        }
-                                        "-" -> {
-                                            stoViewModel.addPoint(
-                                                selectedSTO = selectedSTO,
-                                                addPointRequest = AddPointRequest(
-                                                    result = "-",
-                                                    registrant = "Test"
-                                                )
+                                        )
+                                    }
+                                    "-" -> {
+                                        stoViewModel.addPoint(
+                                            selectedSTO = selectedSTO,
+                                            addPointRequest = AddPointRequest(
+                                                result = "-",
+                                                registrant = "Test"
                                             )
-                                        }
-                                        "P" -> {
-                                            stoViewModel.addPoint(
-                                                selectedSTO = selectedSTO,
-                                                addPointRequest = AddPointRequest(
-                                                    result = "P",
-                                                    registrant = "Test"
-                                                )
+                                        )
+                                    }
+                                    "P" -> {
+                                        stoViewModel.addPoint(
+                                            selectedSTO = selectedSTO,
+                                            addPointRequest = AddPointRequest(
+                                                result = "P",
+                                                registrant = "Test"
                                             )
-                                        }
-                                        "삭제" -> {
-                                            stoViewModel.deletePoint(
-                                                selectedSTO = selectedSTO,
-                                                deletePointRequest = DeletePointRequest(
-                                                    registrant = "Test"
-                                                )
+                                        )
+                                    }
+                                    "삭제" -> {
+                                        stoViewModel.deletePoint(
+                                            selectedSTO = selectedSTO,
+                                            deletePointRequest = DeletePointRequest(
+                                                registrant = "Test"
                                             )
-                                        }
+                                        )
                                     }
                                 }
-                            },
-                        onClick = { /*TODO*/ },
+                            }
+                        },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = when(button){
@@ -245,6 +245,7 @@ fun EducationResultTable(
                                         minusRate = minusRate,
                                         status = status
                                     )
+                                    noticeViewModel.addDetail(studentId = 1L, date = getCurrentDateFormatted(), stoId = selectedSTO.id)
                                 },
                                 contentPadding = PaddingValues(horizontal = 60.dp, vertical = 10.dp),
                                 shape = RoundedCornerShape(10.dp),

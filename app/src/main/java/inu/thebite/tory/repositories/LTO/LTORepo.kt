@@ -8,13 +8,15 @@ import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import retrofit2.Response
 
 interface LTORepo {
-    suspend fun createLTO(domain: DomainResponse, lto: LtoRequest) : Response<LtoResponse>
+    suspend fun addLTO(domain: DomainResponse, lto: LtoRequest, studentId: Long) : Response<LtoResponse>
 
     suspend fun updateLTOStatus(selectedLTO: LtoResponse, updateLtoStatusRequest: UpdateLtoStatusRequest) : Response<LtoResponse>
 
     suspend fun updateLtoHitStatus(selectedLTO: LtoResponse, updateLtoStatusRequest: UpdateLtoStatusRequest) : Response<LtoResponse>
 
     suspend fun updateLto(selectedLTO: LtoResponse, ltoRequest: LtoRequest) : Response<LtoResponse>
+
+    suspend fun getAllLTOs(studentId : Long) : List<LtoResponse>
 
     suspend fun getLTOsByStudent(domainId : Long): List<LtoResponse>
 

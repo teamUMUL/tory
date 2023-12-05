@@ -3,8 +3,9 @@ package inu.thebite.tory.schedule
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.model.sto.StoSummaryResponse
+import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.todo.TodoListRequest
+import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.repositories.todo.TodoRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,11 +19,14 @@ class TodoViewModel : ViewModel() {
 
     private val repo: TodoRepoImpl = TodoRepoImpl()
 
-    private val _todoList: MutableStateFlow<List<StoSummaryResponse>?> = MutableStateFlow(null)
-    val todoList = _todoList.asStateFlow()
+    private val _todoResponse: MutableStateFlow<TodoResponse?> = MutableStateFlow(null)
+    val todoResponse = _todoResponse.asStateFlow()
 
-    private val _tempTodoList: MutableStateFlow<List<StoSummaryResponse>?> = MutableStateFlow(null)
-    val tempTodoList = _tempTodoList.asStateFlow()
+    private val _tempTodoResponse: MutableStateFlow<TodoResponse?> = MutableStateFlow(null)
+    val tempTodoResponse = _tempTodoResponse.asStateFlow()
+
+    private val _copiedTodoList: MutableStateFlow<List<Long>?> = MutableStateFlow(null)
+    val copiedTodoList = _copiedTodoList.asStateFlow()
 
     init {
         observeTodoList()
@@ -30,17 +34,26 @@ class TodoViewModel : ViewModel() {
 
     private fun observeTodoList() {
         viewModelScope.launch {
-            todoList.onEach { todoList ->
+            todoResponse.onEach { todoList ->
                 todoList?.let { updateTempTodoList(it) }
+            }.collect()
+            tempTodoResponse.onEach { tempTodoList ->
+                tempTodoList?.let { updateCopiedTodoList(it) }
             }.collect()
         }
     }
-
+    fun updateCopiedTodoList(
+        tempTodoList: TodoResponse
+    ){
+        _copiedTodoList.update {
+            tempTodoList.stoList
+        }
+    }
 
     fun updateTempTodoList(
-        todoList: List<StoSummaryResponse>
+        todoList: TodoResponse
     ){
-        _tempTodoList.update {
+        _tempTodoResponse.update {
             todoList
         }
     }
@@ -49,12 +62,24 @@ class TodoViewModel : ViewModel() {
         studentId: Long,
         todoListRequest: TodoListRequest
     ){
-        try {
-            viewModelScope.launch {
-                repo.addTodoList(studentId = studentId, todoListRequest = todoListRequest)
+        viewModelScope.launch {
+            try {
+                val response = repo.addTodoList(studentId = studentId, todoListRequest = todoListRequest)
+
+                if (response.isSuccessful) {
+                    val newTodoResponse = response.body() ?: throw Exception("Todo 정보가 비어있습니다.")
+                    _todoResponse.update {
+                        newTodoResponse
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Todo 추가 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to add Todo", e.message.toString())
             }
-        } catch (e: Exception){
-            Log.e("failed to add TodoList", e.message.toString())
         }
     }
 
@@ -62,26 +87,48 @@ class TodoViewModel : ViewModel() {
         studentId: Long,
         updateTodoList: UpdateTodoList
     ){
-        try {
-            viewModelScope.launch {
-                repo.updateTOdoList(studentId = studentId, updateTodoList = updateTodoList)
+        viewModelScope.launch {
+            try {
+                val response = repo.updateTodoList(studentId = studentId, updateTodoList = updateTodoList)
+
+                if (response.isSuccessful) {
+                    val updatedTodoResponse = response.body() ?: throw Exception("Todo 정보가 비어있습니다.")
+                    _todoResponse.update {
+                        updatedTodoResponse
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Todo 추가 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to add Todo", e.message.toString())
             }
-        } catch (e: Exception){
-            Log.e("failed to update TodoList", e.message.toString())
         }
     }
 
     fun getTodoList(
         studentId: Long
     ){
-        try {
-            viewModelScope.launch {
-                _todoList.update {
-                    repo.getTodoList(studentId = studentId)
+        viewModelScope.launch {
+            try {
+                val response = repo.getTodoList(studentId = studentId)
+
+                if (response.isSuccessful) {
+                    val gotTodoResponse = response.body() ?: throw Exception("Todo 정보가 비어있습니다.")
+                    _todoResponse.update {
+                        gotTodoResponse
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Todo 가져오기 실패: $errorBody")
                 }
+
+            } catch (e: Exception) {
+                Log.e("failed to get Todo", e.message.toString())
             }
-        } catch (e: Exception){
-            Log.e("failed to get TodoList", e.message.toString())
         }
     }
 
@@ -107,21 +154,25 @@ class TodoViewModel : ViewModel() {
 //    }
 
     fun moveTempTodoList(fromIndex: Int, toIndex: Int){
-        _tempTodoList.update { currentSchedule ->
-            currentSchedule?.let {
-                // 새로운 리스트를 만들어 기존의 리스트를 복사합니다.
-                val updatedSchedule = it.toMutableList()
+        _tempTodoResponse.update { currentSchedule ->
+            currentSchedule?.let { schedule ->
+                // stoList를 수정 가능한 리스트로 복사
+                val mutableStoList = schedule.stoList.toMutableList()
 
-                // 안전하게 범위 내의 인덱스인지 확인합니다.
-                if (fromIndex in updatedSchedule.indices && toIndex in updatedSchedule.indices) {
-                    // fromIndex와 toIndex의 항목을 서로 교환합니다.
-                    val temp = updatedSchedule[fromIndex]
-                    updatedSchedule[fromIndex] = updatedSchedule[toIndex]
-                    updatedSchedule[toIndex] = temp
+                // 인덱스 범위 확인
+                if (fromIndex in mutableStoList.indices && toIndex in mutableStoList.indices) {
+                    // 요소 교환
+                    val temp = mutableStoList[fromIndex]
+                    mutableStoList[fromIndex] = mutableStoList[toIndex]
+                    mutableStoList[toIndex] = temp
+
+                    // 변경된 리스트로 TodoResponse 업데이트
+                    schedule.copy(stoList = mutableStoList)
+                } else {
+                    schedule // 범위를 벗어난 경우 변경 없이 현재 스케줄 반환
                 }
-                updatedSchedule
             }
         }
-
+        Log.d("tempTodoResponse", tempTodoResponse.value?.stoList.toString())
     }
 }

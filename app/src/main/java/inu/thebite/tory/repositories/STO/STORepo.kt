@@ -22,6 +22,8 @@ interface STORepo {
 
     suspend fun updateImageList(stoInfo: StoResponse, updateImageListRequest: UpdateImageListRequest)
 
+    suspend fun getAllSTOs(studentId: Long) : List<StoResponse>
+
     suspend fun getSTOsByLTO(ltoId: Long): List<StoResponse>
 
     suspend fun deleteSto(stoInfo: StoResponse) : Response<Boolean>

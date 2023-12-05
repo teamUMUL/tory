@@ -3,14 +3,11 @@ package inu.thebite.tory.screens.education.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.model.center.CenterResponse
-import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
-import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.repositories.LTO.LTORepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +22,9 @@ class LTOViewModel: ViewModel() {
 
     private val _allLTOs: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
     val allLTOs = _allLTOs.asStateFlow()
+
+    private val _ltos: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
+    val ltos = _ltos.asStateFlow()
 
     private val _selectedLTO = MutableStateFlow<LtoResponse?>(null)
     val selectedLTO = _selectedLTO.asStateFlow()
@@ -52,6 +52,7 @@ class LTOViewModel: ViewModel() {
 
                 if (response.isSuccessful) {
                     val updatedLTO = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    Log.d("updatedLTO", updatedLTO.toString())
                     _allLTOs.update { currentLTOs ->
                         currentLTOs?.map { lto ->
                             if(lto.id == selectedLTO.id) updatedLTO else lto
@@ -91,6 +92,12 @@ class LTOViewModel: ViewModel() {
 
     private fun updateLTOsAndSelectedLTO(allLTOs: List<LtoResponse>?) {
         allLTOs?.let {allLTOs ->
+            _ltos.update {currentLTOs ->
+                Log.d("allLTOs", allLTOs.toString())
+                allLTOs.filter {lto ->
+                    currentLTOs?.map { it.id }?.contains(lto.id) == true
+                }
+            }
             _selectedLTO.update {
                 allLTOs.find { lto ->
                     selectedLTO.value?.id == lto.id
@@ -170,13 +177,41 @@ class LTOViewModel: ViewModel() {
         }
     }
 
+    fun getAllLTOs(studentId: Long){
+        viewModelScope.launch{
+            try {
+                _allLTOs.update {
+                    repo.getAllLTOs(studentId = studentId)
+                }
+            } catch (e: Exception){
+                Log.e("failed to get all LTOs", e.message.toString())
+            }
+            Log.d("allLTOs", allLTOs.value.toString())
+        }
+    }
+//
+//    fun getLTOsByDomain(
+//        domainId : Long
+//    ){
+//        viewModelScope.launch {
+//            try {
+//                _ltos.update {
+//                    allLTOs.value!!.filter {
+//                        it.domainId == domainId
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                Log.e("failed to get LTOs by DomainId", e.message.toString())
+//            }
+//        }
+//    }
     fun getLTOsByDomain(
         domainId : Long
     ){
         viewModelScope.launch {
             try {
                 Log.d("getLtosByStudent", repo.getLTOsByStudent(domainId = domainId).toString())
-                _allLTOs.update {
+                _ltos.update {
                     repo.getLTOsByStudent(domainId = domainId)
                 }
             } catch (e: Exception) {
@@ -187,28 +222,34 @@ class LTOViewModel: ViewModel() {
 
     fun addLTO(
         selectedDEV : DomainResponse,
-        newLTO : LtoRequest
+        newLTO : LtoRequest,
+        studentId: Long
     ){
         viewModelScope.launch {
             try {
-                val response = repo.createLTO(selectedDEV = selectedDEV, newLTO = newLTO)
-
+                val response = repo.addLTO(selectedDEV = selectedDEV, newLTO = newLTO, studentId = studentId)
+                Log.d("response", response.toString())
                 if (response.isSuccessful) {
                     val newLTOResponse = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
-                    _allLTOs.update { currentLTOs ->
-                        currentLTOs?.let {
+                    _ltos.update {
+                        _ltos.value?.let {currentLTOs ->
                             // 현재 LTO 리스트가 null이 아니면 새 STO를 추가
-                            it + newLTOResponse
+                            currentLTOs + newLTOResponse
                         } ?: listOf(newLTOResponse) // 현재 LTO 리스트가 null이면 새 리스트를 생성
                     }
-
+                    _allLTOs.update {
+                        _allLTOs.value?.let {currentLTOs ->
+                            // 현재 LTO 리스트가 null이 아니면 새 STO를 추가
+                            currentLTOs + newLTOResponse
+                        } ?: listOf(newLTOResponse) // 현재 LTO 리스트가 null이면 새 리스트를 생성
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
                     throw Exception("LTO 추가 실패: $errorBody")
                 }
 
             } catch (e: Exception) {
-                Log.e("failed to add STO", e.message.toString())
+                Log.e("failed to add LTO", e.message.toString())
             }
         }
     }
@@ -220,9 +261,9 @@ class LTOViewModel: ViewModel() {
         viewModelScope.launch {
             try {
                 val response = repo.updateLto(selectedLTO = selectedLTO, ltoRequest = updateLTO)
-
                 if (response.isSuccessful) {
                     val updatedSTO = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    Log.d("response", updatedSTO.toString())
                     _allLTOs.update {
                         allLTOs.value?.let { allLTOs ->
                             allLTOs.map { if (it.id == updatedSTO.id) updatedSTO else it}
@@ -278,6 +319,7 @@ class LTOViewModel: ViewModel() {
 
                 if (response.isSuccessful) {
                     val isDeleted = response.body() ?: throw Exception("LTO 정보가 비어있습니다.")
+                    Log.d("isDeleted", isDeleted.toString())
                     if(isDeleted){
                         _allLTOs.update {currentLTOs ->
                             currentLTOs?.filterNot { it.id == selectedLTO.id }

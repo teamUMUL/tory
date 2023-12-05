@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
+import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
@@ -17,7 +18,7 @@ fun SelectedSTOInfo(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
     points: List<String>?,
-    todoList: List<StoSummaryResponse>?,
+    todoList: TodoResponse?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
     todoViewModel: TodoViewModel,
@@ -40,7 +41,8 @@ fun SelectedSTOInfo(
             selectedSTO = selectedSTO,
             points = points,
             imageViewModel = imageViewModel,
-            stoViewModel = stoViewModel
+            stoViewModel = stoViewModel,
+            noticeViewModel = noticeViewModel
         )
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
@@ -35,7 +36,8 @@ fun SelectedSTOEducationReadyAndResult(
     selectedSTO: StoResponse?,
 //    points: List<String>?,
     imageViewModel: ImageViewModel,
-    stoViewModel: STOViewModel
+    stoViewModel: STOViewModel,
+    noticeViewModel: NoticeViewModel
 ) {
     val points by stoViewModel.points.collectAsState()
     Column(
@@ -197,7 +199,8 @@ fun SelectedSTOEducationReadyAndResult(
                 EducationResultTable(
                     selectedSTO = selectedSTO,
                     points = points,
-                    stoViewModel = stoViewModel
+                    stoViewModel = stoViewModel,
+                    noticeViewModel = noticeViewModel
                 )
             }
             Row(

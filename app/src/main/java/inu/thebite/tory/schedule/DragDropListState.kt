@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
@@ -58,7 +59,7 @@ fun <T> MutableList<T>.move(from:Int, to:Int){
 
 @Composable
 fun DragDropList(
-    items: List<StoSummaryResponse>,
+    items: List<StoResponse>,
     onMove: (Int, Int) -> Unit,
     onDragEnd: () -> Unit,
     modifier : Modifier = Modifier,

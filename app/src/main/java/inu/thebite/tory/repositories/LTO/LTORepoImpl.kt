@@ -13,8 +13,8 @@ class LTORepoImpl: LTORepo {
 
     private val ltoRetrofit = RetrofitApi.apiService
 
-    override suspend fun createLTO(selectedDEV: DomainResponse, newLTO: LtoRequest) : Response<LtoResponse> {
-        return ltoRetrofit.addLto(domainId = selectedDEV.id, ltoRequest = newLTO)
+    override suspend fun addLTO(selectedDEV: DomainResponse, newLTO: LtoRequest, studentId: Long) : Response<LtoResponse> {
+        return ltoRetrofit.addLto(domainId = selectedDEV.id, ltoRequest = newLTO, studentId = studentId)
     }
 
     override suspend fun updateLTOStatus(
@@ -33,6 +33,10 @@ class LTORepoImpl: LTORepo {
 
     override suspend fun updateLto(selectedLTO: LtoResponse, ltoRequest: LtoRequest) : Response<LtoResponse> {
         return ltoRetrofit.updateLto(ltoId = selectedLTO.id, ltoRequest = ltoRequest)
+    }
+
+    override suspend fun getAllLTOs(studentId : Long): List<LtoResponse> {
+        return ltoRetrofit.getLtoList(studentId = studentId)
     }
 
     override suspend fun getLTOsByStudent(domainId : Long): List<LtoResponse> {

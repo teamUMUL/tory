@@ -81,31 +81,31 @@ fun CardSelector(
                 .background(Color(0xFFD1D1D1))
 
         ) {
-            selectedSTO?.let {selectedSTO ->
-                items(imageViewModel.findImagesByNames(selectedSTO.imageList)) { selectedImage ->
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(selectedImage.url)
-                            .crossfade(true)
-                            .build(),
-                        placeholder = painterResource(id = R.drawable.icon_edit),
-                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
-                            .clickable {
-//                            if (selectedImage == mainItem) {
-//                                dragAndDropViewModel.clearMainItem()
-//                            } else {
-//                                dragAndDropViewModel.setMainItem(selectedImage)
-//                            }
-
-                            },
-//                        alpha = if (selectedImage == mainItem) 1.0f else 0.5f
-                    )
-                }
-            }
+//            selectedSTO?.let {selectedSTO ->
+//                items(imageViewModel.findImagesByNames(selectedSTO.imageList)) { selectedImage ->
+//                    AsyncImage(
+//                        model = ImageRequest.Builder(LocalContext.current)
+//                            .data(selectedImage.url)
+//                            .crossfade(true)
+//                            .build(),
+//                        placeholder = painterResource(id = R.drawable.icon_edit),
+//                        contentDescription = null,
+////                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier
+//                            .fillMaxHeight()
+//                            .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
+//                            .clickable {
+////                            if (selectedImage == mainItem) {
+////                                dragAndDropViewModel.clearMainItem()
+////                            } else {
+////                                dragAndDropViewModel.setMainItem(selectedImage)
+////                            }
+//
+//                            },
+////                        alpha = if (selectedImage == mainItem) 1.0f else 0.5f
+//                    )
+//                }
+//            }
 
         }
     }

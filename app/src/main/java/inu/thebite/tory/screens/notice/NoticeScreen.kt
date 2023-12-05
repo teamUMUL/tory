@@ -45,12 +45,13 @@ fun NoticeScreen(
 //        selectedNoticeDates?.let {selectedNoticeDates ->
 //            noticeViewModel.getNoticeDateList(studentId = 1L, year = extractYearsAndMonths(selectedNoticeDates).first.first(), month = extractYearsAndMonths(selectedNoticeDates).second.first())
 //        }
+
     }
 
     LaunchedEffect(selectedNoticeDate) {
         selectedNoticeDate?.let {selectedNoticeDate ->
             noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedNoticeDate.year, month = selectedNoticeDate.month)
-            noticeViewModel.getDetailList(studentId = 1L, date = "${selectedNoticeDate.year}/${selectedNoticeDate.month}/${selectedNoticeDate.date} ${selectedNoticeDate.day}")
+            noticeViewModel.getDetailList(studentId = 1L, date = "${selectedNoticeDate.year}/${selectedNoticeDate.month}/${selectedNoticeDate.date} (${selectedNoticeDate.day})")
         }
     }
 

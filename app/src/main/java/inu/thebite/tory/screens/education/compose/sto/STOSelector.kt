@@ -24,82 +24,84 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 
 @Composable
 fun STOSelector(
-    stoViewModel: STOViewModel
+    lto: LtoResponse,
+    stoViewModel: STOViewModel,
+    ltoViewModel: LTOViewModel
 ) {
-    val allSTOs by stoViewModel.allSTOs.collectAsState()
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
+    val allSTOs by stoViewModel.allSTOs.collectAsState()
+    val selectedSTOs = allSTOs?.filter { it.ltoId == lto.id } ?: emptyList()
+
     Column(
     ) {
-        allSTOs?.let { allSTOs ->
-            allSTOs.forEachIndexed { index, sto ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = null
-                        ) {
-                            stoViewModel.setSelectedSTO(sto)
-                        }
-                        .background(
-                            if (selectedSTO == sto) Color(0xFF1264A3) else Color.Transparent
-                        )
-                        .padding(start = 20.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        selectedSTOs.forEachIndexed { index, sto ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(12.dp)
-                                .background(
-                                    color = when (sto.status) {
-                                        "진행중" -> {
-                                            Color(0xFF40B9FC)
-                                        }
-
-                                        "준거 도달" -> {
-                                            Color(0xFF34C648)
-                                        }
-
-                                        "중지" -> {
-                                            Color(0xFFFC605C)
-                                        }
-
-                                        else -> {
-                                            MaterialTheme.colorScheme.primary
-                                        }
-                                    },
-                                    shape = CircleShape
-                                )
-                        )
-                        Text(
-                            text = sto.name,
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = fontFamily_Lato,
-                                fontWeight = FontWeight(400),
-                                color = if (selectedSTO == sto) Color.White else Color.Black
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                        stoViewModel.setSelectedSTO(sto)
+                        ltoViewModel.findLTOById(sto.ltoId)?.let { ltoViewModel.setSelectedLTO(it) }
                     }
+                    .background(
+                        if (selectedSTO == sto) Color(0xFF1264A3) else Color.Transparent
+                    )
+                    .padding(start = 20.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .background(
+                                color = when (sto.status) {
+                                    "진행중" -> {
+                                        Color(0xFF40B9FC)
+                                    }
 
+                                    "준거 도달" -> {
+                                        Color(0xFF34C648)
+                                    }
 
+                                    "중지" -> {
+                                        Color(0xFFFC605C)
+                                    }
+
+                                    else -> {
+                                        MaterialTheme.colorScheme.primary
+                                    }
+                                },
+                                shape = CircleShape
+                            )
+                    )
+                    Text(
+                        text = sto.name,
+                        style = TextStyle(
+                            fontSize = 15.sp,
+                            lineHeight = 22.sp,
+                            fontFamily = fontFamily_Lato,
+                            fontWeight = FontWeight(400),
+                            color = if (selectedSTO == sto) Color.White else Color.Black
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
         }
     }
-
 }

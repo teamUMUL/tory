@@ -1,5 +1,6 @@
 package inu.thebite.tory.schedule
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,8 +11,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,9 +36,14 @@ fun ScheduleTopBar(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
-    val todoList by todoViewModel.todoList.collectAsState()
-    val tempTodoList by todoViewModel.tempTodoList.collectAsState()
-
+    val todoList by todoViewModel.todoResponse.collectAsState()
+    val tempTodoList by todoViewModel.tempTodoResponse.collectAsState()
+    var result = listOf<Long>()
+    LaunchedEffect(tempTodoList){
+        tempTodoList?.let {
+            result = it.stoList
+        }
+    }
     Row(
         modifier = modifier
             .fillMaxHeight(),
@@ -64,20 +72,20 @@ fun ScheduleTopBar(
                 horizontalArrangement = Arrangement.Center
             ) {
                 tempTodoList?.let { tempTodoList ->
+                    Log.d("tempTodoListSTOList", stoViewModel.findSTOsByIds(tempTodoList.stoList).toString())
                     DragDropList(
-                        items = tempTodoList,
+                        items =  stoViewModel.findSTOsByIds(tempTodoList.stoList),
                         onMove = { fromIndex, toIndex ->
                             todoViewModel.moveTempTodoList(fromIndex, toIndex)
                         },
                         onDragEnd = {
-                            tempTodoList?.let { tempTodoList ->
-                                todoViewModel.updateTodoList(
-                                    studentId = 1L,
-                                    updateTodoList = UpdateTodoList(
-                                        tempTodoList.map { it.id }
-                                    )
+//                            Log.d("resultTempTodoResponseSTOList", result.toString())
+                            todoViewModel.updateTodoList(
+                                studentId = 1L,
+                                updateTodoList = UpdateTodoList(
+                                    result
                                 )
-                            }
+                            )
                         },
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,

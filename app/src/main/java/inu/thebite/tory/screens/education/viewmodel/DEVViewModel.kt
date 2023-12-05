@@ -64,8 +64,9 @@ class DEVViewModel : ViewModel() {
     fun getAllDEVs(){
         viewModelScope.launch {
             try {
-                val allDEVs = repo.getAllDEVs()
-                _allDEVs.value = allDEVs
+                _allDEVs.update {
+                    repo.getAllDEVs()
+                }
             } catch (e: Exception) {
                 Log.e("failed to get all DEVs", e.message.toString())
             }
