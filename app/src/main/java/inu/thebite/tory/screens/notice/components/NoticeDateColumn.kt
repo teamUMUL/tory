@@ -47,16 +47,18 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoticeDateColumn(
-    selectedNoticeDates: List<NoticeDate>,
-    selectedDate: NoticeDate,
+    selectedNoticeDates: List<NoticeDate>?,
+    noticeYearList: List<String>,
+    noticeMonthList: List<String>,
+    selectedNoticeDate: NoticeDate?,
     setSelectedDate: (NoticeDate) -> Unit,
     selectedYear: String,
     setSelectedYear: (String) -> Unit,
     selectedMonth: String,
     setSelectedMonth: (String) -> Unit,
 ) {
-    val yearList = extractYearsAndMonths(selectedNoticeDates).first
-    val monthList = extractYearsAndMonths(selectedNoticeDates).second
+//    val yearList = extractYearsAndMonths(selectedNoticeDates).first
+//    val monthList = extractYearsAndMonths(selectedNoticeDates).second
 
 
     val isYearExpanded = remember {
@@ -95,11 +97,11 @@ fun NoticeDateColumn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                ExposedSelector(isExpanded = isYearExpanded, selectedString = selectedYear, itemList = yearList, onClick = {setSelectedYear(it)}, width = 70.dp)
+                ExposedSelector(isExpanded = isYearExpanded, selectedString = selectedYear, itemList = noticeYearList, onClick = {setSelectedYear(it)}, width = 70.dp)
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(text = "년")
                 Spacer(modifier = Modifier.width(10.dp))
-                ExposedSelector(isExpanded = isMonthExpanded, selectedString = selectedMonth, itemList = monthList, onClick = {setSelectedMonth(it)}, width = 50.dp)
+                ExposedSelector(isExpanded = isMonthExpanded, selectedString = selectedMonth, itemList = noticeMonthList, onClick = {setSelectedMonth(it)}, width = 50.dp)
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(text = "월")
             }
@@ -118,59 +120,58 @@ fun NoticeDateColumn(
                     .padding(start = 15.dp, top = 9.dp, bottom = 9.dp)
             )
         }
-        items(selectedNoticeDates) { date ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(35.dp)
-                    .clickable { setSelectedDate(date) }
-                    .background(
-                        if (selectedDate == date) Color(0xFF1264A3) else Color.Transparent
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row {
-                    Text(
-                        text = "#",
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            lineHeight = 22.sp,
-                            fontFamily = fontFamily_Lato,
-                            fontWeight = FontWeight(400),
-                            color = if (selectedDate == date) Color.White else Color.Black,
+        selectedNoticeDates?.let { selectedNoticeDates ->
+            items(selectedNoticeDates) { date ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(35.dp)
+                        .clickable { setSelectedDate(date) }
+                        .background(
+                            if (selectedNoticeDate == date) Color(0xFF1264A3) else Color.Transparent
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row {
+                        Text(
+                            text = "#",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = fontFamily_Lato,
+                                fontWeight = FontWeight(400),
+                                color = if (selectedNoticeDate == date) Color.White else Color.Black,
                             ),
-                        modifier = Modifier
-                            .padding(start = 20.dp, end = 0.dp, top = 4.dp, bottom = 4.dp)
-                    )
-                    Text(
-                        text = "${date.year}/${date.month}/${date.date} (${date.day})",
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            lineHeight = 22.sp,
-                            fontFamily = fontFamily_Lato,
-                            fontWeight = FontWeight(400),
-                            color = if (selectedDate == date) Color.White else Color.Black,
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 0.dp, top = 4.dp, bottom = 4.dp)
+                        )
+                        Text(
+                            text = "${date.year}/${date.month}/${date.date} (${date.day})",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                lineHeight = 22.sp,
+                                fontFamily = fontFamily_Lato,
+                                fontWeight = FontWeight(400),
+                                color = if (selectedNoticeDate == date) Color.White else Color.Black,
                             ),
-                        modifier = Modifier
-                            .padding(vertical = 4.dp, horizontal = 10.dp)
-                    )
-                }
+                            modifier = Modifier
+                                .padding(vertical = 4.dp, horizontal = 10.dp)
+                        )
+                    }
 
-                if (selectedDate == date) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_export),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(end = 20.dp)
-                    )
+                    if (selectedNoticeDate == date) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_export),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(end = 20.dp)
+                        )
+                    }
                 }
-
             }
-
-
         }
     }
 }

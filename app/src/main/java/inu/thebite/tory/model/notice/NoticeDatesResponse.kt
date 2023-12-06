@@ -8,5 +8,5 @@ data class NoticeDatesResponse(
     var year: String,
 
     @SerializedName("month")
-    var month: String
+    var month: Int
 )

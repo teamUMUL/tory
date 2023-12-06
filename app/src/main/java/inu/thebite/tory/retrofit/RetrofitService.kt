@@ -202,28 +202,28 @@ interface RetrofitService {
      * Notice Api = 오늘의 총평 부분 알림장
      */
     @PATCH("/notices/{studentId}")
-    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String, @Query("date") date: String, @Body addCommentRequest: AddCommentRequest) : Response<NoticeResponse>
+    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Body addCommentRequest: AddCommentRequest) : Response<NoticeResponse>
 
     @GET("/notices/{studentId}/dateList")
-    suspend fun getNoticeDateList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String) : List<String>
+    suspend fun getNoticeDateList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int) : List<String>
 
     @GET("/notices/{studentId}")
-    suspend fun getNotice(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String, @Query("date") date: String) : Response<NoticeResponse>
+    suspend fun getNotice(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<NoticeResponse>
 
     @GET("/notices/{studentId}/dates")
-    suspend fun getNoticeDates(@Path("studentId") studentId: Long) : Response<NoticeDatesResponse>
+    suspend fun getNoticeDates(@Path("studentId") studentId: Long) : Response<List<NoticeDatesResponse>>
 
     /**
      * Detail Api = 각 LTO 상세 부분 알림장
      */
     @POST("/details/{studentId}")
-    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String, @Query("date") date: String, @Query("stoId") stoId: Long) : Response<DetailResponse>
+    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long) : Response<DetailResponse>
 
     @PATCH("/details/{studentId}")
-    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>
+    suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>
 
     @GET("/details/{studentId}")
-    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String, @Query("date") date: String) : Response<List<DetailResponse>>
+    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<List<DetailResponse>>
 
 
 

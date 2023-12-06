@@ -307,8 +307,20 @@ fun SelectedSTORow(
     }
 }
 
-fun getCurrentDateFormatted(): String {
+fun getCurrentYear(): String {
     val currentDate = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.KOREAN)
+    val formatter = DateTimeFormatter.ofPattern("yyyy", Locale.KOREAN)
+    return currentDate.format(formatter)
+}
+
+fun getCurrentMonth(): String {
+    val currentDate = LocalDate.now()
+    val formatter = DateTimeFormatter.ofPattern("MM", Locale.KOREAN)
+    return currentDate.format(formatter)
+}
+
+fun getCurrentDate(): String {
+    val currentDate = LocalDate.now()
+    val formatter = DateTimeFormatter.ofPattern("dd", Locale.KOREAN)
     return currentDate.format(formatter)
 }

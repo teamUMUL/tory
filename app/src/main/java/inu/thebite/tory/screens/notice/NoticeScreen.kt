@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -18,15 +17,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.components.NoticeDateColumn
 import inu.thebite.tory.screens.notice.components.NoticeInfoColumn
-import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
 fun NoticeScreen(
@@ -36,6 +31,9 @@ fun NoticeScreen(
 ) {
     val selectedNoticeDates by noticeViewModel.selectedNoticeDates.collectAsState()
     val selectedNoticeDate by noticeViewModel.selectedNoticeDate.collectAsState()
+    val noticeYearAndMonthList by noticeViewModel.noticeYearAndMonthList.collectAsState()
+    val noticeYearList by noticeViewModel.noticeYearList.collectAsState()
+    val noticeMonthList by noticeViewModel.noticeMonthList.collectAsState()
     val selectedNoticeDetailList by noticeViewModel.selectedNoticeDetailList.collectAsState()
 
     var selectedYear by remember { mutableStateOf("") }
@@ -45,13 +43,26 @@ fun NoticeScreen(
 //        selectedNoticeDates?.let {selectedNoticeDates ->
 //            noticeViewModel.getNoticeDateList(studentId = 1L, year = extractYearsAndMonths(selectedNoticeDates).first.first(), month = extractYearsAndMonths(selectedNoticeDates).second.first())
 //        }
+        stoViewModel.getAllSTOs(studentId = 1L)
+        noticeViewModel.getNoticeYearsAndMonths(studentId = 1L)
+    }
 
+    LaunchedEffect(noticeYearAndMonthList){
+        noticeViewModel.setNoticeYearList()
+    }
+
+    LaunchedEffect(selectedYear){
+        noticeViewModel.setNoticeMonthList(selectedYear = selectedYear)
+        selectedMonth = ""
+    }
+
+    LaunchedEffect(selectedMonth){
+        noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedYear, month = selectedMonth)
     }
 
     LaunchedEffect(selectedNoticeDate) {
         selectedNoticeDate?.let {selectedNoticeDate ->
-            noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedNoticeDate.year, month = selectedNoticeDate.month)
-            noticeViewModel.getDetailList(studentId = 1L, date = "${selectedNoticeDate.year}/${selectedNoticeDate.month}/${selectedNoticeDate.date} (${selectedNoticeDate.day})")
+            noticeViewModel.getDetailList(studentId = 1L, year = selectedNoticeDate.year, month = selectedNoticeDate.month, date = selectedNoticeDate.date)
         }
     }
 
@@ -67,27 +78,24 @@ fun NoticeScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            selectedNoticeDates?.let { selectedNoticeDates ->
-                selectedNoticeDate?.let {
+            noticeYearList?.let {noticeYearList ->
+                noticeMonthList?.let { noticeMonthList ->
                     NoticeDateColumn(
+                        noticeYearList = noticeYearList,
+                        noticeMonthList = noticeMonthList,
                         selectedNoticeDates = selectedNoticeDates,
-                        selectedDate = it,
-                        setSelectedDate = {  },
+                        selectedNoticeDate = selectedNoticeDate,
+                        setSelectedDate = {
+                            noticeViewModel.setSelectedNoticeDate(it)
+                        },
                         selectedYear = selectedYear,
                         setSelectedYear = { selectedYear = it },
                         selectedMonth = selectedMonth,
                         setSelectedMonth = { selectedMonth = it },
                     )
                 }
-            } ?: Text(
-                    text = "보고서가 존재하지 않습니다",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontFamily = fontFamily_Lato,
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF1D1C1D),
-                    )
-                )
+            }
+
         }
         Divider(
             modifier = Modifier
@@ -140,6 +148,11 @@ data class NoticeDate(
     val month: String,
     val date: String,
     val day: String
+)
+
+data class NoticeYearMonth(
+    val year: String,
+    val month: String,
 )
 
 fun updateSelectedDateList(

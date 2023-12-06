@@ -52,7 +52,7 @@ fun EducationResultTable(
     stoViewModel: STOViewModel,
     noticeViewModel: NoticeViewModel,
     points: List<String>?
-){
+) {
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -66,57 +66,60 @@ fun EducationResultTable(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             ) {
-                    items(selectedSTO.count / 5) { verticalIndex ->
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            items(5) { horizonIndex ->
-                                val stoGameData = points?.let { points ->
-                                    if(points.size > (5 * verticalIndex) + horizonIndex){
-                                        points[(5 * verticalIndex) + horizonIndex]
-                                    } else {
-                                        "n"
-                                    }
-                                } ?: "n"
+                items(selectedSTO.count / 5) { verticalIndex ->
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        items(5) { horizonIndex ->
+                            val stoGameData = points?.let { points ->
+                                if (points.size > (5 * verticalIndex) + horizonIndex) {
+                                    points[(5 * verticalIndex) + horizonIndex]
+                                } else {
+                                    "n"
+                                }
+                            } ?: "n"
 
-                                Card(
-                                    modifier = Modifier
-                                        .padding(5.dp)
-                                        .shadow(
-                                            elevation = 4.dp,
-                                            spotColor = Color(0x40000000),
-                                            ambientColor = Color(0x40000000),
-                                            clip = false
-                                        )
-                                        .width(95.dp)
-                                        .height(55.dp),
-                                    shape = RoundedCornerShape(12.dp),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor =
-                                        when (stoGameData) {
-                                            "+" -> {
-                                                Color(0xFF34C648)
-                                            }
-                                            "-" -> {
-                                                Color(0xFFFC605C)
-                                            }
-                                            "P" -> {
-                                                Color(0xFFFCBB40)
-                                            }
-                                            else -> {
-                                                Color(0xFFD9D9D9)
-                                            }
+                            Card(
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .shadow(
+                                        elevation = 4.dp,
+                                        spotColor = Color(0x40000000),
+                                        ambientColor = Color(0x40000000),
+                                        clip = false
+                                    )
+                                    .width(95.dp)
+                                    .height(55.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor =
+                                    when (stoGameData) {
+                                        "+" -> {
+                                            Color(0xFF34C648)
                                         }
 
-                                    ),
-                                ) {
-                                }
+                                        "-" -> {
+                                            Color(0xFFFC605C)
+                                        }
+
+                                        "P" -> {
+                                            Color(0xFFFCBB40)
+                                        }
+
+                                        else -> {
+                                            Color(0xFFD9D9D9)
+                                        }
+                                    }
+
+                                ),
+                            ) {
                             }
                         }
                     }
+                }
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(
@@ -139,7 +142,7 @@ fun EducationResultTable(
                             .fillMaxHeight(),
                         onClick = {
                             selectedSTO?.let { selectedSTO ->
-                                when(button){
+                                when (button) {
                                     "+" -> {
                                         stoViewModel.addPoint(
                                             selectedSTO = selectedSTO,
@@ -149,6 +152,7 @@ fun EducationResultTable(
                                             )
                                         )
                                     }
+
                                     "-" -> {
                                         stoViewModel.addPoint(
                                             selectedSTO = selectedSTO,
@@ -158,6 +162,7 @@ fun EducationResultTable(
                                             )
                                         )
                                     }
+
                                     "P" -> {
                                         stoViewModel.addPoint(
                                             selectedSTO = selectedSTO,
@@ -167,6 +172,7 @@ fun EducationResultTable(
                                             )
                                         )
                                     }
+
                                     "삭제" -> {
                                         stoViewModel.deletePoint(
                                             selectedSTO = selectedSTO,
@@ -180,16 +186,19 @@ fun EducationResultTable(
                         },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = when(button){
+                            containerColor = when (button) {
                                 "+" -> {
                                     Color(0xFF34C648)
                                 }
+
                                 "-" -> {
                                     Color(0xFFFC605C)
                                 }
+
                                 "P" -> {
                                     Color(0xFFFCBB40)
                                 }
+
                                 else -> {
                                     Color(0xFF777777)
                                 }
@@ -197,7 +206,7 @@ fun EducationResultTable(
                         ),
                         contentPadding = PaddingValues(0.dp),
                     ) {
-                        when(button){
+                        when (button) {
                             "삭제" -> {
                                 Icon(
                                     painter = painterResource(id = R.drawable.icon_delete),
@@ -205,6 +214,7 @@ fun EducationResultTable(
                                     modifier = Modifier.size(22.dp)
                                 )
                             }
+
                             else -> {
                                 Text(
                                     text = button,
@@ -228,16 +238,19 @@ fun EducationResultTable(
             ) {
                 selectedSTO?.let { selectedSTO ->
                     points?.let { points ->
-                        if (points.size == selectedSTO.count){
+                        if (points.size == selectedSTO.count) {
                             OutlinedButton(
                                 onClick = {
-                                    val status = if((points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100 >= 90f){
+                                    val status = if ((points.count { it == "+" }
+                                            .toFloat() / selectedSTO.count.toFloat()) * 100 >= 90f) {
                                         "준거 도달"
-                                    }else{
+                                    } else {
                                         "진행중"
                                     }
-                                    val plusRate = (points.count { it == "+" }.toFloat()/selectedSTO.count.toFloat())*100
-                                    val minusRate = (points.count { it == "-" }.toFloat()/selectedSTO.count.toFloat())*100
+                                    val plusRate = (points.count { it == "+" }
+                                        .toFloat() / selectedSTO.count.toFloat()) * 100
+                                    val minusRate = (points.count { it == "-" }
+                                        .toFloat() / selectedSTO.count.toFloat()) * 100
                                     stoViewModel.addRound(
                                         selectedSTO = selectedSTO,
                                         registrant = "테스트",
@@ -245,9 +258,18 @@ fun EducationResultTable(
                                         minusRate = minusRate,
                                         status = status
                                     )
-                                    noticeViewModel.addDetail(studentId = 1L, date = getCurrentDateFormatted(), stoId = selectedSTO.id)
+                                    noticeViewModel.addDetail(
+                                        studentId = 1L,
+                                        stoId = selectedSTO.id,
+                                        year = getCurrentYear(),
+                                        month = getCurrentMonth(),
+                                        date = getCurrentDate()
+                                    )
                                 },
-                                contentPadding = PaddingValues(horizontal = 60.dp, vertical = 10.dp),
+                                contentPadding = PaddingValues(
+                                    horizontal = 60.dp,
+                                    vertical = 10.dp
+                                ),
                                 shape = RoundedCornerShape(10.dp),
                                 border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE))
                             ) {
@@ -269,7 +291,6 @@ fun EducationResultTable(
             }
 
         }
-
 
 
     }

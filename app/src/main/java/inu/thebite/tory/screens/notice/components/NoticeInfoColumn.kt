@@ -292,10 +292,12 @@ fun NoticeInfoColumn(
                                     isTodayCommentReadOnly.value = !isTodayCommentReadOnly.value
                                     noticeViewModel.updateTodayComment(
                                         studentId = 1L,
-                                        date = "2023/11/01 (월)",
                                         addCommentRequest = AddCommentRequest(
                                             comment = todayComment.text
-                                        )
+                                        ),
+                                        year = selectedDate.year,
+                                        month = selectedDate.month,
+                                        date = selectedDate.date
                                     )
                                 },
                                 shape = RoundedCornerShape(10.dp),

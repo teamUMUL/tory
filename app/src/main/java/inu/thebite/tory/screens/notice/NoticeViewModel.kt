@@ -6,10 +6,12 @@ import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.repositories.notice.NoticeRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -22,6 +24,15 @@ class NoticeViewModel : ViewModel() {
 
     private val _selectedNoticeDate: MutableStateFlow<NoticeDate?> = MutableStateFlow(null)
     val selectedNoticeDate = _selectedNoticeDate.asStateFlow()
+
+    private val _noticeYearAndMonthList: MutableStateFlow<List<NoticeDatesResponse>?> = MutableStateFlow(null)
+    val noticeYearAndMonthList = _noticeYearAndMonthList.asStateFlow()
+
+    private val _noticeYearList: MutableStateFlow<List<String>?> = MutableStateFlow(null)
+    val noticeYearList = _noticeYearList.asStateFlow()
+
+    private val _noticeMonthList: MutableStateFlow<List<String>?> = MutableStateFlow(null)
+    val noticeMonthList = _noticeMonthList.asStateFlow()
 
     private val _selectedNoticeDetailList: MutableStateFlow<List<DetailResponse>?> = MutableStateFlow(null)
     val selectedNoticeDetailList = _selectedNoticeDetailList.asStateFlow()
@@ -47,6 +58,45 @@ class NoticeViewModel : ViewModel() {
 //    }
     init {
     }
+
+    fun getNoticeYearsAndMonths(
+        studentId: Long
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.getNoticeYearsAndMonths(studentId = studentId)
+
+                if (response.isSuccessful) {
+                    val gotNoticeYearAndMonthList = response.body() ?: throw Exception("Notice Year, Month 정보가 비어있습니다.")
+                    _noticeYearAndMonthList.update {
+                        gotNoticeYearAndMonthList
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Notice 연월 데이터 가져오기 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to get Notice Year And Month List", e.message.toString())
+            }
+        }
+    }
+
+    fun setNoticeYearList(){
+       _noticeYearList.update {
+           _noticeYearAndMonthList.value?.map { it.year } ?: emptyList()
+       }
+    }
+
+    fun setNoticeMonthList(
+        selectedYear: String
+    ){
+        _noticeMonthList.update {
+            val monthsByYear = _noticeYearAndMonthList.value?.filter { it.year == selectedYear } ?: emptyList()
+            monthsByYear.map { it.month.toString() }
+        }
+    }
+
     fun setSelectedNoticeDate(
         noticeDate: NoticeDate
     ){
