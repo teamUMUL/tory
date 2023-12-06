@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
@@ -22,6 +23,7 @@ import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 fun SelectedSTODetail(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
+    selectedLTO: LtoResponse?,
     points: List<String>?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
@@ -75,6 +77,7 @@ fun SelectedSTODetail(
                 .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         ) {
             SelectedSTOEducationReadyAndResult(
+                selectedLTO = selectedLTO,
                 selectedSTO = selectedSTO,
 //                points = points,
                 imageViewModel = imageViewModel,

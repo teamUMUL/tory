@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
+import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.repositories.notice.NoticeRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,11 +21,14 @@ class NoticeViewModel : ViewModel() {
 
     private val repo: NoticeRepoImpl = NoticeRepoImpl()
 
-    private val _selectedNoticeDates: MutableStateFlow<List<NoticeDate>?> = MutableStateFlow(null)
+    private val _selectedNoticeDates: MutableStateFlow<List<DateResponse>?> = MutableStateFlow(null)
     val selectedNoticeDates = _selectedNoticeDates.asStateFlow()
 
-    private val _selectedNoticeDate: MutableStateFlow<NoticeDate?> = MutableStateFlow(null)
+    private val _selectedNoticeDate: MutableStateFlow<DateResponse?> = MutableStateFlow(null)
     val selectedNoticeDate = _selectedNoticeDate.asStateFlow()
+
+    private val _selectedNotice: MutableStateFlow<NoticeResponse?> = MutableStateFlow(null)
+    val selectedNotice = _selectedNotice.asStateFlow()
 
     private val _noticeYearAndMonthList: MutableStateFlow<List<NoticeDatesResponse>?> = MutableStateFlow(null)
     val noticeYearAndMonthList = _noticeYearAndMonthList.asStateFlow()
@@ -39,6 +44,35 @@ class NoticeViewModel : ViewModel() {
 
     private val _selectedNoticeLTOs: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
     val selectedNoticeLTOs = _selectedNoticeLTOs.asStateFlow()
+
+    private val _selectedYear: MutableStateFlow<String?> = MutableStateFlow(null)
+    val selectedYear = _selectedYear.asStateFlow()
+
+    private val _selectedMonth: MutableStateFlow<String?> = MutableStateFlow(null)
+    val selectedMonth = _selectedMonth.asStateFlow()
+
+    fun setSelectedYear(
+        selectedYear: String
+    ){
+        _selectedYear.update {
+            selectedYear
+        }
+    }
+
+    fun setSelectedMonth(
+        selectedMonth: String
+    ){
+        _selectedMonth.update {
+            selectedMonth
+        }
+    }
+
+    fun clearSelectedMonth(
+    ){
+        _selectedMonth.update {
+            null
+        }
+    }
 
 //    fun setSelectedNoticeDates(
 //        allDates: List<NoticeDate>,
@@ -98,7 +132,7 @@ class NoticeViewModel : ViewModel() {
     }
 
     fun setSelectedNoticeDate(
-        noticeDate: NoticeDate
+        noticeDate: DateResponse
     ){
         _selectedNoticeDate.update {
             noticeDate
@@ -112,13 +146,13 @@ class NoticeViewModel : ViewModel() {
     ){
         viewModelScope.launch {
             try {
-                val stringDates = repo.getNoticeDateList(
-                    studentId = studentId,
-                    year = year,
-                    month = month
-                )
-                val noticeDates = parseDateStrings(stringDates)
-                _selectedNoticeDates.update { noticeDates }
+                _selectedNoticeDates.update {
+                    repo.getNoticeDateList(
+                        studentId = studentId,
+                        year = year,
+                        month = month
+                    )
+                }
             } catch (e: Exception) {
                 Log.e("failed to get NoticeDateList", e.message.toString())
             }
@@ -131,12 +165,23 @@ class NoticeViewModel : ViewModel() {
         month: String,
         date: String
     ){
-        try {
-            viewModelScope.launch {
-                repo.getNotice(studentId = studentId, year = year, month = month, date = date)
+        viewModelScope.launch {
+            try {
+                val response = repo.getNotice(studentId = studentId, year = year, month = month, date = date)
+
+                if (response.isSuccessful) {
+                    val gotNotice = response.body() ?: throw Exception("Notice 정보가 비어있습니다.")
+                    _selectedNotice.update {
+                        gotNotice
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Notice 데이터 가져오기 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to get Notice", e.message.toString())
             }
-        } catch (e: Exception){
-            Log.e("failed to get Notice", e.message.toString())
         }
     }
 

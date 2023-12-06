@@ -2,9 +2,11 @@ package inu.thebite.tory.repositories.notice
 
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.retrofit.RetrofitApi
+import inu.thebite.tory.screens.notice.NoticeDate
 import retrofit2.Response
 
 class NoticeRepoImpl : NoticeRepo {
@@ -23,7 +25,7 @@ class NoticeRepoImpl : NoticeRepo {
         noticeRetrofit.updateComment(studentId = studentId, year = year, month = month.toInt(), date = date, stoId = stoId, addCommentRequest = addCommentRequest)
     }
 
-    override suspend fun getNoticeDateList(studentId: Long, year: String, month: String): List<String> {
+    override suspend fun getNoticeDateList(studentId: Long, year: String, month: String): List<DateResponse> {
         return noticeRetrofit.getNoticeDateList(studentId = studentId, year = year, month = month.toInt())
     }
 

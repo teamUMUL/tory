@@ -30,8 +30,8 @@ class STOViewModel : ViewModel() {
     private val _allSTOs: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
     val allSTOs = _allSTOs.asStateFlow()
 
-    private val _stos: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
-    val stos = _stos.asStateFlow()
+//    private val _stos: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
+//    val stos = _stos.asStateFlow()
 
     private val _selectedSTO = MutableStateFlow<StoResponse?>(null)
     val selectedSTO = _selectedSTO.asStateFlow()
@@ -65,7 +65,7 @@ class STOViewModel : ViewModel() {
     }
 
     private fun updateSTOsAndSelectedSTO(allSTOs: List<StoResponse>?) {
-        allSTOs?.let {allSTOs ->
+        allSTOs?.let { allSTOs ->
 //            _stos.update {currentLTOs ->
 //                Log.d("allLTOs", allLTOs.toString())
 //                allLTOs.filter {lto ->
@@ -159,7 +159,7 @@ class STOViewModel : ViewModel() {
                     Log.d("updatedSTO", updatedSTO.toString())
                     _allSTOs.update { currentSTOs ->
                         currentSTOs?.map { sto ->
-                            if(sto.id == selectedSTO.id) updatedSTO else sto
+                            if (sto.id == selectedSTO.id) updatedSTO else sto
                         }
                     }
 
@@ -175,15 +175,15 @@ class STOViewModel : ViewModel() {
     }
 
     fun getAllSTOs(
-        studentId : Long
-    ){
+        studentId: Long
+    ) {
         viewModelScope.launch {
             try {
                 _allSTOs.update {
                     repo.getAllSTOs(studentId = studentId)
                 }
 
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("failed to get all STOs", e.message.toString())
             }
             Log.d("allSTOs", allSTOs.value.toString())
@@ -193,10 +193,10 @@ class STOViewModel : ViewModel() {
 
     fun getSTOsByLTO(
         selectedLTO: LtoResponse,
-    ) : List<StoResponse> {
+    ): List<StoResponse> {
         Log.d("allSTOs", allSTOs.value.toString())
 
-        return allSTOs.value?.filter {sto ->
+        return allSTOs.value?.filter { sto ->
             sto.ltoId == selectedLTO.id
         } ?: emptyList()
     }
@@ -297,7 +297,7 @@ class STOViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                if (status == "준거 도달") {
+                val response = if (status == "준거 도달") {
                     repo.addRoundHit(
                         selectedSTO, updateStoRoundRequest = UpdateStoRoundRequest(
                             registrant = registrant,
@@ -317,10 +317,22 @@ class STOViewModel : ViewModel() {
                     )
                 }
 
+                if (response.isSuccessful) {
+                    val addRoundSTO = response.body() ?: throw Exception("회차추가 STO 정보가 비어있습니다.")
+                    Log.d("addRoundSTO", addRoundSTO.toString())
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == addRoundSTO.id) addRoundSTO else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 라운드 추가 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
                 Log.e("failed to add Round", e.message.toString())
             }
-            getPointList(selectedSTO)
         }
     }
 
@@ -358,7 +370,7 @@ class STOViewModel : ViewModel() {
                     val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
                     _allSTOs.update {
                         allSTOs.value?.let { allSTOs ->
-                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it}
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it }
                         }
                     }
                 } else {
@@ -416,8 +428,8 @@ class STOViewModel : ViewModel() {
 
                 if (response.isSuccessful) {
                     val isDeleted = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
-                    if(isDeleted){
-                        _allSTOs.update {currentSTOs ->
+                    if (isDeleted) {
+                        _allSTOs.update { currentSTOs ->
                             currentSTOs?.filterNot { it.id == selectedSTO.id }
                         }
                     }

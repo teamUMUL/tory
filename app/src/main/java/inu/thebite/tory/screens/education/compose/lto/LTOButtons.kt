@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.compose.lto
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.education.compose.dialog.lto.UpdateLTOItemDialog
@@ -103,7 +105,10 @@ fun LTOButtons(
                     GraphRow(stos = ltoGraphList, stoViewModel = stoViewModel)
                 }
             }
-        }
+        } ?:
+        Toasty.warning(context, "해당 LTO에 저장된 데이터가 존재하지 않습니다", Toast.LENGTH_SHORT, true).show()
+
+
     }
 
     Row(

@@ -48,6 +48,7 @@ fun SelectedLTOAndSTOInfo(
         SelectedSTOInfo(
             modifier = Modifier.weight(9.5f),
             selectedSTO = selectedSTO,
+            selectedLTO = selectedLTO,
             points = points,
             todoList = todoList,
             imageViewModel = imageViewModel,

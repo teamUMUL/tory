@@ -32,9 +32,9 @@ interface STORepo {
 
     suspend fun addPoint(selectedSTO: StoResponse, addPointRequest: AddPointRequest)
 
-    suspend fun addRound(selectedSTO: StoResponse, updateStoRoundRequest: UpdateStoRoundRequest)
+    suspend fun addRound(selectedSTO: StoResponse, updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
 
-    suspend fun addRoundHit(selectedSTO: StoResponse, updateStoRoundRequest: UpdateStoRoundRequest)
+    suspend fun addRoundHit(selectedSTO: StoResponse, updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
 
     suspend fun deletePoint(selectedSTO: StoResponse)
 

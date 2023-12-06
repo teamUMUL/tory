@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
@@ -33,6 +34,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
 fun SelectedSTOEducationReadyAndResult(
+    selectedLTO: LtoResponse?,
     selectedSTO: StoResponse?,
 //    points: List<String>?,
     imageViewModel: ImageViewModel,
@@ -209,10 +211,15 @@ fun SelectedSTOEducationReadyAndResult(
                     .padding(bottom = 30.dp)
                     .weight(2.75f)
             ) {
-                CardSelector(
-                    imageViewModel = imageViewModel,
-                    selectedSTO = selectedSTO
-                )
+                selectedLTO?.let {selectedLTO ->
+                    if (selectedLTO.game != "교육 선택 안함") {
+                        CardSelector(
+                            imageViewModel = imageViewModel,
+                            selectedSTO = selectedSTO
+                        )
+                    }
+                }
+
 
             }
         }

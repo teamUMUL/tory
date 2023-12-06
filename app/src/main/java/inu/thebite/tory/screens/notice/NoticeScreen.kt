@@ -1,11 +1,13 @@
 package inu.thebite.tory.screens.notice
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -32,37 +34,59 @@ fun NoticeScreen(
     val selectedNoticeDates by noticeViewModel.selectedNoticeDates.collectAsState()
     val selectedNoticeDate by noticeViewModel.selectedNoticeDate.collectAsState()
     val noticeYearAndMonthList by noticeViewModel.noticeYearAndMonthList.collectAsState()
+    val selectedYear by noticeViewModel.selectedYear.collectAsState()
+    val selectedMonth by noticeViewModel.selectedMonth.collectAsState()
+
     val noticeYearList by noticeViewModel.noticeYearList.collectAsState()
+    val selectedNotice by noticeViewModel.selectedNotice.collectAsState()
     val noticeMonthList by noticeViewModel.noticeMonthList.collectAsState()
     val selectedNoticeDetailList by noticeViewModel.selectedNoticeDetailList.collectAsState()
 
-    var selectedYear by remember { mutableStateOf("") }
-    var selectedMonth by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
 //        selectedNoticeDates?.let {selectedNoticeDates ->
 //            noticeViewModel.getNoticeDateList(studentId = 1L, year = extractYearsAndMonths(selectedNoticeDates).first.first(), month = extractYearsAndMonths(selectedNoticeDates).second.first())
 //        }
+        ltoViewModel.getAllLTOs(studentId = 1L)
         stoViewModel.getAllSTOs(studentId = 1L)
         noticeViewModel.getNoticeYearsAndMonths(studentId = 1L)
     }
 
-    LaunchedEffect(noticeYearAndMonthList){
+    LaunchedEffect(noticeYearAndMonthList) {
         noticeViewModel.setNoticeYearList()
     }
 
-    LaunchedEffect(selectedYear){
-        noticeViewModel.setNoticeMonthList(selectedYear = selectedYear)
-        selectedMonth = ""
+    LaunchedEffect(selectedYear) {
+        selectedYear?.let { noticeViewModel.setNoticeMonthList(selectedYear = it) }
+//        noticeViewModel.clearSelectedMonth()
     }
 
-    LaunchedEffect(selectedMonth){
-        noticeViewModel.getNoticeDateList(studentId = 1L, year = selectedYear, month = selectedMonth)
+    LaunchedEffect(selectedMonth) {
+        selectedYear?.let {selectedYear ->
+            selectedMonth?.let { selectedMonth ->
+                noticeViewModel.getNoticeDateList(
+                    studentId = 1L,
+                    year = selectedYear,
+                    month = selectedMonth
+                )
+            }
+        }
     }
 
     LaunchedEffect(selectedNoticeDate) {
-        selectedNoticeDate?.let {selectedNoticeDate ->
-            noticeViewModel.getDetailList(studentId = 1L, year = selectedNoticeDate.year, month = selectedNoticeDate.month, date = selectedNoticeDate.date)
+        selectedNoticeDate?.let { selectedNoticeDate ->
+            noticeViewModel.getNotice(
+                studentId = 1L,
+                year = selectedNoticeDate.year,
+                month = selectedNoticeDate.month.toString(),
+                date = selectedNoticeDate.date
+            )
+            noticeViewModel.getDetailList(
+                studentId = 1L,
+                year = selectedNoticeDate.year,
+                month = selectedNoticeDate.month.toString(),
+                date = selectedNoticeDate.date
+            )
         }
     }
 
@@ -78,8 +102,10 @@ fun NoticeScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            noticeYearList?.let {noticeYearList ->
-                noticeMonthList?.let { noticeMonthList ->
+            Log.d("NoticeYearAndMonthList", noticeYearList.toString())
+            Log.d("NoticeYearAndMonthList", noticeMonthList.toString())
+
+            noticeYearList?.let { noticeYearList ->
                     NoticeDateColumn(
                         noticeYearList = noticeYearList,
                         noticeMonthList = noticeMonthList,
@@ -89,12 +115,11 @@ fun NoticeScreen(
                             noticeViewModel.setSelectedNoticeDate(it)
                         },
                         selectedYear = selectedYear,
-                        setSelectedYear = { selectedYear = it },
+                        setSelectedYear = { noticeViewModel.setSelectedYear(it) },
                         selectedMonth = selectedMonth,
-                        setSelectedMonth = { selectedMonth = it },
+                        setSelectedMonth = { noticeViewModel.setSelectedMonth((it)) },
                     )
-                }
-            }
+            } ?: Text(text = "데이터가 없습니다")
 
         }
         Divider(
@@ -109,14 +134,17 @@ fun NoticeScreen(
         ) {
             selectedNoticeDate?.let { selectedNoticeDate ->
                 if (selectedNoticeDate.date.isNotEmpty()) {
-                    selectedNoticeDetailList?.let {selectedNoticeDetailList ->
-                        NoticeInfoColumn(
-                            selectedDate = selectedNoticeDate,
-                            selectedNoticeDetailList = selectedNoticeDetailList,
-                            noticeViewModel = noticeViewModel,
-                            stoViewModel = stoViewModel,
-                            ltoViewModel = ltoViewModel
-                        )
+                    selectedNoticeDetailList?.let { selectedNoticeDetailList ->
+                        selectedNotice?.let { selectedNotice ->
+                            NoticeInfoColumn(
+                                selectedDate = selectedNoticeDate,
+                                selectedNotice = selectedNotice,
+                                selectedNoticeDetailList = selectedNoticeDetailList,
+                                noticeViewModel = noticeViewModel,
+                                stoViewModel = stoViewModel,
+                                ltoViewModel = ltoViewModel
+                            )
+                        }
                     }
                 }
             }

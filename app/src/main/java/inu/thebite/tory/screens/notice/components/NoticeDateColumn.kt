@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
@@ -47,14 +48,14 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoticeDateColumn(
-    selectedNoticeDates: List<NoticeDate>?,
+    selectedNoticeDates: List<DateResponse>?,
     noticeYearList: List<String>,
-    noticeMonthList: List<String>,
-    selectedNoticeDate: NoticeDate?,
-    setSelectedDate: (NoticeDate) -> Unit,
-    selectedYear: String,
+    noticeMonthList: List<String>?,
+    selectedNoticeDate: DateResponse?,
+    setSelectedDate: (DateResponse) -> Unit,
+    selectedYear: String?,
     setSelectedYear: (String) -> Unit,
-    selectedMonth: String,
+    selectedMonth: String?,
     setSelectedMonth: (String) -> Unit,
 ) {
 //    val yearList = extractYearsAndMonths(selectedNoticeDates).first
@@ -108,7 +109,7 @@ fun NoticeDateColumn(
         }
         item {
             Text(
-                text = "${selectedYear}년 ${selectedMonth}월",
+                text = "${selectedYear ?: ""}년 ${selectedMonth ?: ""}월",
                 style = TextStyle(
                     fontSize = 15.sp,
                     lineHeight = 22.sp,
@@ -196,8 +197,8 @@ fun extractYearsAndMonths(dateList: List<NoticeDate>): Pair<List<String>, List<S
 @Composable
 fun ExposedSelector(
     isExpanded: MutableState<Boolean>,
-    selectedString: String,
-    itemList: List<String>,
+    selectedString: String?,
+    itemList: List<String>?,
     width: Dp,
     onClick: (String) -> Unit
 ){
@@ -224,7 +225,7 @@ fun ExposedSelector(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 BasicTextField(
-                    value = selectedString,
+                    value = selectedString ?: "",
                     onValueChange = {},
                     readOnly = true,
                     textStyle = TextStyle(
@@ -242,23 +243,26 @@ fun ExposedSelector(
             }
 
         }
-        ExposedDropdownMenu(
-            expanded = isExpanded.value,
-            onDismissRequest = {isExpanded.value = false},
-            modifier = Modifier
-        ){
-            itemList.forEach { item ->
-                DropdownMenuItem(
-                    text = {
-                        Text(text = item)
-                    },
-                    onClick = {
-                        onClick(item)
-                        isExpanded.value = false
-                    },
-                    modifier = Modifier.height(30.dp)
-                )
+        itemList?.let { itemList ->
+            ExposedDropdownMenu(
+                expanded = isExpanded.value,
+                onDismissRequest = {isExpanded.value = false},
+                modifier = Modifier
+            ){
+                itemList.forEach { item ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = item)
+                        },
+                        onClick = {
+                            onClick(item)
+                            isExpanded.value = false
+                        },
+                        modifier = Modifier.height(30.dp)
+                    )
+                }
             }
         }
+
     }
 }

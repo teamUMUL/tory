@@ -2,6 +2,7 @@ package inu.thebite.tory.repositories.notice
 
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import retrofit2.Response
@@ -12,7 +13,7 @@ interface NoticeRepo {
 
     suspend fun getNoticeYearsAndMonths(studentId: Long) : Response<List<NoticeDatesResponse>>
 
-    suspend fun getNoticeDateList(studentId: Long, year: String, month: String): List<String>
+    suspend fun getNoticeDateList(studentId: Long, year: String, month: String): List<DateResponse>
 
     suspend fun getNotice(studentId: Long, year: String, month: String, date: String) : Response<NoticeResponse>
 

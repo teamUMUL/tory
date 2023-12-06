@@ -49,6 +49,8 @@ import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.DateResponse
+import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -60,7 +62,8 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
 fun NoticeInfoColumn(
-    selectedDate: NoticeDate,
+    selectedDate: DateResponse,
+    selectedNotice: NoticeResponse,
     selectedNoticeDetailList :  List<DetailResponse>,
     noticeViewModel: NoticeViewModel,
     stoViewModel: STOViewModel,
@@ -75,7 +78,7 @@ fun NoticeInfoColumn(
     }
 
     var todayComment by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(selectedNoticeDetailList.first().comment))
+        mutableStateOf(TextFieldValue(selectedNotice.comment))
     }
     val focusRequester = FocusRequester()
 
@@ -296,7 +299,7 @@ fun NoticeInfoColumn(
                                             comment = todayComment.text
                                         ),
                                         year = selectedDate.year,
-                                        month = selectedDate.month,
+                                        month = selectedDate.month.toString(),
                                         date = selectedDate.date
                                     )
                                 },

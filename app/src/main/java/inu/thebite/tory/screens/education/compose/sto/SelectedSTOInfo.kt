@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.todo.TodoResponse
@@ -17,6 +18,7 @@ import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 fun SelectedSTOInfo(
     modifier: Modifier = Modifier,
     selectedSTO: StoResponse?,
+    selectedLTO: LtoResponse?,
     points: List<String>?,
     todoList: TodoResponse?,
     imageViewModel: ImageViewModel,
@@ -39,6 +41,7 @@ fun SelectedSTOInfo(
         SelectedSTODetail(
             modifier = Modifier.weight(9.25f),
             selectedSTO = selectedSTO,
+            selectedLTO = selectedLTO,
             points = points,
             imageViewModel = imageViewModel,
             stoViewModel = stoViewModel,
