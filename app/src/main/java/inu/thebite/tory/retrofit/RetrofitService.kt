@@ -14,6 +14,7 @@ import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.model.point.AddPointRequest
@@ -205,7 +206,7 @@ interface RetrofitService {
     suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Body addCommentRequest: AddCommentRequest) : Response<NoticeResponse>
 
     @GET("/notices/{studentId}/dateList")
-    suspend fun getNoticeDateList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int) : List<String>
+    suspend fun getNoticeDateList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int) : List<DateResponse>
 
     @GET("/notices/{studentId}")
     suspend fun getNotice(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<NoticeResponse>
