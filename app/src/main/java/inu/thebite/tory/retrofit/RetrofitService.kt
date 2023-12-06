@@ -14,6 +14,7 @@ import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
@@ -208,6 +209,9 @@ interface RetrofitService {
 
     @GET("/notices/{studentId}")
     suspend fun getNotice(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: String, @Query("date") date: String) : Response<NoticeResponse>
+
+    @GET("/notices/{studentId}/dates")
+    suspend fun getNoticeDates(@Path("studentId") studentId: Long) : Response<NoticeDatesResponse>
 
     /**
      * Detail Api = 각 LTO 상세 부분 알림장
