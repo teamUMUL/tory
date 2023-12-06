@@ -4,6 +4,7 @@ import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
@@ -224,7 +225,7 @@ interface RetrofitService {
     suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>
 
     @GET("/details/{studentId}")
-    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<List<DetailResponse>>
+    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<List<DetailGraphResponse>>
 
 
 
