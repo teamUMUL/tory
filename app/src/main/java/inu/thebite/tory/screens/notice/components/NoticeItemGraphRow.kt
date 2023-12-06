@@ -28,22 +28,37 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 
 @Composable
 fun NoticeItemGraphRow(
-    dummySTOList: List<StoResponse>
+    stoList: List<DetailGraphResponse>,
+    stoViewModel: STOViewModel,
 ) {
     val context = LocalContext.current
-    val dummyReportSTOList = mutableListOf<StoResponse>().toMutableStateList()
+    val dummyReportSTOList = mutableListOf<DetailGraphResponse>().toMutableStateList()
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .height(550.dp)
             .background(Color(0xFFE7EBF0))
     ) {
-        items(dummySTOList) { sto ->
+        items(stoList) { sto ->
+            val plusList = mutableListOf<Float>()
+            val minusList = mutableListOf<Float>()
+            sto.results.forEachIndexed { index, data ->
+                if (index % 2 == 0) {
+                    // If the index is even, add it to plusList
+                    plusList.add(data)
+                } else {
+                    // If the index is odd, add it to minusList
+                    minusList.add(data)
+                }
+            }
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -94,7 +109,7 @@ fun NoticeItemGraphRow(
                     }
             ) {
                 Text(
-                    text = sto.name,
+                    text = stoViewModel.findSTOById(sto.stoId)?.name ?: "",
                     style = TextStyle(
                         fontSize = 24.sp,
                         lineHeight = 15.sp,
@@ -112,9 +127,9 @@ fun NoticeItemGraphRow(
                     )
                 )
                 NoticeItemGraph(
-                    plusList = listOf(10f, 20f, 10f, 40f, 95f),
-                    minusList = listOf(70f, 65f, 40f, 50f, 3f),
-                    dateList = listOf("11/01", "11/02", "11/03", "11/06", "11/08")
+                    plusList = plusList,
+                    minusList = minusList,
+                    dateList = sto.dates
                 )
             }
         }

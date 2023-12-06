@@ -9,17 +9,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
 import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
@@ -38,12 +42,26 @@ fun ScheduleTopBar(
 ) {
     val todoList by todoViewModel.todoResponse.collectAsState()
     val tempTodoList by todoViewModel.tempTodoResponse.collectAsState()
+    val todoSTOIdList by todoViewModel.todoSTOIdList.collectAsState()
+    val isLoading by todoViewModel.isLoading.collectAsState()
+
+    val isSTOListLoading by stoViewModel.isSTOListLoading.collectAsState()
+    val todoSTOList by stoViewModel.todoSTOList.collectAsState()
+
+
     var result = listOf<Long>()
+    LaunchedEffect(Unit){
+        stoViewModel.getAllSTOs(studentId = 1L)
+        todoViewModel.getTodoList(studentId = 1L)
+    }
+
     LaunchedEffect(tempTodoList){
         tempTodoList?.let {
             result = it.stoList
+            Log.d("moveTodoList", result.toString())
         }
     }
+
     Row(
         modifier = modifier
             .fillMaxHeight(),
@@ -71,29 +89,40 @@ fun ScheduleTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                tempTodoList?.let { tempTodoList ->
-                    Log.d("tempTodoListSTOList", stoViewModel.findSTOsByIds(tempTodoList.stoList).toString())
-                    DragDropList(
-                        items =  stoViewModel.findSTOsByIds(tempTodoList.stoList),
-                        onMove = { fromIndex, toIndex ->
-                            todoViewModel.moveTempTodoList(fromIndex, toIndex)
-                        },
-                        onDragEnd = {
-//                            Log.d("resultTempTodoResponseSTOList", result.toString())
-                            todoViewModel.updateTodoList(
-                                studentId = 1L,
-                                updateTodoList = UpdateTodoList(
-                                    result
-                                )
+                Log.d("isSTOListLoading", isSTOListLoading.toString())
+                Log.d("isLoading", isLoading.toString())
+
+                if (isSTOListLoading || isLoading){
+                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                } else {
+                    if(!tempTodoList.isNotNull()){
+                        Log.d("tempTodoListIsNull", "null")
+                    }
+                    Log.d("updatedTempTodoList", tempTodoList.toString())
+                    tempTodoList?.let { tempTodoList ->
+                        stoViewModel.setTodoSTOListByIds(tempTodoList.stoList)
+                        todoSTOList?.let {todoSTOList ->
+                            DragDropList(
+                                items = todoSTOList,
+                                onMove = { fromIndex, toIndex ->
+                                    todoViewModel.moveTempTodoList(fromIndex, toIndex)
+                                },
+                                onDragEnd = {
+                                    Log.d("resultTempTodoResponseSTOList", result.toString())
+                                    todoViewModel.updateTodoList(
+                                        studentId = 1L,
+                                        updateTodoList = UpdateTodoList(
+                                            tempTodoList.stoList
+                                        )
+                                    )
+                                },
+                                devViewModel = devViewModel,
+                                ltoViewModel = ltoViewModel,
+                                stoViewModel = stoViewModel
                             )
-                        },
-                        devViewModel = devViewModel,
-                        ltoViewModel = ltoViewModel,
-                        stoViewModel = stoViewModel
-                    )
+                        }
+                    }
                 }
-
-
             }
         }
 

@@ -3,6 +3,7 @@ package inu.thebite.tory.screens.education.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.image.UpdateImageListRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
@@ -30,6 +31,10 @@ class STOViewModel : ViewModel() {
     private val _allSTOs: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
     val allSTOs = _allSTOs.asStateFlow()
 
+    private val _isSTOListLoading = MutableStateFlow(true)
+    val isSTOListLoading = _isSTOListLoading.asStateFlow()
+    private val _todoSTOList: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
+    val todoSTOList = _todoSTOList.asStateFlow()
 //    private val _stos: MutableStateFlow<List<StoResponse>?> = MutableStateFlow(null)
 //    val stos = _stos.asStateFlow()
 
@@ -58,6 +63,7 @@ class STOViewModel : ViewModel() {
 
     private fun observeAllSTOs() {
         viewModelScope.launch {
+
             allSTOs.onEach { allSTOs ->
                 updateSTOsAndSelectedSTO(allSTOs)
             }.collect()
@@ -66,12 +72,11 @@ class STOViewModel : ViewModel() {
 
     private fun updateSTOsAndSelectedSTO(allSTOs: List<StoResponse>?) {
         allSTOs?.let { allSTOs ->
-//            _stos.update {currentLTOs ->
-//                Log.d("allLTOs", allLTOs.toString())
-//                allLTOs.filter {lto ->
-//                    currentLTOs?.map { it.id }?.contains(lto.id) == true
-//                }
-//            }
+            _todoSTOList.update {currentSTOs ->
+                allSTOs.filter {sto ->
+                    currentSTOs?.map { it.id }?.contains(sto.id) == true
+                }
+            }
             _selectedSTO.update {
                 val foundSTO = allSTOs.find { sto ->
                     selectedSTO.value?.id == sto.id
@@ -178,6 +183,7 @@ class STOViewModel : ViewModel() {
         studentId: Long
     ) {
         viewModelScope.launch {
+            _isSTOListLoading.update{ true }
             try {
                 _allSTOs.update {
                     repo.getAllSTOs(studentId = studentId)
@@ -185,11 +191,22 @@ class STOViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Log.e("failed to get all STOs", e.message.toString())
+            } finally {
+                _isSTOListLoading.update{ false }
             }
             Log.d("allSTOs", allSTOs.value.toString())
-
         }
     }
+
+//    fun filterSTOsByLTO(
+//        detailGraphList: List<DetailGraphResponse>,
+//        selectedLTO: LtoResponse
+//    ): List<DetailGraphResponse> {
+//        val filteredSTOList = allSTOs.value?.filter { sto ->
+//            detailGraphList.map { it.stoId }.contains(sto.id)
+//        } ?: emptyList()
+//        return filteredSTOList.filter { it.ltoId == selectedLTO.id }
+//    }
 
     fun getSTOsByLTO(
         selectedLTO: LtoResponse,
@@ -349,12 +366,27 @@ class STOViewModel : ViewModel() {
         selectedSTOsIds: List<Long>
     ): List<StoResponse> {
         val allStos = allSTOs.value ?: return emptyList()
-
+        Log.d("allSTOTodo", allStos.toString())
         // selectedSTOsIds에 따라 allStos를 필터링하고 정렬합니다.
         return allStos.filter { sto ->
             selectedSTOsIds.contains(sto.id)
         }.sortedBy { sto ->
             selectedSTOsIds.indexOf(sto.id)
+        }
+    }
+
+    fun setTodoSTOListByIds(
+        selectedSTOsIds: List<Long>
+    ){
+        val allStos = allSTOs.value ?: emptyList()
+        Log.d("allSTOTodo", allStos.toString())
+        // selectedSTOsIds에 따라 allStos를 필터링하고 정렬합니다.
+        _todoSTOList.update {
+            allStos.filter { sto ->
+                selectedSTOsIds.contains(sto.id)
+            }.sortedBy { sto ->
+                selectedSTOsIds.indexOf(sto.id)
+            }
         }
     }
 
@@ -390,32 +422,35 @@ class STOViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                repo.updateImageList(
+                val response = repo.updateImageList(
                     stoInfo = selectedSTO,
-                    updateImageListRequest = UpdateImageListRequest(
-                        imageList = updateImageList
-                    )
+                    updateImageListRequest = UpdateImageListRequest(imageList = updateImageList)
                 )
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 이미지 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO ImageList", e.message.toString())
+            }
+        }
+        viewModelScope.launch {
+            try {
+
             } catch (e: Exception) {
                 Log.e("failed to update STO ImageList", e.message.toString())
             }
 //            getSTOsByLTO()
 //            getSTOsByLTO(selectedSTO.lto)
-        }
-    }
-
-    fun updateSelectedSTO(
-        selectedSTOId: Long
-    ) {
-        viewModelScope.launch {
-            val foundSTO = allSTOs.value!!.find {
-                it.id == selectedSTOId
-            }
-            foundSTO?.let { foundSTO ->
-                setSelectedSTO(
-                    foundSTO
-                )
-            }
         }
     }
 
@@ -444,4 +479,15 @@ class STOViewModel : ViewModel() {
             }
         }
     }
+
+
+//    fun setTodoSTOList(
+//        stoIdList: List<Long>
+//    ){
+//        val allStos = allSTOs.value ?: emptyList()
+//
+//        _todoSTOList.update {
+//            allStos.filter { stoIdList.contains(it.id) }
+//        }
+//    }
 }

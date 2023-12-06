@@ -14,6 +14,9 @@ data class DetailResponse(
     @SerializedName("stoId")
     var stoId: Long,
 
+    @SerializedName("ltoId")
+    var ltoId: Long,
+
     @SerializedName("notice")
     var notice: NoticeResponse
 )

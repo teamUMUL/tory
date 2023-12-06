@@ -1,6 +1,7 @@
 package inu.thebite.tory.schedule
 
 import android.util.Log
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.model.sto.StoResponse
@@ -19,42 +20,52 @@ class TodoViewModel : ViewModel() {
 
     private val repo: TodoRepoImpl = TodoRepoImpl()
 
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading.asStateFlow()
+
     private val _todoResponse: MutableStateFlow<TodoResponse?> = MutableStateFlow(null)
     val todoResponse = _todoResponse.asStateFlow()
 
     private val _tempTodoResponse: MutableStateFlow<TodoResponse?> = MutableStateFlow(null)
     val tempTodoResponse = _tempTodoResponse.asStateFlow()
 
-    private val _copiedTodoList: MutableStateFlow<List<Long>?> = MutableStateFlow(null)
-    val copiedTodoList = _copiedTodoList.asStateFlow()
+    private val _todoSTOIdList: MutableStateFlow<List<Long>?> = MutableStateFlow(null)
+    val todoSTOIdList = _todoSTOIdList.asStateFlow()
 
     init {
         observeTodoList()
+        observeTempTodoList()
     }
-
+    private fun observeTempTodoList() {
+        viewModelScope.launch {
+            tempTodoResponse.onEach { tempTodoList ->
+                tempTodoList?.let { updateTodoSTOIdList(it) }
+            }.collect()
+        }
+    }
     private fun observeTodoList() {
         viewModelScope.launch {
             todoResponse.onEach { todoList ->
                 todoList?.let { updateTempTodoList(it) }
             }.collect()
-            tempTodoResponse.onEach { tempTodoList ->
-                tempTodoList?.let { updateCopiedTodoList(it) }
-            }.collect()
         }
     }
-    fun updateCopiedTodoList(
+    fun updateTodoSTOIdList(
         tempTodoList: TodoResponse
     ){
-        _copiedTodoList.update {
+        _todoSTOIdList.update {
             tempTodoList.stoList
         }
     }
-
     fun updateTempTodoList(
         todoList: TodoResponse
     ){
-        _tempTodoResponse.update {
-            todoList
+        try {
+            _tempTodoResponse.update {
+                todoList
+            }
+            Log.d("updatedTempTodoList", todoList.stoList.toString()+isLoading.value.toString())
+        } finally {
         }
     }
 
@@ -89,6 +100,8 @@ class TodoViewModel : ViewModel() {
     ){
         viewModelScope.launch {
             try {
+                Log.d("updatedTOdoResponse", updateTodoList.toString())
+
                 val response = repo.updateTodoList(studentId = studentId, updateTodoList = updateTodoList)
 
                 if (response.isSuccessful) {
@@ -112,15 +125,16 @@ class TodoViewModel : ViewModel() {
         studentId: Long
     ){
         viewModelScope.launch {
+            _isLoading.update { true }
             try {
                 val response = repo.getTodoList(studentId = studentId)
 
                 if (response.isSuccessful) {
                     val gotTodoResponse = response.body() ?: throw Exception("Todo 정보가 비어있습니다.")
+                    Log.d("gotTodoResponse", gotTodoResponse.stoList.toString())
                     _todoResponse.update {
                         gotTodoResponse
                     }
-
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
                     throw Exception("Todo 가져오기 실패: $errorBody")
@@ -128,6 +142,8 @@ class TodoViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Log.e("failed to get Todo", e.message.toString())
+            } finally {
+                _isLoading.update { false }
             }
         }
     }
@@ -173,6 +189,5 @@ class TodoViewModel : ViewModel() {
                 }
             }
         }
-        Log.d("tempTodoResponse", tempTodoResponse.value?.stoList.toString())
     }
 }

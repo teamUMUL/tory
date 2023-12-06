@@ -53,6 +53,7 @@ fun SelectedLTOAndSTOInfo(
             todoList = todoList,
             imageViewModel = imageViewModel,
             stoViewModel = stoViewModel,
+            ltoViewModel = ltoViewModel,
             todoViewModel = todoViewModel,
             noticeViewModel = noticeViewModel
         )

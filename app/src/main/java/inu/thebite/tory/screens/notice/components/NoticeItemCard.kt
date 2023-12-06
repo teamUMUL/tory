@@ -17,15 +17,21 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 
 @Composable
 fun LTOItem(
     lto: LtoResponse,
-    noticeViewModel: NoticeViewModel
+    selectedDate: DateResponse,
+    selectedNoticeDetailList: List<DetailGraphResponse>,
+    noticeViewModel: NoticeViewModel,
+    stoViewModel: STOViewModel
 ) {
     val context = LocalContext.current
 //    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
@@ -101,11 +107,16 @@ fun LTOItem(
         ) {
             NoticeItemTopBar(lto = lto, gradient = gradient, expandedState = expandedState)
             NoticeItemTextField(
+                selectedDate = selectedDate,
+                selectedDetail = selectedNoticeDetailList.first { it.ltoId == lto.id },
                 noticeViewModel = noticeViewModel
             )
         }
         AnimatedVisibility(visible = expandedState.value) {
-//            NoticeItemGraphRow(dummySTOList = dummySTOList)
+            NoticeItemGraphRow(
+                stoList = selectedNoticeDetailList.filter { it.ltoId == lto.id },
+                stoViewModel = stoViewModel
+            )
         }
 
     }

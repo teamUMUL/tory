@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
@@ -39,6 +40,7 @@ fun SelectedSTOEducationReadyAndResult(
 //    points: List<String>?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
+    ltoViewModel: LTOViewModel,
     noticeViewModel: NoticeViewModel
 ) {
     val points by stoViewModel.points.collectAsState()
@@ -215,6 +217,8 @@ fun SelectedSTOEducationReadyAndResult(
                     if (selectedLTO.game != "교육 선택 안함") {
                         CardSelector(
                             imageViewModel = imageViewModel,
+                            ltoViewModel = ltoViewModel,
+                            stoViewModel = stoViewModel,
                             selectedSTO = selectedSTO
                         )
                     }

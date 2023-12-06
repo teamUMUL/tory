@@ -3,6 +3,7 @@ package inu.thebite.tory.screens.notice
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
@@ -39,11 +40,8 @@ class NoticeViewModel : ViewModel() {
     private val _noticeMonthList: MutableStateFlow<List<String>?> = MutableStateFlow(null)
     val noticeMonthList = _noticeMonthList.asStateFlow()
 
-    private val _selectedNoticeDetailList: MutableStateFlow<List<DetailResponse>?> = MutableStateFlow(null)
+    private val _selectedNoticeDetailList: MutableStateFlow<List<DetailGraphResponse>?> = MutableStateFlow(null)
     val selectedNoticeDetailList = _selectedNoticeDetailList.asStateFlow()
-
-    private val _selectedNoticeLTOs: MutableStateFlow<List<LtoResponse>?> = MutableStateFlow(null)
-    val selectedNoticeLTOs = _selectedNoticeLTOs.asStateFlow()
 
     private val _selectedYear: MutableStateFlow<String?> = MutableStateFlow(null)
     val selectedYear = _selectedYear.asStateFlow()
@@ -192,12 +190,25 @@ class NoticeViewModel : ViewModel() {
         date: String,
         addCommentRequest: AddCommentRequest
     ){
-        try {
-            viewModelScope.launch {
-                repo.updateTodayComment(studentId = studentId, year = year, month = month, date = date, addCommentRequest = addCommentRequest)
+        viewModelScope.launch {
+            try {
+                val response = repo.updateTodayComment(studentId = studentId, year = year, month = month, date = date, addCommentRequest = addCommentRequest)
+
+                if(response.isSuccessful){
+                    val updatedNoticeResponse = response.body() ?: throw Exception("Notice 업데이트 정보가 비어있습니다")
+
+                    _selectedNotice.update {
+                        updatedNoticeResponse
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Notice 데이터 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception){
+                Log.e("failed to update TodayComment", e.message.toString())
             }
-        } catch (e: Exception){
-            Log.e("failed to update TodayComment", e.message.toString())
         }
     }
 
@@ -209,12 +220,31 @@ class NoticeViewModel : ViewModel() {
         stoId: Long,
         addCommentRequest: AddCommentRequest
     ){
-        try {
-            viewModelScope.launch {
-                repo.updateLTOComment(studentId = studentId, year = year, month = month, date = date, stoId = stoId,addCommentRequest = addCommentRequest)
+        viewModelScope.launch {
+            try {
+                val response = repo.updateLTOComment(studentId = studentId, year = year, month = month, date = date, addCommentRequest = addCommentRequest, stoId = stoId)
+
+                if(response.isSuccessful){
+                    val updatedNoticeResponse = response.body() ?: throw Exception("Notice LTO Comment 업데이트 정보가 비어있습니다")
+
+                    _selectedNoticeDetailList.update {currentNoticeDetailList ->
+                        currentNoticeDetailList?.map {detail ->
+                            if(detail.id == updatedNoticeResponse.id){
+                                detail.copy(comment = updatedNoticeResponse.comment)
+                            } else {
+                                detail
+                            }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Notice LTO Comment 데이터 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception){
+                Log.e("failed to update LTOComment", e.message.toString())
             }
-        } catch (e: Exception){
-            Log.e("failed to update LTOComment", e.message.toString())
         }
     }
 
@@ -225,18 +255,36 @@ class NoticeViewModel : ViewModel() {
         date: String,
         stoId: Long
     ){
+
+        Log.d("addDetailInfo", year+month+date)
         viewModelScope.launch {
             try {
                 val response = repo.addDetail(studentId = studentId, year = year, month = month, date = date, stoId = stoId)
 
                 if (response.isSuccessful) {
                     val newDetailResponse = response.body() ?: throw Exception("Detail 정보가 비어있습니다.")
-                    _selectedNoticeDetailList.update { currentSTOs ->
-                        currentSTOs?.let {
-                            // 현재 STO 리스트가 null이 아니면 새 STO를 추가
-                            it + newDetailResponse
-                        } ?: listOf(newDetailResponse) // 현재 STO 리스트가 null이면 새 리스트를 생성
-                    }
+//                    _selectedNoticeDetailList.update { currentSTOs ->
+//                        currentSTOs?.let {
+//                            // 현재 STO 리스트가 null이 아니면 새 STO를 추가
+//                            it + DetailGraphResponse(
+//                                id = newDetailResponse.id,
+//                                comment = newDetailResponse.comment,
+//                                stoId = newDetailResponse.stoId,
+//                                noticeId = newDetailResponse.notice.id,
+//                                ltoId = newDetailResponse.ltoId,
+//                                dates = emptyList(),
+//                                results = emptyList()
+//                            )
+//                        } ?: listOf(DetailGraphResponse(
+//                            id = newDetailResponse.id,
+//                            comment = newDetailResponse.comment,
+//                            stoId = newDetailResponse.stoId,
+//                            noticeId = newDetailResponse.notice.id,
+//                            dates = emptyList(),
+//                            results = emptyList(),
+//                            ltoId = newDetailResponse.ltoId
+//                        )) // 현재 STO 리스트가 null이면 새 리스트를 생성
+//                    }
 
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
@@ -260,10 +308,10 @@ class NoticeViewModel : ViewModel() {
                 val response = repo.getDetailList(studentId = studentId, year = year, month = month, date = date)
 
                 if (response.isSuccessful){
-                    val updatedDetailList = response.body() ?: throw  Exception("DetailList 정보가 비어있습니다.")
-
+                    val gotDetailList = response.body() ?: throw  Exception("DetailList 정보가 비어있습니다.")
+                    Log.d("gotDetailList", gotDetailList.toString())
                     _selectedNoticeDetailList.update {
-                        updatedDetailList
+                        gotDetailList
                     }
                 }
             }

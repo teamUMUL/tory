@@ -21,8 +21,8 @@ class ImageViewModel : ViewModel() {
     private val _allCategories: MutableStateFlow<List<String>?> = MutableStateFlow(null)
     val allCategories = _allCategories.asStateFlow()
     init {
-//        getAllImages()
-//        getAllCategories()
+        getAllImages()
+        getAllCategories()
     }
 
     fun getAllImages(){
@@ -60,19 +60,22 @@ class ImageViewModel : ViewModel() {
     }
 
     fun findImageByName(imageName : String) : ImageResponse? {
-        val returnImage = allImages.value!!.find {
+        val returnImage = allImages.value?.find {
             it.name == imageName
         }
         return returnImage
     }
 
-    fun findImagesByNames(imageNames : List<String>) : List<ImageResponse>{
+    fun findImagesByNames(imageNames : List<String>?) : List<ImageResponse>{
         val returnImages = mutableListOf<ImageResponse>()
-        for (imageName in imageNames){
-            findImageByName(imageName)?.let {
-                returnImages.add(it)
+        imageNames?.let {imageNames ->
+            for (imageName in imageNames){
+                findImageByName(imageName)?.let {
+                    returnImages.add(it)
+                }
             }
         }
+
         return returnImages
     }
 

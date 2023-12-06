@@ -9,6 +9,7 @@ import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
@@ -23,6 +24,7 @@ fun SelectedSTOInfo(
     todoList: TodoResponse?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
+    ltoViewModel: LTOViewModel,
     todoViewModel: TodoViewModel,
     noticeViewModel: NoticeViewModel
 ) {
@@ -45,6 +47,7 @@ fun SelectedSTOInfo(
             points = points,
             imageViewModel = imageViewModel,
             stoViewModel = stoViewModel,
+            ltoViewModel = ltoViewModel,
             noticeViewModel = noticeViewModel
         )
     }

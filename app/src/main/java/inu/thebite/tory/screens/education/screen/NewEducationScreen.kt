@@ -61,7 +61,7 @@ fun NewEducationScreen(
     val todoList by todoViewModel.todoResponse.collectAsState()
 
     LaunchedEffect(Unit){
-        todoViewModel.getTodoList(studentId = 1L)
+//        todoViewModel.getTodoList(studentId = 1L)
         ltoViewModel.getAllLTOs(studentId = 1L)
         stoViewModel.getAllSTOs(studentId = 1L)
     }

@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.compose.sto
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -316,11 +317,25 @@ fun getCurrentYear(): String {
 fun getCurrentMonth(): String {
     val currentDate = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern("MM", Locale.KOREAN)
-    return currentDate.format(formatter)
+    var month = currentDate.format(formatter)
+
+    // 앞에 첫 글자가 0인 경우 제거
+    if (month.startsWith("0")) {
+        month = month.substring(1)
+    }
+    Log.d("addDetailInfo", month)
+    return month
 }
 
 fun getCurrentDate(): String {
     val currentDate = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern("dd", Locale.KOREAN)
-    return currentDate.format(formatter)
+    var date = currentDate.format(formatter)
+
+    // 앞에 첫 글자가 0인 경우 제거
+    if (date.startsWith("0")) {
+        date = date.substring(1)
+    }
+    Log.d("addDetailInfo", date)
+    return date
 }

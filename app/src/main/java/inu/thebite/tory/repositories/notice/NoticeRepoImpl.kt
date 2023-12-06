@@ -1,5 +1,6 @@
 package inu.thebite.tory.repositories.notice
 
+import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.DateResponse
@@ -13,16 +14,16 @@ class NoticeRepoImpl : NoticeRepo {
 
     private val noticeRetrofit = RetrofitApi.apiService
 
-    override suspend fun updateTodayComment(studentId: Long, year: String, month: String, date: String, addCommentRequest: AddCommentRequest) {
-        noticeRetrofit.updateComment(studentId = studentId, year = year, month= month.toInt(), date = date, addCommentRequest = addCommentRequest)
+    override suspend fun updateTodayComment(studentId: Long, year: String, month: String, date: String, addCommentRequest: AddCommentRequest) : Response<NoticeResponse>{
+        return noticeRetrofit.updateComment(studentId = studentId, year = year, month= month.toInt(), date = date, addCommentRequest = addCommentRequest)
     }
 
     override suspend fun getNoticeYearsAndMonths(studentId: Long): Response<List<NoticeDatesResponse>> {
         return noticeRetrofit.getNoticeDates(studentId = studentId)
     }
 
-    override suspend fun updateLTOComment(studentId: Long, year: String, month: String, date: String, stoId: Long, addCommentRequest: AddCommentRequest) {
-        noticeRetrofit.updateComment(studentId = studentId, year = year, month = month.toInt(), date = date, stoId = stoId, addCommentRequest = addCommentRequest)
+    override suspend fun updateLTOComment(studentId: Long, year: String, month: String, date: String, stoId: Long, addCommentRequest: AddCommentRequest) : Response<DetailResponse> {
+        return noticeRetrofit.updateComment(studentId = studentId, year = year, month = month.toInt(), date = date, stoId = stoId, addCommentRequest = addCommentRequest)
     }
 
     override suspend fun getNoticeDateList(studentId: Long, year: String, month: String): List<DateResponse> {
@@ -37,7 +38,7 @@ class NoticeRepoImpl : NoticeRepo {
         return noticeRetrofit.addDetail(studentId = studentId, year = year, month = month.toInt(), date = date, stoId = stoId)
     }
 
-    override suspend fun getDetailList(studentId: Long, year:String, month:String, date: String): Response<List<DetailResponse>> {
+    override suspend fun getDetailList(studentId: Long, year:String, month:String, date: String): Response<List<DetailGraphResponse>> {
         return noticeRetrofit.getDetailList(studentId = studentId, year = year, month = month.toInt(), date = date)
     }
 }

@@ -19,6 +19,9 @@ data class DetailGraphResponse(
     @SerializedName("stoId")
     var stoId: Long,
 
+    @SerializedName("ltoId")
+    var ltoId: Long,
+
     @SerializedName("noticeId")
     var noticeId: Long
 )
