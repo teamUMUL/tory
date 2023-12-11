@@ -15,6 +15,7 @@ import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
@@ -214,6 +215,9 @@ interface RetrofitService {
 
     @GET("/notices/{studentId}/dates")
     suspend fun getNoticeDates(@Path("studentId") studentId: Long) : Response<List<NoticeDatesResponse>>
+
+    @POST("/notices/{studentId}")
+    suspend fun createSharePdf(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Body convertPdfRequest: ConvertPdfRequest) : Response<String>
 
     /**
      * Detail Api = 각 LTO 상세 부분 알림장
