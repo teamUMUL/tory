@@ -1,5 +1,11 @@
 package inu.thebite.tory.screens.notice.components
 
+import android.content.Context
+import android.content.Intent
+import android.os.ParcelFileDescriptor
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,11 +46,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.net.toUri
 import inu.thebite.tory.R
+import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.notice.NoticeDate
+import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okio.buffer
+import okio.sink
+import java.io.File
+import java.io.IOException
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,13 +80,41 @@ fun NoticeDateColumn(
     setSelectedYear: (String) -> Unit,
     selectedMonth: String?,
     setSelectedMonth: (String) -> Unit,
+    noticeViewModel: NoticeViewModel
 ) {
+    val context = LocalContext.current
+
     val (noticePdfDialog, setNoticePdfDialog) = remember {
         mutableStateOf(false)
     }
 
-    if (noticePdfDialog){
-        
+    if (noticePdfDialog) {
+        Dialog(
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+            ),
+            onDismissRequest = { setNoticePdfDialog(false) }
+        ) {
+//            val inputStream = context.assets.open("gold.pdf")
+//            AndroidView(
+//                factory = { context ->
+//                    val adView = PDFView(context, null)
+//                    adView.fromStream(inputStream)
+//                        .enableDoubletap(true)
+//                        .spacing(10)
+//                        .load()
+//                    adView
+//                },
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(bottom = 8.dp),
+//                update = { pdfViewer ->
+//                    pdfViewer.doOnLayout {
+//
+//                    }
+//                })
+        }
+
     }
 
     val isYearExpanded = remember {
@@ -103,11 +153,23 @@ fun NoticeDateColumn(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                ExposedSelector(isExpanded = isYearExpanded, selectedString = selectedYear, itemList = noticeYearList, onClick = {setSelectedYear(it)}, width = 70.dp)
+                ExposedSelector(
+                    isExpanded = isYearExpanded,
+                    selectedString = selectedYear,
+                    itemList = noticeYearList,
+                    onClick = { setSelectedYear(it) },
+                    width = 70.dp
+                )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(text = "년")
                 Spacer(modifier = Modifier.width(10.dp))
-                ExposedSelector(isExpanded = isMonthExpanded, selectedString = selectedMonth, itemList = noticeMonthList, onClick = {setSelectedMonth(it)}, width = 50.dp)
+                ExposedSelector(
+                    isExpanded = isMonthExpanded,
+                    selectedString = selectedMonth,
+                    itemList = noticeMonthList,
+                    onClick = { setSelectedMonth(it) },
+                    width = 50.dp
+                )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(text = "월")
             }
@@ -121,7 +183,7 @@ fun NoticeDateColumn(
                     fontFamily = fontFamily_Lato,
                     fontWeight = FontWeight(400),
                     color = Color.Black,
-                    ),
+                ),
                 modifier = Modifier
                     .padding(start = 15.dp, top = 9.dp, bottom = 9.dp)
             )
@@ -175,6 +237,9 @@ fun NoticeDateColumn(
                                 .size(40.dp)
                                 .padding(end = 20.dp)
                                 .clickableWithNoRipple {
+//                                    noticeViewModel.createSharePdf(
+//
+//                                    )
                                     setNoticePdfDialog(true)
                                 }
                         )
@@ -209,12 +274,12 @@ fun ExposedSelector(
     itemList: List<String>?,
     width: Dp,
     onClick: (String) -> Unit
-){
+) {
     ExposedDropdownMenuBox(
         modifier = Modifier,
         expanded = isExpanded.value,
-        onExpandedChange = {isExpanded.value = !isExpanded.value}
-    ){
+        onExpandedChange = { isExpanded.value = !isExpanded.value }
+    ) {
         Box(
             modifier = Modifier
                 .width(width)
@@ -227,7 +292,7 @@ fun ExposedSelector(
                 .menuAnchor()
                 .padding(start = 10.dp),
             contentAlignment = Alignment.Center
-        ){
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -245,7 +310,7 @@ fun ExposedSelector(
                         lineHeight = 22.sp
                     ),
                     modifier = Modifier
-                        .width(width = width-30.dp),
+                        .width(width = width - 30.dp),
                 )
                 Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
             }
@@ -254,9 +319,9 @@ fun ExposedSelector(
         itemList?.let { itemList ->
             ExposedDropdownMenu(
                 expanded = isExpanded.value,
-                onDismissRequest = {isExpanded.value = false},
+                onDismissRequest = { isExpanded.value = false },
                 modifier = Modifier
-            ){
+            ) {
                 itemList.distinct().forEach { item ->
                     DropdownMenuItem(
                         text = {
@@ -272,5 +337,19 @@ fun ExposedSelector(
             }
         }
 
+    }
+}
+
+fun downloadPdf(url: String, context: Context) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(url.toUri(), "application/pdf")
+        flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+        // PDF를 여는 앱이 없을 경우의 처리
     }
 }

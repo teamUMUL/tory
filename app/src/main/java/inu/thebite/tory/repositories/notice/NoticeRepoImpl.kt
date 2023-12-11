@@ -3,6 +3,7 @@ package inu.thebite.tory.repositories.notice
 import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
@@ -40,5 +41,9 @@ class NoticeRepoImpl : NoticeRepo {
 
     override suspend fun getDetailList(studentId: Long, year:String, month:String, date: String): Response<List<DetailGraphResponse>> {
         return noticeRetrofit.getDetailList(studentId = studentId, year = year, month = month.toInt(), date = date)
+    }
+
+    override suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String, convertPdfRequest: ConvertPdfRequest): Response<String> {
+        return noticeRetrofit.createSharePdf(studentId = studentId, year = year, month = month, date = date, convertPdfRequest = convertPdfRequest)
     }
 }

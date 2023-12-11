@@ -3,10 +3,14 @@ package inu.thebite.tory.repositories.notice
 import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface NoticeRepo {
 
@@ -24,4 +28,5 @@ interface NoticeRepo {
 
     suspend fun getDetailList(studentId: Long, year: String, month: String, date: String) : Response<List<DetailGraphResponse>>
 
+    suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String, convertPdfRequest: ConvertPdfRequest) : Response<String>
 }

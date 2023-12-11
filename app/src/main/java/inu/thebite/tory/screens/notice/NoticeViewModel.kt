@@ -7,9 +7,11 @@ import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
+import inu.thebite.tory.model.notice.PdfLtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.repositories.notice.NoticeRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +50,9 @@ class NoticeViewModel : ViewModel() {
 
     private val _selectedMonth: MutableStateFlow<String?> = MutableStateFlow(null)
     val selectedMonth = _selectedMonth.asStateFlow()
+
+    private val _pdfUrl: MutableStateFlow<String?> = MutableStateFlow(null)
+    val pdfUrl = _pdfUrl.asStateFlow()
 
     fun setSelectedYear(
         selectedYear: String
@@ -321,6 +326,28 @@ class NoticeViewModel : ViewModel() {
             Log.e("failed to get DetailList", e.message.toString())
         }
     }
+
+//    fun createSharePdf(
+//        studentId: Long,
+//        year: String,
+//        month: String,
+//        date: String,
+//    ){
+//        try {
+//            viewModelScope.launch {
+//                val response = repo.createSharePdf()
+//
+//                if (response.isSuccessful){
+//                    val gotPdfUrl = response.body() ?: throw  Exception("Pdf 정보가 비어있습니다.")
+//                    _pdfUrl.update {
+//                        gotPdfUrl
+//                    }
+//                }
+//            }
+//        } catch (e: Exception){
+//            Log.e("failed to create Pdf", e.message.toString())
+//        }
+//    }
 }
 
 fun parseDateStrings(dateStrings: List<String>): List<NoticeDate> {
