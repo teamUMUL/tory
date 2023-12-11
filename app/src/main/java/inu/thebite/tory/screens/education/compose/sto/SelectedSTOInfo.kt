@@ -9,7 +9,10 @@ import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
+import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
@@ -23,8 +26,11 @@ fun SelectedSTOInfo(
     todoList: TodoResponse?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
+    ltoViewModel: LTOViewModel,
     todoViewModel: TodoViewModel,
-    noticeViewModel: NoticeViewModel
+    noticeViewModel: NoticeViewModel,
+    dragAndDropViewModel: DragAndDropViewModel,
+    gameViewModel: GameViewModel
 ) {
     Column(
         modifier = modifier
@@ -34,9 +40,13 @@ fun SelectedSTOInfo(
             modifier = Modifier.weight(0.7f),
             selectedSTO = selectedSTO,
             stoViewModel = stoViewModel,
+            selectedLTO = selectedLTO,
             todoList = todoList,
             todoViewModel = todoViewModel,
-            noticeViewModel = noticeViewModel
+            noticeViewModel = noticeViewModel,
+            gameViewModel = gameViewModel,
+            dragAndDropViewModel = dragAndDropViewModel,
+            imageViewModel = imageViewModel
         )
         SelectedSTODetail(
             modifier = Modifier.weight(9.25f),
@@ -45,7 +55,9 @@ fun SelectedSTOInfo(
             points = points,
             imageViewModel = imageViewModel,
             stoViewModel = stoViewModel,
-            noticeViewModel = noticeViewModel
+            ltoViewModel = ltoViewModel,
+            noticeViewModel = noticeViewModel,
+            dragAndDropViewModel = dragAndDropViewModel
         )
     }
 }

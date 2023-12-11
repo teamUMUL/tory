@@ -1,5 +1,6 @@
 package inu.thebite.tory.repositories.notice
 
+import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.DateResponse
@@ -9,7 +10,7 @@ import retrofit2.Response
 
 interface NoticeRepo {
 
-    suspend fun updateTodayComment(studentId: Long, year: String, month: String, date: String, addCommentRequest: AddCommentRequest)
+    suspend fun updateTodayComment(studentId: Long, year: String, month: String, date: String, addCommentRequest: AddCommentRequest) : Response<NoticeResponse>
 
     suspend fun getNoticeYearsAndMonths(studentId: Long) : Response<List<NoticeDatesResponse>>
 
@@ -19,8 +20,8 @@ interface NoticeRepo {
 
     suspend fun addDetail(studentId: Long, year: String, month: String, date: String, stoId: Long) : Response<DetailResponse>
 
-    suspend fun updateLTOComment(studentId: Long, year: String, month: String, date: String, stoId: Long, addCommentRequest: AddCommentRequest)
+    suspend fun updateLTOComment(studentId: Long, year: String, month: String, date: String, stoId: Long, addCommentRequest: AddCommentRequest) : Response<DetailResponse>
 
-    suspend fun getDetailList(studentId: Long, year: String, month: String, date: String) : Response<List<DetailResponse>>
+    suspend fun getDetailList(studentId: Long, year: String, month: String, date: String) : Response<List<DetailGraphResponse>>
 
 }

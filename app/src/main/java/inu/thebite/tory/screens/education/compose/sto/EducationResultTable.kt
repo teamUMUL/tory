@@ -51,7 +51,7 @@ fun EducationResultTable(
     selectedSTO: StoResponse?,
     stoViewModel: STOViewModel,
     noticeViewModel: NoticeViewModel,
-    points: List<String>?
+    points: List<String>
 ) {
     Column(
         modifier = modifier
@@ -141,7 +141,7 @@ fun EducationResultTable(
                             .weight(1f)
                             .fillMaxHeight(),
                         onClick = {
-                            selectedSTO?.let { selectedSTO ->
+                            if (points.size < selectedSTO.count) {
                                 when (button) {
                                     "+" -> {
                                         stoViewModel.addPoint(
@@ -182,7 +182,17 @@ fun EducationResultTable(
                                         )
                                     }
                                 }
+                            } else {
+                                if (button == "삭제"){
+                                    stoViewModel.deletePoint(
+                                        selectedSTO = selectedSTO,
+                                        deletePointRequest = DeletePointRequest(
+                                            registrant = "Test"
+                                        )
+                                    )
+                                }
                             }
+
                         },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -236,54 +246,50 @@ fun EducationResultTable(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                selectedSTO?.let { selectedSTO ->
-                    points?.let { points ->
-                        if (points.size == selectedSTO.count) {
-                            OutlinedButton(
-                                onClick = {
-                                    val status = if ((points.count { it == "+" }
-                                            .toFloat() / selectedSTO.count.toFloat()) * 100 >= 90f) {
-                                        "준거 도달"
-                                    } else {
-                                        "진행중"
-                                    }
-                                    val plusRate = (points.count { it == "+" }
-                                        .toFloat() / selectedSTO.count.toFloat()) * 100
-                                    val minusRate = (points.count { it == "-" }
-                                        .toFloat() / selectedSTO.count.toFloat()) * 100
-                                    stoViewModel.addRound(
-                                        selectedSTO = selectedSTO,
-                                        registrant = "테스트",
-                                        plusRate = plusRate,
-                                        minusRate = minusRate,
-                                        status = status
-                                    )
-                                    noticeViewModel.addDetail(
-                                        studentId = 1L,
-                                        stoId = selectedSTO.id,
-                                        year = getCurrentYear(),
-                                        month = getCurrentMonth(),
-                                        date = getCurrentDate()
-                                    )
-                                },
-                                contentPadding = PaddingValues(
-                                    horizontal = 60.dp,
-                                    vertical = 10.dp
-                                ),
-                                shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE))
-                            ) {
-                                Text(
-                                    text = "회차 추가",
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontFamily = fontFamily_Lato,
-                                        fontWeight = FontWeight(900),
-                                        color = Color(0xFF000000),
-                                    )
-                                )
+                if (points.size == selectedSTO.count) {
+                    OutlinedButton(
+                        onClick = {
+                            val status = if ((points.count { it == "+" }
+                                    .toFloat() / selectedSTO.count.toFloat()) * 100 >= 90f) {
+                                "준거 도달"
+                            } else {
+                                "진행중"
                             }
-                        }
+                            val plusRate = (points.count { it == "+" }
+                                .toFloat() / selectedSTO.count.toFloat()) * 100
+                            val minusRate = (points.count { it == "-" }
+                                .toFloat() / selectedSTO.count.toFloat()) * 100
+                            stoViewModel.addRound(
+                                selectedSTO = selectedSTO,
+                                registrant = "테스트",
+                                plusRate = plusRate,
+                                minusRate = minusRate,
+                                status = status
+                            )
+                            noticeViewModel.addDetail(
+                                studentId = 1L,
+                                stoId = selectedSTO.id,
+                                year = getCurrentYear(),
+                                month = getCurrentMonth(),
+                                date = getCurrentDate()
+                            )
+                        },
+                        contentPadding = PaddingValues(
+                            horizontal = 60.dp,
+                            vertical = 10.dp
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE))
+                    ) {
+                        Text(
+                            text = "회차 추가",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontFamily = fontFamily_Lato,
+                                fontWeight = FontWeight(900),
+                                color = Color(0xFF000000),
+                            )
+                        )
                     }
                 }
 

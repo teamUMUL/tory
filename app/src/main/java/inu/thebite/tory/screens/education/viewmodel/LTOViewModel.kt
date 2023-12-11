@@ -1,8 +1,12 @@
 package inu.thebite.tory.screens.education.viewmodel
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.yml.charts.common.extensions.isNotNull
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
@@ -296,13 +300,20 @@ class LTOViewModel: ViewModel() {
 //    }
 
     fun getLTOGraph(
+        context: Context,
         selectedLTO: LtoResponse
     ){
         viewModelScope.launch {
             try {
-                _ltoGraphList.update {
-                    repo.getLTOGraph(selectedLTO)
+
+                if (repo.getLTOGraph(selectedLTO).isNotNull()){
+                    _ltoGraphList.update {
+                        repo.getLTOGraph(selectedLTO)
+                    }
+                } else {
+                    Toasty.warning(context, "해당 LTO에 저장된 데이터가 존재하지 않습니다", Toast.LENGTH_SHORT, true).show()
                 }
+
             } catch (e: Exception) {
                 Log.e("failed to get LTO Graph List", e.message.toString())
             }

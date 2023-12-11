@@ -74,7 +74,8 @@ class DEVViewModel : ViewModel() {
     }
 
     fun findDEVById(devId : Long): DomainResponse? {
-        return allDEVs.value!!.find {
+        val allDEVs = allDEVs.value ?: emptyList()
+        return allDEVs.find {
             it.id == devId
         }
     }

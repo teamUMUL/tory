@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.notice.DateResponse
+import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
@@ -58,9 +59,13 @@ fun NoticeDateColumn(
     selectedMonth: String?,
     setSelectedMonth: (String) -> Unit,
 ) {
-//    val yearList = extractYearsAndMonths(selectedNoticeDates).first
-//    val monthList = extractYearsAndMonths(selectedNoticeDates).second
+    val (noticePdfDialog, setNoticePdfDialog) = remember {
+        mutableStateOf(false)
+    }
 
+    if (noticePdfDialog){
+        
+    }
 
     val isYearExpanded = remember {
         mutableStateOf(false)
@@ -169,6 +174,9 @@ fun NoticeDateColumn(
                             modifier = Modifier
                                 .size(40.dp)
                                 .padding(end = 20.dp)
+                                .clickableWithNoRipple {
+                                    setNoticePdfDialog(true)
+                                }
                         )
                     }
                 }
@@ -249,7 +257,7 @@ fun ExposedSelector(
                 onDismissRequest = {isExpanded.value = false},
                 modifier = Modifier
             ){
-                itemList.forEach { item ->
+                itemList.distinct().forEach { item ->
                     DropdownMenuItem(
                         text = {
                             Text(text = item)

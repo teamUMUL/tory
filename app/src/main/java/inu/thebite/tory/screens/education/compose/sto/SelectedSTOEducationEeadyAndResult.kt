@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
@@ -39,7 +41,9 @@ fun SelectedSTOEducationReadyAndResult(
 //    points: List<String>?,
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
-    noticeViewModel: NoticeViewModel
+    ltoViewModel: LTOViewModel,
+    noticeViewModel: NoticeViewModel,
+    dragAndDropViewModel: DragAndDropViewModel
 ) {
     val points by stoViewModel.points.collectAsState()
     Column(
@@ -198,12 +202,14 @@ fun SelectedSTOEducationReadyAndResult(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.Center
             ) {
-                EducationResultTable(
-                    selectedSTO = selectedSTO,
-                    points = points,
-                    stoViewModel = stoViewModel,
-                    noticeViewModel = noticeViewModel
-                )
+                points?.let {points ->
+                    EducationResultTable(
+                        selectedSTO = selectedSTO,
+                        points = points,
+                        stoViewModel = stoViewModel,
+                        noticeViewModel = noticeViewModel
+                    )
+                }
             }
             Row(
                 modifier = Modifier
@@ -215,7 +221,10 @@ fun SelectedSTOEducationReadyAndResult(
                     if (selectedLTO.game != "교육 선택 안함") {
                         CardSelector(
                             imageViewModel = imageViewModel,
-                            selectedSTO = selectedSTO
+                            ltoViewModel = ltoViewModel,
+                            stoViewModel = stoViewModel,
+                            selectedSTO = selectedSTO,
+                            dragAndDropViewModel = dragAndDropViewModel
                         )
                     }
                 }

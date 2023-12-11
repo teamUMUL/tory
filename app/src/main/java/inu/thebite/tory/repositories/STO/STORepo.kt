@@ -20,7 +20,7 @@ interface STORepo {
 
     suspend fun updateSto(stoInfo: StoResponse, updateStoRequest: UpdateStoRequest) : Response<StoResponse>
 
-    suspend fun updateImageList(stoInfo: StoResponse, updateImageListRequest: UpdateImageListRequest)
+    suspend fun updateImageList(stoInfo: StoResponse, updateImageListRequest: UpdateImageListRequest) : Response<StoResponse>
 
     suspend fun getAllSTOs(studentId: Long) : List<StoResponse>
 

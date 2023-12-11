@@ -151,7 +151,7 @@ interface RetrofitService {
     suspend fun updateSto(@Path("stoId") stoId: Long, @Body updateStoRequest: UpdateStoRequest): Response<StoResponse>
 
     @PATCH("/stos/{stoId}/images")
-    suspend fun updateImageList(@Path("stoId") stoId: Long, @Body updateImageListRequest: UpdateImageListRequest) : Response<ImageResponse>
+    suspend fun updateImageList(@Path("stoId") stoId: Long, @Body updateImageListRequest: UpdateImageListRequest) : Response<StoResponse>
 
     @PATCH("/stos/{stoId}/round")
     suspend fun updateStoRound(@Path("stoId") stoId: Long, @Body updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>

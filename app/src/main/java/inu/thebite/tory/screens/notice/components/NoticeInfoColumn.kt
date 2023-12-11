@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.DateResponse
@@ -64,7 +66,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun NoticeInfoColumn(
     selectedDate: DateResponse,
     selectedNotice: NoticeResponse,
-    selectedNoticeDetailList :  List<DetailResponse>,
+    selectedNoticeDetailList :  List<DetailGraphResponse>,
     noticeViewModel: NoticeViewModel,
     stoViewModel: STOViewModel,
     ltoViewModel: LTOViewModel
@@ -76,10 +78,14 @@ fun NoticeInfoColumn(
     val isTodayCommentReadOnly = remember {
         mutableStateOf(true)
     }
-
     var todayComment by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(selectedNotice.comment))
     }
+    LaunchedEffect(selectedNotice){
+        todayComment = TextFieldValue(selectedNotice.comment)
+    }
+
+
     val focusRequester = FocusRequester()
 
 //    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()
@@ -332,7 +338,10 @@ fun NoticeInfoColumn(
         items(uniqueLTOList) { lto ->
             LTOItem(
                 lto = lto,
-                noticeViewModel = noticeViewModel
+                selectedDate = selectedDate,
+                selectedNoticeDetailList = selectedNoticeDetailList,
+                noticeViewModel = noticeViewModel,
+                stoViewModel = stoViewModel
             )
         }
     }

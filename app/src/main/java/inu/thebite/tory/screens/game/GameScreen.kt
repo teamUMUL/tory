@@ -18,6 +18,7 @@ import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education.compose.sto.getRandomIndex
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
@@ -42,6 +43,13 @@ fun GameScreen(
     setIsCardSelectEnd : (Boolean) -> Unit,
     isCardSelectEnd : Boolean
 ) {
+    val oneGameResult by gameViewModel.oneGameResult.collectAsState()
+    val targetItems by dragAndDropViewModel.targetItems.collectAsState()
+    val mainItem by dragAndDropViewModel.mainItem.collectAsState()
+    val firstMainItem by dragAndDropViewModel.firstMainItem.collectAsState()
+    val secondMainItem by dragAndDropViewModel.secondMainItem.collectAsState()
+
+
     val (successDialog, setSuccessDialog) = remember{
         mutableStateOf(false)
     }
@@ -73,10 +81,10 @@ fun GameScreen(
     //성공 시 축하 다이얼로그가 종료 후 데이터 추가하는 경우
     LaunchedEffect(successDialog){
         if(selectedLTO.game == "같은 사진 매칭") {
-            if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
-                stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
+            if(isCardSelectEnd && !successDialog && oneGameResult.isNotNull()){
+                stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = oneGameResult!!, registrant = "테스트"))
                 if(dragAndDropViewModel.isRandomGame){
-                    val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                    val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
                     imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
                         dragAndDropViewModel.setMainItem(foundImage)
                         dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value!!)
@@ -87,18 +95,18 @@ fun GameScreen(
         }
         //성공 시 축하 다이얼로그가 종료 후 데이터 추가하는 경우
         if(selectedLTO.game == "일반화 매칭"){
-            if(isCardSelectEnd && !successDialog && gameViewModel.oneGameResult.value.isNotNull()){
-                stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
+            if(isCardSelectEnd && !successDialog && oneGameResult.isNotNull()){
+                stoViewModel.addPoint(selectedSTO, addPointRequest = AddPointRequest(result = oneGameResult!!, registrant = "테스트"))
                 if(dragAndDropViewModel.isRandomGame){
-                    val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                    val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
                     imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
                         dragAndDropViewModel.setMainItem(foundImage)
-                        dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                        dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(mainItem!!.category.name))
                     }
 
                 } else {
                     dragAndDropViewModel.restartGeneralMode(
-                        imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.firstMainItem.value!!.category.name)
+                        imagesByCategory = imageViewModel.getImagesByCategory(firstMainItem!!.category.name)
                     )
                 }
                 gameViewModel.clearOneGameResult()
@@ -112,19 +120,21 @@ fun GameScreen(
         LaunchedEffect(isCardSelectEnd){
             if(isCardSelectEnd){
                 if(points.size < selectedSTO.count){
-                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-                        setFirstSuccessImage(dragAndDropViewModel.mainItem.value!!)
-                        setSecondSuccessImage(dragAndDropViewModel.mainItem.value!!)
+                    if(oneGameResult == "+" || oneGameResult == "P"){
+                        setFirstSuccessImage(mainItem!!)
+                        setSecondSuccessImage(mainItem!!)
                         setSuccessDialog(true)
                     }
-                    if (gameViewModel.oneGameResult.value != "+"){
-                        stoViewModel.addPoint(selectedSTO, AddPointRequest(result = gameViewModel.oneGameResult.value!!, registrant = "테스트"))
-                        if(dragAndDropViewModel.isRandomGame){
-                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                            imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
-                                dragAndDropViewModel.setMainItem(
-                                    foundImage
-                                )
+                    if (oneGameResult != "+"){
+                        stoViewModel.addPoint(selectedSTO, AddPointRequest(result = oneGameResult!!, registrant = "테스트"))
+                        if (oneGameResult != "-"){
+                            if(dragAndDropViewModel.isRandomGame){
+                                val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
+                                imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                                    dragAndDropViewModel.setMainItem(
+                                        foundImage
+                                    )
+                                }
                             }
                         }
                         gameViewModel.clearOneGameResult()
@@ -139,26 +149,30 @@ fun GameScreen(
         LaunchedEffect(isCardSelectEnd){
             if(isCardSelectEnd){
                 if(points.size < selectedSTO.count){
-                    if(gameViewModel.oneGameResult.value == "+" || gameViewModel.oneGameResult.value == "P"){
-                        setFirstSuccessImage(imageViewModel.findImageByName(dragAndDropViewModel.firstMainItem.value!!.name))
-                        setSecondSuccessImage(imageViewModel.findImageByName(dragAndDropViewModel.secondMainItem.value!!.name))
+                    if(oneGameResult == "+" || oneGameResult == "P"){
+                        setFirstSuccessImage(imageViewModel.findImageByName(firstMainItem!!.name))
+                        setSecondSuccessImage(imageViewModel.findImageByName(secondMainItem!!.name))
                         Log.d("reset", "addSecondImage")
-                        Log.d("reset", dragAndDropViewModel.secondMainItem.value!!.name)
+                        Log.d("reset", secondMainItem!!.name)
                         setSuccessDialog(true)
                     }
                     if(gameViewModel.oneGameResult.value != "+"){
-                        stoViewModel.addPoint(selectedSTO, AddPointRequest(gameViewModel.oneGameResult.value!!, registrant = "테스트"))
-                        if(dragAndDropViewModel.isRandomGame){
-                            val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                            imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
-                                dragAndDropViewModel.setMainItem(foundImage)
-                                dragAndDropViewModel.resetMainItemsGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                        stoViewModel.addPoint(selectedSTO, AddPointRequest(oneGameResult!!, registrant = "테스트"))
+                        if(oneGameResult != "-"){
+                            if(dragAndDropViewModel.isRandomGame){
+                                val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
+                                imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                                    dragAndDropViewModel.setMainItem(foundImage)
+                                    dragAndDropViewModel.resetMainItemsGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                }
+                            } else {
+                                dragAndDropViewModel.resetMainItemsGeneralMode(
+                                    imagesByCategory = imageViewModel.getImagesByCategory(mainItem!!.category.name)
+                                )
+
                             }
-                        } else {
-                            dragAndDropViewModel.resetMainItemsGeneralMode(
-                                imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
-                            )
                         }
+
                         gameViewModel.clearOneGameResult()
                     }
 
@@ -167,8 +181,6 @@ fun GameScreen(
         }
     }
 
-    val oneGameResult by gameViewModel.oneGameResult.collectAsState()
-    val targetItems by dragAndDropViewModel.targetItems.collectAsState()
 
 
     val screenWidth = LocalConfiguration.current.screenWidthDp
@@ -223,6 +235,3 @@ fun GameScreen(
 
 }
 
-fun getRandomIndex(itemSize: Int): Int {
-    return Random.nextInt(0, itemSize)
-}
