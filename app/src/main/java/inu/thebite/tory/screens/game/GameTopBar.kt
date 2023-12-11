@@ -36,6 +36,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import inu.thebite.tory.R
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education.compose.sto.getRandomIndex
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel

@@ -16,6 +16,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
@@ -29,7 +30,8 @@ fun SelectedSTODetail(
     imageViewModel: ImageViewModel,
     stoViewModel: STOViewModel,
     ltoViewModel: LTOViewModel,
-    noticeViewModel: NoticeViewModel
+    noticeViewModel: NoticeViewModel,
+    dragAndDropViewModel: DragAndDropViewModel
 ) {
     Row(
         modifier = modifier
@@ -85,7 +87,8 @@ fun SelectedSTODetail(
                 imageViewModel = imageViewModel,
                 stoViewModel = stoViewModel,
                 ltoViewModel = ltoViewModel,
-                noticeViewModel = noticeViewModel
+                noticeViewModel = noticeViewModel,
+                dragAndDropViewModel = dragAndDropViewModel
             )
         }
     }

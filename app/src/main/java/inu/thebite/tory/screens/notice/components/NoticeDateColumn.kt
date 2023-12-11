@@ -249,7 +249,7 @@ fun ExposedSelector(
                 onDismissRequest = {isExpanded.value = false},
                 modifier = Modifier
             ){
-                itemList.forEach { item ->
+                itemList.distinct().forEach { item ->
                     DropdownMenuItem(
                         text = {
                             Text(text = item)

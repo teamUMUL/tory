@@ -37,7 +37,7 @@ import coil.request.ImageRequest
 import inu.thebite.tory.R
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
-import inu.thebite.tory.screens.game.getRandomIndex
+import inu.thebite.tory.screens.education.compose.sto.getRandomIndex
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel

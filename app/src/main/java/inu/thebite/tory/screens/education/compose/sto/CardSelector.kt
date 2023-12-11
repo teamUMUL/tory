@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,6 +38,7 @@ import inu.thebite.tory.screens.education.compose.dialog.sto.AddSameGameItemDial
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
@@ -47,7 +50,10 @@ fun CardSelector(
     stoViewModel: STOViewModel,
     ltoViewModel: LTOViewModel,
     selectedSTO: StoResponse?,
+    dragAndDropViewModel: DragAndDropViewModel
 ) {
+    val mainItem by dragAndDropViewModel.mainItem.collectAsState()
+
     val (cardSelectDialog, setCardSelectDialog) = remember {
         mutableStateOf(false)
     }
@@ -140,14 +146,14 @@ fun CardSelector(
                             .fillMaxHeight()
                             .padding(top = 10.dp, end = 10.dp, bottom = 10.dp)
                             .clickable {
-//                            if (selectedImage == mainItem) {
-//                                dragAndDropViewModel.clearMainItem()
-//                            } else {
-//                                dragAndDropViewModel.setMainItem(selectedImage)
-//                            }
+                                if (selectedImage == mainItem) {
+                                    dragAndDropViewModel.clearMainItem()
+                                } else {
+                                    dragAndDropViewModel.setMainItem(selectedImage)
+                                }
 
                             },
-//                        alpha = if (selectedImage == mainItem) 1.0f else 0.5f
+                        alpha = if (selectedImage == mainItem) 1.0f else 0.5f
                     )
                 }
             }

@@ -126,7 +126,9 @@ fun NewEducationScreen(
                 stoViewModel = stoViewModel,
                 ltoViewModel = ltoViewModel,
                 todoViewModel = todoViewModel,
-                noticeViewModel = noticeViewModel
+                noticeViewModel = noticeViewModel,
+                dragAndDropViewModel = dragAndDropViewModel,
+                gameViewModel = gameViewModel
             )
 
         }
