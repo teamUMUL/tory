@@ -34,15 +34,15 @@ class TodoViewModel : ViewModel() {
 
     init {
         observeTodoList()
-        observeTempTodoList()
+//        observeTempTodoList()
     }
-    private fun observeTempTodoList() {
-        viewModelScope.launch {
-            tempTodoResponse.onEach { tempTodoList ->
-                tempTodoList?.let { updateTodoSTOIdList(it) }
-            }.collect()
-        }
-    }
+//    private fun observeTempTodoList() {
+//        viewModelScope.launch {
+//            tempTodoResponse.onEach { tempTodoList ->
+//                tempTodoList?.let { updateTodoSTOIdList(it) }
+//            }.collect()
+//        }
+//    }
     private fun observeTodoList() {
         viewModelScope.launch {
             todoResponse.onEach { todoList ->
@@ -100,7 +100,6 @@ class TodoViewModel : ViewModel() {
     ){
         viewModelScope.launch {
             try {
-                Log.d("updatedTOdoResponse", updateTodoList.toString())
 
                 val response = repo.updateTodoList(studentId = studentId, updateTodoList = updateTodoList)
 
@@ -118,6 +117,7 @@ class TodoViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to add Todo", e.message.toString())
             }
+
         }
     }
 
@@ -189,5 +189,7 @@ class TodoViewModel : ViewModel() {
                 }
             }
         }
+        Log.d("updatedTOdoResponse", tempTodoResponse.value.toString())
+
     }
 }

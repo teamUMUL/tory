@@ -49,18 +49,18 @@ fun ScheduleTopBar(
     val todoSTOList by stoViewModel.todoSTOList.collectAsState()
 
 
-    var result = listOf<Long>()
+//    var result = listOf<Long>()
     LaunchedEffect(Unit){
         stoViewModel.getAllSTOs(studentId = 1L)
         todoViewModel.getTodoList(studentId = 1L)
     }
 
-    LaunchedEffect(tempTodoList){
-        tempTodoList?.let {
-            result = it.stoList
-            Log.d("moveTodoList", result.toString())
-        }
-    }
+//    LaunchedEffect(tempTodoList){
+//        tempTodoList?.let {
+//            result = it.stoList
+//            Log.d("moveTodoList", result.toString())
+//        }
+//    }
 
     Row(
         modifier = modifier
@@ -106,13 +106,14 @@ fun ScheduleTopBar(
                                 items = todoSTOList,
                                 onMove = { fromIndex, toIndex ->
                                     todoViewModel.moveTempTodoList(fromIndex, toIndex)
+                                    Log.d("resultTempTodoResponseSTOList", todoViewModel.tempTodoResponse.value!!.stoList.toString())
                                 },
                                 onDragEnd = {
-                                    Log.d("resultTempTodoResponseSTOList", result.toString())
+                                    Log.d("resultTempTodoResponseSTOList", todoViewModel.tempTodoResponse.value!!.stoList.toString())
                                     todoViewModel.updateTodoList(
                                         studentId = 1L,
                                         updateTodoList = UpdateTodoList(
-                                            tempTodoList.stoList
+                                            todoViewModel.tempTodoResponse.value!!.stoList
                                         )
                                     )
                                 },

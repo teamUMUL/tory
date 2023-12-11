@@ -105,8 +105,7 @@ fun LTOButtons(
                     GraphRow(stos = ltoGraphList, stoViewModel = stoViewModel)
                 }
             }
-        } ?:
-        Toasty.warning(context, "해당 LTO에 저장된 데이터가 존재하지 않습니다", Toast.LENGTH_SHORT, true).show()
+        }
 
 
     }
@@ -196,7 +195,7 @@ fun LTOButtons(
         }
         IconButton(
             onClick = {
-                ltoViewModel.getLTOGraph(selectedLTO = selectedLTO)
+                ltoViewModel.getLTOGraph(context = context,selectedLTO = selectedLTO)
                 setIsLTOGraphOn(true)
             },
         ) {

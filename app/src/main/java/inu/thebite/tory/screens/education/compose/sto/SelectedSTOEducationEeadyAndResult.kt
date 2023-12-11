@@ -202,12 +202,14 @@ fun SelectedSTOEducationReadyAndResult(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.Center
             ) {
-                EducationResultTable(
-                    selectedSTO = selectedSTO,
-                    points = points,
-                    stoViewModel = stoViewModel,
-                    noticeViewModel = noticeViewModel
-                )
+                points?.let {points ->
+                    EducationResultTable(
+                        selectedSTO = selectedSTO,
+                        points = points,
+                        stoViewModel = stoViewModel,
+                        noticeViewModel = noticeViewModel
+                    )
+                }
             }
             Row(
                 modifier = Modifier

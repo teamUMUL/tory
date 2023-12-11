@@ -97,7 +97,10 @@ fun DragDropList(
                         dragDropListState.onDragInterrupted()
                         onDragEnd()
                     },
-                    onDragCancel = {dragDropListState.onDragInterrupted()}
+                    onDragCancel = {
+                        dragDropListState.onDragInterrupted()
+                        onDragEnd()
+                    }
                 )
             },
         state = dragDropListState.lazyListState

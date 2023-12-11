@@ -89,8 +89,8 @@ fun GeneralGameScreen(
                                     if(dragInGameItem.category.name == gameCategory.category.name){
                                         dragAndDropViewModel.updateGameItemGeneralMode(
                                             dragAndDropViewModel.secondMainItem.value!!.copy(
-                                                url = imageViewModel.findImageByName(imageName = "Correct")?.url
-                                                    ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                url = imageViewModel.findImageByName(imageName = "Etc_1")?.url
+                                                    ?: "https://storage.googleapis.com/download/storage/v1/b/tory-image-repository/o/Etc%2FEtc_1?generation=1701839722741754&alt=media"
                                             )
                                         )
                                         dragAndDropViewModel.isCorrect()

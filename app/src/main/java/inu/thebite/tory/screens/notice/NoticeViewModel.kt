@@ -172,6 +172,8 @@ class NoticeViewModel : ViewModel() {
                     _selectedNotice.update {
                         gotNotice
                     }
+                    Log.d("selectedNoticeComment", gotNotice.toString())
+
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
                     throw Exception("Notice 데이터 가져오기 실패: $errorBody")

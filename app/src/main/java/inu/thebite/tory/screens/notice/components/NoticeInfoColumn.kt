@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,10 +78,14 @@ fun NoticeInfoColumn(
     val isTodayCommentReadOnly = remember {
         mutableStateOf(true)
     }
-
     var todayComment by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(selectedNotice.comment))
     }
+    LaunchedEffect(selectedNotice){
+        todayComment = TextFieldValue(selectedNotice.comment)
+    }
+
+
     val focusRequester = FocusRequester()
 
 //    val dummySTOList = mutableListOf<StoResponse>().toMutableStateList()

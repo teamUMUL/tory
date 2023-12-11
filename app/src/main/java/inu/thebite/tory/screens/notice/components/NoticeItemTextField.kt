@@ -19,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +65,10 @@ fun NoticeItemTextField(
 
     var ltoComment by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(selectedDetail.comment))
+    }
+
+    LaunchedEffect(selectedDetail){
+        ltoComment = TextFieldValue(selectedDetail.comment)
     }
     val focusRequester = FocusRequester()
 
