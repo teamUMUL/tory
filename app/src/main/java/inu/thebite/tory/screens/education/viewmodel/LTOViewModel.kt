@@ -185,8 +185,11 @@ class LTOViewModel: ViewModel() {
         viewModelScope.launch{
             try {
                 _allLTOs.update {
-                    repo.getAllLTOs(studentId = studentId)
+                    val allLTOs = repo.getAllLTOs(studentId = studentId)
+                    Log.d("allLTOsByStudent", allLTOs.toString())
+                    allLTOs
                 }
+
             } catch (e: Exception){
                 Log.e("failed to get all LTOs", e.message.toString())
             }
@@ -210,13 +213,14 @@ class LTOViewModel: ViewModel() {
 //        }
 //    }
     fun getLTOsByDomain(
+        studentId: Long,
         domainId : Long
     ){
         viewModelScope.launch {
             try {
-                Log.d("getLtosByStudent", repo.getLTOsByStudent(domainId = domainId).toString())
+                Log.d("getLtosByStudent", repo.getLTOsByStudent(studentId = studentId,domainId = domainId).toString())
                 _ltos.update {
-                    repo.getLTOsByStudent(domainId = domainId)
+                    repo.getLTOsByStudent(studentId = studentId,domainId = domainId)
                 }
             } catch (e: Exception) {
                 Log.e("failed to get all LTOs", e.message.toString())

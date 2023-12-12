@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 interface ChildClassRepo {
-    suspend fun createChildClass(selectedCenter: CenterResponse, childClass: ChildClassRequest)
+    suspend fun createChildClass(selectedCenter: CenterResponse, childClass: ChildClassRequest) : Response<ChildClassResponse>
     suspend fun getAllChildClasses(): List<ChildClassResponse>
 
-    suspend fun updateChildClass(childClass: ChildClassResponse, request: ChildClassRequest)
+    suspend fun updateChildClass(childClass: ChildClassResponse, request: ChildClassRequest) : Response<ChildClassResponse>
     suspend fun deleteChildClass(childClass: ChildClassResponse)
 }

@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.teachingboard.recentlto.RecentLTOScreen
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
@@ -50,6 +51,7 @@ fun HomeScreen(
     childSelectViewModel: ChildSelectViewModel,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
+    stoViewModel: STOViewModel,
     navigateToEducation: () -> Unit,
     navigateToNotice: () -> Unit,
 ) {
@@ -107,7 +109,9 @@ fun HomeScreen(
                     ) //반 선택
                     ChildrenCard(
                         modifier = Modifier.weight(1f),
-                        childSelectViewModel = childSelectViewModel
+                        childSelectViewModel = childSelectViewModel,
+                        ltoViewModel = ltoViewModel,
+                        stoViewModel = stoViewModel
                     ) //아이 선택
 
                 }

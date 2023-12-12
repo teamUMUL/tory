@@ -10,15 +10,15 @@ import retrofit2.Response
 class CenterRepoImpl: CenterRepo {
     private val centerRetrofit = RetrofitApi.apiService
 
-    override suspend fun createCenter(center: CenterRequest) {
-        centerRetrofit.addCenter(addCenterRequest = center)
+    override suspend fun createCenter(center: CenterRequest) : Response<CenterResponse> {
+        return centerRetrofit.addCenter(addCenterRequest = center)
     }
 
-    override suspend fun updateCenter(selectedCenter: CenterResponse, updateCenter: CenterRequest) {
-        centerRetrofit.updateCenter(centerId = selectedCenter.id, updateCenterRequest = updateCenter)
+    override suspend fun updateCenter(selectedCenter: CenterResponse, updateCenter: CenterRequest) : Response<CenterResponse> {
+       return centerRetrofit.updateCenter(centerId = selectedCenter.id, updateCenterRequest = updateCenter)
     }
 
-    override suspend fun getAllCenters(): List<CenterResponse> {
+    override suspend fun getAllCenters(): List<CenterResponse>  {
         return centerRetrofit.getCenterList()
     }
 

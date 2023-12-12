@@ -53,6 +53,7 @@ import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -66,6 +67,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun NoticeInfoColumn(
     selectedDate: DateResponse,
     selectedNotice: NoticeResponse,
+    selectedChild: StudentResponse,
     selectedNoticeDetailList :  List<DetailGraphResponse>,
     noticeViewModel: NoticeViewModel,
     stoViewModel: STOViewModel,
@@ -300,7 +302,7 @@ fun NoticeInfoColumn(
                                 onClick = {
                                     isTodayCommentReadOnly.value = !isTodayCommentReadOnly.value
                                     noticeViewModel.updateTodayComment(
-                                        studentId = 1L,
+                                        studentId = selectedChild.id,
                                         addCommentRequest = AddCommentRequest(
                                             comment = todayComment.text
                                         ),
@@ -339,6 +341,7 @@ fun NoticeInfoColumn(
             LTOItem(
                 lto = lto,
                 selectedDate = selectedDate,
+                selectedChild = selectedChild,
                 selectedNoticeDetailList = selectedNoticeDetailList,
                 noticeViewModel = noticeViewModel,
                 stoViewModel = stoViewModel

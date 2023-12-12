@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,8 @@ import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.teachingboard.dialog.CenterDialog
 
 import inu.thebite.tory.screens.teachingboard.dialog.ChildDialog
@@ -210,9 +213,18 @@ fun ClassCard(
 @Composable
 fun ChildrenCard(
     modifier: Modifier = Modifier,
-    childSelectViewModel: ChildSelectViewModel
+    childSelectViewModel: ChildSelectViewModel,
+    ltoViewModel: LTOViewModel,
+    stoViewModel: STOViewModel
 ){
-    val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
+    val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
+
+    LaunchedEffect(selectedChildInfo){
+        selectedChildInfo?.let {selectedChildInfo ->
+            ltoViewModel.getAllLTOs(studentId = selectedChildInfo.id)
+            stoViewModel.getAllSTOs(studentId = selectedChildInfo.id)
+        }
+    }
 
     var isDialogVisible by remember { mutableStateOf(false) }
 
@@ -268,7 +280,7 @@ fun ChildrenCard(
                 modifier = Modifier
                     .width(140.dp)
                     .height(32.dp),
-                text = selectedChild?.name ?: "미선택",
+                text = selectedChildInfo?.name ?: "미선택",
                 style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 20.sp,

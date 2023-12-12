@@ -128,10 +128,10 @@ fun NoticeItemGraph(
                             lineType = LineType.Straight(isDotted = false),
                             width = 6f
                         ),
-//                        IntersectionPoint(
-//                            color = Color.Green,
-//                            radius = 5.dp
-//                        ),
+                        IntersectionPoint(
+                            color = Color.Green,
+                            radius = 3.dp
+                        ),
 //                        selectionHighlightPopUp = SelectionHighlightPopUp(
 //                            popUpLabel = {plusX ,plusY ->
 //                                "$plusX, $plusY"
@@ -145,9 +145,10 @@ fun NoticeItemGraph(
                             lineType = LineType.Straight(isDotted = true),
                             width = 6f
                         ),
-//                        IntersectionPoint(
-//                            color = Color.Red
-//                        ),
+                        IntersectionPoint(
+                            color = Color.Red,
+                            radius = 3.dp
+                        ),
 //                        selectionHighlightPopUp = SelectionHighlightPopUp(
 //                            popUpLabel = {minusX ,minusY ->
 //                                "$minusX, $minusY"

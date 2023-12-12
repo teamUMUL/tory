@@ -22,12 +22,14 @@ import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 
 @Composable
 fun LTOItem(
     lto: LtoResponse,
+    selectedChild: StudentResponse,
     selectedDate: DateResponse,
     selectedNoticeDetailList: List<DetailGraphResponse>,
     noticeViewModel: NoticeViewModel,
@@ -108,6 +110,7 @@ fun LTOItem(
             NoticeItemTopBar(lto = lto, gradient = gradient, expandedState = expandedState)
             NoticeItemTextField(
                 selectedDate = selectedDate,
+                selectedChild = selectedChild,
                 selectedDetail = selectedNoticeDetailList.first { it.ltoId == lto.id },
                 noticeViewModel = noticeViewModel
             )

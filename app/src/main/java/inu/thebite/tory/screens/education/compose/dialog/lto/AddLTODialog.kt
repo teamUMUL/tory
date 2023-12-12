@@ -45,12 +45,14 @@ import androidx.compose.ui.window.Dialog
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoRequest
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLTODialog(
     context : Context,
+    selectedChild : StudentResponse,
     setAddLTOItem: (Boolean) -> Unit,
     selectedDEV : DomainResponse,
     ltoViewModel: LTOViewModel
@@ -185,7 +187,7 @@ fun AddLTODialog(
                                 contents = "",
                                 game = gameMode
                             ),
-                            studentId = 1L
+                            studentId = selectedChild.id
                         )
                     } else{
                         Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()

@@ -56,6 +56,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.model.student.UpdateStudentRequest
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 import java.time.LocalDate
 
@@ -196,6 +197,20 @@ fun AddChildInfoDialog(
                                 ) {
                                     if(isUpdate){
                                         //업데이트
+                                        selectedChildInfo?.let {selectedChildInfo ->
+                                            childInfoViewModel.updateChildInfo(
+                                                selectedChildInfo = selectedChildInfo,
+                                                updateChildInfo = UpdateStudentRequest(
+                                                    name = childInfoNameInputValue.text,
+                                                    birth = childInfoBirthInputValue.text,
+                                                    etc = childInfoEtcInputValue.text,
+                                                    parentName = childInfoParentNameInputValue.text,
+                                                    startDate = childInfoStartDateInputValue.text,
+                                                    endDate = "",
+                                                    registerDate = ""
+                                                )
+                                            )
+                                        }
                                     }else{
                                         childInfoViewModel.createChildInfo(
                                             selectedChildClass = selectedChildClass,

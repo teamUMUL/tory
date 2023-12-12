@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education.compose.LTOAndSTOSelector
 import inu.thebite.tory.screens.education.compose.SelectedLTOAndSTOInfo
@@ -34,10 +35,12 @@ import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
 fun NewEducationScreen(
+    selectedChild: StudentResponse,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
@@ -45,7 +48,8 @@ fun NewEducationScreen(
     gameViewModel: GameViewModel,
     dragAndDropViewModel: DragAndDropViewModel,
     todoViewModel: TodoViewModel,
-    noticeViewModel: NoticeViewModel
+    noticeViewModel: NoticeViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ) {
     val context = LocalContext.current
 
@@ -60,20 +64,40 @@ fun NewEducationScreen(
 
     val todoList by todoViewModel.todoResponse.collectAsState()
 
-    LaunchedEffect(Unit){
+    val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
+
+    LaunchedEffect(Unit) {
 //        todoViewModel.getTodoList(studentId = 1L)
-        ltoViewModel.getAllLTOs(studentId = 1L)
-        stoViewModel.getAllSTOs(studentId = 1L)
+        selectedChild?.let { selectedChild ->
+            ltoViewModel.getAllLTOs(studentId = selectedChild.id)
+            stoViewModel.getAllSTOs(studentId = selectedChild.id)
+        }
     }
 
     LaunchedEffect(selectedDEV) {
-        selectedDEV?.let { ltoViewModel.getLTOsByDomain(domainId = it.id) }
+        selectedDEV?.let { selectedDEV ->
+            selectedChild?.let { selectedChild ->
+                ltoViewModel.getLTOsByDomain(
+                    studentId = selectedChild.id,
+                    domainId = selectedDEV.id
+                )
+            }
+        }
+    }
+    LaunchedEffect(selectedChild){
+        selectedChild?.let { selectedChild ->
+            ltoViewModel.getAllLTOs(studentId = selectedChild.id)
+            stoViewModel.getAllSTOs(studentId = selectedChild.id)
+            selectedDEV?.let {selectedDEV ->
+                ltoViewModel.getLTOsByDomain(studentId = selectedChild.id, domainId = selectedDEV.id)
+            }
+        }
     }
 
     LaunchedEffect(selectedLTO) {
 //        selectedLTO?.let { stoViewModel.setSTOsByLTO(selectedLTO = it) }
     }
-    LaunchedEffect(selectedSTO){
+    LaunchedEffect(selectedSTO) {
         selectedSTO?.let { stoViewModel.getPointList(selectedSTO = it) }
     }
 
@@ -94,16 +118,20 @@ fun NewEducationScreen(
             )
             Divider(thickness = 1.dp, color = Color.LightGray)
             ltos?.let {
-                LTOAndSTOSelector(
-                    modifier = Modifier
-                        .weight(9.5f),
-                    selectedDEV = selectedDEV,
-                    selectedLTO = selectedLTO,
-                    selectedSTO = selectedSTO,
-                    ltos = it,
-                    ltoViewModel = ltoViewModel,
-                    stoViewModel = stoViewModel
-                )
+                selectedChild?.let { selectedChild ->
+                    LTOAndSTOSelector(
+                        modifier = Modifier
+                            .weight(9.5f),
+                        selectedChild = selectedChild,
+                        selectedDEV = selectedDEV,
+                        selectedLTO = selectedLTO,
+                        selectedSTO = selectedSTO,
+                        ltos = it,
+                        ltoViewModel = ltoViewModel,
+                        stoViewModel = stoViewModel,
+                        dragAndDropViewModel = dragAndDropViewModel
+                    )
+                }
             } ?: LTOAndSTONull(modifier = Modifier.weight(9.5f))
         }
         Divider(
@@ -116,20 +144,23 @@ fun NewEducationScreen(
                 .weight(8f)
                 .fillMaxHeight()
         ) {
-            SelectedLTOAndSTOInfo(
-                allLTOs = allLTOs,
-                selectedLTO = selectedLTO,
-                selectedSTO = selectedSTO,
-                points = points,
-                todoList = todoList,
-                imageViewModel = imageViewModel,
-                stoViewModel = stoViewModel,
-                ltoViewModel = ltoViewModel,
-                todoViewModel = todoViewModel,
-                noticeViewModel = noticeViewModel,
-                dragAndDropViewModel = dragAndDropViewModel,
-                gameViewModel = gameViewModel
-            )
+            selectedChild?.let {selectedChild ->
+                SelectedLTOAndSTOInfo(
+                    allLTOs = allLTOs,
+                    selectedChild = selectedChild,
+                    selectedLTO = selectedLTO,
+                    selectedSTO = selectedSTO,
+                    points = points,
+                    todoList = todoList,
+                    imageViewModel = imageViewModel,
+                    stoViewModel = stoViewModel,
+                    ltoViewModel = ltoViewModel,
+                    todoViewModel = todoViewModel,
+                    noticeViewModel = noticeViewModel,
+                    dragAndDropViewModel = dragAndDropViewModel,
+                    gameViewModel = gameViewModel
+                )
+            }
 
         }
     }
@@ -137,15 +168,9 @@ fun NewEducationScreen(
 }
 
 
-
-
 fun replaceNewLineWithSpace(input: String): String {
     return input.replace("\n", " ")
 }
-
-
-
-
 
 
 @Composable
@@ -169,7 +194,6 @@ fun LTOAndSTONull(
         )
     }
 }
-
 
 
 fun Modifier.clickableWithNoRipple(onClick: () -> Unit): Modifier {

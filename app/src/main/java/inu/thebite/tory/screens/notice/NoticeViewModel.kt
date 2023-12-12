@@ -14,6 +14,8 @@ import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.model.notice.PdfLtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.repositories.notice.NoticeRepoImpl
+import inu.thebite.tory.screens.education.compose.sto.getCurrentMonth
+import inu.thebite.tory.screens.education.compose.sto.getCurrentYear
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
@@ -62,6 +64,17 @@ class NoticeViewModel : ViewModel() {
         }
     }
 
+    fun clearAll(){
+        _selectedNoticeDetailList.update { null }
+        _selectedNotice.update { null }
+        _selectedMonth.update { null }
+        _selectedYear.update { null }
+        _selectedNoticeDate.update { null }
+        _selectedNoticeDates.update { null }
+        _noticeMonthList.update { null }
+//        _noticeYearList.update { null }
+    }
+
     fun setSelectedMonth(
         selectedMonth: String
     ){
@@ -105,6 +118,7 @@ class NoticeViewModel : ViewModel() {
 
                 if (response.isSuccessful) {
                     val gotNoticeYearAndMonthList = response.body() ?: throw Exception("Notice Year, Month 정보가 비어있습니다.")
+                    Log.d("gotNoticeYearAndMonthList", gotNoticeYearAndMonthList.toString())
                     _noticeYearAndMonthList.update {
                         gotNoticeYearAndMonthList
                     }
@@ -112,6 +126,7 @@ class NoticeViewModel : ViewModel() {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
                     throw Exception("Notice 연월 데이터 가져오기 실패: $errorBody")
                 }
+
 
             } catch (e: Exception) {
                 Log.e("failed to get Notice Year And Month List", e.message.toString())
@@ -123,6 +138,12 @@ class NoticeViewModel : ViewModel() {
        _noticeYearList.update {
            _noticeYearAndMonthList.value?.map { it.year } ?: emptyList()
        }
+//        _selectedYear.update {
+//            noticeYearList.value?.let { noticeYearList ->
+//                val foundNoticeYear = noticeYearList.find { it == getCurrentYear() }
+//                foundNoticeYear
+//            }
+//        }
     }
 
     fun setNoticeMonthList(
@@ -132,6 +153,12 @@ class NoticeViewModel : ViewModel() {
             val monthsByYear = _noticeYearAndMonthList.value?.filter { it.year == selectedYear } ?: emptyList()
             monthsByYear.map { it.month.toString() }
         }
+//        _selectedMonth.update {
+//            noticeMonthList.value?.let { noticeMonthList ->
+//                val foundNoticeMonth = noticeMonthList.find { it == getCurrentMonth() }
+//                foundNoticeMonth
+//            }
+//        }
     }
 
     fun setSelectedNoticeDate(

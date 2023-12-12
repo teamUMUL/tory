@@ -11,8 +11,8 @@ class ChildClassRepoImpl: ChildClassRepo {
 
     private val childClassRetrofit = RetrofitApi.apiService
 
-    override suspend fun createChildClass(selectedCenter: CenterResponse,childClass: ChildClassRequest) {
-        childClassRetrofit.addClass(
+    override suspend fun createChildClass(selectedCenter: CenterResponse,childClass: ChildClassRequest): Response<ChildClassResponse> {
+        return childClassRetrofit.addClass(
             centerId = selectedCenter.id,
             addChildClassRequest = childClass)
     }
@@ -25,8 +25,8 @@ class ChildClassRepoImpl: ChildClassRepo {
     override suspend fun updateChildClass(
         selectedChildClass: ChildClassResponse,
         updateChildClass: ChildClassRequest
-    ) {
-        childClassRetrofit.updateChildClass(classId = selectedChildClass.id, updateChildClass = updateChildClass)
+    ) : Response<ChildClassResponse>{
+        return childClassRetrofit.updateChildClass(classId = selectedChildClass.id, updateChildClass = updateChildClass)
     }
 
     override suspend fun deleteChildClass(childClass: ChildClassResponse) {

@@ -1,20 +1,17 @@
 package inu.thebite.tory.screens.setting.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.model.center.CenterRequest
 import inu.thebite.tory.model.center.CenterResponse
-import inu.thebite.tory.repositories.Center.CenterRepo
 import inu.thebite.tory.repositories.Center.CenterRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.java.KoinJavaComponent.inject
 import java.lang.Exception
 
 class CenterViewModel : ViewModel() {
@@ -41,6 +38,26 @@ class CenterViewModel : ViewModel() {
     }
     init {
         getAllCenters()
+        observeAllCenters()
+    }
+
+    private fun observeAllCenters() {
+        viewModelScope.launch {
+            allCenters.onEach { allCenters ->
+                updateSelectedCenter(allCenters)
+            }.collect()
+        }
+    }
+
+    private fun updateSelectedCenter(allCenters: List<CenterResponse>?) {
+        allCenters?.let { allCenters ->
+            _selectedCenter.update {
+                val foundCenter = allCenters.find { center ->
+                    selectedCenter.value?.id == center.id
+                }
+                foundCenter
+            }
+        }
     }
 
     fun getAllCenters(){
@@ -48,7 +65,9 @@ class CenterViewModel : ViewModel() {
             try {
                 val allCenters = repo.getAllCenters()
                 Log.e("가지고 온 센터", allCenters.toString())
-                _allCenters.value = allCenters
+                _allCenters.update {
+                    allCenters
+                }
             } catch (e: Exception) {
                 Log.e("failed to get all centers", e.message.toString())
             }
@@ -62,11 +81,25 @@ class CenterViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                repo.createCenter(newCenter)
-            } catch(e : Exception) {
-                Log.e("failed to create center", e.message.toString())
+                val response = repo.createCenter(center = newCenter)
+
+                if (response.isSuccessful) {
+                    val newCenterResponse = response.body() ?: throw Exception("Center 정보가 비어있습니다.")
+                    _allCenters.update { currentCenters ->
+                        currentCenters?.let {
+                            // 현재 Center 리스트가 null이 아니면 새 Center를 추가
+                            it + newCenterResponse
+                        } ?: listOf(newCenterResponse) // 현재 Center 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Center 추가 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to add Center", e.message.toString())
             }
-            getAllCenters()
         }
 
     }
@@ -74,11 +107,23 @@ class CenterViewModel : ViewModel() {
     fun updateCenter(selectedCenter: CenterResponse, updateCenter: CenterRequest) {
         viewModelScope.launch {
             try {
-                repo.updateCenter(selectedCenter, updateCenter)
+                val response = repo.updateCenter(selectedCenter = selectedCenter, updateCenter = updateCenter)
+
+                if (response.isSuccessful) {
+                    val updatedCenter = response.body() ?: throw Exception("Center 정보가 비어있습니다.")
+                    _allCenters.update {
+                        allCenters.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedCenter.id) updatedCenter else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Center 업데이트 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
-                Log.e("failed to update center", e.message.toString())
+                Log.e("failed to update Center", e.message.toString())
             }
-            getAllCenters()
         }
     }
 

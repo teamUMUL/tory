@@ -38,6 +38,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
@@ -48,6 +49,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @Composable
 fun EducationResultTable(
     modifier: Modifier = Modifier,
+    selectedChild: StudentResponse,
     selectedSTO: StoResponse?,
     stoViewModel: STOViewModel,
     noticeViewModel: NoticeViewModel,
@@ -267,7 +269,7 @@ fun EducationResultTable(
                                 status = status
                             )
                             noticeViewModel.addDetail(
-                                studentId = 1L,
+                                studentId = selectedChild.id,
                                 stoId = selectedSTO.id,
                                 year = getCurrentYear(),
                                 month = getCurrentMonth(),

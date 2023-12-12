@@ -6,6 +6,7 @@ import android.os.ParcelFileDescriptor
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,25 +51,15 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
+import androidx.navigation.NavController
 import inu.thebite.tory.R
-import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okio.buffer
-import okio.sink
-import java.io.File
-import java.io.IOException
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoticeDateColumn(
     selectedNoticeDates: List<DateResponse>?,
@@ -80,14 +71,15 @@ fun NoticeDateColumn(
     setSelectedYear: (String) -> Unit,
     selectedMonth: String?,
     setSelectedMonth: (String) -> Unit,
-    noticeViewModel: NoticeViewModel
+    noticeViewModel: NoticeViewModel,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
     val (noticePdfDialog, setNoticePdfDialog) = remember {
         mutableStateOf(false)
     }
-
+    val exampleURL = "https://docs.google.com/gview?embedded=true&url=https://storage.googleapis.com/tory-image-repository/report/%EA%B9%80%EC%95%84%EB%AC%B4%EA%B0%9C/2023-12-11.pdf"
     if (noticePdfDialog) {
         Dialog(
             properties = DialogProperties(
@@ -95,28 +87,29 @@ fun NoticeDateColumn(
             ),
             onDismissRequest = { setNoticePdfDialog(false) }
         ) {
-//            val inputStream = context.assets.open("gold.pdf")
-//            AndroidView(
-//                factory = { context ->
-//                    val adView = PDFView(context, null)
-//                    adView.fromStream(inputStream)
-//                        .enableDoubletap(true)
-//                        .spacing(10)
-//                        .load()
-//                    adView
-//                },
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(bottom = 8.dp),
-//                update = { pdfViewer ->
-//                    pdfViewer.doOnLayout {
-//
-//                    }
-//                })
+
+            AndroidView(
+                factory = { context ->
+                    WebView(context).apply {
+                        webViewClient = WebViewClient()
+                        settings.javaScriptEnabled = true
+                        loadUrl(exampleURL)
+                    }
+                }
+            )
+
         }
 
     }
 
+    BackHandler(onBack = {
+        if (noticePdfDialog){
+            setNoticePdfDialog(false)
+        } else {
+            //일반적인 뒤로가기 기능
+            navController.popBackStack()
+        }
+    })
     val isYearExpanded = remember {
         mutableStateOf(false)
     }

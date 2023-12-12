@@ -18,7 +18,7 @@ interface LTORepo {
 
     suspend fun getAllLTOs(studentId : Long) : List<LtoResponse>
 
-    suspend fun getLTOsByStudent(domainId : Long): List<LtoResponse>
+    suspend fun getLTOsByStudent(domainId : Long, studentId: Long): List<LtoResponse>
 
     suspend fun deleteLTO(selectedLTO: LtoResponse) : Response<Boolean>
 

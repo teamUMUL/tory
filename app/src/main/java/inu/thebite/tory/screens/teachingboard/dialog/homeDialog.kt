@@ -215,6 +215,7 @@ fun ClassDialog(
                                         _selectedChildClass
                                     )
                                 }
+                                childSelectViewModel.clearSelectedChildInfo()
 //                                viewModel.selectedChildClass = selectedChildClass
                                 onDismiss()
                             },

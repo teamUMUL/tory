@@ -11,6 +11,8 @@ import inu.thebite.tory.repositories.ChildClass.ChildClassRepoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -41,13 +43,41 @@ class ChildClassViewModel : ViewModel() {
     }
     init {
         getAllChildClasses()
+        observeAllChildClasses()
+    }
+
+    private fun observeAllChildClasses() {
+        viewModelScope.launch {
+
+            allChildClasses.onEach { allChildClasses ->
+                updateChildClassesAndSelectedChildClass(allChildClasses)
+            }.collect()
+        }
+    }
+
+    private fun updateChildClassesAndSelectedChildClass(allChildClasses: List<ChildClassResponse>?) {
+        allChildClasses?.let { allChildClasses ->
+            _childClasses.update {currentChildClasses ->
+                allChildClasses.filter {childClass ->
+                    currentChildClasses?.map { it.id }?.contains(childClass.id) == true
+                }
+            }
+            _selectedChildClass.update {
+                val foundChildClass = allChildClasses.find { childClass ->
+                    selectedChildClass.value?.id == childClass.id
+                }
+                foundChildClass
+            }
+        }
     }
 
     fun getAllChildClasses(){
         viewModelScope.launch{
             try {
                 val allChildClasses = repo.getAllChildClasses()
-                _allChildClasses.value = allChildClasses
+                _allChildClasses.update {
+                    allChildClasses
+                }
             } catch (e: Exception) {
                 Log.e("failed to get all child classes", e.message.toString())
             }
@@ -75,26 +105,49 @@ class ChildClassViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                repo.createChildClass(
-                    selectedCenter = selectedCenter,
-                    childClass = newChildClass
-                )
-            } catch(e : Exception) {
-                Log.e("failed to create child class", e.message.toString())
+                val response = repo.createChildClass(selectedCenter = selectedCenter, childClass = newChildClass)
+
+                if (response.isSuccessful) {
+                    val newChildClassResponse = response.body() ?: throw Exception("ChildClass 정보가 비어있습니다.")
+                    _allChildClasses.update { currentChildClasses ->
+                        currentChildClasses?.let {
+                            // 현재 ChildClass 리스트가 null이 아니면 새 ChildClass 추가
+                            it + newChildClassResponse
+                        } ?: listOf(newChildClassResponse) // 현재 ChildClass 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("ChildClass 추가 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to add ChildClass", e.message.toString())
             }
-            getAllChildClasses()
         }
 
     }
 
     fun updateChildClass(selectedChildClass: ChildClassResponse, updateChildClass: ChildClassRequest) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             try {
-                repo.updateChildClass(selectedChildClass, updateChildClass)
+                val response = repo.updateChildClass(selectedChildClass = selectedChildClass, updateChildClass = updateChildClass)
+
+                if (response.isSuccessful) {
+                    val updatedChildClass = response.body() ?: throw Exception("ChildClass 정보가 비어있습니다.")
+                    _allChildClasses.update {
+                        allChildClasses.value?.let { allChildClasses ->
+                            allChildClasses.map { if (it.id == updatedChildClass.id) updatedChildClass else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("ChildClass 업데이트 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
-                Log.e("failed to update child class", e.message.toString())
+                Log.e("failed to update ChildClass", e.message.toString())
             }
-            getAllChildClasses()
         }
 
     }
@@ -110,7 +163,6 @@ class ChildClassViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to delete child class", e.message.toString())
             }
-
             getAllChildClasses()
         }
 

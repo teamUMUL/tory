@@ -39,8 +39,8 @@ class LTORepoImpl: LTORepo {
         return ltoRetrofit.getLtoList(studentId = studentId)
     }
 
-    override suspend fun getLTOsByStudent(domainId : Long): List<LtoResponse> {
-        return ltoRetrofit.getLtoListByStudent(domainId = domainId)
+    override suspend fun getLTOsByStudent(domainId : Long, studentId: Long): List<LtoResponse> {
+        return ltoRetrofit.getLtoListByStudent(domainId = domainId, studentId = studentId)
     }
 
     override suspend fun deleteLTO(selectedLTO: LtoResponse) : Response<Boolean> {

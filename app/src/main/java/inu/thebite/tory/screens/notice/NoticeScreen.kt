@@ -20,16 +20,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.components.NoticeDateColumn
 import inu.thebite.tory.screens.notice.components.NoticeInfoColumn
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 
 @Composable
 fun NoticeScreen(
     noticeViewModel: NoticeViewModel,
     stoViewModel: STOViewModel,
-    ltoViewModel: LTOViewModel
+    ltoViewModel: LTOViewModel,
+    navController: NavController,
+    selectedChild: StudentResponse?,
+    childSelectViewModel: ChildSelectViewModel
 ) {
     val selectedNoticeDates by noticeViewModel.selectedNoticeDates.collectAsState()
     val selectedNoticeDate by noticeViewModel.selectedNoticeDate.collectAsState()
@@ -47,9 +53,24 @@ fun NoticeScreen(
 //        selectedNoticeDates?.let {selectedNoticeDates ->
 //            noticeViewModel.getNoticeDateList(studentId = 1L, year = extractYearsAndMonths(selectedNoticeDates).first.first(), month = extractYearsAndMonths(selectedNoticeDates).second.first())
 //        }
-        ltoViewModel.getAllLTOs(studentId = 1L)
-        stoViewModel.getAllSTOs(studentId = 1L)
-        noticeViewModel.getNoticeYearsAndMonths(studentId = 1L)
+        selectedChild?.let { selectedChild ->
+            ltoViewModel.getAllLTOs(studentId = selectedChild.id)
+            stoViewModel.getAllSTOs(studentId = selectedChild.id)
+            noticeViewModel.getNoticeYearsAndMonths(studentId = selectedChild.id)
+        }
+
+    }
+
+    LaunchedEffect(selectedChild){
+
+        selectedChild?.let { selectedChild ->
+            Log.d("clearAll", selectedChild.name.toString())
+
+//            noticeViewModel.clearAll()
+            ltoViewModel.getAllLTOs(studentId = selectedChild.id)
+            stoViewModel.getAllSTOs(studentId = selectedChild.id)
+            noticeViewModel.getNoticeYearsAndMonths(studentId = selectedChild.id)
+        }
     }
 
     LaunchedEffect(noticeYearAndMonthList) {
@@ -64,29 +85,34 @@ fun NoticeScreen(
     LaunchedEffect(selectedMonth) {
         selectedYear?.let {selectedYear ->
             selectedMonth?.let { selectedMonth ->
-                noticeViewModel.getNoticeDateList(
-                    studentId = 1L,
-                    year = selectedYear,
-                    month = selectedMonth
-                )
+                selectedChild?.let {selectedChild ->
+                    noticeViewModel.getNoticeDateList(
+                        studentId = selectedChild.id,
+                        year = selectedYear,
+                        month = selectedMonth
+                    )
+                }
             }
         }
     }
 
     LaunchedEffect(selectedNoticeDate) {
         selectedNoticeDate?.let { selectedNoticeDate ->
-            noticeViewModel.getNotice(
-                studentId = 1L,
-                year = selectedNoticeDate.year,
-                month = selectedNoticeDate.month.toString(),
-                date = selectedNoticeDate.date
-            )
-            noticeViewModel.getDetailList(
-                studentId = 1L,
-                year = selectedNoticeDate.year,
-                month = selectedNoticeDate.month.toString(),
-                date = selectedNoticeDate.date
-            )
+            selectedChild?.let {selectedChild ->
+                noticeViewModel.getNotice(
+                    studentId = selectedChild.id,
+                    year = selectedNoticeDate.year,
+                    month = selectedNoticeDate.month.toString(),
+                    date = selectedNoticeDate.date
+                )
+                noticeViewModel.getDetailList(
+                    studentId = selectedChild.id,
+                    year = selectedNoticeDate.year,
+                    month = selectedNoticeDate.month.toString(),
+                    date = selectedNoticeDate.date
+                )
+            }
+
         }
     }
 
@@ -118,7 +144,8 @@ fun NoticeScreen(
                         setSelectedYear = { noticeViewModel.setSelectedYear(it) },
                         selectedMonth = selectedMonth,
                         setSelectedMonth = { noticeViewModel.setSelectedMonth((it)) },
-                        noticeViewModel = noticeViewModel
+                        noticeViewModel = noticeViewModel,
+                        navController = navController
                     )
             } ?: Text(text = "데이터가 없습니다")
 
@@ -137,14 +164,17 @@ fun NoticeScreen(
                 if (selectedNoticeDate.date.isNotEmpty()) {
                     selectedNoticeDetailList?.let { selectedNoticeDetailList ->
                         selectedNotice?.let { selectedNotice ->
-                            NoticeInfoColumn(
-                                selectedDate = selectedNoticeDate,
-                                selectedNotice = selectedNotice,
-                                selectedNoticeDetailList = selectedNoticeDetailList,
-                                noticeViewModel = noticeViewModel,
-                                stoViewModel = stoViewModel,
-                                ltoViewModel = ltoViewModel
-                            )
+                            selectedChild?.let {selectedChild ->
+                                NoticeInfoColumn(
+                                    selectedDate = selectedNoticeDate,
+                                    selectedNotice = selectedNotice,
+                                    selectedChild = selectedChild,
+                                    selectedNoticeDetailList = selectedNoticeDetailList,
+                                    noticeViewModel = noticeViewModel,
+                                    stoViewModel = stoViewModel,
+                                    ltoViewModel = ltoViewModel
+                                )
+                            }
                         }
                     }
                 }

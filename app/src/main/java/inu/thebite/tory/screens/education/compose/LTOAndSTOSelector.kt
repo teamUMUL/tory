@@ -47,11 +47,13 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education.compose.sto.STOSelector
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 import kotlinx.coroutines.CoroutineScope
@@ -61,12 +63,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun LTOAndSTOSelector(
     modifier: Modifier = Modifier,
+    selectedChild: StudentResponse,
     selectedDEV: DomainResponse?,
     selectedLTO: LtoResponse?,
     selectedSTO: StoResponse?,
     ltos: List<LtoResponse>,
     ltoViewModel: LTOViewModel,
-    stoViewModel: STOViewModel
+    stoViewModel: STOViewModel,
+    dragAndDropViewModel: DragAndDropViewModel
 ) {
     val context = LocalContext.current
 
@@ -82,6 +86,7 @@ fun LTOAndSTOSelector(
         selectedDEV?.let { selectedDEV ->
             AddLTODialog(
                 context = context,
+                selectedChild = selectedChild,
                 setAddLTOItem = {setAddLTODialog(it)},
                 selectedDEV = selectedDEV,
                 ltoViewModel = ltoViewModel
@@ -220,7 +225,8 @@ fun LTOAndSTOSelector(
                         STOSelector(
                             lto = lto,
                             stoViewModel = stoViewModel,
-                            ltoViewModel = ltoViewModel
+                            ltoViewModel = ltoViewModel,
+                            dragAndDropViewModel = dragAndDropViewModel
                         )
                     }
                 }

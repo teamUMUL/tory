@@ -46,7 +46,13 @@ class TodoViewModel : ViewModel() {
     private fun observeTodoList() {
         viewModelScope.launch {
             todoResponse.onEach { todoList ->
-                todoList?.let { updateTempTodoList(it) }
+
+                todoList?.let {
+                    Log.d("updatedTempTodoList", todoList.stoList.toString()+isLoading.value.toString())
+                    Log.d("updatedTempTodoList", todoResponse.value!!.stoList.toString()+isLoading.value.toString())
+
+                    updateTempTodoList(it)
+                }
             }.collect()
         }
     }
@@ -60,12 +66,8 @@ class TodoViewModel : ViewModel() {
     fun updateTempTodoList(
         todoList: TodoResponse
     ){
-        try {
-            _tempTodoResponse.update {
-                todoList
-            }
-            Log.d("updatedTempTodoList", todoList.stoList.toString()+isLoading.value.toString())
-        } finally {
+        _tempTodoResponse.update {
+            todoList
         }
     }
 
@@ -82,6 +84,7 @@ class TodoViewModel : ViewModel() {
                     _todoResponse.update {
                         newTodoResponse
                     }
+                    Log.d("newTodoResponse", newTodoResponse.stoList.toString())
 
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
@@ -105,9 +108,11 @@ class TodoViewModel : ViewModel() {
 
                 if (response.isSuccessful) {
                     val updatedTodoResponse = response.body() ?: throw Exception("Todo 정보가 비어있습니다.")
+                    Log.d("updatedTOdoResponseAtUpdate", updatedTodoResponse.stoList.toString())
                     _todoResponse.update {
                         updatedTodoResponse
                     }
+
 
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
@@ -189,7 +194,7 @@ class TodoViewModel : ViewModel() {
                 }
             }
         }
-        Log.d("updatedTOdoResponse", tempTodoResponse.value.toString())
+        Log.d("updatedTOdoResponse", tempTodoResponse.value!!.stoList.toString())
 
     }
 }

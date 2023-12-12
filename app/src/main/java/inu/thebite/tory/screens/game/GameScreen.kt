@@ -101,7 +101,7 @@ fun GameScreen(
                     val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
                     imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
                         dragAndDropViewModel.setMainItem(foundImage)
-                        dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(mainItem!!.category.name))
+                        dragAndDropViewModel.resetMainItemsGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
                     }
 
                 } else {
@@ -124,21 +124,23 @@ fun GameScreen(
                         setFirstSuccessImage(mainItem!!)
                         setSecondSuccessImage(mainItem!!)
                         setSuccessDialog(true)
-                    }
-                    if (oneGameResult != "+"){
-                        stoViewModel.addPoint(selectedSTO, AddPointRequest(result = oneGameResult!!, registrant = "테스트"))
-                        if (oneGameResult != "-"){
-                            if(dragAndDropViewModel.isRandomGame){
-                                val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
-                                imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
-                                    dragAndDropViewModel.setMainItem(
-                                        foundImage
-                                    )
+                    } else {
+                        if (oneGameResult != "+"){
+                            stoViewModel.addPoint(selectedSTO, AddPointRequest(result = oneGameResult!!, registrant = "테스트"))
+                            if (oneGameResult != "-"){
+                                if(dragAndDropViewModel.isRandomGame){
+                                    val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
+                                    imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                                        dragAndDropViewModel.setMainItem(
+                                            foundImage
+                                        )
+                                    }
                                 }
                             }
+                            gameViewModel.clearOneGameResult()
                         }
-                        gameViewModel.clearOneGameResult()
                     }
+
                 }
             }
         }
@@ -155,26 +157,28 @@ fun GameScreen(
                         Log.d("reset", "addSecondImage")
                         Log.d("reset", secondMainItem!!.name)
                         setSuccessDialog(true)
-                    }
-                    if(gameViewModel.oneGameResult.value != "+"){
-                        stoViewModel.addPoint(selectedSTO, AddPointRequest(oneGameResult!!, registrant = "테스트"))
-                        if(oneGameResult != "-"){
-                            if(dragAndDropViewModel.isRandomGame){
-                                val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
-                                imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
-                                    dragAndDropViewModel.setMainItem(foundImage)
-                                    dragAndDropViewModel.resetMainItemsGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                    } else {
+                        if(gameViewModel.oneGameResult.value != "+"){
+                            stoViewModel.addPoint(selectedSTO, AddPointRequest(oneGameResult!!, registrant = "테스트"))
+                            if(oneGameResult != "-"){
+                                if(dragAndDropViewModel.isRandomGame){
+                                    val randomMainItem = targetItems!![getRandomIndex(targetItems!!.size)]
+                                    imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+                                        dragAndDropViewModel.setMainItem(foundImage)
+                                        dragAndDropViewModel.resetMainItemsGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                    }
+                                } else {
+                                    dragAndDropViewModel.resetMainItemsGeneralMode(
+                                        imagesByCategory = imageViewModel.getImagesByCategory(mainItem!!.category.name)
+                                    )
+
                                 }
-                            } else {
-                                dragAndDropViewModel.resetMainItemsGeneralMode(
-                                    imagesByCategory = imageViewModel.getImagesByCategory(mainItem!!.category.name)
-                                )
-
                             }
-                        }
 
-                        gameViewModel.clearOneGameResult()
+                            gameViewModel.clearOneGameResult()
+                        }
                     }
+
 
                 }
             }

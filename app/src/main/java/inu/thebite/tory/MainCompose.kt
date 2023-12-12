@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -145,6 +146,13 @@ fun MainCompose(
         }
     }
 
+    LaunchedEffect(selectedChildInfo){
+        selectedChildInfo?.let {selectedChildInfo ->
+            ltoViewModel.getAllLTOs(studentId = selectedChildInfo.id)
+            stoViewModel.getAllSTOs(studentId = selectedChildInfo.id)
+        }
+    }
+
     if (childDialogOpen) {
         Dialog(
             onDismissRequest = { setChildDialogOpen(false) }
@@ -251,6 +259,7 @@ fun MainCompose(
                                         childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
 //                                        ltoViewModel.clearSelectedLTO()
 //                                        stoViewModel.clearSelectedSTO()
+                                        noticeViewModel.clearAll()
                                         setChildDialogOpen(false)
                                     }
                                 ) {
@@ -363,6 +372,7 @@ fun MainCompose(
 //        )
 //
 //    }
+
     val purpleGradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
     )
@@ -533,14 +543,18 @@ fun MainCompose(
                                             .fillMaxWidth()
                                             .fillMaxHeight()
                                     ) {
-                                        ScheduleTopBar(
-                                            modifier = Modifier.weight(4f),
-                                            currentRoute = currentRoute,
-                                            devViewModel = devViewModel,
-                                            ltoViewModel = ltoViewModel,
-                                            stoViewModel = stoViewModel,
-                                            todoViewModel = todoViewModel
-                                        )
+                                        selectedChildInfo?.let {selectedChildInfo ->
+                                            ScheduleTopBar(
+                                                modifier = Modifier.weight(4f),
+                                                selectedChild = selectedChildInfo,
+                                                currentRoute = currentRoute,
+                                                devViewModel = devViewModel,
+                                                ltoViewModel = ltoViewModel,
+                                                stoViewModel = stoViewModel,
+                                                todoViewModel = todoViewModel,
+                                                childSelectViewModel = childSelectViewModel
+                                            )
+                                        }
 
 
                                         Row(
@@ -555,9 +569,9 @@ fun MainCompose(
                                                 modifier = Modifier.fillMaxHeight(),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                selectedCenter?.let { Text(text = it.name) }
-                                                selectedChildClass?.let { Text(text = " > " + it.name) }
-                                                selectedChildInfo?.let { Text(text = " > " + it.name) }
+                                                selectedCenter?.let { Text(text = it.name, color = Color.White) }
+                                                selectedChildClass?.let { Text(text = " > " + it.name, color = Color.White) }
+                                                selectedChildInfo?.let { Text(text = " > " + it.name, color = Color.White) }
                                             }
                                             IconButton(onClick = {
                                                 setChildDialogOpen(true)
@@ -598,9 +612,9 @@ fun MainCompose(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                            selectedCenter?.let { Text(text = it.name) }
-                                            selectedChildClass?.let { Text(text = " > "+it.name) }
-                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                            selectedCenter?.let { Text(text = it.name, color = Color.White) }
+                                            selectedChildClass?.let { Text(text = " > "+it.name, color = Color.White) }
+                                            selectedChildInfo?.let { Text(text = " > "+it.name, color = Color.White) }
                                         }
                                         IconButton(onClick = {
                                             setChildDialogOpen(true)
@@ -681,6 +695,7 @@ fun MainCompose(
                         childSelectViewModel = childSelectViewModel,
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel,
+                        stoViewModel = stoViewModel,
                         navigateToEducation = { navController.navigate(AllDestinations.EDUCATION) },
                         navigateToNotice = {navController.navigate(AllDestinations.NOTICE)}
                     )
@@ -692,16 +707,20 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.EDUCATION) {
-                    NewEducationScreen(
-                        devViewModel = devViewModel,
-                        ltoViewModel = ltoViewModel,
-                        stoViewModel = stoViewModel,
-                        imageViewModel = imageViewModel,
-                        dragAndDropViewModel = dragAndDropViewModel,
-                        gameViewModel = gameViewModel,
-                        todoViewModel = todoViewModel,
-                        noticeViewModel = noticeViewModel
-                    )
+                    selectedChildInfo?.let { selectedChildInfo ->
+                        NewEducationScreen(
+                            selectedChild = selectedChildInfo,
+                            devViewModel = devViewModel,
+                            ltoViewModel = ltoViewModel,
+                            stoViewModel = stoViewModel,
+                            imageViewModel = imageViewModel,
+                            dragAndDropViewModel = dragAndDropViewModel,
+                            gameViewModel = gameViewModel,
+                            todoViewModel = todoViewModel,
+                            noticeViewModel = noticeViewModel,
+                            childSelectViewModel = childSelectViewModel
+                        )
+                    } ?: NoChildSelect()
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,
 //                        childSelectViewModel = childSelectViewModel,
@@ -715,11 +734,16 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.NOTICE) {
-                    NoticeScreen(
-                        noticeViewModel = noticeViewModel,
-                        stoViewModel = stoViewModel,
-                        ltoViewModel = ltoViewModel
-                    )
+                    selectedChildInfo?.let { selectedChildInfo ->
+                        NoticeScreen(
+                            noticeViewModel = noticeViewModel,
+                            stoViewModel = stoViewModel,
+                            ltoViewModel = ltoViewModel,
+                            navController = navController,
+                            selectedChild = selectedChildInfo,
+                            childSelectViewModel = childSelectViewModel
+                        )
+                    } ?: NoChildSelect()
                 }
 
                 composable(AllDestinations.SETTING) {
@@ -731,9 +755,9 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.READY) {
-                    ReadyScreen(
-                        imageViewModel = imageViewModel
-                    )
+//                    ReadyScreen(
+//                        imageViewModel = imageViewModel
+//                    )
                 }
             }
         }
@@ -1078,4 +1102,27 @@ fun ChildInfoControl(
     }
 }
 
+@Composable
+fun NoChildSelect(
 
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "아이를 선택해주세요",
+            style = TextStyle(
+                fontSize = 28.sp,
+                lineHeight = 28.sp,
+                fontFamily = fontFamily_Inter,
+                fontWeight = FontWeight(600),
+                color = Color.Black,
+                letterSpacing = 0.24.sp,
+            )
+        )
+
+    }
+}

@@ -1,24 +1,20 @@
 package inu.thebite.tory.screens.setting.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
-import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepo
+import inu.thebite.tory.model.student.UpdateStudentRequest
 import inu.thebite.tory.repositories.ChildInfo.ChildInfoRepoImpl
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.java.KoinJavaComponent.inject
 import java.lang.Exception
 
 class ChildInfoViewModel : ViewModel(){
@@ -48,13 +44,41 @@ class ChildInfoViewModel : ViewModel(){
     }
     init {
         getAllChildInfos()
+        observeAllChildClasses()
+    }
+
+    private fun observeAllChildClasses() {
+        viewModelScope.launch {
+
+            allChildInfos.onEach { allChildInfos ->
+                updateChildInfosAndSelectedChildInfo(allChildInfos)
+            }.collect()
+        }
+    }
+
+    private fun updateChildInfosAndSelectedChildInfo(allChildInfos: List<StudentResponse>?) {
+        allChildInfos?.let { allChildInfos ->
+            _childInfos.update {currentChildInfos ->
+                allChildInfos.filter {childInfo ->
+                    currentChildInfos?.map { it.id }?.contains(childInfo.id) == true
+                }
+            }
+            _selectedChildInfo.update {
+                val foundChildClass = allChildInfos.find { childInfo ->
+                    selectedChildInfo.value?.id == childInfo.id
+                }
+                foundChildClass
+            }
+        }
     }
 
     fun getAllChildInfos(){
         viewModelScope.launch{
             try {
                 val allChildInfos = repo.getAllChildInfos()
-                _allChildInfos.value = allChildInfos
+                _allChildInfos.update {
+                    allChildInfos
+                }
             } catch (e: Exception) {
                 Log.e("failed to get all students", e.message.toString())
             }
@@ -67,9 +91,11 @@ class ChildInfoViewModel : ViewModel(){
         if(selectedClass.isNotNull()){
             _childInfos.update {
                 val filteredChildInfos = allChildInfos.value!!.filter {
-                    it.id == selectedClass.id
+                    it.childClass.id == selectedClass.id
                 }
+                Log.d("allChildInfos", filteredChildInfos.toString())
                 filteredChildInfos
+
             }
         }else{
             _childInfos.update { null }
@@ -80,25 +106,53 @@ class ChildInfoViewModel : ViewModel(){
         selectedChildClass : ChildClassResponse,
         newChildInfo : AddStudentRequest
     ) {
-        viewModelScope.launch{
+        viewModelScope.launch {
             try {
-                repo.createChildInfo(
-                    selectedChildClass,
-                    newChildInfo
-                )
+                val response = repo.createChildInfo(selectedChildClass = selectedChildClass, newChildInfo = newChildInfo)
+
+                if (response.isSuccessful) {
+                    val newChildInfoResponse = response.body() ?: throw Exception("ChildInfo 정보가 비어있습니다.")
+                    _allChildInfos.update { currentChildInfos ->
+                        currentChildInfos?.let {
+                            // 현재 ChildInfo 리스트가 null이 아니면 새 ChildInfo 추가
+                            it + newChildInfoResponse
+                        } ?: listOf(newChildInfoResponse) // 현재 ChildInfo 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("ChildInfo 추가 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
-                Log.e("failed to create student", e.message.toString())
+                Log.e("failed to add ChildInfo", e.message.toString())
             }
-            getAllChildInfos()
         }
     }
 
-//    fun updateChildInfo(updatedChildInfoEntity: ChildInfoEntity) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.upda(updatedChildInfoEntity)
-//        }
-//
-//    }
+    fun updateChildInfo(selectedChildInfo: StudentResponse, updateChildInfo: UpdateStudentRequest) {
+        viewModelScope.launch {
+            try {
+                val response = repo.updateStudent(childInfo = selectedChildInfo, updateStudentRequest = updateChildInfo)
+
+                if (response.isSuccessful) {
+                    val updatedChildInfo = response.body() ?: throw Exception("ChildInfo 정보가 비어있습니다.")
+                    _allChildInfos.update {
+                        allChildInfos.value?.let { allChildInfos ->
+                            allChildInfos.map { if (it.id == updatedChildInfo.id) updatedChildInfo else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("ChildInfo 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update ChildInfo", e.message.toString())
+            }
+        }
+
+    }
 
     fun deleteChildInfo(selectedChildInfo: StudentResponse) {
         viewModelScope.launch {

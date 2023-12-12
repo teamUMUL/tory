@@ -47,6 +47,7 @@ import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
@@ -55,6 +56,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @Composable
 fun NoticeItemTextField(
     selectedDate: DateResponse,
+    selectedChild: StudentResponse,
     selectedDetail: DetailGraphResponse,
     noticeViewModel: NoticeViewModel
 ) {
@@ -147,7 +149,7 @@ fun NoticeItemTextField(
                     onClick = {
                         isLTOCommentReadOnly.value = !isLTOCommentReadOnly.value
                         noticeViewModel.updateLTOComment(
-                            studentId = 1L,
+                            studentId = selectedChild.id,
                             year = selectedDate.year,
                             month = selectedDate.month.toString(),
                             date = selectedDate.date,

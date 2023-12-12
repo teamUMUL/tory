@@ -1,5 +1,6 @@
 package inu.thebite.tory.schedule
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,9 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
+import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -66,10 +70,13 @@ fun DragDropList(
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
+    todoViewModel: TodoViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ) {
     val scope = rememberCoroutineScope()
     var overScrollJob by remember { mutableStateOf<Job?>(null)}
     val dragDropListState = rememberDragDropListState(onMove = onMove)
+    val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
 
 
     LazyRow(
@@ -95,7 +102,15 @@ fun DragDropList(
                     onDragStart = {offset ->  dragDropListState.onDragStart(offset)},
                     onDragEnd = {
                         dragDropListState.onDragInterrupted()
-                        onDragEnd()
+                        Log.d("resultTempTodoResponseSTOList", todoViewModel.tempTodoResponse.value!!.stoList.toString())
+                        selectedChild?.let {selectedChild ->
+                            todoViewModel.updateTodoList(
+                                studentId = selectedChild.id,
+                                updateTodoList = UpdateTodoList(
+                                    todoViewModel.tempTodoResponse.value!!.stoList
+                                )
+                            )
+                        }
                     },
                     onDragCancel = {
                         dragDropListState.onDragInterrupted()

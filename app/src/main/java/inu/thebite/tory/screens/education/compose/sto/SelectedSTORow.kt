@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.compose.sto
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.DisplayMetrics
 import android.util.Log
@@ -61,6 +62,8 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.model.sto.UpdateStoRequest
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.todo.TodoListRequest
 import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
@@ -84,6 +87,7 @@ import kotlin.random.Random
 @Composable
 fun SelectedSTORow(
     modifier: Modifier = Modifier,
+    selectedChild: StudentResponse,
     selectedLTO: LtoResponse?,
     selectedSTO: StoResponse?,
     todoList: TodoResponse?,
@@ -266,58 +270,77 @@ fun SelectedSTORow(
             ) {
                 OutlinedButton(
                     onClick = {
-                        selectedLTO?.let {selectedLTO ->
-                            when(selectedLTO.game){
-                                "같은 사진 매칭" -> {
-                                    //타겟 아이템 설정
-                                    dragAndDropViewModel.setTargetItems(
-                                        imageViewModel.findImagesByNames(selectedSTO.imageList)
-                                    )
-                                    //타겟 아이템 설정 확인
-                                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
-                                        //타겟 아이템 설정 후 랜덤 유무 설정
-                                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
-                                            //선택한 메인 아이템이 있을 경우 랜덤게임이 아니라고 설정
-                                            dragAndDropViewModel.isNotRandomGame()
-                                        } else {
-                                            //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
-                                            dragAndDropViewModel.setMainItem(
-                                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                                            )
-                                            dragAndDropViewModel.isRandomGame()
-                                        }
 
-                                        setGameDialog(true)
-                                    } else {
-                                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                        if (selectedSTO.imageList.isNotEmpty()){
+                            selectedLTO?.let {selectedLTO ->
+                                when(selectedLTO.game){
+                                    "같은 사진 매칭" -> {
+                                        //타겟 아이템 설정
+                                        dragAndDropViewModel.setTargetItems(
+                                            imageViewModel.findImagesByNames(selectedSTO.imageList)
+                                        )
+                                        //타겟 아이템 설정 확인
+                                        if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
+                                            //타겟 아이템 설정 후 랜덤 유무 설정
+                                            if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                                                //선택한 메인 아이템이 있을 경우 랜덤게임이 아니라고 설정
+                                                dragAndDropViewModel.isNotRandomGame()
+                                            } else {
+                                                //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
+                                                dragAndDropViewModel.setMainItem(
+                                                    dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                                )
+                                                dragAndDropViewModel.isRandomGame()
+                                            }
+
+                                            setGameDialog(true)
+                                        } else {
+                                            Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                                        }
                                     }
-                                }
-                                "일반화 매칭" -> {
-                                    //타겟 아이템 설정
-                                    dragAndDropViewModel.setTargetItems(
-                                        imageViewModel.findImagesByNames(selectedSTO.imageList)
-                                    )
-                                    //타겟 아이템 설정 확인
-                                    if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
-                                        //타겟 아이템 설정 후 랜덤 유무 확인
-                                        if(dragAndDropViewModel.mainItem.value.isNotNull()){
-                                            dragAndDropViewModel.isNotRandomGame()
-                                        } else {
-                                            //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
-                                            dragAndDropViewModel.setMainItem(
-                                                dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                                            )
-                                            dragAndDropViewModel.isRandomGame()
-                                        }
-                                        dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
-                                        setGameDialog(true)
+                                    "일반화 매칭" -> {
+                                        //타겟 아이템 설정
+                                        dragAndDropViewModel.setTargetItems(
+                                            imageViewModel.findImagesByNames(selectedSTO.imageList)
+                                        )
+                                        //타겟 아이템 설정 확인
+                                        if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
+                                            //타겟 아이템 설정 후 랜덤 유무 확인
+                                            if(dragAndDropViewModel.mainItem.value.isNotNull()){
+                                                dragAndDropViewModel.isNotRandomGame()
+                                            } else {
+                                                //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
+                                                dragAndDropViewModel.setMainItem(
+                                                    dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+                                                )
+                                                dragAndDropViewModel.isRandomGame()
+                                            }
+                                            dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+                                            setGameDialog(true)
 
-                                    } else {
-                                        Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                                        } else {
+                                            Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
+                                        }
                                     }
                                 }
                             }
+                            //내용 변경
+                            stoViewModel.updateSTO(selectedSTO = selectedSTO, updateSTO = UpdateStoRequest(
+                                name = selectedSTO.name,
+                                contents = getSTODescription(selectedSTO = selectedSTO, isRandom = dragAndDropViewModel.isRandomGame, dragAndDropViewModel = dragAndDropViewModel),
+                                count = selectedSTO.count,
+                                goal = selectedSTO.goal,
+                                urgeType = selectedSTO.urgeType,
+                                urgeContent = selectedSTO.urgeContent,
+                                enforceContent = selectedSTO.enforceContent,
+                                memo = selectedSTO.memo
+                            )
+                            )
+                        } else {
+                            Toasty.warning(context, "사진을 선택해주세요", Toast.LENGTH_SHORT, true).show()
+
                         }
+
                     },
 
                     shape = RoundedCornerShape(10.dp),
@@ -348,11 +371,11 @@ fun SelectedSTORow(
                                 val deleteList = todoList.stoList.map { it }.toMutableList()
                                 deleteList.remove(selectedSTO.id)
                                 //삭제
-                                todoViewModel.updateTodoList(studentId = 1L, updateTodoList = UpdateTodoList(stoList = deleteList))
+                                todoViewModel.updateTodoList(studentId = selectedChild.id, updateTodoList = UpdateTodoList(stoList = deleteList))
                             } else {
-                                todoViewModel.addTodoList(studentId = 1L, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
+                                todoViewModel.addTodoList(studentId = selectedChild.id, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
                             }
-                        } ?: todoViewModel.addTodoList(studentId = 1L, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
+                        } ?: todoViewModel.addTodoList(studentId = selectedChild.id, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
                     }
                 ) {
 
@@ -541,4 +564,80 @@ fun GameDialog(
 }
 fun getRandomIndex(itemSize: Int): Int {
     return Random.nextInt(0, itemSize)
+}
+
+
+@SuppressLint("SuspiciousIndentation")
+fun getSTODescription(selectedSTO : StoResponse, isRandom : Boolean, dragAndDropViewModel: DragAndDropViewModel): String {
+
+
+    var gameItemsByKorean = ""
+        selectedSTO.imageList.forEachIndexed { index, gameItem ->
+            gameItemsByKorean += if(index == 0){
+                englishToKorean(extractWord(gameItem))
+            } else {
+                ", ${englishToKorean(extractWord(gameItem))}"
+            }
+    }
+
+    val description =
+        if (isRandom){
+            "${selectedSTO.imageList.size} Array\n목표아이템 : 랜덤\n예시아이템 : $gameItemsByKorean "
+        } else {
+            "${selectedSTO.imageList.size} Array\n목표아이템 :${englishToKorean(extractWord(dragAndDropViewModel.mainItem.value!!.name))}\n예시아이템 : $gameItemsByKorean"
+
+        }
+
+    return description
+}
+fun extractWord(input: String): String {
+    val regex = "([a-zA-Z]+)_\\d+".toRegex()
+    val matchResult = input.let { regex.find(it) }
+
+    return matchResult?.groups?.get(1)?.value ?: input
+}
+
+@SuppressLint("DiscouragedApi")
+fun getResourceIdByName(imageName: String, context: Context): Int {
+    // 이 함수는 이미지 리소스 이름을 리소스 ID로 변환합니다.
+    val packageName = context.packageName
+    return context.resources.getIdentifier(imageName, "drawable", packageName)
+}
+
+fun englishToKorean(english : String):String{
+    var korean = ""
+    when(english){
+        "Ball" -> {
+            korean = "공"
+        }
+        "Block" -> {
+            korean = "블록"
+        }
+        "Watch" -> {
+            korean = "시계"
+        }
+        "ColorPencil" -> {
+            korean = "색연필"
+        }
+        "Cup" -> {
+            korean = "컵"
+        }
+        "Doll" -> {
+            korean = "인형"
+        }
+        "Scissors" -> {
+            korean = "가위"
+        }
+        "Socks" -> {
+            korean = "양말"
+        }
+        "Spoon" -> {
+            korean = "숫가락"
+        }
+        "ToothBrush" -> {
+            korean = "칫솔"
+        }
+        else -> korean = english
+    }
+    return korean
 }

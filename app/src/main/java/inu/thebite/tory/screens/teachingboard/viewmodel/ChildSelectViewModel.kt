@@ -75,7 +75,7 @@ class ChildSelectViewModel : ViewModel() {
         if(selectedClass.isNotNull()){
             _childInfos.update {
                 val filteredChildInfos = allChildInfos.value!!.filter {
-                    it.id == selectedClass.id
+                    it.childClass.id == selectedClass.id
                 }
                 filteredChildInfos
             }

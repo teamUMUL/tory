@@ -25,20 +25,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 
 @Composable
 fun ScheduleTopBar(
     modifier: Modifier = Modifier,
     currentRoute: String,
+    selectedChild: StudentResponse,
 //    dummySTOList : MutableList<StoResponse>,
     todoViewModel: TodoViewModel,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
-    stoViewModel: STOViewModel
+    stoViewModel: STOViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ) {
     val todoList by todoViewModel.todoResponse.collectAsState()
     val tempTodoList by todoViewModel.tempTodoResponse.collectAsState()
@@ -48,11 +52,20 @@ fun ScheduleTopBar(
     val isSTOListLoading by stoViewModel.isSTOListLoading.collectAsState()
     val todoSTOList by stoViewModel.todoSTOList.collectAsState()
 
+    val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
 
 //    var result = listOf<Long>()
     LaunchedEffect(Unit){
-        stoViewModel.getAllSTOs(studentId = 1L)
-        todoViewModel.getTodoList(studentId = 1L)
+        selectedChild?.let { selectedChild ->
+            stoViewModel.getAllSTOs(studentId = selectedChild.id)
+            todoViewModel.getTodoList(studentId = selectedChild.id)
+        }
+    }
+
+    LaunchedEffect(selectedChild){
+        selectedChild?.let {selectedChild ->
+            todoViewModel.getTodoList(studentId = selectedChild.id)
+        }
     }
 
 //    LaunchedEffect(tempTodoList){
@@ -109,17 +122,13 @@ fun ScheduleTopBar(
                                     Log.d("resultTempTodoResponseSTOList", todoViewModel.tempTodoResponse.value!!.stoList.toString())
                                 },
                                 onDragEnd = {
-                                    Log.d("resultTempTodoResponseSTOList", todoViewModel.tempTodoResponse.value!!.stoList.toString())
-                                    todoViewModel.updateTodoList(
-                                        studentId = 1L,
-                                        updateTodoList = UpdateTodoList(
-                                            todoViewModel.tempTodoResponse.value!!.stoList
-                                        )
-                                    )
+
                                 },
                                 devViewModel = devViewModel,
                                 ltoViewModel = ltoViewModel,
-                                stoViewModel = stoViewModel
+                                stoViewModel = stoViewModel,
+                                todoViewModel = todoViewModel,
+                                childSelectViewModel = childSelectViewModel
                             )
                         }
                     }

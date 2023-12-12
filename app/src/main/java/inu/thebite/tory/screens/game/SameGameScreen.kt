@@ -55,6 +55,8 @@ fun SameGameScreen(
     resetGameButtonIndex : () -> Unit,
     setIsCardSelectEnd : (Boolean) -> Unit,
 ){
+    val successURL = "https://storage.googleapis.com/download/storage/v1/b/tory-image-repository/o/Etc%2FEtc_1?generation=1702363879464947&alt=media"
+
     val group1Size = (targetItems.size + 1) / 2
     val group1 = targetItems.subList(0, group1Size)
     val group2 = targetItems.subList(group1Size, targetItems.size)
@@ -93,8 +95,8 @@ fun SameGameScreen(
                                     if(dragInGameItem.name == gameItem.name){
                                         dragAndDropViewModel.updateGameItem(
                                             dragInGameItem.copy(
-                                                url = imageViewModel.findImageByName(imageName = "Correct")?.url
-                                                    ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                url = imageViewModel.findImageByName(imageName = "Etc_1")?.url
+                                                    ?: successURL
                                             )
                                         )
                                         dragAndDropViewModel.isCorrect()
@@ -183,8 +185,8 @@ fun SameGameScreen(
                                         if(dragInGameItem.name == gameItem.name){
                                             dragAndDropViewModel.updateGameItem(
                                                 dragInGameItem.copy(
-                                                    url = imageViewModel.findImageByName(imageName = "Correct")?.url
-                                                        ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                    url = imageViewModel.findImageByName(imageName = "Etc_1")?.url
+                                                        ?: successURL
                                                 )
                                             )
                                             dragAndDropViewModel.isCorrect()
@@ -266,8 +268,8 @@ fun SameGameScreen(
                                         if(dragInGameItem.name == gameItem.name){
                                             dragAndDropViewModel.updateGameItem(
                                                 dragInGameItem.copy(
-                                                    url = imageViewModel.findImageByName(imageName = "Correct")?.url
-                                                        ?: "https://storage.googleapis.com/tory-image-repository/Etc/Correct.png"
+                                                    url = imageViewModel.findImageByName(imageName = "Etc_1")?.url
+                                                        ?: successURL
                                                 )
                                             )
                                             dragAndDropViewModel.isCorrect()

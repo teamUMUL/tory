@@ -55,7 +55,7 @@ interface RetrofitService {
     @PATCH("/centers/{centerId}")
     suspend fun updateCenter(@Path("centerId")  centerId: Long, @Body updateCenterRequest: CenterRequest): Response<CenterResponse>
 
-    @GET("/centers/abcde")
+    @GET("/centers/tory")
     suspend fun getCenterList(): List<CenterResponse>
 
     @DELETE("/centers/{centerId}")
@@ -128,8 +128,8 @@ interface RetrofitService {
     /**
      * 학생 별로 LTO 리스트 가져오는 Api
      */
-    @GET("/{domainId}/1/ltos")
-    suspend fun getLtoListByStudent(@Path("domainId") domainId: Long): List<LtoResponse>
+    @GET("/{domainId}/{studentId}/ltos")
+    suspend fun getLtoListByStudent(@Path("domainId") domainId: Long, @Path("studentId") studentId: Long): List<LtoResponse>
 
     @GET("/ltos/{ltoId}/graphs")
     suspend fun getLtoGraph(@Path("ltoId") ltoId: Long) : List<LtoGraphResponse>
