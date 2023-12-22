@@ -20,12 +20,8 @@ import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.model.point.AddPointRequest
-import inu.thebite.tory.model.point.DeletePointRequest
-import inu.thebite.tory.model.point.PointResponse
-import inu.thebite.tory.model.point.UpdatePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
@@ -40,7 +36,6 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -216,21 +211,20 @@ interface RetrofitService {
     @GET("/notices/{studentId}/dates")
     suspend fun getNoticeDates(@Path("studentId") studentId: Long) : Response<List<NoticeDatesResponse>>
 
-    @POST("/notices/{studentId}")
-    suspend fun createSharePdf(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Body convertPdfRequest: ConvertPdfRequest) : Response<String>
+    /** http://{서버 ip}:8081/notices/{studentId}/reports?year=2023&month=12&date=12*/
+    @POST("/notices/{studentId}/reports")
+    suspend fun showWebView(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<Void>
 
     /**
      * Detail Api = 각 LTO 상세 부분 알림장
      */
     @POST("/details/{studentId}")
-    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long) : Response<DetailResponse>
+    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<DetailResponse>
 
     @PATCH("/details/{studentId}")
     suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>
 
     @GET("/details/{studentId}")
     suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<List<DetailGraphResponse>>
-
-
 
 }

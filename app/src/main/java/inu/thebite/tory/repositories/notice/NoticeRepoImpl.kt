@@ -8,7 +8,6 @@ import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.retrofit.RetrofitApi
-import inu.thebite.tory.screens.notice.NoticeDate
 import retrofit2.Response
 
 class NoticeRepoImpl : NoticeRepo {
@@ -44,6 +43,6 @@ class NoticeRepoImpl : NoticeRepo {
     }
 
     override suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String, convertPdfRequest: ConvertPdfRequest): Response<String> {
-        return noticeRetrofit.createSharePdf(studentId = studentId, year = year, month = month, date = date, convertPdfRequest = convertPdfRequest)
+        return noticeRetrofit.shwoWebView(studentId = studentId, year = year, month = month, date = date, convertPdfRequest = convertPdfRequest)
     }
 }
