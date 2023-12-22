@@ -1,5 +1,7 @@
 package inu.thebite.tory
 
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -37,7 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -1106,6 +1110,9 @@ fun ChildInfoControl(
 fun NoChildSelect(
 
 ){
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize(),

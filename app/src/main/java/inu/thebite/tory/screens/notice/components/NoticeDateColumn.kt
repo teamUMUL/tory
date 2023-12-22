@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.notice.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.ParcelFileDescriptor
@@ -33,6 +34,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,6 +62,7 @@ import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun NoticeDateColumn(
     selectedNoticeDates: List<DateResponse>?,
@@ -79,7 +82,7 @@ fun NoticeDateColumn(
     val (noticePdfDialog, setNoticePdfDialog) = remember {
         mutableStateOf(false)
     }
-    val exampleURL = "https://docs.google.com/gview?embedded=true&url=https://storage.googleapis.com/tory-image-repository/report/%EA%B9%80%EC%95%84%EB%AC%B4%EA%B0%9C/2023-12-11.pdf"
+    val exampleURL = "https://www.google.co.kr/?hl=ko"
     if (noticePdfDialog) {
         Dialog(
             properties = DialogProperties(
@@ -88,34 +91,34 @@ fun NoticeDateColumn(
             onDismissRequest = { setNoticePdfDialog(false) }
         ) {
 
-            AndroidView(
-                factory = { context ->
-                    WebView(context).apply {
-                        webViewClient = WebViewClient()
-                        settings.javaScriptEnabled = true
-                        loadUrl(exampleURL)
-                    }
+            AndroidView(factory = { context ->
+                WebView(context).apply {
+                    webViewClient = WebViewClient()
+                    loadUrl(exampleURL)
                 }
-            )
+            })
 
         }
 
     }
 
-    BackHandler(onBack = {
-        if (noticePdfDialog){
-            setNoticePdfDialog(false)
-        } else {
-            //일반적인 뒤로가기 기능
-            navController.popBackStack()
-        }
-    })
+
+//    BackHandler(onBack = {
+//        if (noticePdfDialog){
+//            setNoticePdfDialog(false)
+//        } else {
+//            //일반적인 뒤로가기 기능
+//            navController.popBackStack()
+//        }
+//    })
     val isYearExpanded = remember {
         mutableStateOf(false)
     }
     val isMonthExpanded = remember {
         mutableStateOf(false)
     }
+
+
 
     LazyColumn(
         modifier = Modifier

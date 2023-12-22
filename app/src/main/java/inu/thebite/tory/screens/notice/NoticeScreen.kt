@@ -37,6 +37,11 @@ fun NoticeScreen(
     selectedChild: StudentResponse?,
     childSelectViewModel: ChildSelectViewModel
 ) {
+
+
+
+
+
     val selectedNoticeDates by noticeViewModel.selectedNoticeDates.collectAsState()
     val selectedNoticeDate by noticeViewModel.selectedNoticeDate.collectAsState()
     val noticeYearAndMonthList by noticeViewModel.noticeYearAndMonthList.collectAsState()
