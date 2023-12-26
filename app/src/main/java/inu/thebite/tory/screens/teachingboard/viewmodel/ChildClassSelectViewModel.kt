@@ -54,6 +54,16 @@ class ChildClassSelectViewModel : ViewModel() {
         _childClasses.value = null
     }
     init {
+        setSelectedChildClass(
+            childClassEntity = ChildClassResponse(
+                id = 1L,
+                name = "오전반",
+                center = CenterResponse(
+                    id = 1L,
+                    name = "송도점"
+                )
+            )
+        )
         getAllChildClasses()
     }
 

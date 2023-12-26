@@ -47,6 +47,12 @@ class CenterSelectViewModel : ViewModel() {
 
 
     init {
+        setSelectedCenter(
+            centerEntity = CenterResponse(
+                id = 1L,
+                name = "송도점"
+            )
+        )
         getAllCenters()
     }
 

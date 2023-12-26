@@ -65,7 +65,6 @@ import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
 import inu.thebite.tory.screens.notice.NoticeScreen
 import inu.thebite.tory.screens.notice.NoticeViewModel
-import inu.thebite.tory.screens.ready.ReadyScreen
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.screens.setting.SettingScreen
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
@@ -275,9 +274,7 @@ fun MainCompose(
                             }
                         }
                     }
-
                 }
-
             }
         }
     }
@@ -377,8 +374,8 @@ fun MainCompose(
 //
 //    }
 
-    val purpleGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
+    val gray = Brush.horizontalGradient(
+        colors = listOf(Color(0xFFF3F3F3), Color(0xFFF3F3F3))
     )
     val whiteBackground = Brush.horizontalGradient(
         colors = listOf(Color(0xFFEFEFEF), Color(0xFFEFEFEF))
@@ -412,7 +409,7 @@ fun MainCompose(
                                 Color.White
                             }
                             AllDestinations.NOTICE ->{
-                                Color.White
+                                Color.Black
                             }
                             AllDestinations.READY -> {
                                 Color.Black
@@ -445,11 +442,11 @@ fun MainCompose(
                                 }
 
                                 AllDestinations.EDUCATION -> {
-                                    purpleGradient
+                                    gray
                                 }
 
                                 AllDestinations.NOTICE -> {
-                                    purpleGradient
+                                    gray
                                 }
 
                                 AllDestinations.READY -> {
@@ -480,10 +477,10 @@ fun MainCompose(
                                             Color.Black
                                         }
                                         AllDestinations.EDUCATION -> {
-                                            Color.White
+                                            Color.Black
                                         }
                                         AllDestinations.NOTICE ->{
-                                            Color.White
+                                            Color.Black
                                         }
                                         AllDestinations.READY -> {
                                             Color.Black
@@ -573,9 +570,9 @@ fun MainCompose(
                                                 modifier = Modifier.fillMaxHeight(),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                selectedCenter?.let { Text(text = it.name, color = Color.White) }
-                                                selectedChildClass?.let { Text(text = " > " + it.name, color = Color.White) }
-                                                selectedChildInfo?.let { Text(text = " > " + it.name, color = Color.White) }
+                                                selectedCenter?.let { Text(text = it.name, color = Color.Black) }
+                                                selectedChildClass?.let { Text(text = " > " + it.name, color = Color.Black) }
+                                                selectedChildInfo?.let { Text(text = " > " + it.name, color = Color.Black) }
                                             }
                                             IconButton(onClick = {
                                                 setChildDialogOpen(true)
@@ -583,7 +580,7 @@ fun MainCompose(
                                                 Icon(
                                                     painter = painterResource(id = R.drawable.icon_user),
                                                     contentDescription = null,
-                                                    tint = Color.White
+                                                    tint = Color.Black
                                                 )
                                             }
                                         }
@@ -616,14 +613,14 @@ fun MainCompose(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                            selectedCenter?.let { Text(text = it.name, color = Color.White) }
-                                            selectedChildClass?.let { Text(text = " > "+it.name, color = Color.White) }
-                                            selectedChildInfo?.let { Text(text = " > "+it.name, color = Color.White) }
+                                            selectedCenter?.let { Text(text = it.name, color = Color.Black) }
+                                            selectedChildClass?.let { Text(text = " > "+it.name, color = Color.Black) }
+                                            selectedChildInfo?.let { Text(text = " > "+it.name, color = Color.Black) }
                                         }
                                         IconButton(onClick = {
                                             setChildDialogOpen(true)
                                         }) {
-                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null, tint = Color.White)
+                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null, tint = Color.Black)
                                         }
                                     }
                                 }
@@ -1111,7 +1108,33 @@ fun NoChildSelect(
 
 ){
 
+    val (noticePdfDialog, setNoticePdfDialog) = remember {
+        mutableStateOf(false)
+    }
+    if (noticePdfDialog) {
+        val exampleURL = "http://192.168.35.225:8081/notices/4/reports?year=2023&month=12&date=12"
 
+        Dialog(
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+
+            ),
+            onDismissRequest = { setNoticePdfDialog(false) }
+        ) {
+
+            AndroidView(factory = { context ->
+                WebView(context).apply {
+                    webViewClient = WebViewClient()
+                    loadUrl(exampleURL)
+                    settings.javaScriptEnabled = true
+                }
+            })
+
+        }
+    }
+    LaunchedEffect(Unit){
+        setNoticePdfDialog(true)
+    }
 
     Column(
         modifier = Modifier

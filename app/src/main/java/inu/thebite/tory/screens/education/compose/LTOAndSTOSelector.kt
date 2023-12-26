@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.compose
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
@@ -54,6 +56,7 @@ import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
+import inu.thebite.tory.ui.theme.ToryTheme
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 import kotlinx.coroutines.CoroutineScope
@@ -74,14 +77,12 @@ fun LTOAndSTOSelector(
 ) {
     val context = LocalContext.current
 
-
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     val (addLTODialog, setAddLTODialog) = rememberSaveable {
         mutableStateOf(false)
     }
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
     if(addLTODialog){
         selectedDEV?.let { selectedDEV ->
             AddLTODialog(
@@ -178,7 +179,11 @@ fun LTOAndSTOSelector(
                                 expandedState.value = !expandedState.value
                                 ltoViewModel.setSelectedLTO(lto)
                                 stoViewModel.clearSelectedSTO()
-                                scrollToTop(index = ltos.indexOf(lto), listState = listState, coroutineScope = coroutineScope)
+                                scrollToTop(
+                                    index = ltos.indexOf(lto),
+                                    listState = listState,
+                                    coroutineScope = coroutineScope
+                                )
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -266,3 +271,4 @@ fun scrollToTop(index: Int, listState: LazyListState, coroutineScope: CoroutineS
         listState.animateScrollToItem(index)
     }
 }
+

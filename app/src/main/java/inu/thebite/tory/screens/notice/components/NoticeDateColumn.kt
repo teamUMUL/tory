@@ -82,8 +82,9 @@ fun NoticeDateColumn(
     val (noticePdfDialog, setNoticePdfDialog) = remember {
         mutableStateOf(false)
     }
-    val exampleURL = "https://www.google.co.kr/?hl=ko"
     if (noticePdfDialog) {
+        val exampleURL = "http://192.168.35.225:8081/notices/4/reports?year=2023&month=12&date=12"
+
         Dialog(
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,

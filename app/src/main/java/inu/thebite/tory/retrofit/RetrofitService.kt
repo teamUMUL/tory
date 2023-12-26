@@ -219,7 +219,7 @@ interface RetrofitService {
      * Detail Api = 각 LTO 상세 부분 알림장
      */
     @POST("/details/{studentId}")
-    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<DetailResponse>
+    suspend fun addDetail(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long) : Response<DetailResponse>
 
     @PATCH("/details/{studentId}")
     suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>

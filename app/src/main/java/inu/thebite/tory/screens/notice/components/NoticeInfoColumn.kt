@@ -74,7 +74,7 @@ fun NoticeInfoColumn(
     ltoViewModel: LTOViewModel
 ) {
     val gradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
+        colors = listOf(Color(0xFF0047B3), Color(0xFF0047B3))
     )
 
     val isTodayCommentReadOnly = remember {
@@ -86,7 +86,6 @@ fun NoticeInfoColumn(
     LaunchedEffect(selectedNotice){
         todayComment = TextFieldValue(selectedNotice.comment)
     }
-
 
     val focusRequester = FocusRequester()
 

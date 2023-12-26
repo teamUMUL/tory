@@ -1,14 +1,18 @@
 package inu.thebite.tory.screens.education.compose.dialog.lto
 
 import android.content.Context
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -21,6 +25,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -30,22 +35,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.center.CenterResponse
+import inu.thebite.tory.model.childClass.ChildClassResponse
+import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.ui.theme.ToryTheme
+import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,18 +86,29 @@ fun UpdateLTOItemDialog(
     // AddLTOItemDialog 내용
     Dialog(
         onDismissRequest = {setUpdateLTOItem(false)},
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ){
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(900.dp)
                 .clip(RoundedCornerShape(6.dp))
-                .background(Color.White)
+                .background(Color.White, shape = RoundedCornerShape(10.dp))
                 .padding(
-                    horizontal = 8.dp,
-                    vertical = 16.dp
-                )
+                    horizontal = 35.dp,
+                    vertical = 30.dp
+                ),
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ){
-
+            Text(
+                text = "LTO 추가",
+                style = TextStyle(
+                    fontSize = 33.sp,
+                    fontFamily = fontFamily_Inter,
+                    fontWeight = FontWeight(400),
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                ),
+            )
             TextField(
                 value = ltoInputValue,
                 onValueChange = {
@@ -107,10 +136,10 @@ fun UpdateLTOItemDialog(
                     disabledIndicatorColor = Color.Transparent,
                 )
             )
-            Spacer(modifier = Modifier.height(10.dp))
             ExposedDropdownMenuBox(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .height(80.dp),
                 expanded = isExpanded,
                 onExpandedChange = {isExpanded = !isExpanded}
             ){
@@ -133,6 +162,7 @@ fun UpdateLTOItemDialog(
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth()
+                        .height(80.dp)
                 )
                 ExposedDropdownMenu(
                     expanded = isExpanded,
@@ -170,35 +200,103 @@ fun UpdateLTOItemDialog(
                 }
 
             }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
-                shape = RoundedCornerShape(8.dp),
-                onClick = {
-                    if(ltoInputValue.text.isNotEmpty()){
-                        //LTO 업데이트 코드
-                        ltoViewModel.updateLTO(
-                            selectedLTO = selectedLTO,
-                            updateLTO = LtoRequest(
-                                name = ltoInputValue.text,
-                                contents = selectedLTO.contents,
-                                game = gameMode
-                            )
-                        )
-                        ltoInputValue = TextFieldValue("")
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(80.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(80.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    onClick = {
                         setUpdateLTOItem(false)
-                    }
-                    else{
-                        Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
-                    }
+                        ltoInputValue = TextFieldValue("")
+                        gameMode = ""
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+                ) {
+                    Text(
+                        text = "취소",
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            fontFamily = fontFamily_Poppins,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
+                        )
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(80.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    onClick = {
+                        if(ltoInputValue.text.isNotEmpty()){
+                            //LTO 업데이트 코드
+                            ltoViewModel.updateLTO(
+                                selectedLTO = selectedLTO,
+                                updateLTO = LtoRequest(
+                                    name = ltoInputValue.text,
+                                    contents = selectedLTO.contents,
+                                    game = gameMode
+                                )
+                            )
+                            ltoInputValue = TextFieldValue("")
+                            setUpdateLTOItem(false)
+                        }
+                        else{
+                            Toasty.warning(context, "LTO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                        }
 
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
-            ){
-                Icon(imageVector = Icons.Default.Add, contentDescription = null, Modifier.size(40.dp))
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3))
+                ){
+                    Text(
+                        text = "추가",
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            fontFamily = fontFamily_Poppins,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
+                        )
+                    )
+                }
             }
+
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun updateLTO() {
+    ToryTheme {
+        Surface(
+            modifier = Modifier
+                .width(900.dp)
+        ) {
+            UpdateLTOItemDialog(
+                context = LocalContext.current,
+                setUpdateLTOItem = {},
+                selectedLTO =
+                    LtoResponse(
+                        id = 1L,
+                        templateNum = 1,
+                        status = "",
+                        name = "Example LTO",
+                        contents = "",
+                        game = "",
+                        achieveDate = "",
+                        registerDate = "",
+                        delYN = "",
+                        domainId = 1L,
+                        studentId = 1L
+                    ),
+                ltoViewModel = LTOViewModel()
+            )
+        }
+
     }
 }

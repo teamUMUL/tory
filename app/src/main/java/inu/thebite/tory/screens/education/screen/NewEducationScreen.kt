@@ -177,6 +177,8 @@ fun replaceNewLineWithSpace(input: String): String {
 fun LTOAndSTONull(
     modifier: Modifier = Modifier
 ) {
+
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

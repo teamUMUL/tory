@@ -86,7 +86,7 @@ fun LTOItem(
 //    }
 
     val gradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
+        colors = listOf(Color(0xFF0047B3), Color(0xFF0047B3))
     )
     val expandedState = rememberSaveable { mutableStateOf(false) }
 

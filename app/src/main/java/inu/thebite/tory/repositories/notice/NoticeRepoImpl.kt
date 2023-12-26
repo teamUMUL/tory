@@ -42,7 +42,7 @@ class NoticeRepoImpl : NoticeRepo {
         return noticeRetrofit.getDetailList(studentId = studentId, year = year, month = month.toInt(), date = date)
     }
 
-    override suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String, convertPdfRequest: ConvertPdfRequest): Response<String> {
-        return noticeRetrofit.shwoWebView(studentId = studentId, year = year, month = month, date = date, convertPdfRequest = convertPdfRequest)
+    override suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String) {
+        noticeRetrofit.showWebView(studentId = studentId, year = year, month = month, date = date)
     }
 }

@@ -28,5 +28,5 @@ interface NoticeRepo {
 
     suspend fun getDetailList(studentId: Long, year: String, month: String, date: String) : Response<List<DetailGraphResponse>>
 
-    suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String, convertPdfRequest: ConvertPdfRequest) : Response<String>
+    suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String)
 }

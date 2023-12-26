@@ -89,14 +89,14 @@ fun ScheduleTopBar(
                 modifier = Modifier
                     .padding(end = 30.dp)
                     .size(25.dp),
-                tint = Color.White
+                tint = Color(0xFF949494)
             )
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .fillMaxHeight()
                     .background(
-                        color = Color(0xFF9175E7),
+                        color = Color.White,
                         shape = RoundedCornerShape(10.dp)
                     ),
                 verticalAlignment = Alignment.CenterVertically,

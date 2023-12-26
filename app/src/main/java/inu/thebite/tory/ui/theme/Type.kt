@@ -18,6 +18,8 @@ val provider = GoogleFont.Provider(
 val fontName_Montserrat = GoogleFont("Montserrat")
 val fontName_Inter = GoogleFont("Inter")
 val fontName_Lato = GoogleFont("Lato")
+val fontName_Poppins = GoogleFont("Poppins")
+
 
 
 val fontFamily_Montserrat = FontFamily(
@@ -36,6 +38,13 @@ val fontFamily_Inter = FontFamily(
 val fontFamily_Lato = FontFamily(
     Font(
         googleFont = fontName_Lato,
+        fontProvider = provider
+    )
+)
+
+val fontFamily_Poppins = FontFamily(
+    Font(
+        googleFont = fontName_Poppins,
         fontProvider = provider
     )
 )

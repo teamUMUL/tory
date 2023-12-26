@@ -354,27 +354,18 @@ class NoticeViewModel : ViewModel() {
         }
     }
 
-//    fun createSharePdf(
-//        studentId: Long,
-//        year: String,
-//        month: String,
-//        date: String,
-//    ){
-//        try {
-//            viewModelScope.launch {
-//                val response = repo.createSharePdf()
-//
-//                if (response.isSuccessful){
-//                    val gotPdfUrl = response.body() ?: throw  Exception("Pdf 정보가 비어있습니다.")
-//                    _pdfUrl.update {
-//                        gotPdfUrl
-//                    }
-//                }
-//            }
-//        } catch (e: Exception){
-//            Log.e("failed to create Pdf", e.message.toString())
-//        }
-//    }
+    fun createSharePdf(
+        studentId: Long,
+        year: String,
+        month: String,
+        date: String,
+    ) : String {
+        viewModelScope.launch {
+            repo.createSharePdf(studentId = studentId, year = year, month = month.toInt(), date = date)
+
+        }
+        return "http://192.168.35.225:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
+    }
 }
 
 fun parseDateStrings(dateStrings: List<String>): List<NoticeDate> {
