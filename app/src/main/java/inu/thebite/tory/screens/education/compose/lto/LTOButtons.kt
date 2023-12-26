@@ -126,7 +126,7 @@ fun LTOButtons(
             buttonList.forEach { button ->
                 OutlinedButton(
                     modifier = Modifier
-                        .padding(vertical = 10.dp, horizontal = 2.dp),
+                        .padding(vertical = 2.dp, horizontal = 2.dp),
                     onClick = {
                         ltoViewModel.setSelectedLTOStatus(
                             selectedLTO = selectedLTO,
@@ -208,7 +208,7 @@ fun LTOButtons(
         }
         OutlinedButton(
             modifier = Modifier
-                .padding(vertical = 6.dp, horizontal = 16.dp),
+                .padding(vertical = 2.dp, horizontal = 16.dp),
             onClick = {
                 setAddSTODialog(true)
             },

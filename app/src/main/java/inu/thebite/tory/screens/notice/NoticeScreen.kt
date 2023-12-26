@@ -150,7 +150,8 @@ fun NoticeScreen(
                         selectedMonth = selectedMonth,
                         setSelectedMonth = { noticeViewModel.setSelectedMonth((it)) },
                         noticeViewModel = noticeViewModel,
-                        navController = navController
+                        navController = navController,
+                        selectedChild = selectedChild
                     )
             } ?: Text(text = "데이터가 없습니다")
 

@@ -36,6 +36,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -56,6 +58,7 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import inu.thebite.tory.R
 import inu.thebite.tory.model.notice.DateResponse
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.notice.NoticeDate
 import inu.thebite.tory.screens.notice.NoticeViewModel
@@ -75,43 +78,35 @@ fun NoticeDateColumn(
     selectedMonth: String?,
     setSelectedMonth: (String) -> Unit,
     noticeViewModel: NoticeViewModel,
-    navController: NavController
+    navController: NavController,
+    selectedChild: StudentResponse?,
 ) {
     val context = LocalContext.current
 
     val (noticePdfDialog, setNoticePdfDialog) = remember {
         mutableStateOf(false)
     }
+
+    val noticeURL by noticeViewModel.pdfUrl.collectAsState()
+
     if (noticePdfDialog) {
-        val exampleURL = "http://192.168.35.225:8081/notices/4/reports?year=2023&month=12&date=12"
-
-        Dialog(
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-            ),
-            onDismissRequest = { setNoticePdfDialog(false) }
-        ) {
-
-            AndroidView(factory = { context ->
-                WebView(context).apply {
-                    webViewClient = WebViewClient()
-                    loadUrl(exampleURL)
-                }
-            })
-
+        noticeURL?.let { noticeURL ->
+            Dialog(
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false,
+                ),
+                onDismissRequest = { setNoticePdfDialog(false) }
+            ) {
+                AndroidView(factory = { context ->
+                    WebView(context).apply {
+                        webViewClient = WebViewClient()
+                        loadUrl(noticeURL)
+                    }
+                })
+            }
         }
-
     }
 
-
-//    BackHandler(onBack = {
-//        if (noticePdfDialog){
-//            setNoticePdfDialog(false)
-//        } else {
-//            //일반적인 뒤로가기 기능
-//            navController.popBackStack()
-//        }
-//    })
     val isYearExpanded = remember {
         mutableStateOf(false)
     }
@@ -234,9 +229,14 @@ fun NoticeDateColumn(
                                 .size(40.dp)
                                 .padding(end = 20.dp)
                                 .clickableWithNoRipple {
-//                                    noticeViewModel.createSharePdf(
-//
-//                                    )
+                                    selectedChild?.let {selectedChild ->
+                                        noticeViewModel.createSharePdf(
+                                            studentId = selectedChild.id,
+                                            year = selectedNoticeDate.year,
+                                            month = selectedNoticeDate.month.toString(),
+                                            date = selectedNoticeDate.date
+                                        )
+                                    }
                                     setNoticePdfDialog(true)
                                 }
                         )

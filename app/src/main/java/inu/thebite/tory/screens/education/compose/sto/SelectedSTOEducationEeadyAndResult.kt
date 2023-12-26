@@ -58,7 +58,7 @@ fun SelectedSTOEducationReadyAndResult(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(start = 20.dp, top = 50.dp),
+                    .padding(start = 20.dp, top = 30.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {

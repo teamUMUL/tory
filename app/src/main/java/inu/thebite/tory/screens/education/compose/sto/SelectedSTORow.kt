@@ -474,10 +474,10 @@ fun GameDialog(
     stoViewModel: STOViewModel
 
 ){
-    val (gameButton1Index, setGameButton1Index) = rememberSaveable {
+    val (gameButton1Index, setGameButton1Index) = remember {
         mutableStateOf(-1)
     }
-    val (gameButton2Index, setGameButton2Index) = rememberSaveable {
+    val (gameButton2Index, setGameButton2Index) = remember {
         mutableStateOf(-1)
     }
     val timerStart = remember { mutableStateOf(false) }

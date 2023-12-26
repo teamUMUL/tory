@@ -186,7 +186,7 @@ fun NoticeInfoColumn(
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .fillMaxHeight()
-                                .weight(0.22f),
+                                .weight(0.26f),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -209,7 +209,7 @@ fun NoticeInfoColumn(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "오늘의 총평",
+                                text = "요약",
                                 style = TextStyle(
                                     fontSize = 24.sp,
                                     lineHeight = 24.sp,

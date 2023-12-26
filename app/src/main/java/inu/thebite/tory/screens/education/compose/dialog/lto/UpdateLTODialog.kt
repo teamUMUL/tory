@@ -3,6 +3,7 @@ package inu.thebite.tory.screens.education.compose.dialog.lto
 import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -38,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -80,6 +83,9 @@ fun UpdateLTOItemDialog(
     var isExpanded by remember {
         mutableStateOf(false)
     }
+    val rotationState by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f, label = ""
+    )
     var gameMode by remember {
         mutableStateOf(selectedLTO.game)
     }
@@ -149,7 +155,13 @@ fun UpdateLTOItemDialog(
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                        Icon(
+                            imageVector = Icons.Filled.ArrowDropDown,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(60.dp)
+                                .rotate(rotationState)
+                        )
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),

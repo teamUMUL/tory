@@ -51,7 +51,7 @@ fun pieChartPreview(
             PieChart(
                 modifier = Modifier
                     .size(340.dp)
-                    .padding(top = 40.dp),// 파이차트 전체 사이즈
+                    .padding(top = 80.dp),// 파이차트 전체 사이즈
 
                 // size - 한 조각의 크기
                 // topleft - 시작지점 설정

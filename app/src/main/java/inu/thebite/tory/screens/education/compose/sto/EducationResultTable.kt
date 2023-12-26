@@ -93,8 +93,8 @@ fun EducationResultTable(
                                         ambientColor = Color(0x40000000),
                                         clip = false
                                     )
-                                    .width(95.dp)
-                                    .height(55.dp),
+                                    .width(80.dp)
+                                    .height(40.dp),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(
                                     containerColor =
@@ -278,7 +278,7 @@ fun EducationResultTable(
                         },
                         contentPadding = PaddingValues(
                             horizontal = 60.dp,
-                            vertical = 10.dp
+                            vertical = 3.dp
                         ),
                         shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE))

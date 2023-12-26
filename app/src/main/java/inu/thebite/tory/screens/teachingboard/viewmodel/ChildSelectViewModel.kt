@@ -56,26 +56,26 @@ class ChildSelectViewModel : ViewModel() {
     }
 
     init {
-        setSelectedChildInfo(
-            childInfoEntity = StudentResponse(
-                id = 1L,
-                name = "김토리",
-                birth = "2023/11/01",
-                etc = "",
-                parentName = "김토리부모",
-                startDate = "2023/11/01",
-                endDate = "2023/11/31",
-                registerDate = "2023/11/01",
-                childClass = ChildClassResponse(
-                    id = 1L,
-                    name = "오전반",
-                    center = CenterResponse(
-                        id = 1L,
-                        name = "송도점"
-                    )
-                )
-            )
-        )
+//        setSelectedChildInfo(
+//            childInfoEntity = StudentResponse(
+//                id = 1L,
+//                name = "김토리",
+//                birth = "2023/11/01",
+//                etc = "",
+//                parentName = "김토리부모",
+//                startDate = "2023/11/01",
+//                endDate = "2023/11/31",
+//                registerDate = "2023/11/01",
+//                childClass = ChildClassResponse(
+//                    id = 1L,
+//                    name = "오전반",
+//                    center = CenterResponse(
+//                        id = 1L,
+//                        name = "송도점"
+//                    )
+//                )
+//            )
+//        )
         getAllChildInfos()
     }
 

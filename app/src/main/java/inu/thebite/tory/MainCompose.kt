@@ -1108,33 +1108,33 @@ fun NoChildSelect(
 
 ){
 
-    val (noticePdfDialog, setNoticePdfDialog) = remember {
-        mutableStateOf(false)
-    }
-    if (noticePdfDialog) {
-        val exampleURL = "http://192.168.35.225:8081/notices/4/reports?year=2023&month=12&date=12"
-
-        Dialog(
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-
-            ),
-            onDismissRequest = { setNoticePdfDialog(false) }
-        ) {
-
-            AndroidView(factory = { context ->
-                WebView(context).apply {
-                    webViewClient = WebViewClient()
-                    loadUrl(exampleURL)
-                    settings.javaScriptEnabled = true
-                }
-            })
-
-        }
-    }
-    LaunchedEffect(Unit){
-        setNoticePdfDialog(true)
-    }
+//    val (noticePdfDialog, setNoticePdfDialog) = remember {
+//        mutableStateOf(false)
+//    }
+//    if (noticePdfDialog) {
+//        val exampleURL = "http://192.168.35.225:8081/notices/4/reports?year=2023&month=12&date=12"
+//
+//        Dialog(
+//            properties = DialogProperties(
+//                usePlatformDefaultWidth = false,
+//
+//            ),
+//            onDismissRequest = { setNoticePdfDialog(false) }
+//        ) {
+//
+//            AndroidView(factory = { context ->
+//                WebView(context).apply {
+//                    webViewClient = WebViewClient()
+//                    loadUrl(exampleURL)
+//                    settings.javaScriptEnabled = true
+//                }
+//            })
+//
+//        }
+//    }
+//    LaunchedEffect(Unit){
+//        setNoticePdfDialog(true)
+//    }
 
     Column(
         modifier = Modifier
