@@ -1,10 +1,9 @@
 package inu.thebite.tory
 
-//import inu.thebite.tory.screens.education.GameViewModel
-//import inu.thebite.tory.screens.education.LTOViewModel
-//import inu.thebite.tory.screens.education.STOViewModel
-//import inu.thebite.tory.screens.game.DragAndDropViewModel
+
 import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.screens.auth.AuthViewModel
+import inu.thebite.tory.screens.auth.TokenManager
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -18,10 +17,12 @@ import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
+    single { TokenManager(androidContext()) }
     viewModel<CenterSelectViewModel> {
         CenterSelectViewModel()
     }
@@ -65,18 +66,7 @@ val viewModelModule = module {
     viewModel<TodoViewModel> {
         TodoViewModel()
     }
-//    viewModel<GameViewModel> {
-//        GameViewModel()
-//    }
-//    viewModel<LTOViewModel> {
-//        LTOViewModel()
-//    }
-//    viewModel<STOViewModel> {
-//        STOViewModel()
-//    }
-//    viewModel<DragAndDropViewModel> {
-//        DragAndDropViewModel()
-//    }
-
-
+    viewModel<AuthViewModel> {
+        AuthViewModel(get())
+    }
 }
