@@ -52,7 +52,7 @@ fun GeneralGameScreen(
     setIsCardSelectEnd : (Boolean) -> Unit,
 //    setBeforeCircleImage : (Int) -> Unit
 ){
-    val successURL = "https://storage.googleapis.com/download/storage/v1/b/tory-image-repository/o/Etc%2FEtc_1?generation=1702363879464947&alt=media"
+    val successURL = "https://storage.googleapis.com/download/storage/v1/b/tory-image-repository/o/Etc%2FEtc_1?generation=1704158802607671&alt=media"
     val group1Size = (targetItems.size + 1) / 2
     val group1 = targetItems.subList(0, group1Size)
     val group2 = targetItems.subList(group1Size, targetItems.size)
