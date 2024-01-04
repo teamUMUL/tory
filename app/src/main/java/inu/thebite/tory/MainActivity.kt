@@ -72,37 +72,31 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
     val tokenExpired = TokenExpirationEvent.expired.observeAsState()
     val vm = LoginState.current
     val loginState by vm.loginState.collectAsState()
-
+    val centerSelectViewModel : CenterSelectViewModel = koinViewModel()
+    val childClassSelectViewModel : ChildClassSelectViewModel = koinViewModel()
+    val childSelectViewModel : ChildSelectViewModel = koinViewModel()
+//                    val stoViewModel : STOViewModel = koinViewModel()
+    val centerViewModel : CenterViewModel = koinViewModel()
+    val childClassViewModel : ChildClassViewModel = koinViewModel()
+    val childInfoViewModel : ChildInfoViewModel = koinViewModel()
+    val devViewModel : DEVViewModel = koinViewModel()
+    val ltoViewModel : LTOViewModel = koinViewModel()
+    val stoViewModel : STOViewModel = koinViewModel()
+    val imageViewModel : ImageViewModel = koinViewModel()
+    val dragAndDropViewModel: DragAndDropViewModel = koinViewModel()
+    val gameViewModel : GameViewModel = koinViewModel()
+    val noticeViewModel : NoticeViewModel = koinViewModel()
+    val todoViewModel : TodoViewModel = koinViewModel()
     Surface(
         modifier = Modifier
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
         if (loginState && tokenExpired.value == false) {
-            //                    val ltoViewModel : LTOViewModel = koinViewModel()
-            val centerSelectViewModel : CenterSelectViewModel = koinViewModel()
-            val childClassSelectViewModel : ChildClassSelectViewModel = koinViewModel()
-            val childSelectViewModel : ChildSelectViewModel = koinViewModel()
-//                    val stoViewModel : STOViewModel = koinViewModel()
-            val centerViewModel : CenterViewModel = koinViewModel()
-            val childClassViewModel : ChildClassViewModel = koinViewModel()
-            val childInfoViewModel : ChildInfoViewModel = koinViewModel()
-            val devViewModel : DEVViewModel = koinViewModel()
-            val ltoViewModel : LTOViewModel = koinViewModel()
-            val stoViewModel : STOViewModel = koinViewModel()
-            val imageViewModel : ImageViewModel = koinViewModel()
-            val dragAndDropViewModel: DragAndDropViewModel = koinViewModel()
-            val gameViewModel : GameViewModel = koinViewModel()
-            val noticeViewModel : NoticeViewModel = koinViewModel()
-            val todoViewModel : TodoViewModel = koinViewModel()
-//                    val dragAndDropViewModel : DragAndDropViewModel = koinViewModel()
-//                    val gameViewModel : GameViewModel = koinViewModel()
             MainCompose(
-//                        ltoViewModel = ltoViewModel,
                 centerSelectViewModel = centerSelectViewModel,
                 childClassSelectViewModel = childClassSelectViewModel,
                 childSelectViewModel = childSelectViewModel,
-//                        stoViewModel = stoViewModel,
                 centerViewModel = centerViewModel,
                 childClassViewModel = childClassViewModel,
                 childInfoViewModel = childInfoViewModel,
@@ -114,10 +108,22 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
                 gameViewModel = gameViewModel,
                 noticeViewModel = noticeViewModel,
                 todoViewModel = todoViewModel
-//                        dragAndDropViewModel = dragAndDropViewModel,
-//                        gameViewModel = gameViewModel
             )
         } else {
+            centerSelectViewModel.clearAll()
+            childClassSelectViewModel.clearAll()
+            childSelectViewModel.clearAll()
+            centerViewModel.clearAll()
+            childClassViewModel.clearAll()
+            childInfoViewModel.clearAll()
+            devViewModel.clearAll()
+            ltoViewModel.clearAll()
+            stoViewModel.clearAll()
+            dragAndDropViewModel.clearAll()
+            gameViewModel.clearAll()
+            gameViewModel.clearAll()
+            noticeViewModel.resetAll()
+            todoViewModel.clearAll()
             LoginScreen()
         }
     }

@@ -37,6 +37,7 @@ import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.teachingboard.dialog.CenterDialog
@@ -225,6 +226,7 @@ fun ChildrenCard(
     modifier: Modifier = Modifier,
     classSelectViewModel: ChildClassSelectViewModel = koinViewModel(),
     childSelectViewModel: ChildSelectViewModel,
+    devViewModel: DEVViewModel = koinViewModel(),
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ){
@@ -234,6 +236,7 @@ fun ChildrenCard(
 
     LaunchedEffect(selectedChildInfo){
         selectedChildInfo?.let {selectedChildInfo ->
+            devViewModel.getAllDEVs()
             ltoViewModel.getAllLTOs(studentId = selectedChildInfo.id)
             stoViewModel.getAllSTOs(studentId = selectedChildInfo.id)
         }

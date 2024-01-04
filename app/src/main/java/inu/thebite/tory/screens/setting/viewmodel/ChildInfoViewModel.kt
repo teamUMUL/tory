@@ -42,6 +42,12 @@ class ChildInfoViewModel : ViewModel(){
     fun clearChildInfos(){
         _allChildInfos.value = null
     }
+
+    fun clearAll(){
+        _allChildInfos.update { null }
+        _childInfos.update { null }
+        _selectedChildInfo.update { null }
+    }
     init {
         observeAllChildClasses()
     }

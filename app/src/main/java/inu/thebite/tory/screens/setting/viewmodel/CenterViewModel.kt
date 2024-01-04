@@ -36,6 +36,12 @@ class CenterViewModel : ViewModel() {
     fun clearSelectedCenter() {
         _selectedCenter.value = null
     }
+
+    fun clearAll(){
+        _allCenters.update { null }
+        _centers.update { null }
+        _selectedCenter.update { null }
+    }
     init {
         getAllCenters()
         observeAllCenters()
@@ -74,6 +80,7 @@ class CenterViewModel : ViewModel() {
         }
 
     }
+
 
 
     fun createCenter(

@@ -56,6 +56,13 @@ class STOViewModel : ViewModel() {
         }
     }
 
+    fun clearAll(){
+        _todoSTOList.update { null }
+        _allSTOs.update { null }
+        _selectedSTO.update { null }
+        _points.update { null }
+    }
+
     init {
 //        getDummySTO()
         observeAllSTOs()

@@ -32,5 +32,5 @@ class TokenExpirationInterceptor(
 }
 
 object TokenExpirationEvent {
-    val expired = MutableLiveData<Boolean>()
+    val expired = MutableLiveData<Boolean>(false)
 }

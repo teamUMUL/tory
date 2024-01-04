@@ -151,6 +151,7 @@ fun MainCompose(
 
     LaunchedEffect(selectedChildInfo){
         selectedChildInfo?.let {selectedChildInfo ->
+            devViewModel.getAllDEVs()
             ltoViewModel.getAllLTOs(studentId = selectedChildInfo.id)
             stoViewModel.getAllSTOs(studentId = selectedChildInfo.id)
         }

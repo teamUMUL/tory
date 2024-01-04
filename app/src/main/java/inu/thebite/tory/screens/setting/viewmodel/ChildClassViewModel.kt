@@ -41,6 +41,12 @@ class ChildClassViewModel : ViewModel() {
     fun clearChildClasses(){
         _childClasses.value = null
     }
+
+    fun clearAll(){
+        _allChildClasses.update { null }
+        _childClasses.update { null }
+        _selectedChildClass.update { null }
+    }
     init {
 //        getAllChildClasses()
         observeAllChildClasses()

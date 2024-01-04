@@ -43,6 +43,11 @@ class TodoViewModel : ViewModel() {
 //            }.collect()
 //        }
 //    }
+    fun clearAll(){
+        _todoResponse.update { null }
+        _tempTodoResponse.update { null }
+        _todoSTOIdList.update { null }
+    }
     private fun observeTodoList() {
         viewModelScope.launch {
             todoResponse.onEach { todoList ->

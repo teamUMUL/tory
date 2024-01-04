@@ -36,6 +36,13 @@ class LTOViewModel: ViewModel() {
     private val _ltoGraphList: MutableStateFlow<List<LtoGraphResponse>?> = MutableStateFlow(null)
     val ltoGraphList = _ltoGraphList.asStateFlow()
 
+    fun clearAll(){
+        _allLTOs.update { null }
+        _ltos.update { null }
+        _selectedLTO.update { null }
+        _ltoGraphList.update { null }
+    }
+
     fun setSelectedLTO(ltoEntity: LtoResponse) {
         _selectedLTO.update {
             ltoEntity

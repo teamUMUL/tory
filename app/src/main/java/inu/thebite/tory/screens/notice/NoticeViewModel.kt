@@ -75,6 +75,19 @@ class NoticeViewModel : ViewModel() {
 //        _noticeYearList.update { null }
     }
 
+    fun resetAll(){
+        _selectedNoticeDetailList.update { null }
+        _selectedNotice.update { null }
+        _selectedMonth.update { null }
+        _selectedYear.update { null }
+        _selectedNoticeDate.update { null }
+        _selectedNoticeDates.update { null }
+        _noticeMonthList.update { null }
+        _noticeYearList.update { null }
+        _pdfUrl.update { null }
+        _noticeYearAndMonthList.update { null }
+    }
+
     fun setSelectedMonth(
         selectedMonth: String
     ){

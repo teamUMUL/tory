@@ -33,6 +33,12 @@ class DEVViewModel : ViewModel() {
     fun clearSelectedCenter() {
         _selectedDEV.value = null
     }
+
+    fun clearAll(){
+        _allDEVs.update { null }
+        _devs.update { null }
+        _selectedDEV.update { null }
+    }
     init {
         getAllDEVs()
 //        setDummyDEVData()

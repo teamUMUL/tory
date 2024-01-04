@@ -8,6 +8,7 @@ import inu.thebite.tory.R
 import inu.thebite.tory.model.image.ImageResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlin.random.Random
 
 class DragAndDropViewModel :ViewModel() {
@@ -85,6 +86,13 @@ class DragAndDropViewModel :ViewModel() {
 
     fun clearMainItem() {
         _mainItem.value = null
+    }
+
+    fun clearAll(){
+        _mainItem.update { null }
+        _targetItems.update { null }
+        _firstMainItem.update { null }
+        _secondMainItem.update { null }
     }
 
 

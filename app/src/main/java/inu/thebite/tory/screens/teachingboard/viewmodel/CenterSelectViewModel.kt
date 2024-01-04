@@ -7,6 +7,7 @@ import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.repositories.Center.CenterRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -32,6 +33,11 @@ class CenterSelectViewModel : ViewModel() {
         _selectedCenter.value = null
     }
 
+    fun clearAll(){
+        _allCenters.update { emptyList() }
+        _selectedCenter.update { null }
+        _tempSelectedCenter.update { null }
+    }
 
     private val _tempSelectedCenter = MutableStateFlow<CenterResponse?>(null)
     val tempSelectedCenter = _tempSelectedCenter.asStateFlow()

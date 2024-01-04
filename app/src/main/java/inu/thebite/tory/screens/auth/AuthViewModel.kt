@@ -70,6 +70,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
         _isLoading.update { true }
         _loginState.update { false }
         _isLoading.update { false }
+        TokenExpirationEvent.expired.postValue(true)
         tokenManager.clearToken()
     }
 
@@ -82,11 +83,14 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
 
                 if (response.isSuccessful) {
                     val userInfo = response.body() ?: throw Exception("유저 정보가 비어있습니다.")
-                    _userName.update { userInfo.name }
+                    if (userInfo.result){
+                        _userName.update { userInfo.name }
+                        Log.d("isValidated", userInfo.toString())
+                        _loginState.update { true }
+                        _isLoading.update { false }
+                        Toasty.success(context, "로그인에 성공했습니다", Toast.LENGTH_SHORT, true).show()
+                    }
 
-                    _loginState.update { true }
-                    _isLoading.update { false }
-                    Toasty.success(context, "로그인에 성공했습니다", Toast.LENGTH_SHORT, true).show()
                 } else {
                     _loginState.update { false }
                     _isLoading.update { false }
@@ -98,7 +102,6 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                 Log.e("failed to login", e.message.toString())
             }
         }
-        _loginState.update { true }
     }
 }
 

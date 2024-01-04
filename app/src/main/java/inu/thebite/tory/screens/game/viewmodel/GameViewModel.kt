@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class GameViewModel : ViewModel() {
     private val _oneGameResult = MutableStateFlow<String?>(null)
@@ -16,6 +17,10 @@ class GameViewModel : ViewModel() {
 
     fun clearOneGameResult() {
         _oneGameResult.value = null
+    }
+
+    fun clearAll(){
+        _oneGameResult.update { null }
     }
 
     private val _gameIndex = MutableLiveData<Int>(0)

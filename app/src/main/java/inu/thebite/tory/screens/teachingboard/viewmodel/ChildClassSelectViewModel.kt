@@ -37,6 +37,12 @@ class ChildClassSelectViewModel : ViewModel() {
         _selectedChildClass.value = null
     }
 
+    fun clearAll(){
+        _allChildClasses.update { null }
+        _selectedChildClass.update { null }
+        _tempSelectedChildClass.update { null }
+    }
+
     //임시로 선택된 반
     private val _tempSelectedChildClass = MutableStateFlow<ChildClassResponse?>(null)
     val tempSelectedChildClass = _tempSelectedChildClass.asStateFlow()

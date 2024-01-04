@@ -7,6 +7,6 @@ data class ValidationTokenResponse(
     @SerializedName("name")
     var name: String,
 
-    @SerializedName("token")
-    var token: String
+    @SerializedName("result")
+    var result: Boolean
 )
