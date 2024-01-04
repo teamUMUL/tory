@@ -49,16 +49,16 @@ import retrofit2.http.Query
 interface RetrofitService {
 
     // center
-    @POST("/centers")
+    @POST("/center")
     suspend fun addCenter(@Body addCenterRequest: CenterRequest): Response<CenterResponse>
 
-    @PATCH("/centers/{centerId}")
+    @PATCH("/center/{centerId}")
     suspend fun updateCenter(@Path("centerId")  centerId: Long, @Body updateCenterRequest: CenterRequest): Response<CenterResponse>
 
-    @GET("/centers/tory")
+    @GET("/centers")
     suspend fun getCenterList(): List<CenterResponse>
 
-    @DELETE("/centers/{centerId}")
+    @DELETE("/center/{centerId}")
     suspend fun deleteCenter(@Path("centerId") centerId: Long): Response<Void>
 
     // class
@@ -93,8 +93,8 @@ interface RetrofitService {
     @PATCH("/students/{studentId}/endDate")
     suspend fun updateStudentEndDate(@Path("studentId") studentId: Long, @Body updateStudentDateRequest: UpdateStudentDateRequest) : Response<StudentResponse>
 
-    @GET("/students")
-    suspend fun getStudentList() : List<StudentResponse>
+    @GET("/{classId}/students")
+    suspend fun getStudentList(@Path("classId") classId: Long) : List<StudentResponse>
 
     @DELETE("/students/{studentId}")
     suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Void>
