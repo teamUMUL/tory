@@ -14,6 +14,9 @@ import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.member.LoginResponse
+import inu.thebite.tory.model.member.MemberLoginRequest
+import inu.thebite.tory.model.member.ValidationTokenResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
@@ -36,6 +39,8 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -226,5 +231,14 @@ interface RetrofitService {
 
     @GET("/details/{studentId}")
     suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<List<DetailGraphResponse>>
+
+    /**
+     * Member Api
+     */
+    @POST("/members/login")
+    suspend fun login(@Body memberLoginRequest: MemberLoginRequest) : Response<LoginResponse>
+
+    @POST("/valid/token")
+    suspend fun validationToken() : Response<ValidationTokenResponse>
 
 }
