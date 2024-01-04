@@ -23,6 +23,8 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +40,6 @@ import inu.thebite.tory.R
 import inu.thebite.tory.screens.auth.LoginState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(
     route: String,
@@ -146,6 +147,7 @@ fun AppDrawer(
 @Composable
 fun DrawerHeader(modifier: Modifier) {
     val authViewModel = LoginState.current
+    val userName by authViewModel.userName.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     Column (
         verticalArrangement = Arrangement.Center,
@@ -169,7 +171,7 @@ fun DrawerHeader(modifier: Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(id = R.string.app_name),
+                text = userName ?: "",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary

@@ -1,19 +1,26 @@
 package inu.thebite.tory.retrofit
 
+import inu.thebite.tory.screens.auth.TokenInterceptor
+import inu.thebite.tory.screens.auth.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitApi {
+object RetrofitApi : KoinComponent{
 
     private const val BASE_URL = "http://34.64.231.84:8081"
+
+    private val tokenManager: TokenManager by inject()
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
+            .addInterceptor(TokenInterceptor(tokenManager))
             .build()
     }
 
