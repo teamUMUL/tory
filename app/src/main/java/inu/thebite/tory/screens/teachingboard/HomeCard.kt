@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.teachingboard
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,12 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import es.dmoral.toasty.Toasty
 
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
@@ -40,6 +43,7 @@ import inu.thebite.tory.screens.teachingboard.dialog.CenterDialog
 
 import inu.thebite.tory.screens.teachingboard.dialog.ChildDialog
 import inu.thebite.tory.screens.teachingboard.dialog.ClassDialog
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ChainCard(
@@ -127,15 +131,19 @@ fun ChainCard(
 @Composable
 fun ClassCard(
     modifier: Modifier = Modifier,
+    centerSelectViewModel: CenterSelectViewModel = koinViewModel(),
     childClassSelectViewModel: ChildClassSelectViewModel,
     childSelectViewModel: ChildSelectViewModel
 ){
-    val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
-
+    val context = LocalContext.current
+    val selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
+    val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
-        childClassSelectViewModel.getAllChildClasses()
+        selectedCenter?.let {selectedCenter ->
+            childClassSelectViewModel.getAllChildClasses(selectedCenter.id)
+        } ?:
         ClassDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
@@ -146,6 +154,8 @@ fun ClassCard(
             childClassSelectViewModel = childClassSelectViewModel,
             childSelectViewModel = childSelectViewModel
         )
+
+
     }
 
 
@@ -213,11 +223,14 @@ fun ClassCard(
 @Composable
 fun ChildrenCard(
     modifier: Modifier = Modifier,
+    classSelectViewModel: ChildClassSelectViewModel = koinViewModel(),
     childSelectViewModel: ChildSelectViewModel,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ){
+    val context = LocalContext.current
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
+    val selectedClass by classSelectViewModel.selectedChildClass.collectAsState()
 
     LaunchedEffect(selectedChildInfo){
         selectedChildInfo?.let {selectedChildInfo ->
@@ -229,12 +242,17 @@ fun ChildrenCard(
     var isDialogVisible by remember { mutableStateOf(false) }
 
     if(isDialogVisible){
-        childSelectViewModel.getAllChildInfos()
+        selectedClass?.let {selectedClass ->
+            childSelectViewModel.getAllChildInfos(selectedClass.id)
+
+        } ?:
         ChildDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
             childSelectViewModel = childSelectViewModel
         )
+
+
     }
 
     Box(modifier = modifier   //카드 하얀 배경

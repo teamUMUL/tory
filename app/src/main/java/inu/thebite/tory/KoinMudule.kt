@@ -3,6 +3,7 @@ package inu.thebite.tory
 
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.auth.AuthViewModel
+import inu.thebite.tory.screens.auth.TokenExpirationInterceptor
 import inu.thebite.tory.screens.auth.TokenManager
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
@@ -23,6 +24,8 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     single { TokenManager(androidContext()) }
+    single { TokenExpirationInterceptor(androidContext()) }
+
     viewModel<CenterSelectViewModel> {
         CenterSelectViewModel()
     }

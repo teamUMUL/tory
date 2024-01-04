@@ -59,7 +59,7 @@ interface RetrofitService {
     suspend fun getCenterList(): List<CenterResponse>
 
     @DELETE("/center/{centerId}")
-    suspend fun deleteCenter(@Path("centerId") centerId: Long): Response<Void>
+    suspend fun deleteCenter(@Path("centerId") centerId: Long): Response<Boolean>
 
     // class
     @POST("/{centerId}/classes")
@@ -78,7 +78,7 @@ interface RetrofitService {
     suspend fun getClassListByCenter(@Path("centerId") centerId: Long): List<ChildClassResponse>
 
     @DELETE("/classes/{classId}")
-    suspend fun deleteClass(@Path("classId") classId: Long): Response<Void>
+    suspend fun deleteClass(@Path("classId") classId: Long): Response<Boolean>
 
     // student
     @POST("/{classId}/students")
@@ -97,7 +97,7 @@ interface RetrofitService {
     suspend fun getStudentList(@Path("classId") classId: Long) : List<StudentResponse>
 
     @DELETE("/students/{studentId}")
-    suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Void>
+    suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Boolean>
 
     // domain
     @POST("/domains")

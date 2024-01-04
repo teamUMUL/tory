@@ -11,7 +11,7 @@ import retrofit2.Response
 interface ChildInfoRepo {
     suspend fun createChildInfo(childClass: ChildClassResponse, childInfo: AddStudentRequest) : Response<StudentResponse>
 
-    suspend fun getAllChildInfos(): List<StudentResponse>
+    suspend fun getAllChildInfos(classId: Long): List<StudentResponse>
 
     suspend fun updateStudent(childInfo: StudentResponse, updateStudentRequest: UpdateStudentRequest): Response<StudentResponse>
 
@@ -19,5 +19,5 @@ interface ChildInfoRepo {
 
     suspend fun updateStudentEndDate(childInfo: StudentResponse, studentDateRequest: UpdateStudentDateRequest)
 
-    suspend fun deleteChildInfo(childInfo: StudentResponse)
+    suspend fun deleteChildInfo(childInfo: StudentResponse): Response<Boolean>
 }

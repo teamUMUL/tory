@@ -177,9 +177,9 @@ fun CenterItemRow(
                                         centerViewModel.clearSelectedCenter()
                                     } else {
                                         centerViewModel.setSelectedCenter(center)
-                                        childClassViewModel.getChildClassesByCenter(
-                                            center
-                                        )
+//                                        childClassViewModel.getChildClassesByCenter(
+//                                            center
+//                                        )
                                     }
                                     childClassViewModel.clearSelectedChildClass()
                                     childInfoViewModel.clearSelectedChildInfo()

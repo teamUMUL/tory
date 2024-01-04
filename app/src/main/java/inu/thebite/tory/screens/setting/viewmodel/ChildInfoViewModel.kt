@@ -40,10 +40,9 @@ class ChildInfoViewModel : ViewModel(){
     }
 
     fun clearChildInfos(){
-        _childInfos.value = null
+        _allChildInfos.value = null
     }
     init {
-        getAllChildInfos()
         observeAllChildClasses()
     }
 
@@ -72,10 +71,13 @@ class ChildInfoViewModel : ViewModel(){
         }
     }
 
-    fun getAllChildInfos(){
+    fun getAllChildInfos(
+        classId: Long
+    ){
+
         viewModelScope.launch{
             try {
-                val allChildInfos = repo.getAllChildInfos()
+                val allChildInfos = repo.getAllChildInfos(classId = classId)
                 _allChildInfos.update {
                     allChildInfos
                 }
@@ -157,11 +159,24 @@ class ChildInfoViewModel : ViewModel(){
     fun deleteChildInfo(selectedChildInfo: StudentResponse) {
         viewModelScope.launch {
             try {
-                repo.deleteChildInfo(selectedChildInfo)
+                val response = repo.deleteChildInfo(childInfo = selectedChildInfo)
+
+                if (response.isSuccessful) {
+                    val isDeleted = response.body() ?: throw Exception("Child 삭제 정보가 비어있습니다.")
+                    if (isDeleted) {
+                        _allChildInfos.update { currentChildren ->
+                            currentChildren?.filterNot { it.id == selectedChildInfo.id }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Child 식제 실패: $errorBody")
+                }
+
             } catch (e: Exception) {
-                Log.e("failed to delete student", e.message.toString())
+                Log.e("failed to delete Child", e.message.toString())
             }
-            getAllChildInfos()
         }
     }
 

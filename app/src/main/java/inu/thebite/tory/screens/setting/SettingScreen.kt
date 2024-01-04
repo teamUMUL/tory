@@ -36,11 +36,11 @@ fun SettingScreen(
     val selectedCenter by centerViewModel.selectedCenter.collectAsState()
     val allCenters by centerViewModel.allCenters.collectAsState()
 
-    val childClasses by childClassViewModel.childClasses.collectAsState()
+//    val childClasses by childClassViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassViewModel.selectedChildClass.collectAsState()
     val allChildClasses by childClassViewModel.allChildClasses.collectAsState()
 
-    val childInfos by childInfoViewModel.childInfos.collectAsState()
+//    val childInfos by childInfoViewModel.childInfos.collectAsState()
     val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
     val allChildInfos by childInfoViewModel.allChildInfos.collectAsState()
 
@@ -72,22 +72,23 @@ fun SettingScreen(
 
     LaunchedEffect(Unit){
         centerViewModel.getAllCenters()
-        childClassViewModel.getAllChildClasses()
-        childInfoViewModel.getAllChildInfos()
+//        childClassViewModel.getAllChildClasses()
+//        childInfoViewModel.getAllChildInfos()
     }
 
     LaunchedEffect(selectedCenter, allChildClasses){
         selectedCenter?.let {
-            childClassViewModel.getChildClassesByCenter(
-                it
+            Log.d("selectedCenter", it.toString())
+            childClassViewModel.getAllChildClasses(
+                it.id
             )
         }
     }
 
     LaunchedEffect(selectedChildClass, allChildInfos){
         selectedChildClass?.let { selectedChildClass ->
-                childInfoViewModel.getChildInfosByClass(
-                    selectedChildClass
+                childInfoViewModel.getAllChildInfos(
+                    selectedChildClass.id
                 )
         }
     }
@@ -137,7 +138,7 @@ fun SettingScreen(
     if(addChildInfoDialog){
         AddChildInfoDialog(
             context = context,
-            childInfos = childInfos,
+            childInfos = allChildInfos,
             selectedChildClass = selectedChildClass,
             childInfoViewModel = childInfoViewModel,
             setAddChildInfoDialog = {setAddChildInfoDialog(it)},
@@ -148,7 +149,7 @@ fun SettingScreen(
     if(updateChildInfoDialog){
         AddChildInfoDialog(
             context = context,
-            childInfos = childInfos,
+            childInfos = allChildInfos,
             selectedChildClass = selectedChildClass,
             childInfoViewModel = childInfoViewModel,
             setAddChildInfoDialog = {setUpdateChildInfoDialog(it)},
@@ -179,7 +180,7 @@ fun SettingScreen(
                     "반" -> {
                         ChildClassItemRow(
                             settingType = settingType,
-                            childClasses = childClasses,
+                            childClasses = allChildClasses,
                             selectedChildClass = selectedChildClass,
                             selectedCenter = selectedCenter,
                             childClassViewModel = childClassViewModel,
@@ -191,7 +192,7 @@ fun SettingScreen(
                     "아이" -> {
                         ChildInfoItemRow(
                             settingType = settingType,
-                            childInfos = childInfos,
+                            childInfos = allChildInfos,
                             selectedChildInfo = selectedChildInfo,
                             selectedChildClass = selectedChildClass,
                             childInfoViewModel = childInfoViewModel,

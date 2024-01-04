@@ -51,7 +51,7 @@ class ChildClassSelectViewModel : ViewModel() {
     }
 
     fun clearChildClasses(){
-        _childClasses.value = null
+//        _childClasses.value = null
     }
     init {
 //        setSelectedChildClass(
@@ -64,13 +64,13 @@ class ChildClassSelectViewModel : ViewModel() {
 //                )
 //            )
 //        )
-        getAllChildClasses()
+//        getAllChildClasses()
     }
 
-    fun getAllChildClasses(){
+    fun getAllChildClasses(centerId : Long){
         viewModelScope.launch{
             try {
-                val allChildClasses = repo.getAllChildClasses()
+                val allChildClasses = repo.getAllChildClasses(centerId = centerId)
                 _allChildClasses.value = allChildClasses
             } catch (e: Exception) {
                 Log.e("failed to get all classes", e.message.toString())
@@ -81,15 +81,15 @@ class ChildClassSelectViewModel : ViewModel() {
     fun getChildClassesByCenter(
         selectedCenter: CenterResponse,
     ){
-        if(selectedCenter.isNotNull()){
-            _childClasses.update {
-                val filteredChildClasses = allChildClasses.value!!.filter {
-                    it.center.id == selectedCenter.id
-                }
-                filteredChildClasses
-            }
-        }else{
-            _childClasses.update { null }
-        }
+//        if(selectedCenter.isNotNull()){
+//            _childClasses.update {
+//                val filteredChildClasses = allChildClasses.value!!.filter {
+//                    it.center.id == selectedCenter.id
+//                }
+//                filteredChildClasses
+//            }
+//        }else{
+//            _childClasses.update { null }
+//        }
     }
 }

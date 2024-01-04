@@ -12,11 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.auth.AuthViewModel
 import inu.thebite.tory.screens.auth.LoginState
+import inu.thebite.tory.screens.auth.TokenExpirationEvent
 import inu.thebite.tory.screens.auth.TokenManager
 import inu.thebite.tory.screens.auth.login.LoginScreen
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
@@ -48,10 +51,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ToryTheme {
+                val context = LocalContext.current
                 val authViewModel: AuthViewModel = koinViewModel()
                 val token = tokenManager.getToken()
                 if (token != null){
-                    authViewModel.verifyToken(token = token)
+                    authViewModel.verifyToken(context = context)
                 }
 
                 CompositionLocalProvider(LoginState provides authViewModel){
@@ -65,15 +69,16 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ApplicationSwitcher(tokenManager: TokenManager) {
-
+    val tokenExpired = TokenExpirationEvent.expired.observeAsState()
     val vm = LoginState.current
     val loginState by vm.loginState.collectAsState()
+
     Surface(
         modifier = Modifier
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (loginState) {
+        if (loginState && tokenExpired.value == false) {
             //                    val ltoViewModel : LTOViewModel = koinViewModel()
             val centerSelectViewModel : CenterSelectViewModel = koinViewModel()
             val childClassSelectViewModel : ChildClassSelectViewModel = koinViewModel()

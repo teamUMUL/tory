@@ -17,8 +17,8 @@ class ChildClassRepoImpl: ChildClassRepo {
             addChildClassRequest = childClass)
     }
 
-    override suspend fun getAllChildClasses(): List<ChildClassResponse> {
-        return childClassRetrofit.getAllClassList()
+    override suspend fun getAllChildClasses(centerId: Long): List<ChildClassResponse> {
+        return childClassRetrofit.getClassListByCenter(centerId = centerId)
     }
 
 
@@ -29,8 +29,8 @@ class ChildClassRepoImpl: ChildClassRepo {
         return childClassRetrofit.updateChildClass(classId = selectedChildClass.id, updateChildClass = updateChildClass)
     }
 
-    override suspend fun deleteChildClass(childClass: ChildClassResponse) {
-        childClassRetrofit.deleteClass(classId = childClass.id)
+    override suspend fun deleteChildClass(childClass: ChildClassResponse) : Response<Boolean>{
+        return childClassRetrofit.deleteClass(classId = childClass.id)
     }
 
 }

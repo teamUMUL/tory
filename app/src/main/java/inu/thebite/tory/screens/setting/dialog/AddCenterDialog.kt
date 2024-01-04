@@ -144,10 +144,10 @@ fun AddCenterDialog(
                                             )
                                         )
                                     }
-                                    centerViewModel.clearSelectedCenter()
-                                    childClassViewModel.clearSelectedChildClass()
-                                    childInfoViewModel.clearSelectedChildInfo()
-                                    childInfoViewModel.clearChildInfos()
+//                                    centerViewModel.clearSelectedCenter()
+//                                    childClassViewModel.clearSelectedChildClass()
+//                                    childInfoViewModel.clearSelectedChildInfo()
+//                                    childInfoViewModel.clearChildInfos()
                                 } else {
                                     centerViewModel.createCenter(
                                         newCenter = CenterRequest(

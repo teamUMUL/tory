@@ -19,8 +19,8 @@ import java.lang.Exception
 class ChildSelectViewModel : ViewModel() {
     private val repo: ChildInfoRepoImpl = ChildInfoRepoImpl()
 
-    private val _allChildInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
-    val allChildInfos = _allChildInfos.asStateFlow()
+//    private val _allChildInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
+//    val allChildInfos = _allChildInfos.asStateFlow()
 
 
     private val _childInfos: MutableStateFlow<List<StudentResponse>?> = MutableStateFlow(null)
@@ -76,14 +76,14 @@ class ChildSelectViewModel : ViewModel() {
 //                )
 //            )
 //        )
-        getAllChildInfos()
+//        getAllChildInfos()
     }
 
-    fun getAllChildInfos(){
+    fun getAllChildInfos(classId: Long){
         viewModelScope.launch{
             try {
-                val allChildInfos = repo.getAllChildInfos()
-                _allChildInfos.value = allChildInfos
+                val childInfos = repo.getAllChildInfos(classId = classId)
+                _childInfos.update { childInfos }
             } catch (e: Exception) {
                 Log.e("failed to get all students", e.message.toString())
             }
@@ -93,15 +93,15 @@ class ChildSelectViewModel : ViewModel() {
     fun getChildInfosByClass(
         selectedClass: ChildClassResponse,
     ){
-        if(selectedClass.isNotNull()){
-            _childInfos.update {
-                val filteredChildInfos = allChildInfos.value!!.filter {
-                    it.childClass.id == selectedClass.id
-                }
-                filteredChildInfos
-            }
-        }else{
-            _childInfos.update { null }
-        }
+//        if(selectedClass.isNotNull()){
+//            _childInfos.update {
+//                val filteredChildInfos = allChildInfos.value!!.filter {
+//                    it.childClass.id == selectedClass.id
+//                }
+//                filteredChildInfos
+//            }
+//        }else{
+//            _childInfos.update { null }
+//        }
     }
 }

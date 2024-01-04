@@ -42,7 +42,7 @@ class ChildClassViewModel : ViewModel() {
         _childClasses.value = null
     }
     init {
-        getAllChildClasses()
+//        getAllChildClasses()
         observeAllChildClasses()
     }
 
@@ -63,18 +63,20 @@ class ChildClassViewModel : ViewModel() {
                 }
             }
             _selectedChildClass.update {
-                val foundChildClass = allChildClasses.find { childClass ->
-                    selectedChildClass.value?.id == childClass.id
+                val foundChildClass = allChildClasses.find {childClass ->
+
+                    childClass.id == selectedChildClass.value?.id
                 }
                 foundChildClass
             }
         }
     }
 
-    fun getAllChildClasses(){
+    fun getAllChildClasses(centerId : Long){
         viewModelScope.launch{
             try {
-                val allChildClasses = repo.getAllChildClasses()
+                val allChildClasses = repo.getAllChildClasses(centerId = centerId)
+                Log.d("gottenChildClasses", allChildClasses.toString())
                 _allChildClasses.update {
                     allChildClasses
                 }
@@ -106,9 +108,10 @@ class ChildClassViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = repo.createChildClass(selectedCenter = selectedCenter, childClass = newChildClass)
-
                 if (response.isSuccessful) {
                     val newChildClassResponse = response.body() ?: throw Exception("ChildClass 정보가 비어있습니다.")
+                    Log.d("createChildClass", newChildClassResponse.toString())
+
                     _allChildClasses.update { currentChildClasses ->
                         currentChildClasses?.let {
                             // 현재 ChildClass 리스트가 null이 아니면 새 ChildClass 추가
@@ -155,16 +158,26 @@ class ChildClassViewModel : ViewModel() {
     fun deleteChildClass(
         selectedChildClass: ChildClassResponse
     ) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
-                repo.deleteChildClass(
-                    childClass = selectedChildClass
-                )
-            } catch (e: Exception) {
-                Log.e("failed to delete child class", e.message.toString())
-            }
-            getAllChildClasses()
-        }
+                val response = repo.deleteChildClass(childClass = selectedChildClass)
 
+                if (response.isSuccessful) {
+                    val isDeleted = response.body() ?: throw Exception("Class 삭제 정보가 비어있습니다.")
+                    if (isDeleted) {
+                        _allChildClasses.update { currentClasses ->
+                            currentClasses?.filterNot { it.id == selectedChildClass.id }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Class 식제 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to delete Class", e.message.toString())
+            }
+        }
     }
 }

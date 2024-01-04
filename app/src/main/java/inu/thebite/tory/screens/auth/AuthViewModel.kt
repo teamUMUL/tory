@@ -47,6 +47,8 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
 
                     _loginState.update { true }
                     _isLoading.update { false }
+                    TokenExpirationEvent.expired.postValue(false)
+
                     Toasty.success(context, "로그인에 성공했습니다", Toast.LENGTH_SHORT, true).show()
                 } else {
                     _loginState.update { false }
@@ -62,11 +64,10 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
 
     }
 
-    suspend fun logout(
+    fun logout(
 
     ){
         _isLoading.update { true }
-        delay(1500)
         _loginState.update { false }
         _isLoading.update { false }
         tokenManager.clearToken()

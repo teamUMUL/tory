@@ -22,8 +22,8 @@ class ChildInfoRepoImpl : ChildInfoRepo {
             addStudentRequest = newChildInfo)
     }
 
-    override suspend fun getAllChildInfos(): List<StudentResponse> {
-        return childRetrofit.getStudentList()
+    override suspend fun getAllChildInfos(classId: Long): List<StudentResponse> {
+        return childRetrofit.getStudentList(classId = classId)
     }
 
     override suspend fun updateStudent(
@@ -53,7 +53,7 @@ class ChildInfoRepoImpl : ChildInfoRepo {
         )
     }
 
-    override suspend fun deleteChildInfo(childInfo: StudentResponse) {
-        childRetrofit.deleteStudent(studentId = childInfo.id)
+    override suspend fun deleteChildInfo(childInfo: StudentResponse): Response<Boolean> {
+        return childRetrofit.deleteStudent(studentId = childInfo.id)
     }
 }

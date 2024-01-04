@@ -130,12 +130,24 @@ class CenterViewModel : ViewModel() {
     fun deleteCenter(centerEntity: CenterResponse) {
         viewModelScope.launch {
             try {
-                repo.deleteCenter(centerEntity)
-            } catch (e: Exception) {
-                Log.e("failed to delete center", e.message.toString())
-            }
-            getAllCenters()
-        }
+                val response = repo.deleteCenter(centerEntity)
 
+                if (response.isSuccessful) {
+                    val isDeleted = response.body() ?: throw Exception("Center 삭제 정보가 비어있습니다.")
+                    if (isDeleted) {
+                        _allCenters.update { currentCenters ->
+                            currentCenters?.filterNot { it.id == centerEntity.id }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("Center 식제 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to delete Center", e.message.toString())
+            }
+        }
     }
 }

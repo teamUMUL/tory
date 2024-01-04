@@ -8,8 +8,8 @@ import retrofit2.Response
 
 interface ChildClassRepo {
     suspend fun createChildClass(selectedCenter: CenterResponse, childClass: ChildClassRequest) : Response<ChildClassResponse>
-    suspend fun getAllChildClasses(): List<ChildClassResponse>
+    suspend fun getAllChildClasses(centerId : Long): List<ChildClassResponse>
 
     suspend fun updateChildClass(childClass: ChildClassResponse, request: ChildClassRequest) : Response<ChildClassResponse>
-    suspend fun deleteChildClass(childClass: ChildClassResponse)
+    suspend fun deleteChildClass(childClass: ChildClassResponse): Response<Boolean>
 }

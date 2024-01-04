@@ -8,5 +8,5 @@ interface CenterRepo {
     suspend fun createCenter(center: CenterRequest): Response<CenterResponse>
     suspend fun getAllCenters(): List<CenterResponse>
     suspend fun updateCenter(centerResponse: CenterResponse, center: CenterRequest): Response<CenterResponse>
-    suspend fun deleteCenter(center: CenterResponse)
+    suspend fun deleteCenter(center: CenterResponse) : Response<Boolean>
 }

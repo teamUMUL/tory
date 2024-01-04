@@ -115,11 +115,11 @@ fun MainCompose(
 
 
     val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
-    val childClasses by childClassSelectViewModel.childClasses.collectAsState()
+//    val childClasses by childClassSelectViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
     val _selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
 
-    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
+//    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
     val childInfos by childSelectViewModel.childInfos.collectAsState()
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
     val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
@@ -127,27 +127,27 @@ fun MainCompose(
 
     LaunchedEffect(_selectedCenter, allCenters) {
         _selectedCenter?.let {
-            childClassSelectViewModel.getChildClassesByCenter(
-                it
+            childClassSelectViewModel.getAllChildClasses(
+                it.id
             )
         }
     }
 
     LaunchedEffect(_selectedChildClass, allChildClasses) {
         _selectedChildClass?.let { selectedChildClass ->
-            childSelectViewModel.getChildInfosByClass(
-                selectedClass = selectedChildClass
+            childSelectViewModel.getAllChildInfos(
+                classId = selectedChildClass.id
             )
         }
     }
 
-    LaunchedEffect(allChildInfos) {
-        _selectedChildClass?.let { selectedChildClass ->
-            childSelectViewModel.getChildInfosByClass(
-                selectedClass = selectedChildClass
-            )
-        }
-    }
+//    LaunchedEffect(allChildInfos) {
+//        _selectedChildClass?.let { selectedChildClass ->
+//            childSelectViewModel.getAllChildInfos(
+//                classId = selectedChildClass.id
+//            )
+//        }
+//    }
 
     LaunchedEffect(selectedChildInfo){
         selectedChildInfo?.let {selectedChildInfo ->
@@ -157,6 +157,7 @@ fun MainCompose(
     }
 
     if (childDialogOpen) {
+        centerSelectViewModel.getAllCenters()
         Dialog(
             onDismissRequest = { setChildDialogOpen(false) }
         ) {
@@ -211,7 +212,7 @@ fun MainCompose(
 
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    childClasses?.let { childClasses ->
+                    allChildClasses?.let { childClasses ->
                         Text(
                             text = "반",
                             fontWeight = FontWeight.SemiBold,
@@ -817,7 +818,7 @@ fun CenterControl(
                         childClassSelectViewModel.clearChildClasses()
                     } else {
                         centerSelectViewModel.setTempSelectedCenter(item)
-                        childClassSelectViewModel.getChildClassesByCenter(item)
+//                        childClassSelectViewModel.getChildClassesByCenter(item)
                     }
                     childSelectViewModel.clearChildInfos()
                     childClassSelectViewModel.clearTempSelectedChildClass()
@@ -931,9 +932,9 @@ fun ChildClassControl(
 
                     } else {
                         childClassSelectViewModel.setTempSelectedChildClass(item)
-                        childSelectViewModel.getChildInfosByClass(
-                            item
-                        )
+//                        childSelectViewModel.getChildInfosByClass(
+//                            item
+//                        )
                     }
                     childSelectViewModel.clearTempSelectedChildInfo()
                     childSelectViewModel.clearChildInfos()

@@ -134,7 +134,7 @@ fun AddChildClassDialog(
                                                 )
                                             )
                                         }
-                                        childClassViewModel.clearSelectedChildClass()
+//                                        childClassViewModel.clearSelectedChildClass()
                                     } else {
                                         childClassViewModel.createChildClass(
                                             selectedCenter = selectedCenter,

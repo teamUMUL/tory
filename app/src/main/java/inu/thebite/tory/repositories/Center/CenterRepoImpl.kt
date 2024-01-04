@@ -22,7 +22,7 @@ class CenterRepoImpl: CenterRepo {
         return centerRetrofit.getCenterList()
     }
 
-    override suspend fun deleteCenter(center: CenterResponse) {
-        centerRetrofit.deleteCenter(centerId = center.id)
+    override suspend fun deleteCenter(center: CenterResponse) : Response<Boolean> {
+        return centerRetrofit.deleteCenter(centerId = center.id)
     }
 }

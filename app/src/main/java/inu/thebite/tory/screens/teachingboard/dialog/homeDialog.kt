@@ -143,7 +143,7 @@ fun ClassDialog(
     childSelectViewModel: ChildSelectViewModel
 ) {
     val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
-    val childClasses by childClassSelectViewModel.childClasses.collectAsState()
+//    val childClasses by childClassSelectViewModel.childClasses.collectAsState()
     val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
     val _selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
 
@@ -172,7 +172,7 @@ fun ClassDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    childClasses?.let {childClasses ->
+                    allChildClasses?.let {childClasses ->
                         ChildClassControl(
                             items = childClasses,
                             selectedChildClass = _selectedChildClass,
@@ -235,7 +235,7 @@ fun ChildDialog(
     onDismiss: () -> Unit,
     childSelectViewModel: ChildSelectViewModel
 ) {
-    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
+//    val allChildInfos by childSelectViewModel.allChildInfos.collectAsState()
     val childInfos by childSelectViewModel.childInfos.collectAsState()
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
     val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
