@@ -62,7 +62,7 @@ fun TeacherInfor(
                     )
                 )
                 Text(
-                    text = "토리쌤 / BCBA (D-120)",
+                    text = "",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
@@ -80,7 +80,7 @@ fun TeacherInfor(
                         )
                 )
                 Text(
-                    text = "발달지연",
+                    text = "",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
@@ -97,7 +97,7 @@ fun TeacherInfor(
                     )
                 )
                 Text(
-                    text = "송도 토리 ABA 발달센터",
+                    text = "",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),

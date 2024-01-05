@@ -854,7 +854,8 @@ fun CenterCardInCenterDashboard(
                 modifier = Modifier
                     .width(140.dp)
                     .height(32.dp),
-                text = if(allCentersSize == "null") "없음" else allCentersSize,
+//                text = if(allCentersSize == "null") "없음" else allCentersSize,
+                text = "",
                 style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 20.sp,
@@ -917,7 +918,8 @@ fun ClassCardInCenterDashboard(
                     .width(140.dp)
 
                     .height(32.dp),
-                text = if(allChildClassesSize == "null") "없음" else allChildClassesSize,
+//                text = if(allChildClassesSize == "null") "없음" else allChildClassesSize,
+                text = "",
                 style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 20.sp,
@@ -981,7 +983,8 @@ fun ChildrenCardInCenterDashboard(
                 modifier = Modifier
                     .width(140.dp)
                     .height(32.dp),
-                text = if(allChildInfosSize == "null") "없음" else allChildInfosSize,
+//                text = if(allChildInfosSize == "null") "없음" else allChildInfosSize,
+                text = "",
                 style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 20.sp,

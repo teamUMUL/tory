@@ -81,7 +81,7 @@ fun SelectedSTODetailsTable(
                             selectedSTO?.name ?: "",
                             selectedSTO?.contents ?: "",
                             "${selectedSTO?.count ?: ""}회",
-                            "${selectedSTO?.goalPercent ?: ""}%",
+                            "${selectedSTO?.goal ?: ""}%",
                             selectedSTO?.urgeContent ?: "",
                             selectedSTO?.enforceContent ?: "",
                             selectedSTO?.memo ?: "",

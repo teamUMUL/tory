@@ -39,7 +39,6 @@ import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.student.StudentResponse
-import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
@@ -248,18 +247,19 @@ fun EducationResultTable(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                if (points.size == selectedSTO.count) {
+                if (points.size >= selectedSTO.count) {
+                    val takenPoints = points.take(selectedSTO.count)
                     OutlinedButton(
                         onClick = {
-                            val status = if ((points.count { it == "+" }
+                            val status = if ((takenPoints.count { it == "+" }
                                     .toFloat() / selectedSTO.count.toFloat()) * 100 >= 90f) {
                                 "준거 도달"
                             } else {
                                 "진행중"
                             }
-                            val plusRate = (points.count { it == "+" }
+                            val plusRate = (takenPoints.count { it == "+" }
                                 .toFloat() / selectedSTO.count.toFloat()) * 100
-                            val minusRate = (points.count { it == "-" }
+                            val minusRate = (takenPoints.count { it == "-" }
                                 .toFloat() / selectedSTO.count.toFloat()) * 100
                             stoViewModel.addRound(
                                 selectedSTO = selectedSTO,

@@ -243,6 +243,7 @@ class STOViewModel : ViewModel() {
         selectedLTO: LtoResponse,
         newSTO: AddStoRequest
     ) {
+        Log.d("selectedSTO Goal", newSTO.goal.toString())
         viewModelScope.launch {
             try {
                 val response = repo.addSto(ltoInfo = selectedLTO, addStoRequest = newSTO)
