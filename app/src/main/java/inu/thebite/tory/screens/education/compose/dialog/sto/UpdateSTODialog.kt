@@ -3,13 +3,16 @@ package inu.thebite.tory.screens.education.compose.dialog.sto
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,21 +33,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -85,16 +95,17 @@ fun UpdateSTODialog(
     val stoTryNum = remember { mutableStateOf(selectedSTO.count) }
 
     Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = {setUpdateSTOItem(false)},
     ){
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(900.dp)
                 .fillMaxHeight()
                 .clip(RoundedCornerShape(6.dp))
                 .background(Color.White)
                 .padding(
-                    horizontal = 8.dp,
+                    horizontal = 50.dp,
                     vertical = 16.dp
                 )
         ){
@@ -102,6 +113,17 @@ fun UpdateSTODialog(
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f)
                 .verticalScroll(addSTOScrollState)) {
+                Text(
+                    text = "STO 수정",
+                    style = TextStyle(
+                        fontSize = 33.sp,
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF000000),
+
+                        textAlign = TextAlign.Center,
+                    )
+                )
                 updateSTOTextFieldFrame("STO 이름", setInputValue = {stoNameInputValue = it}, inputValue = stoNameInputValue, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
                 updateSTOTextFieldFrame("STO 내용", setInputValue = {stoDetailInputValue = it}, inputValue = stoDetailInputValue, isSingleLine = false)
@@ -131,42 +153,79 @@ fun UpdateSTODialog(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                shape = RoundedCornerShape(8.dp),
-                onClick = {
-                    if(stoNameInputValue.text.isNotEmpty()){
-                        //업데이트 코드
-                        stoViewModel.updateSTO(
-                            selectedSTO = selectedSTO,
-                            updateSTO = UpdateStoRequest(
-                                name = stoNameInputValue.text,
-                                contents = stoDetailInputValue.text,
-                                count = stoTryNum.value,
-                                goal = stoSuccessStandardInputValue.text.toInt(),
-                                urgeType = "",
-                                urgeContent = stoMethodInputValue.text,
-                                enforceContent = stoScheduleInputValue.text,
-                                memo = stoMemoInputValue.text
-                            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 40.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFBFBFBF)
+                    ),
+                    onClick = { setUpdateSTOItem(false) }
+                ){
+                    Text(
+                        text = "취소",
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            fontFamily = fontFamily_Poppins,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
                         )
-                        //----
-                        setUpdateSTOItem(false)
-                        stoNameInputValue = TextFieldValue("")
-                        stoDetailInputValue = TextFieldValue("")
-                        stoTryNumInputValue = TextFieldValue("")
-                        stoSuccessStandardInputValue = TextFieldValue("")
-                        stoMethodInputValue = TextFieldValue("")
-                        stoScheduleInputValue = TextFieldValue("")
-                        stoMemoInputValue = TextFieldValue("")
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
-            ){
-                Icon(imageVector = Icons.Default.Add, contentDescription = null, Modifier.size(40.dp))
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 40.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF0047B3)
+                    ),
+                    onClick = {
+                        if(stoNameInputValue.text.isNotEmpty()){
+                            //업데이트 코드
+                            stoViewModel.updateSTO(
+                                selectedSTO = selectedSTO,
+                                updateSTO = UpdateStoRequest(
+                                    name = stoNameInputValue.text,
+                                    contents = stoDetailInputValue.text,
+                                    count = stoTryNum.value,
+                                    goal = stoSuccessStandardInputValue.text.toInt(),
+                                    urgeType = "",
+                                    urgeContent = stoMethodInputValue.text,
+                                    enforceContent = stoScheduleInputValue.text,
+                                    memo = stoMemoInputValue.text
+                                )
+                            )
+                            //----
+                            setUpdateSTOItem(false)
+                            stoNameInputValue = TextFieldValue("")
+                            stoDetailInputValue = TextFieldValue("")
+                            stoTryNumInputValue = TextFieldValue("")
+                            stoSuccessStandardInputValue = TextFieldValue("")
+                            stoMethodInputValue = TextFieldValue("")
+                            stoScheduleInputValue = TextFieldValue("")
+                            stoMemoInputValue = TextFieldValue("")
+                        }
+                    },
+                ){
+                    Text(
+                        text = "수정",
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            fontFamily = fontFamily_Poppins,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
+                        )
+                    )
+                }
+
             }
+
         }
     }
 

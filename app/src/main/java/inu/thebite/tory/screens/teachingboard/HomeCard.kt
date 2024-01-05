@@ -224,9 +224,9 @@ fun ClassCard(
 @Composable
 fun ChildrenCard(
     modifier: Modifier = Modifier,
-    classSelectViewModel: ChildClassSelectViewModel = koinViewModel(),
+    classSelectViewModel: ChildClassSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
-    devViewModel: DEVViewModel = koinViewModel(),
+    devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ){
@@ -241,6 +241,11 @@ fun ChildrenCard(
             stoViewModel.getAllSTOs(studentId = selectedChildInfo.id)
         }
     }
+    LaunchedEffect(selectedClass){
+        selectedClass?.let {selectedClass ->
+            childSelectViewModel.getAllChildInfos(selectedClass.id)
+        }
+    }
 
     var isDialogVisible by remember { mutableStateOf(false) }
 
@@ -248,7 +253,7 @@ fun ChildrenCard(
         selectedClass?.let {selectedClass ->
             childSelectViewModel.getAllChildInfos(selectedClass.id)
 
-        } ?:
+        }
         ChildDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },

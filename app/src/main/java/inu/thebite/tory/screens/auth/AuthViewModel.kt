@@ -94,7 +94,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                 } else {
                     _loginState.update { false }
                     _isLoading.update { false }
-                    Toasty.error(context, "로그인에 실패했습니다", Toast.LENGTH_SHORT, true).show()
+                    Toasty.error(context, "토큰이 유효하지 않습니다", Toast.LENGTH_SHORT, true).show()
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
                     throw Exception("validation 실패: $errorBody")
                 }

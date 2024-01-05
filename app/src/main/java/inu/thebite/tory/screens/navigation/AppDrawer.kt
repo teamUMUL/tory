@@ -114,20 +114,6 @@ fun AppDrawer(
         NavigationDrawerItem(
             label = {
                 Text(
-                    text = stringResource(id = R.string.ready),
-                )
-            },
-            selected = route == AllDestinations.READY,
-            onClick = {
-                navigateToReady()
-                closeDrawer()
-            },
-            icon = { Icon(painter = painterResource(id = R.drawable.icon_photo), contentDescription = null)},
-            shape = MaterialTheme.shapes.small
-        )
-        NavigationDrawerItem(
-            label = {
-                Text(
                     text = stringResource(id = R.string.setting),
                 )
             },

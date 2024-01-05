@@ -55,7 +55,7 @@ fun SameGameScreen(
     resetGameButtonIndex : () -> Unit,
     setIsCardSelectEnd : (Boolean) -> Unit,
 ){
-    val successURL = "https://storage.googleapis.com/download/storage/v1/b/tory-image-repository/o/Etc%2FEtc_1?generation=1704158802607671&alt=media"
+    val successURL = "https://storage.googleapis.com/download/storage/v1/b/tory-education-image-repository/o/Etc%2FEtc_1?generation=1704437112256088&alt=media"
 
     val group1Size = (targetItems.size + 1) / 2
     val group1 = targetItems.subList(0, group1Size)

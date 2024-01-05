@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -45,14 +46,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 @Composable
 fun AddSTODialog(
@@ -87,16 +92,16 @@ fun AddSTODialog(
     val stoTryNum = remember { mutableStateOf(15) }
 
     Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = {setAddSTOItem(false)},
     ){
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .clip(RoundedCornerShape(6.dp))
+                .width(900.dp)
+                .clip(RoundedCornerShape(10.dp))
                 .background(Color.White)
                 .padding(
-                    horizontal = 8.dp,
+                    horizontal = 50.dp,
                     vertical = 16.dp
                 )
         ){
@@ -104,6 +109,17 @@ fun AddSTODialog(
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f)
                 .verticalScroll(addSTOScrollState)) {
+                Text(
+                    text = "STO 추가",
+                    style = TextStyle(
+                        fontSize = 33.sp,
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF000000),
+
+                        textAlign = TextAlign.Center,
+                    )
+                )
                 stoTextFieldFrame("STO 이름", stoNameInputValue, setInputValue = {stoNameInputValue = it}, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
                 stoTextFieldFrame("STO 내용", stoContentInputValue, setInputValue = {stoContentInputValue = it}, isSingleLine = true)
@@ -134,40 +150,77 @@ fun AddSTODialog(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                shape = RoundedCornerShape(8.dp),
-                onClick = {
-                    if(stoNameInputValue.text.isNotEmpty()){
-                        stoViewModel.createSTO(
-                            selectedLTO = selectedLTO,
-                            newSTO = AddStoRequest(
-                                name = stoNameInputValue.text,
-                                contents = stoContentInputValue.text,
-                                count = stoTryNum.value,
-                                goal = stoSuccessStandardInputValue.text.toInt(),
-                                urgeType = "",
-                                urgeContent = stoMethodInputValue.text,
-                                enforceContent = stoScheduleInputValue.text,
-                                memo = stoMemoInputValue.text,
-                                registrant = "테스트"
-                            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 40.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFBFBFBF)
+                    ),
+                    onClick = { setAddSTOItem(false) }
+                ){
+                    Text(
+                        text = "취소",
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            fontFamily = fontFamily_Poppins,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
                         )
-                        stoNameInputValue = TextFieldValue("")
-                        stoContentInputValue = TextFieldValue("")
-                        stoSuccessStandardInputValue = TextFieldValue("")
-                        stoMethodInputValue = TextFieldValue("")
-                        stoScheduleInputValue = TextFieldValue("")
-                        stoMemoInputValue = TextFieldValue("")
-                        setAddSTOItem(false)
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
-            ){
-                Icon(imageVector = Icons.Default.Add, contentDescription = null, Modifier.size(40.dp))
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 40.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF0047B3)
+                    ),
+                    onClick = {
+                        if(stoNameInputValue.text.isNotEmpty()){
+                            stoViewModel.createSTO(
+                                selectedLTO = selectedLTO,
+                                newSTO = AddStoRequest(
+                                    name = stoNameInputValue.text,
+                                    contents = stoContentInputValue.text,
+                                    count = stoTryNum.value,
+                                    goal = stoSuccessStandardInputValue.text.toInt(),
+                                    urgeType = "",
+                                    urgeContent = stoMethodInputValue.text,
+                                    enforceContent = stoScheduleInputValue.text,
+                                    memo = stoMemoInputValue.text,
+                                    registrant = "테스트"
+                                )
+                            )
+                            stoNameInputValue = TextFieldValue("")
+                            stoContentInputValue = TextFieldValue("")
+                            stoSuccessStandardInputValue = TextFieldValue("")
+                            stoMethodInputValue = TextFieldValue("")
+                            stoScheduleInputValue = TextFieldValue("")
+                            stoMemoInputValue = TextFieldValue("")
+                            setAddSTOItem(false)
+                        }
+                    },
+                ){
+                    Text(
+                        text = "추가",
+                        style = TextStyle(
+                            fontSize = 26.sp,
+                            fontFamily = fontFamily_Poppins,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
+                            )
+                    )
+                }
+
             }
+
         }
     }
 

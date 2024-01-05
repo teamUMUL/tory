@@ -35,12 +35,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import inu.thebite.tory.CenterControl
+import inu.thebite.tory.CenterSelector
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.ChildClassControl
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.ChildInfoControl
+import inu.thebite.tory.ChildSelector
+import inu.thebite.tory.ClassSelector
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.R
 
@@ -61,12 +65,13 @@ fun CenterDialog(
     if (showDialog) {
         Dialog(
             onDismissRequest = { onDismiss() },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             content = {
                 var chainText by remember { mutableStateOf("") }
 
                 Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp)
+                    .width(800.dp)
+//                    .height(240.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(Color.White)
                     .padding(
@@ -81,54 +86,16 @@ fun CenterDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    CenterControl(
-                        items = allCenters,
-                        selectedCenter = _selectedCenter,
-                        centerSelectViewModel = centerSelectViewModel,
-                        childClassSelectViewModel = childClassSelectViewModel,
-                        childSelectViewModel = childSelectViewModel,
-                    )
+                    CenterSelector(items = allCenters, onDismiss = {onDismiss()}, centerSelectViewModel = centerSelectViewModel, childClassSelectViewModel = childClassSelectViewModel, childSelectViewModel = childSelectViewModel)
+//                    CenterControl(
+//                        items = allCenters,
+//                        selectedCenter = _selectedCenter,
+//                        centerSelectViewModel = centerSelectViewModel,
+//                        childClassSelectViewModel = childClassSelectViewModel,
+//                        childSelectViewModel = childSelectViewModel,
+//                    )
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = { onDismiss() },
-                            modifier = Modifier
-                                .height(50.dp)
-                                .weight(1f),
-                            shape = RoundedCornerShape(5.dp),
-                        ) {
-                            Text(text = "취소")
-                        }
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Button(modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp),
-                            shape = RoundedCornerShape(5.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorResource(id = R.color.light_gray)
-                            ),
-                            onClick = {
-                                _selectedCenter?.let {_selectedCenter ->
-                                    centerSelectViewModel.setSelectedCenter(_selectedCenter)
-                                }
-                                onConfirm(chainText)
-//                                viewModel.selectedChildClass = selectedChildClass
-                                onDismiss()
-                            },
-
-                            ) {
-                            Text(text = "선택")
-                        }
-                    }
                 }
             }
         )
@@ -152,12 +119,13 @@ fun ClassDialog(
     if (showDialog) {
         Dialog(
             onDismissRequest = { onDismiss() },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             content = {
                 var classText by remember { mutableStateOf("") }
 
                 Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp)
+                    .width(800.dp)
+//                    .height(240.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(Color.White)
                     .padding(
@@ -173,57 +141,21 @@ fun ClassDialog(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                     allChildClasses?.let {childClasses ->
-                        ChildClassControl(
+                        ClassSelector(
                             items = childClasses,
-                            selectedChildClass = _selectedChildClass,
-                            childSelectViewModel = childSelectViewModel,
-                            childClassSelectViewModel = childClassSelectViewModel
+                            onDismiss = { onDismiss() },
+                            childClassSelectViewModel = childClassSelectViewModel,
+                            childSelectViewModel = childSelectViewModel
                         )
+//                        ChildClassControl(
+//                            items = childClasses,
+//                            selectedChildClass = _selectedChildClass,
+//                            childSelectViewModel = childSelectViewModel,
+//                            childClassSelectViewModel = childClassSelectViewModel
+//                        )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = { onDismiss() },
-                            modifier = Modifier
-                                .height(50.dp)
-                                .weight(1f),
-                            shape = RoundedCornerShape(5.dp),
-                        ) {
-                            Text(text = "취소")
-                        }
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Button(modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp),
-                            shape = RoundedCornerShape(5.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorResource(id = R.color.light_gray)
-                            ),
-                            onClick = {
-                                onConfirm(classText)
-                                _selectedChildClass?.let {_selectedChildClass ->
-                                    childClassSelectViewModel.setSelectedChildClass(
-                                        _selectedChildClass
-                                    )
-                                }
-                                childSelectViewModel.clearSelectedChildInfo()
-//                                viewModel.selectedChildClass = selectedChildClass
-                                onDismiss()
-                            },
-
-                            ) {
-                            Text(text = "선택")
-                        }
-                    }
                 }
             }
         )
@@ -243,12 +175,13 @@ fun ChildDialog(
     if (showDialog) {
         Dialog(
             onDismissRequest = { onDismiss() },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             content = {
 
 
                 Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp)
+                    .width(800.dp)
+//                    .height(240.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(Color.White)
                     .padding(
@@ -264,53 +197,58 @@ fun ChildDialog(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
                     childInfos?.let {childInfos ->
-                        ChildInfoControl(
+                        ChildSelector(
                             items = childInfos,
-                            selectedChildInfo = _selectedChildInfo,
+                            onDismiss = { onDismiss() },
                             childSelectViewModel = childSelectViewModel
                         )
+//                        ChildInfoControl(
+//                            items = childInfos,
+//                            selectedChildInfo = _selectedChildInfo,
+//                            childSelectViewModel = childSelectViewModel
+//                        )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = { onDismiss() },
-                            modifier = Modifier
-                                .height(50.dp)
-                                .weight(1f),
-                            shape = RoundedCornerShape(5.dp),
-                        ) {
-                            Text(text = "취소")
-                        }
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Button(modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp),
-                            shape = RoundedCornerShape(5.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorResource(id = R.color.light_gray)
-                            ),
-                            onClick = {
-                                _selectedChildInfo?.let {_selectedChildInfo ->
-                                    childSelectViewModel.setSelectedChildInfo(
-                                        _selectedChildInfo
-                                    )
-                                }
-                                onDismiss()
-                            },
-
-                            ) {
-                            Text(text = "선택")
-                        }
-                    }
+//                    Spacer(modifier = Modifier.height(16.dp))
+//
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(top = 16.dp),
+//                        horizontalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Button(
+//                            onClick = { onDismiss() },
+//                            modifier = Modifier
+//                                .height(50.dp)
+//                                .weight(1f),
+//                            shape = RoundedCornerShape(5.dp),
+//                        ) {
+//                            Text(text = "취소")
+//                        }
+//
+//                        Spacer(modifier = Modifier.width(16.dp))
+//
+//                        Button(modifier = Modifier
+//                            .weight(1f)
+//                            .height(50.dp),
+//                            shape = RoundedCornerShape(5.dp),
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = colorResource(id = R.color.light_gray)
+//                            ),
+//                            onClick = {
+//                                _selectedChildInfo?.let {_selectedChildInfo ->
+//                                    childSelectViewModel.setSelectedChildInfo(
+//                                        _selectedChildInfo
+//                                    )
+//                                }
+//                                onDismiss()
+//                            },
+//
+//                            ) {
+//                            Text(text = "선택")
+//                        }
+//                    }
                 }
             }
         )

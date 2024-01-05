@@ -190,10 +190,7 @@ fun AddChildInfoDialog(
                                 .padding(bottom = 10.dp),
                             onClick = {
                                 if(
-                                    childInfoNameInputValue.text.isNotEmpty() &&
-                                    childInfoBirthInputValue.text.isNotEmpty() &&
-                                    childInfoParentNameInputValue.text.isNotEmpty() &&
-                                    childInfoStartDateInputValue.text.isNotEmpty()
+                                    childInfoNameInputValue.text.isNotEmpty()
                                 ) {
                                     if(isUpdate){
                                         //업데이트

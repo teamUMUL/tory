@@ -116,7 +116,9 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f),
                         childSelectViewModel = childSelectViewModel,
                         ltoViewModel = ltoViewModel,
-                        stoViewModel = stoViewModel
+                        stoViewModel = stoViewModel,
+                        devViewModel = devViewModel,
+                        classSelectViewModel = childClassSelectViewModel
                     ) //아이 선택
 
                 }

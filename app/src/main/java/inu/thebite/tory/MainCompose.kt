@@ -1,8 +1,7 @@
 package inu.thebite.tory
 
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.annotation.ColorRes
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -30,18 +30,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -77,6 +77,7 @@ import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -763,6 +764,375 @@ fun MainCompose(
 //                    )
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChildSelector(
+    items: List<StudentResponse>,
+    onDismiss: () -> Unit,
+    childSelectViewModel: ChildSelectViewModel
+){
+
+    val selectedChild by childSelectViewModel.tempSelectedChildInfo.collectAsState()
+
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    val rotationState by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f, label = ""
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ExposedDropdownMenuBox(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
+            expanded = isExpanded,
+            onExpandedChange = {isExpanded = !isExpanded}
+        ){
+            TextField(
+                value = selectedChild?.name ?: "아이를 선택해주세요.",
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowDropDown,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .rotate(rotationState)
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black, fontSize = 30.sp,
+                    fontFamily = FontFamily.SansSerif
+                ),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+                    .height(80.dp)
+            )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = {isExpanded = false},
+                modifier = Modifier
+                    .exposedDropdownSize(),
+            ){
+                items.forEach {item ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = item.name)
+                        },
+                        onClick = {
+                            childSelectViewModel.setTempSelectedChildInfo(item)
+                            isExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Button(
+            onClick = { onDismiss() },
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f),
+            shape = RoundedCornerShape(5.dp),
+        ) {
+            Text(text = "취소")
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Button(modifier = Modifier
+            .weight(1f)
+            .height(50.dp),
+            shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF0047B3)
+            ),
+            onClick = {
+                selectedChild?.let {selectedChild ->
+                    childSelectViewModel.setSelectedChildInfo(selectedChild)
+                }
+                onDismiss()
+            },
+
+            ) {
+            Text(text = "선택")
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ClassSelector(
+    items: List<ChildClassResponse>,
+    onDismiss: () -> Unit,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel
+){
+    val selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
+
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    val rotationState by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f, label = ""
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ExposedDropdownMenuBox(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
+            expanded = isExpanded,
+            onExpandedChange = {isExpanded = !isExpanded}
+        ){
+            TextField(
+                value = selectedChildClass?.name ?: "반을 선택해주세요.",
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowDropDown,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .rotate(rotationState)
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black, fontSize = 30.sp,
+                    fontFamily = FontFamily.SansSerif
+                ),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+                    .height(80.dp)
+            )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = {isExpanded = false},
+                modifier = Modifier
+                    .exposedDropdownSize(),
+            ){
+                items.forEach {item ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = item.name)
+                        },
+                        onClick = {
+                            childClassSelectViewModel.setTempSelectedChildClass(item)
+                            isExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Button(
+            onClick = { onDismiss() },
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f),
+            shape = RoundedCornerShape(5.dp),
+        ) {
+            Text(text = "취소")
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Button(modifier = Modifier
+            .weight(1f)
+            .height(50.dp),
+            shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF0047B3)
+            ),
+            onClick = {
+                selectedChildClass?.let {selectedChildClass ->
+                    childClassSelectViewModel.setSelectedChildClass(selectedChildClass)
+                }
+                childSelectViewModel.clearTempSelectedChildInfo()
+                childSelectViewModel.clearChildInfos()
+                childSelectViewModel.clearSelectedChildInfo()
+                onDismiss()
+
+            },
+
+            ) {
+            Text(text = "선택")
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CenterSelector(
+    items: List<CenterResponse>,
+    onDismiss: () -> Unit,
+    centerSelectViewModel: CenterSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel
+
+){
+    val selectedCenter by centerSelectViewModel.tempSelectedCenter.collectAsState()
+
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    val rotationState by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f, label = ""
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ExposedDropdownMenuBox(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
+            expanded = isExpanded,
+            onExpandedChange = {isExpanded = !isExpanded}
+        ){
+            TextField(
+                value = selectedCenter?.name ?: "반을 선택해주세요.",
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowDropDown,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .rotate(rotationState)
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
+                textStyle = TextStyle(
+                    color = Color.Black, fontSize = 30.sp,
+                    fontFamily = FontFamily.SansSerif
+                ),
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+                    .height(80.dp)
+            )
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = {isExpanded = false},
+                modifier = Modifier
+                    .exposedDropdownSize(),
+            ){
+                items.forEach {item ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = item.name)
+                        },
+                        onClick = {
+                            centerSelectViewModel.setTempSelectedCenter(item)
+                            isExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Button(
+            onClick = { onDismiss() },
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f),
+            shape = RoundedCornerShape(5.dp),
+        ) {
+            Text(text = "취소")
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Button(modifier = Modifier
+            .weight(1f)
+            .height(50.dp),
+            shape = RoundedCornerShape(5.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF0047B3)
+            ),
+            onClick = {
+                selectedCenter?.let {selectedCenter ->
+                    centerSelectViewModel.setSelectedCenter(selectedCenter)
+                }
+//                onConfirm(chainText)
+//                                viewModel.selectedChildClass = selectedChildClass
+                childSelectViewModel.clearChildInfos()
+                childClassSelectViewModel.clearTempSelectedChildClass()
+                childSelectViewModel.clearTempSelectedChildInfo()
+                childSelectViewModel.clearSelectedChildInfo()
+                onDismiss()
+
+            },
+
+            ) {
+            Text(text = "선택")
         }
     }
 }
