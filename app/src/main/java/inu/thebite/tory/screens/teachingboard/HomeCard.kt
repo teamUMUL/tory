@@ -62,10 +62,6 @@ fun ChainCard(
         CenterDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
-            onConfirm = { configText ->
-                // Handle dialog confirmation here
-                // configText contains the user input
-                isDialogVisible = false},
             centerSelectViewModel = centerSelectViewModel,
             childClassSelectViewModel = childClassSelectViewModel,
             childSelectViewModel = childSelectViewModel
@@ -148,10 +144,6 @@ fun ClassCard(
         ClassDialog(
             showDialog = isDialogVisible,
             onDismiss = { isDialogVisible = false },
-            onConfirm = { configText ->
-                // Handle dialog confirmation here
-                // configText contains the user input
-                isDialogVisible = false},
             childClassSelectViewModel = childClassSelectViewModel,
             childSelectViewModel = childSelectViewModel
         )

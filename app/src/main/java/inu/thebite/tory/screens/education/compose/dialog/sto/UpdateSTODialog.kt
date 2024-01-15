@@ -2,6 +2,7 @@ package inu.thebite.tory.screens.education.compose.dialog.sto
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
@@ -128,21 +130,22 @@ fun UpdateSTODialog(
                 Spacer(modifier = Modifier.height(10.dp))
                 updateSTOTextFieldFrame("STO 내용", setInputValue = {stoDetailInputValue = it}, inputValue = stoDetailInputValue, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "시도 수",
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                )
-                roundedSelectButtons(
-                    buttonList = listOf(10, 15, 20),
-                    cornerRadius = 5.dp,
-                    colorList = listOf(),
-                    defaultButtonIndex = listOf(10,15,20).indexOf(selectedSTO.count),
-                    stoTryNum = stoTryNum
-                )
+                STOCountSelector(stoCount = stoTryNum.value, setSTOCount = {stoTryNum.value = it})
+//                Text(
+//                    text = "시도 수",
+//                    fontSize = 20.sp,
+//                    modifier = Modifier
+//                        .padding(start = 10.dp)
+//                )
+//                roundedSelectButtons(
+//                    buttonList = listOf(10, 15, 20),
+//                    cornerRadius = 5.dp,
+//                    colorList = listOf(),
+//                    defaultButtonIndex = listOf(10,15,20).indexOf(selectedSTO.count),
+//                    stoTryNum = stoTryNum
+//                )
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame("준거도달 기준", setInputValue = {stoSuccessStandardInputValue = it}, inputValue = stoSuccessStandardInputValue, isSingleLine = false)
+                updateSTOTextFieldFrame("준거도달 기준", setInputValue = {stoSuccessStandardInputValue = it}, inputValue = stoSuccessStandardInputValue, isSingleLine = false, isInt = true)
                 Spacer(modifier = Modifier.height(10.dp))
                 updateSTOTextFieldFrame("촉구방법", setInputValue = {stoMethodInputValue = it}, inputValue = stoMethodInputValue, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
@@ -186,31 +189,39 @@ fun UpdateSTODialog(
                         containerColor = Color(0xFF0047B3)
                     ),
                     onClick = {
-                        if(stoNameInputValue.text.isNotEmpty()){
-                            //업데이트 코드
-                            stoViewModel.updateSTO(
-                                selectedSTO = selectedSTO,
-                                updateSTO = UpdateStoRequest(
-                                    name = stoNameInputValue.text,
-                                    contents = stoDetailInputValue.text,
-                                    count = stoTryNum.value,
-                                    goal = stoSuccessStandardInputValue.text.toInt(),
-                                    urgeType = "",
-                                    urgeContent = stoMethodInputValue.text,
-                                    enforceContent = stoScheduleInputValue.text,
-                                    memo = stoMemoInputValue.text
+                        val successStandard = stoSuccessStandardInputValue.text.toIntOrNull()
+                        successStandard?.let { successStandard ->
+                            if(stoNameInputValue.text.isNotEmpty()){
+                                //업데이트 코드
+                                stoViewModel.updateSTO(
+                                    selectedSTO = selectedSTO,
+                                    updateSTO = UpdateStoRequest(
+                                        name = stoNameInputValue.text,
+                                        contents = stoDetailInputValue.text,
+                                        count = stoTryNum.value,
+                                        goal = successStandard,
+                                        urgeType = "",
+                                        urgeContent = stoMethodInputValue.text,
+                                        enforceContent = stoScheduleInputValue.text,
+                                        memo = stoMemoInputValue.text
+                                    )
                                 )
-                            )
-                            //----
-                            setUpdateSTOItem(false)
-                            stoNameInputValue = TextFieldValue("")
-                            stoDetailInputValue = TextFieldValue("")
-                            stoTryNumInputValue = TextFieldValue("")
-                            stoSuccessStandardInputValue = TextFieldValue("")
-                            stoMethodInputValue = TextFieldValue("")
-                            stoScheduleInputValue = TextFieldValue("")
-                            stoMemoInputValue = TextFieldValue("")
-                        }
+                                //----
+                                setUpdateSTOItem(false)
+                                stoNameInputValue = TextFieldValue("")
+                                stoDetailInputValue = TextFieldValue("")
+                                stoTryNumInputValue = TextFieldValue("")
+                                stoSuccessStandardInputValue = TextFieldValue("")
+                                stoMethodInputValue = TextFieldValue("")
+                                stoScheduleInputValue = TextFieldValue("")
+                                stoMemoInputValue = TextFieldValue("")
+                            } else {
+                                Toasty.warning(context, "STO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                            }
+                        } ?:
+                        Toasty.warning(context, "준거 도달 기준은 숫자로 입력해주세요..", Toast.LENGTH_SHORT, true).show()
+
+
                     },
                 ){
                     Text(
@@ -234,7 +245,7 @@ fun UpdateSTODialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean, isReadOnly : Boolean = false){
+fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean, isReadOnly : Boolean = false, isInt : Boolean = false){
     val containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     val containerColor1 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     TextField(
@@ -243,15 +254,16 @@ fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, se
             setInputValue(it)
         },
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(80.dp),
         shape = RoundedCornerShape(8.dp),
         label = { Text(text = typeOfInput) },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
-            autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+            autoCorrect = true, keyboardType = if(isInt) KeyboardType.Number else KeyboardType.Text, imeAction = ImeAction.Done
         ),
         textStyle = TextStyle(
-            color = Color.Black, fontSize = 22.sp,
+            color = Color.Black, fontSize = 30.sp,
             fontFamily = FontFamily.SansSerif
         ),
         maxLines = 2,

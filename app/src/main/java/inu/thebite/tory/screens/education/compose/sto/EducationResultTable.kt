@@ -61,67 +61,75 @@ fun EducationResultTable(
         verticalArrangement = Arrangement.Top
     ) {
         selectedSTO?.let { selectedSTO ->
-            LazyColumn(
+            BlocksDisplay(
                 modifier = Modifier
                     .weight(7f)
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-            ) {
-                items(selectedSTO.count / 5) { verticalIndex ->
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        items(5) { horizonIndex ->
-                            val stoGameData = points?.let { points ->
-                                if (points.size > (5 * verticalIndex) + horizonIndex) {
-                                    points[(5 * verticalIndex) + horizonIndex]
-                                } else {
-                                    "n"
-                                }
-                            } ?: "n"
-
-                            Card(
-                                modifier = Modifier
-                                    .padding(5.dp)
-                                    .shadow(
-                                        elevation = 4.dp,
-                                        spotColor = Color(0x40000000),
-                                        ambientColor = Color(0x40000000),
-                                        clip = false
-                                    )
-                                    .width(80.dp)
-                                    .height(40.dp),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor =
-                                    when (stoGameData) {
-                                        "+" -> {
-                                            Color(0xFF34C648)
-                                        }
-
-                                        "-" -> {
-                                            Color(0xFFFC605C)
-                                        }
-
-                                        "P" -> {
-                                            Color(0xFFFCBB40)
-                                        }
-
-                                        else -> {
-                                            Color(0xFFD9D9D9)
-                                        }
-                                    }
-
-                                ),
-                            ) {
-                            }
-                        }
-                    }
-                }
-            }
+                    .padding(horizontal = 10.dp),
+                points = points,
+                selectedSTO = selectedSTO
+            )
+//            LazyColumn(
+//                modifier = Modifier
+//                    .weight(7f)
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 10.dp)
+//            ) {
+//                items(selectedSTO.count / 5) { verticalIndex ->
+//                    LazyRow(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .fillMaxHeight(),
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        items(5) { horizonIndex ->
+//                            val stoGameData = points?.let { points ->
+//                                if (points.size > (5 * verticalIndex) + horizonIndex) {
+//                                    points[(5 * verticalIndex) + horizonIndex]
+//                                } else {
+//                                    "n"
+//                                }
+//                            } ?: "n"
+//
+//                            Card(
+//                                modifier = Modifier
+//                                    .padding(5.dp)
+//                                    .shadow(
+//                                        elevation = 4.dp,
+//                                        spotColor = Color(0x40000000),
+//                                        ambientColor = Color(0x40000000),
+//                                        clip = false
+//                                    )
+//                                    .width(80.dp)
+//                                    .height(40.dp),
+//                                shape = RoundedCornerShape(12.dp),
+//                                colors = CardDefaults.cardColors(
+//                                    containerColor =
+//                                    when (stoGameData) {
+//                                        "+" -> {
+//                                            Color(0xFF34C648)
+//                                        }
+//
+//                                        "-" -> {
+//                                            Color(0xFFFC605C)
+//                                        }
+//
+//                                        "P" -> {
+//                                            Color(0xFFFCBB40)
+//                                        }
+//
+//                                        else -> {
+//                                            Color(0xFFD9D9D9)
+//                                        }
+//                                    }
+//
+//                                ),
+//                            ) {
+//                            }
+//                        }
+//                    }
+//                }
+//            }
             Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier
@@ -303,4 +311,76 @@ fun EducationResultTable(
 
     }
 
+}
+
+
+
+@Composable
+fun BlocksDisplay(
+    modifier: Modifier = Modifier,
+    points: List<String>,
+    selectedSTO: StoResponse,
+) {
+    // 한 줄에 최대 5개의 블록
+    val blocksPerRow = 5
+    val stoCount = selectedSTO.count
+    // 필요한 줄 수 계산
+    val numberOfRows = (stoCount + blocksPerRow - 1) / blocksPerRow
+    Column(
+        modifier = modifier
+            .padding(0.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        for (row in 0 until numberOfRows) {
+            Row{
+                // 현재 줄에 몇 개의 블록이 필요한지 계산
+                val blocksInThisRow = minOf(blocksPerRow, stoCount - row * blocksPerRow)
+                for (block in 0 until blocksInThisRow) {
+                    val overallIndex = row * blocksPerRow + block
+                    val stoGameData = points.getOrDefault(index = overallIndex, default = "n")
+                    Card(
+                        modifier = Modifier
+                            .padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
+                            .shadow(
+                                elevation = 4.dp,
+                                spotColor = Color(0x40000000),
+                                ambientColor = Color(0x40000000),
+                                clip = false
+                            )
+                            .width(80.dp)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor =
+                            when (stoGameData) {
+                                "+" -> {
+                                    Color(0xFF34C648)
+                                }
+
+                                "-" -> {
+                                    Color(0xFFFC605C)
+                                }
+
+                                "P" -> {
+                                    Color(0xFFFCBB40)
+                                }
+
+                                else -> {
+                                    Color(0xFFD9D9D9)
+                                }
+                            }
+
+                        ),
+                    ) {
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+fun <T> List<T>.getOrDefault(index: Int, default: T): T {
+    return if (index in 0 until size) this[index] else default
 }

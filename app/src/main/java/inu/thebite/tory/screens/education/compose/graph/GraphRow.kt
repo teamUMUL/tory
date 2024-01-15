@@ -87,8 +87,10 @@ fun GraphRow(
                         minLineIndex += 1f
                     }
                     val successLine = mutableListOf<Point>()
+                    val successData = stoViewModel.findSTOById(sto.stoId)?.goal?.toFloat() ?: 90f
+
                     for(b in plusList){
-                        successLine.add(Point(successLineIndex, 90f))
+                        successLine.add(Point(successLineIndex, successData))
                         successLineIndex += 1f
                     }
                     val pointsData1 = mutableListOf<Point>()

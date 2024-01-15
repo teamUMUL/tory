@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.model.Point
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.lto.LtoResponse
@@ -129,10 +130,12 @@ fun NoticeItemGraphRow(
                 NoticeItemGraph(
                     plusList = plusList,
                     minusList = minusList,
-                    dateList = sto.dates
+                    dateList = sto.dates,
+                    successData = stoViewModel.findSTOById(sto.stoId)?.goal?.toFloat() ?: 90f
                 )
             }
         }
 
     }
 }
+

@@ -29,7 +29,8 @@ import co.yml.charts.ui.linechart.model.LineType
 fun NoticeItemGraph(
     plusList: List<Float>,
     minusList: List<Float>,
-    dateList: List<String>
+    dateList: List<String>,
+    successData : Float
 ) {
 //    val plusList = mutableListOf<Float>()
 //    val minusList = mutableListOf<Float>()
@@ -67,7 +68,7 @@ fun NoticeItemGraph(
         }
         val successLine = mutableListOf<Point>()
         for (b in plusList) {
-            successLine.add(Point(successLineIndex, 90f))
+            successLine.add(Point(successLineIndex, successData))
             successLineIndex += 1f
         }
         val pointsData1 = mutableListOf<Point>()

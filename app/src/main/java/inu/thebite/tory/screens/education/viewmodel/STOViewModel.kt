@@ -215,6 +215,14 @@ class STOViewModel : ViewModel() {
 //        return filteredSTOList.filter { it.ltoId == selectedLTO.id }
 //    }
 
+    fun getSTOsByIds(
+        stoIds : List<Long>
+    ) : List<StoResponse> {
+        return allSTOs.value?.filter { sto ->
+            stoIds.contains(sto.id)
+        } ?: emptyList()
+    }
+
     fun getSTOsByLTO(
         selectedLTO: LtoResponse,
     ): List<StoResponse> {

@@ -61,6 +61,7 @@ fun LTOButtons(
 
     if (addSTODialog) {
         AddSTODialog(
+            context = context,
             setAddSTOItem = { setAddSTODialog(it) },
             stoViewModel = stoViewModel,
             selectedLTO = selectedLTO

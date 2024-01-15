@@ -1,5 +1,8 @@
 package inu.thebite.tory.screens.education.compose.dialog.sto
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,9 +22,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -38,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -53,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.AddStoRequest
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -61,6 +71,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 @Composable
 fun AddSTODialog(
+    context : Context,
     setAddSTOItem: (Boolean) -> Unit,
     stoViewModel: STOViewModel,
     selectedLTO : LtoResponse,
@@ -125,19 +136,20 @@ fun AddSTODialog(
                 stoTextFieldFrame("STO 내용", stoContentInputValue, setInputValue = {stoContentInputValue = it}, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
 //                stoTextFieldFrame("시도 수", stoTryNumInputValue, setInputValue = {stoTryNumInputValue = it})
-                Text(
-                    text = "시도 수",
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                )
-                roundedSelectButtons(
-                    buttonList = listOf(10, 15, 20),
-                    cornerRadius = 5.dp,
-                    colorList = listOf(),
-                    defaultButtonIndex = 1,
-                    stoTryNum = stoTryNum
-                )
+//                Text(
+//                    text = "시도 수",
+//                    fontSize = 20.sp,
+//                    modifier = Modifier
+//                        .padding(start = 10.dp)
+//                )
+                STOCountSelector(stoCount = stoTryNum.value, setSTOCount = {stoTryNum.value = it})
+//                roundedSelectButtons(
+//                    buttonList = listOf(10, 15, 20),
+//                    cornerRadius = 5.dp,
+//                    colorList = listOf(),
+//                    defaultButtonIndex = 1,
+//                    stoTryNum = stoTryNum
+//                )
                 Spacer(modifier = Modifier.height(10.dp))
                 stoTextFieldFrame("준거도달 기준", stoSuccessStandardInputValue, setInputValue = {stoSuccessStandardInputValue = it}, isSingleLine = true)
                 Spacer(modifier = Modifier.height(10.dp))
@@ -183,29 +195,37 @@ fun AddSTODialog(
                         containerColor = Color(0xFF0047B3)
                     ),
                     onClick = {
-                        if(stoNameInputValue.text.isNotEmpty()){
-                            stoViewModel.createSTO(
-                                selectedLTO = selectedLTO,
-                                newSTO = AddStoRequest(
-                                    name = stoNameInputValue.text,
-                                    contents = stoContentInputValue.text,
-                                    count = stoTryNum.value,
-                                    goal = stoSuccessStandardInputValue.text.toInt(),
-                                    urgeType = "",
-                                    urgeContent = stoMethodInputValue.text,
-                                    enforceContent = stoScheduleInputValue.text,
-                                    memo = stoMemoInputValue.text,
-                                    registrant = "테스트"
+                        val successStandard = stoSuccessStandardInputValue.text.toIntOrNull()
+                        successStandard?.let { successStandard ->
+                            if(stoNameInputValue.text.isNotEmpty()){
+                                stoViewModel.createSTO(
+                                    selectedLTO = selectedLTO,
+                                    newSTO = AddStoRequest(
+                                        name = stoNameInputValue.text,
+                                        contents = stoContentInputValue.text,
+                                        count = stoTryNum.value,
+                                        goal = successStandard,
+                                        urgeType = "",
+                                        urgeContent = stoMethodInputValue.text,
+                                        enforceContent = stoScheduleInputValue.text,
+                                        memo = stoMemoInputValue.text,
+                                        registrant = "테스트"
+                                    )
                                 )
-                            )
-                            stoNameInputValue = TextFieldValue("")
-                            stoContentInputValue = TextFieldValue("")
-                            stoSuccessStandardInputValue = TextFieldValue("")
-                            stoMethodInputValue = TextFieldValue("")
-                            stoScheduleInputValue = TextFieldValue("")
-                            stoMemoInputValue = TextFieldValue("")
-                            setAddSTOItem(false)
-                        }
+                                stoNameInputValue = TextFieldValue("")
+                                stoContentInputValue = TextFieldValue("")
+                                stoSuccessStandardInputValue = TextFieldValue("")
+                                stoMethodInputValue = TextFieldValue("")
+                                stoScheduleInputValue = TextFieldValue("")
+                                stoMemoInputValue = TextFieldValue("")
+                                setAddSTOItem(false)
+                            } else {
+                                Toasty.warning(context, "STO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                            }
+                        } ?:
+                        Toasty.warning(context, "준거 도달 기준은 숫자로 입력해주세요..", Toast.LENGTH_SHORT, true).show()
+
+
                     },
                 ){
                     Text(
@@ -236,7 +256,8 @@ fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInput
             setInputValue(it)
         },
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(80.dp),
         shape = RoundedCornerShape(8.dp),
         label = { Text(text = typeOfInput)},
         keyboardOptions = KeyboardOptions(
@@ -244,7 +265,7 @@ fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInput
             autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
         ),
         textStyle = TextStyle(
-            color = Color.Black, fontSize = 22.sp,
+            color = Color.Black, fontSize = 30.sp,
             fontFamily = FontFamily.SansSerif
         ),
         maxLines = 2,
@@ -343,6 +364,84 @@ fun roundedSelectButtons(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun STOCountSelector(
+    stoCount : Int,
+    setSTOCount : (Int) -> Unit
+){
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    val rotationState by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f, label = ""
+    )
+    ExposedDropdownMenuBox(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp),
+        expanded = isExpanded,
+        onExpandedChange = {isExpanded = !isExpanded}
+    ){
+        TextField(
+            value = stoCount.toString(),
+            onValueChange = {},
+            label = { Text(text = "시도 수")},
+            readOnly = true,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.ArrowDropDown,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .rotate(rotationState)
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+            ),
+            textStyle = TextStyle(
+                color = Color.Black, fontSize = 30.sp,
+                fontFamily = FontFamily.SansSerif
+            ),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+                .height(80.dp)
+        )
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = {isExpanded = false},
+            modifier = Modifier
+                .exposedDropdownSize()
+                .background(color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f))
+                .fillMaxWidth(),
+        ){
+            repeat(20){ index ->
+                val count = index+1
+                DropdownMenuItem(
+                    text = {
+                        Text(text = count.toString())
+                    },
+                    onClick = {
+                        setSTOCount(count)
+                        isExpanded = false
+                    }
+                )
+                if (count != 20){
+                    Divider(thickness = 1.dp)
+                }
             }
         }
     }
