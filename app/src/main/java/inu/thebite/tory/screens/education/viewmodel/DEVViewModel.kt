@@ -3,10 +3,14 @@ package inu.thebite.tory.screens.education.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.repositories.DEV.DEVRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -40,8 +44,27 @@ class DEVViewModel : ViewModel() {
         _selectedDEV.update { null }
     }
     init {
-        getAllDEVs()
+//        getAllDEVs()
 //        setDummyDEVData()
+        observeAllDEVs()
+    }
+
+    private fun observeAllDEVs() {
+        viewModelScope.launch {
+            allDEVs.onEach { allDEVs ->
+                updateSelectedDEV(allDEVs)
+            }.collect()
+        }
+    }
+
+    private fun updateSelectedDEV(allDEVs: List<DomainResponse>?) {
+        allDEVs?.let {allDEVs ->
+            if (selectedDEV.value == null){
+                _selectedDEV.update {
+                    allDEVs.firstOrNull()
+                }
+            }
+        }
     }
 
     fun setDummyDEVData(){

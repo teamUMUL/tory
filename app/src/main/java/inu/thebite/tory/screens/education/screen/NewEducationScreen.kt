@@ -28,6 +28,7 @@ import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education.compose.LTOAndSTOSelector
 import inu.thebite.tory.screens.education.compose.SelectedLTOAndSTOInfo
 import inu.thebite.tory.screens.education.compose.dev.DEVSelector
+import inu.thebite.tory.screens.education.compose.sidebar.Sidebar
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -107,7 +108,23 @@ fun NewEducationScreen(
     ) {
         Column(
             modifier = Modifier
-                .weight(2f)
+                .fillMaxHeight()
+                .weight(0.4f)
+        ) {
+            Sidebar(
+                devViewModel = devViewModel,
+                ltoViewModel = ltoViewModel,
+                stoViewModel = stoViewModel
+            )
+        }
+        Divider(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp), color = Color.LightGray
+        )
+        Column(
+            modifier = Modifier
+                .weight(1.6f)
                 .fillMaxHeight()
         ) {
             DEVSelector(

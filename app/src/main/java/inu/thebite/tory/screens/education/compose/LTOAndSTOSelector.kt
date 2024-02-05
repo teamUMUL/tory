@@ -130,7 +130,7 @@ fun LTOAndSTOSelector(
         ) {
             items(ltos) { lto ->
                 val expandedState =
-                    rememberSaveable { mutableStateOf(selectedSTO?.let { it.ltoId == lto.id } ?: false) }
+                    rememberSaveable { mutableStateOf(selectedSTO?.let { it.ltoId == lto.id } ?: true) }
                 val rotationState by animateFloatAsState(
                     targetValue = if (expandedState.value) 180f else 0f, label = ""
                 )

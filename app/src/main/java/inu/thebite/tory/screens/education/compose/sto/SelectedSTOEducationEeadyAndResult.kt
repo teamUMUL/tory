@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.education.compose.sto
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -214,25 +215,40 @@ fun SelectedSTOEducationReadyAndResult(
                     )
                 }
             }
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 30.dp)
                     .weight(2.75f)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                selectedLTO?.let {selectedLTO ->
-                    if (selectedLTO.game != "교육 선택 안함") {
-                        CardSelector(
-                            imageViewModel = imageViewModel,
-                            ltoViewModel = ltoViewModel,
-                            stoViewModel = stoViewModel,
-                            selectedSTO = selectedSTO,
-                            dragAndDropViewModel = dragAndDropViewModel
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = "도전 행동 스톱워치",
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontFamily = fontFamily_Lato,
+                            color = Color.Black
                         )
-                    }
+                    )
+                    Text(
+                        text = "개발 예정",
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontFamily = fontFamily_Lato,
+                            color = Color.Black
+                        ),
+                        modifier = Modifier
+                            .border(width = 1.dp, color = Color(0xFF0047B3), shape = RoundedCornerShape(20.dp))
+                            .padding(vertical = 3.dp, horizontal = 10.dp)
+                    )
                 }
+                AccidentRecorder(
 
-
+                )
             }
         }
     }

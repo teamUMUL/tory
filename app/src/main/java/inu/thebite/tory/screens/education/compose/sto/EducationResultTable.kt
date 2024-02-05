@@ -3,6 +3,7 @@ package inu.thebite.tory.screens.education.compose.sto
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -69,79 +70,16 @@ fun EducationResultTable(
                 points = points,
                 selectedSTO = selectedSTO
             )
-//            LazyColumn(
-//                modifier = Modifier
-//                    .weight(7f)
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 10.dp)
-//            ) {
-//                items(selectedSTO.count / 5) { verticalIndex ->
-//                    LazyRow(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .fillMaxHeight(),
-//                        horizontalArrangement = Arrangement.Center
-//                    ) {
-//                        items(5) { horizonIndex ->
-//                            val stoGameData = points?.let { points ->
-//                                if (points.size > (5 * verticalIndex) + horizonIndex) {
-//                                    points[(5 * verticalIndex) + horizonIndex]
-//                                } else {
-//                                    "n"
-//                                }
-//                            } ?: "n"
-//
-//                            Card(
-//                                modifier = Modifier
-//                                    .padding(5.dp)
-//                                    .shadow(
-//                                        elevation = 4.dp,
-//                                        spotColor = Color(0x40000000),
-//                                        ambientColor = Color(0x40000000),
-//                                        clip = false
-//                                    )
-//                                    .width(80.dp)
-//                                    .height(40.dp),
-//                                shape = RoundedCornerShape(12.dp),
-//                                colors = CardDefaults.cardColors(
-//                                    containerColor =
-//                                    when (stoGameData) {
-//                                        "+" -> {
-//                                            Color(0xFF34C648)
-//                                        }
-//
-//                                        "-" -> {
-//                                            Color(0xFFFC605C)
-//                                        }
-//
-//                                        "P" -> {
-//                                            Color(0xFFFCBB40)
-//                                        }
-//
-//                                        else -> {
-//                                            Color(0xFFD9D9D9)
-//                                        }
-//                                    }
-//
-//                                ),
-//                            ) {
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier
                     .weight(2f)
                     .fillMaxWidth()
-                    .padding(vertical = 5.dp)
-                    .background(Color(0xFFD1D1D1)),
+                    .padding(vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(30.dp)
 
             ) {
-                val pointButtons = listOf("+", "-", "P", "삭제")
+                val pointButtons = listOf("P", "+", "-", "삭제")
                 Spacer(modifier = Modifier.width(1.dp))
                 pointButtons.forEach { button ->
                     Button(
@@ -254,10 +192,14 @@ fun EducationResultTable(
             Row(
                 modifier = Modifier
                     .weight(1f)
+                    .fillMaxWidth()
             ) {
                 if (points.size >= selectedSTO.count) {
                     val takenPoints = points.take(selectedSTO.count)
                     OutlinedButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
                         onClick = {
                             val status = if ((takenPoints.count { it == "+" }
                                     .toFloat() / selectedSTO.count.toFloat()) * 100 >= 90f) {
@@ -326,58 +268,67 @@ fun BlocksDisplay(
     val stoCount = selectedSTO.count
     // 필요한 줄 수 계산
     val numberOfRows = (stoCount + blocksPerRow - 1) / blocksPerRow
-    Column(
-        modifier = modifier
-            .padding(0.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        for (row in 0 until numberOfRows) {
-            Row{
-                // 현재 줄에 몇 개의 블록이 필요한지 계산
-                val blocksInThisRow = minOf(blocksPerRow, stoCount - row * blocksPerRow)
-                for (block in 0 until blocksInThisRow) {
-                    val overallIndex = row * blocksPerRow + block
-                    val stoGameData = points.getOrDefault(index = overallIndex, default = "n")
-                    Card(
-                        modifier = Modifier
-                            .padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
-                            .shadow(
-                                elevation = 4.dp,
-                                spotColor = Color(0x40000000),
-                                ambientColor = Color(0x40000000),
-                                clip = false
-                            )
-                            .width(80.dp)
-                            .height(40.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor =
-                            when (stoGameData) {
-                                "+" -> {
-                                    Color(0xFF34C648)
+
+    BoxWithConstraints(modifier = modifier) {
+        val blockWidth = maxWidth / 6
+        val blockHeight = maxHeight / 5
+        Column(
+            modifier = Modifier
+                .padding(0.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            for (row in 0 until numberOfRows) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    // 현재 줄에 몇 개의 블록이 필요한지 계산
+                    val blocksInThisRow = minOf(blocksPerRow, stoCount - row * blocksPerRow)
+                    for (block in 0 until blocksInThisRow) {
+                        val overallIndex = row * blocksPerRow + block
+                        val stoGameData = points.getOrDefault(index = overallIndex, default = "n")
+                        Card(
+                            modifier = Modifier
+                                .padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
+                                .shadow(
+                                    elevation = 4.dp,
+                                    spotColor = Color(0x40000000),
+                                    ambientColor = Color(0x40000000),
+                                    clip = false
+                                )
+                                .width(blockWidth)
+                                .height(blockHeight),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor =
+                                when (stoGameData) {
+                                    "+" -> {
+                                        Color(0xFF34C648)
+                                    }
+
+                                    "-" -> {
+                                        Color(0xFFFC605C)
+                                    }
+
+                                    "P" -> {
+                                        Color(0xFFFCBB40)
+                                    }
+
+                                    else -> {
+                                        Color(0xFF777777)
+                                    }
                                 }
 
-                                "-" -> {
-                                    Color(0xFFFC605C)
-                                }
-
-                                "P" -> {
-                                    Color(0xFFFCBB40)
-                                }
-
-                                else -> {
-                                    Color(0xFFD9D9D9)
-                                }
-                            }
-
-                        ),
-                    ) {
+                            ),
+                        ) {
+                        }
                     }
                 }
             }
         }
     }
+
 
 }
 

@@ -501,7 +501,7 @@ fun MainCompose(
                     actions = {
                         Box(
                             modifier = Modifier
-                                .height(50.dp)
+                                .height(40.dp)
                         ) {
                             when(currentRoute){
 
@@ -667,6 +667,7 @@ fun MainCompose(
 
 
                         }
+
 
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
