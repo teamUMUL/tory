@@ -266,7 +266,7 @@ fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, se
             color = Color.Black, fontSize = 30.sp,
             fontFamily = FontFamily.SansSerif
         ),
-        maxLines = 2,
+        maxLines = if (isSingleLine) 2 else 100,
         singleLine = isSingleLine,
         colors = TextFieldDefaults.textFieldColors(
             containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),

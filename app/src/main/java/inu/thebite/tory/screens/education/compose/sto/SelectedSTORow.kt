@@ -221,8 +221,9 @@ fun SelectedSTORow(
                                 fontFamily = fontFamily_Lato,
                                 fontWeight = FontWeight(900),
                                 color = Color(0xFF1D1C1D),
-
-                                )
+                                ),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 2
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(

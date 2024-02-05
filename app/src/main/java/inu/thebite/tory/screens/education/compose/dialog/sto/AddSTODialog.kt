@@ -131,9 +131,9 @@ fun AddSTODialog(
                         textAlign = TextAlign.Center,
                     )
                 )
-                stoTextFieldFrame("STO 이름", stoNameInputValue, setInputValue = {stoNameInputValue = it}, isSingleLine = true)
+                stoTextFieldFrame("STO 이름", stoNameInputValue, setInputValue = {stoNameInputValue = it}, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("STO 내용", stoContentInputValue, setInputValue = {stoContentInputValue = it}, isSingleLine = true)
+                stoTextFieldFrame("STO 내용", stoContentInputValue, setInputValue = {stoContentInputValue = it}, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
 //                stoTextFieldFrame("시도 수", stoTryNumInputValue, setInputValue = {stoTryNumInputValue = it})
 //                Text(
@@ -151,11 +151,11 @@ fun AddSTODialog(
 //                    stoTryNum = stoTryNum
 //                )
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("준거도달 기준", stoSuccessStandardInputValue, setInputValue = {stoSuccessStandardInputValue = it}, isSingleLine = true)
+                stoTextFieldFrame("준거도달 기준", stoSuccessStandardInputValue, setInputValue = {stoSuccessStandardInputValue = it}, isSingleLine = false, isInt = true)
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("촉구방법", stoMethodInputValue, setInputValue = {stoMethodInputValue = it}, isSingleLine = true)
+                stoTextFieldFrame("촉구방법", stoMethodInputValue, setInputValue = {stoMethodInputValue = it}, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("강화스케줄", stoScheduleInputValue, setInputValue = {stoScheduleInputValue = it}, isSingleLine = true)
+                stoTextFieldFrame("강화스케줄", stoScheduleInputValue, setInputValue = {stoScheduleInputValue = it}, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
                 stoTextFieldFrame("메모", stoMemoInputValue, setInputValue = {stoMemoInputValue = it}, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
@@ -249,7 +249,7 @@ fun AddSTODialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean){
+fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean, isInt : Boolean = false){
     TextField(
         value = inputValue,
         onValueChange = {
@@ -262,13 +262,13 @@ fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInput
         label = { Text(text = typeOfInput)},
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
-            autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+            autoCorrect = true, keyboardType = if(isInt) KeyboardType.Number else KeyboardType.Text, imeAction = ImeAction.Done
         ),
         textStyle = TextStyle(
             color = Color.Black, fontSize = 30.sp,
             fontFamily = FontFamily.SansSerif
         ),
-        maxLines = 2,
+        maxLines = if (isSingleLine) 2 else 100,
         singleLine = isSingleLine,
         colors = TextFieldDefaults.textFieldColors(
             containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
