@@ -1,17 +1,15 @@
 package inu.thebite.tory.screens.education.compose.sto
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -78,14 +75,14 @@ fun SelectedSTODetailsTable(
             style = TextStyle(
                 fontSize = 18.sp,
                 fontFamily = fontFamily_Lato,
-                fontWeight = FontWeight(900),
+                fontWeight = FontWeight(400),
                 color = Color(0xFF1D1C1D),
             ),
-            modifier = Modifier.padding(start = 10.dp, top = 30.dp)
+            modifier = Modifier.padding(start = 20.dp, top = 30.dp)
         )
         Column(
             modifier = modifier
-                .padding(10.dp)
+                .padding(vertical = 10.dp, horizontal = 20.dp)
                 .fillMaxWidth()
                 .weight(4.5f)
 //                .border(width = 2.dp, color = Color(0x4D000000), shape = RectangleShape)
@@ -93,7 +90,7 @@ fun SelectedSTODetailsTable(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(width = 2.dp, color = Color(0x4D000000), shape = RectangleShape)
+                    .border(width = 3.dp, color = Color(0xFFF3F3F3), shape = RectangleShape)
 
             ) {
                 items(STODetailTitles) { stoDetailItem ->
@@ -124,22 +121,23 @@ fun SelectedSTODetailsTable(
                         )
 
                     }
-                    Divider(thickness = 1.dp, color = Color(0x4F000000))
+                    Divider(thickness = 2.dp, color = Color(0xFFF3F3F3))
                 }
             }
         }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 10.dp, horizontal = 20.dp)
                 .weight(5.5f)
         ) {
-            val accidentButtonList = listOf(
+            val accidentStates = listOf(
                 "고함", "장난", "폭력", "회피", "자해", "말 끊기", "물건 던지기", "반복 행동", "무발언", "반복 발언", "거부"
             )
-            val stressState = listOf(
+            val stressStates = listOf(
                 "매우 나쁨", "나쁨", "보통", "좋음", "매우 좋음"
             )
-            val focusState = listOf(
+            val focusStates = listOf(
                 "매우 나쁨", "나쁨", "보통", "좋음", "매우 좋음"
             )
             Text(
@@ -149,35 +147,14 @@ fun SelectedSTODetailsTable(
                     color = Color(0xFF1D1C1D),
                     fontSize = 18.sp
                 ),
-                modifier = Modifier
-                    .padding(start = 10.dp)
             )
-            LazyHorizontalGrid(
-                rows = GridCells.Fixed(2),
+            STOStateButtonsLazyHorizontalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(2f)
-                    .padding(10.dp)
-            ) {
-                items(accidentButtonList) { accidentButtonItem ->
-                    Button(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .padding(10.dp),
-                        border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3)),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text(text = accidentButtonItem)
-                    }
-                }
-            }
+                    .weight(3f),
+                gridCells = 2,
+                stateList = accidentStates
+            )
             Text(
                 text = "스트레스 상태",
                 style = TextStyle(
@@ -185,35 +162,14 @@ fun SelectedSTODetailsTable(
                     color = Color(0xFF1D1C1D),
                     fontSize = 18.sp
                 ),
-                modifier = Modifier
-                    .padding(start = 10.dp)
             )
-            LazyHorizontalGrid(
-                rows = GridCells.Fixed(1),
+            STOStateButtonsLazyHorizontalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.25f)
-                    .padding(10.dp)
-            ) {
-                items(stressState) { stressStateItem ->
-                    Button(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .padding(10.dp),
-                        border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3)),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text(text = stressStateItem)
-                    }
-                }
-            }
+                    .weight(1.5f),
+                gridCells = 1,
+                stateList = stressStates
+            )
             Text(
                 text = "집중도",
                 style = TextStyle(
@@ -221,35 +177,14 @@ fun SelectedSTODetailsTable(
                     color = Color(0xFF1D1C1D),
                     fontSize = 18.sp
                 ),
-                modifier = Modifier
-                    .padding(start = 10.dp)
             )
-            LazyHorizontalGrid(
-                rows = GridCells.Fixed(1),
+            STOStateButtonsLazyHorizontalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.25f)
-                    .padding(10.dp)
-            ) {
-                items(focusState) { focusStateItem ->
-                    Button(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .padding(10.dp),
-                        border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3)),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black
-                        )
-                    ) {
-                        Text(text = focusStateItem)
-                    }
-                }
-            }
+                    .weight(1.5f),
+                gridCells = 1,
+                stateList = focusStates
+            )
             Text(
                 text = "특이사항",
                 style = TextStyle(
@@ -257,8 +192,6 @@ fun SelectedSTODetailsTable(
                     color = Color(0xFF1D1C1D),
                     fontSize = 18.sp
                 ),
-                modifier = Modifier
-                    .padding(start = 10.dp)
             )
             TextField(
                 value = stoSignificant,
@@ -267,11 +200,11 @@ fun SelectedSTODetailsTable(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.5f)
-                    .padding(10.dp)
+                    .weight(4f)
+                    .padding(vertical = 10.dp)
                     .border(
                         width = 1.dp,
-                        color = Color(0xFF0047B3),
+                        color = Color(0xFF0047B3).copy(alpha = 0.5f),
                         shape = RoundedCornerShape(10.dp)
                     ),
                 colors = TextFieldDefaults.textFieldColors(
@@ -332,12 +265,12 @@ fun RowScope.TableCellWithLeftLine(
             .weight(weight)
             .padding(horizontal = 8.dp, vertical = if (isBigger) 30.dp else 15.dp)
             .drawBehind {
-                val strokeWidth = 2f
+                val strokeWidth = 3f
                 val x = size.width - strokeWidth
                 val y = size.height - strokeWidth
                 //left line
                 drawLine(
-                    color = Color(0xFF888888),
+                    color = Color(0xFFF3F3F3),
                     start = Offset(0f - 10f, 0f - 40f), //(0,0) at top-left point of the box
                     end = Offset(0f - 10f, y + 40f),//bottom-left point of the box
                     strokeWidth = strokeWidth
@@ -345,4 +278,36 @@ fun RowScope.TableCellWithLeftLine(
             }
     )
 
+}
+
+@Composable
+fun STOStateButtonsLazyHorizontalGrid(
+    modifier : Modifier = Modifier,
+    gridCells: Int,
+    stateList: List<String>,
+){
+    LazyHorizontalGrid(
+        rows = GridCells.Fixed(gridCells),
+        modifier = modifier
+    ) {
+        items(stateList) { stateItem ->
+            Button(
+                onClick = {
+
+                },
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(10.dp),
+                border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.Black
+                ),
+                contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
+            ) {
+                Text(text = stateItem)
+            }
+        }
+    }
 }

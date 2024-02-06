@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">더바이트</string>
-    <string name="centerDashboard">Center DashBoard</string>
+    <string name="app_name">PROM</string>
+    <string name="centerDashboard">Center Board</string>
     <string name="teachingBoard">Teaching Board</string>
     <string name="setting">Management</string>
     <string name="ready">Ready</string>

@@ -49,37 +49,12 @@ import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun LTOButtons(
+    modifier: Modifier = Modifier,
     selectedLTO: LtoResponse,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
     val context = LocalContext.current
-
-    val (addSTODialog, setAddSTODialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (addSTODialog) {
-        AddSTODialog(
-            context = context,
-            setAddSTOItem = { setAddSTODialog(it) },
-            stoViewModel = stoViewModel,
-            selectedLTO = selectedLTO
-        )
-    }
-
-    val (updateLTODialog, setUpdateLTODialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (updateLTODialog) {
-        UpdateLTOItemDialog(
-            context = context,
-            setUpdateLTOItem = { setUpdateLTODialog(it) },
-            selectedLTO = selectedLTO,
-            ltoViewModel = ltoViewModel
-        )
-    }
 
     val ltoGraphList by ltoViewModel.ltoGraphList.collectAsState()
 
@@ -112,6 +87,7 @@ fun LTOButtons(
     }
 
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -183,19 +159,6 @@ fun LTOButtons(
         }
         IconButton(
             onClick = {
-                setUpdateLTODialog(true)
-            },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_edit),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(0.8f),
-                tint = Color.Gray
-            )
-
-        }
-        IconButton(
-            onClick = {
                 ltoViewModel.getLTOGraph(context = context,selectedLTO = selectedLTO)
                 setIsLTOGraphOn(true)
             },
@@ -206,26 +169,6 @@ fun LTOButtons(
                 modifier = Modifier.fillMaxSize(0.6f),
             )
 
-        }
-        OutlinedButton(
-            modifier = Modifier
-                .padding(vertical = 2.dp, horizontal = 16.dp),
-            onClick = {
-                setAddSTODialog(true)
-            },
-            border = BorderStroke(width = 0.8.dp, color = Color(0xFFCECECE)),
-            shape = RoundedCornerShape(10.dp),
-            contentPadding = PaddingValues(horizontal = 15.dp)
-        ) {
-            Text(
-                text = "STO 추가",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = fontFamily_Inter,
-                    fontWeight = FontWeight(500),
-                    color = Color.Black,
-                )
-            )
         }
     }
 }

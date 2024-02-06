@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,7 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
 import inu.thebite.tory.model.student.StudentResponse
@@ -31,6 +34,9 @@ import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Lato
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun ScheduleTopBar(
@@ -74,26 +80,53 @@ fun ScheduleTopBar(
 //            Log.d("moveTodoList", result.toString())
 //        }
 //    }
-
+    val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
     Row(
         modifier = modifier
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .fillMaxWidth(),
 //            .weight(4f),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.spacedBy(30.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (currentRoute == "Education") {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_schedule),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(end = 30.dp)
-                    .size(25.dp),
-                tint = Color(0xFF949494)
-            )
+            Row(
+                modifier = Modifier.weight(3f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_schedule),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 30.dp)
+                        .size(20.dp),
+                    tint = Color(0xFF949494)
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .background(
+                            color = Color.White,
+                            RoundedCornerShape(10.dp)
+                        )
+                        .padding(horizontal = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = currentDate,
+                        style = TextStyle(
+                            fontFamily = fontFamily_Lato,
+                            fontSize = 18.sp,
+                            color = Color.Black
+                        )
+                    )
+                }
+            }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .weight(7f)
                     .fillMaxHeight()
                     .background(
                         color = Color.White,

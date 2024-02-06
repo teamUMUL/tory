@@ -1,6 +1,5 @@
 package inu.thebite.tory.screens.education.screen
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
@@ -82,6 +83,8 @@ fun NewEducationScreen(
                     studentId = selectedChild.id,
                     domainId = selectedDEV.id
                 )
+                stoViewModel.clearSelectedSTO()
+                ltoViewModel.clearSelectedLTO()
             }
         }
     }
@@ -101,87 +104,89 @@ fun NewEducationScreen(
     LaunchedEffect(selectedSTO) {
         selectedSTO?.let { stoViewModel.getPointList(selectedSTO = it) }
     }
-
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Column(
+    Column {
+        Divider(thickness = 1.dp, color = Color.LightGray)
+        Row(
             modifier = Modifier
-                .fillMaxHeight()
-                .weight(0.4f)
+                .fillMaxSize()
         ) {
-            Sidebar(
-                devViewModel = devViewModel,
-                ltoViewModel = ltoViewModel,
-                stoViewModel = stoViewModel
-            )
-        }
-        Divider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp), color = Color.LightGray
-        )
-        Column(
-            modifier = Modifier
-                .weight(1.6f)
-                .fillMaxHeight()
-        ) {
-            DEVSelector(
+            Column(
                 modifier = Modifier
-                    .weight(0.5f),
-                devViewModel = devViewModel,
-                ltoViewModel = ltoViewModel
-            )
-            Divider(thickness = 1.dp, color = Color.LightGray)
-            ltos?.let {
-                selectedChild?.let { selectedChild ->
-                    LTOAndSTOSelector(
-                        modifier = Modifier
-                            .weight(9.5f),
-                        selectedChild = selectedChild,
-                        selectedDEV = selectedDEV,
-                        selectedLTO = selectedLTO,
-                        selectedSTO = selectedSTO,
-                        ltos = it,
-                        ltoViewModel = ltoViewModel,
-                        stoViewModel = stoViewModel,
-                        dragAndDropViewModel = dragAndDropViewModel
-                    )
-                }
-            } ?: LTOAndSTONull(modifier = Modifier.weight(9.5f))
-        }
-        Divider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp), color = Color.LightGray
-        )
-        Column(
-            modifier = Modifier
-                .weight(8f)
-                .fillMaxHeight()
-        ) {
-            selectedChild?.let {selectedChild ->
-                SelectedLTOAndSTOInfo(
-                    allLTOs = allLTOs,
-                    selectedChild = selectedChild,
-                    selectedLTO = selectedLTO,
-                    selectedSTO = selectedSTO,
-                    points = points,
-                    todoList = todoList,
-                    imageViewModel = imageViewModel,
-                    stoViewModel = stoViewModel,
+                    .fillMaxHeight()
+                    .weight(0.4f)
+            ) {
+                Sidebar(
+                    childSelectViewModel = childSelectViewModel,
+                    devViewModel = devViewModel,
                     ltoViewModel = ltoViewModel,
-                    todoViewModel = todoViewModel,
-                    noticeViewModel = noticeViewModel,
-                    dragAndDropViewModel = dragAndDropViewModel,
-                    gameViewModel = gameViewModel
+                    stoViewModel = stoViewModel
                 )
             }
+            Divider(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp), color = Color.LightGray
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1.6f)
+                    .fillMaxHeight()
+            ) {
+                DEVSelector(
+                    modifier = Modifier
+                        .weight(0.5f),
+                    devViewModel = devViewModel,
+                    ltoViewModel = ltoViewModel
+                )
+                Divider(thickness = 1.dp, color = Color.LightGray)
+                ltos?.let {
+                    selectedChild?.let { selectedChild ->
+                        LTOAndSTOSelector(
+                            modifier = Modifier
+                                .weight(9.5f),
+                            selectedChild = selectedChild,
+                            selectedDEV = selectedDEV,
+                            selectedLTO = selectedLTO,
+                            selectedSTO = selectedSTO,
+                            ltos = it,
+                            ltoViewModel = ltoViewModel,
+                            stoViewModel = stoViewModel,
+                            dragAndDropViewModel = dragAndDropViewModel
+                        )
+                    }
+                } ?: LTOAndSTONull(modifier = Modifier.weight(9.5f))
+            }
+            Divider(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp), color = Color.LightGray
+            )
+            Column(
+                modifier = Modifier
+                    .weight(8f)
+                    .fillMaxHeight()
+            ) {
+                selectedChild?.let {selectedChild ->
+                    SelectedLTOAndSTOInfo(
+                        allLTOs = allLTOs,
+                        selectedChild = selectedChild,
+                        selectedLTO = selectedLTO,
+                        selectedSTO = selectedSTO,
+                        points = points,
+                        todoList = todoList,
+                        imageViewModel = imageViewModel,
+                        stoViewModel = stoViewModel,
+                        ltoViewModel = ltoViewModel,
+                        todoViewModel = todoViewModel,
+                        noticeViewModel = noticeViewModel,
+                        dragAndDropViewModel = dragAndDropViewModel,
+                        gameViewModel = gameViewModel
+                    )
+                }
 
+            }
         }
     }
-
 }
 
 

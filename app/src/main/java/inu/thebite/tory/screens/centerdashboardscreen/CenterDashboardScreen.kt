@@ -77,7 +77,7 @@ fun CenterDashboardScreen(
 
             ) {
                 Text(
-                    text = "Center Dash Board",
+                    text = "Center Board",
                     modifier = Modifier
                         .width(240.dp)
                         .weight(1f)

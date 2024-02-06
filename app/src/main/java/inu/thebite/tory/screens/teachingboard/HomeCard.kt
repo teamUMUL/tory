@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -68,11 +69,12 @@ fun ChainCard(
         )
     }
     Box(modifier = modifier   //카드 하얀 배경
-        .height(50.dp)
+        .height(60.dp)
         .shadow(
             elevation = 4.dp,
             spotColor = Color(0x40000000),
-            ambientColor = Color(0x40000000)
+            ambientColor = Color(0x40000000),
+            clip = false
         )
         .clickable { isDialogVisible = true }
         .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
@@ -86,10 +88,8 @@ fun ChainCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(modifier= Modifier
-
-                .width(21.dp)
-                .align(Alignment.CenterVertically)
-                .height(24.dp),
+                .width(30.dp)
+                .align(Alignment.CenterVertically),
                 painter = painterResource(id = R.drawable.center_icon),
                 contentDescription = "null",
                 contentScale = ContentScale.Crop)
@@ -106,19 +106,19 @@ fun ChainCard(
                     letterSpacing = 0.14.sp,
                 )
             )
-            Text(
-                modifier = Modifier
-                    .width(140.dp)
-                    .height(32.dp),
-                text = selectedCenter?.name ?: "미선택",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF0047B3),
-                    letterSpacing = 0.28.sp,
-                    textAlign = TextAlign.Center)
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                Text(
+                    text = selectedCenter?.name ?: "미선택",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF0047B3),
+                        letterSpacing = 0.28.sp,
+                        textAlign = TextAlign.Center
+                    )
                 )
+            }
+
 
 
         }
@@ -153,11 +153,12 @@ fun ClassCard(
 
 
     Box(modifier = modifier   //카드 하얀 배경
-        .height(50.dp)
+        .height(60.dp)
         .shadow(
             elevation = 4.dp,
             spotColor = Color(0x40000000),
-            ambientColor = Color(0x40000000)
+            ambientColor = Color(0x40000000),
+            clip = false
         )
         .clickable { isDialogVisible = true }
         .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
@@ -171,12 +172,11 @@ fun ClassCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(modifier= Modifier
-                .width(22.dp)
-                .align(Alignment.CenterVertically)
-                .height(26.dp),
+                .width(30.dp)
+                .align(Alignment.CenterVertically),
                 painter = painterResource(id = R.drawable.class_icon),
                 contentDescription = "null",
-                contentScale = ContentScale.Fit)
+                contentScale = ContentScale.Crop)
 
             Text(modifier = Modifier
                 .width(53.dp)
@@ -191,24 +191,18 @@ fun ClassCard(
                     letterSpacing = 0.14.sp,
                 )
             )
-            Text(
-                modifier = Modifier
-                    .width(140.dp)
-
-                    .height(32.dp),
-                text = selectedChildClass?.name ?: "미선택",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF0047B3),
-                    letterSpacing = 0.28.sp,
-                    textAlign = TextAlign.Center)
-            )
-
-
-
-
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                Text(
+                    text = selectedChildClass?.name ?: "미선택",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF7F5AF0),
+                        letterSpacing = 0.28.sp,
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
         }
     }
 
@@ -256,11 +250,12 @@ fun ChildrenCard(
     }
 
     Box(modifier = modifier   //카드 하얀 배경
-        .height(50.dp)
+        .height(60.dp)
         .shadow(
             elevation = 4.dp,
             spotColor = Color(0x40000000),
-            ambientColor = Color(0x40000000)
+            ambientColor = Color(0x40000000),
+            clip = false
         )
         .clickable { isDialogVisible = true }
         .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp)),
@@ -274,12 +269,11 @@ fun ChildrenCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(modifier= Modifier
-                .width(20.dp)
-                .align(Alignment.CenterVertically)
-                .height(20.dp),
+                .width(30.dp)
+                .align(Alignment.CenterVertically),
                 painter = painterResource(id = R.drawable.child_icon),
                 contentDescription = "null",
-                contentScale = ContentScale.Fit)
+                contentScale = ContentScale.Crop)
 
             Text(modifier = Modifier
                 .width(53.dp)
@@ -294,19 +288,18 @@ fun ChildrenCard(
                     letterSpacing = 0.14.sp,
                 )
             )
-            Text(
-                modifier = Modifier
-                    .width(140.dp)
-                    .height(32.dp),
-                text = selectedChildInfo?.name ?: "미선택",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF0047B3),
-                    letterSpacing = 0.28.sp,
-                    textAlign = TextAlign.Center)
-            )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                Text(
+                    text = selectedChildInfo?.name ?: "미선택",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF34C648),
+                        letterSpacing = 0.28.sp,
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
 
 
 

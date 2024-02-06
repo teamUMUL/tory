@@ -57,7 +57,7 @@ fun SelectedSTODetail(
                         }
 
                         else -> {
-                            MaterialTheme.colorScheme.tertiary
+                            Color(0xFFF3F3F3)
                         }
                     }
                 } ?: MaterialTheme.colorScheme.tertiary,

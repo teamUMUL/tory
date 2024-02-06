@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -269,19 +270,21 @@ fun BlocksDisplay(
     // 필요한 줄 수 계산
     val numberOfRows = (stoCount + blocksPerRow - 1) / blocksPerRow
 
-    BoxWithConstraints(modifier = modifier) {
+    BoxWithConstraints(modifier = modifier, contentAlignment = Alignment.TopCenter) {
         val blockWidth = maxWidth / 6
         val blockHeight = maxHeight / 5
         Column(
             modifier = Modifier
+                .wrapContentWidth()
                 .padding(0.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.Start
         ) {
             for (row in 0 until numberOfRows) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier
+                        .wrapContentWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
                 ){
                     // 현재 줄에 몇 개의 블록이 필요한지 계산
                     val blocksInThisRow = minOf(blocksPerRow, stoCount - row * blocksPerRow)

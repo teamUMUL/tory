@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -27,8 +29,10 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -66,6 +70,7 @@ import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.ui.theme.ToryTheme
 import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Lato
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 
@@ -89,6 +94,30 @@ fun UpdateLTOItemDialog(
     var gameMode by remember {
         mutableStateOf(selectedLTO.game)
     }
+    val (deleteLTODialog, setDeleteLTODialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (deleteLTODialog){
+        selectedLTO?.let { selectedLTO ->
+            AlertDialog(
+                title = {Text(text = "LTO : ${selectedLTO.name} 삭제하시겠습니까?")},
+                onDismissRequest = {setDeleteLTODialog(false)},
+                confirmButton = { TextButton(onClick = {
+                    ltoViewModel.deleteLTO(selectedLTO = selectedLTO)
+                    setDeleteLTODialog(false)
+                    setUpdateLTOItem(false)
+                }) {
+                    Text(text = "삭제")
+                }
+                },
+                dismissButton = { TextButton(onClick = { setDeleteLTODialog(false) }) {
+                    Text(text = "닫기")
+                }
+                }
+            )
+        }
+    }
     // AddLTOItemDialog 내용
     Dialog(
         onDismissRequest = {setUpdateLTOItem(false)},
@@ -105,16 +134,40 @@ fun UpdateLTOItemDialog(
                 ),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ){
-            Text(
-                text = "LTO 추가",
-                style = TextStyle(
-                    fontSize = 33.sp,
-                    fontFamily = fontFamily_Inter,
-                    fontWeight = FontWeight(400),
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                ),
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "LTO 추가",
+                    style = TextStyle(
+                        fontSize = 33.sp,
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(400),
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                    ),
+                )
+                OutlinedButton(
+                    onClick = {
+                        setDeleteLTODialog(true)
+                    },
+                    border = BorderStroke(width = 1.dp, color = Color.Red),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "삭제",
+                        style = TextStyle(
+                            fontFamily = fontFamily_Lato,
+                            fontSize = 20.sp,
+                            color = Color.Red
+                        )
+                    )
+                }
+            }
+
             TextField(
                 value = ltoInputValue,
                 onValueChange = {

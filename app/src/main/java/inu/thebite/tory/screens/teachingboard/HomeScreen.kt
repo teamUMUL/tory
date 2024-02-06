@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.teachingboard
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -46,6 +49,8 @@ import inu.thebite.tory.screens.teachingboard.recentlto.RecentLTOScreen
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Montserrat
 
 
 @Composable
@@ -73,31 +78,27 @@ fun HomeScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-
+                    .padding(top = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(40.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Dash board",
+                    text = "Teaching Board",
                     modifier = Modifier
-                        .width(240.dp)
                         .weight(1f)
-                        .height(40.dp)
                         .padding(start = 16.dp),
                     style = TextStyle(
                         fontSize = 33.sp,
                         fontWeight = FontWeight(400),
                         color = Color(0xFF000000),
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.Center,
                     )
                 )
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .weight(4f)
-//                    .height(112.dp)
-                        .padding(start = 16.dp, end = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(40.dp)
 
                 ) {
 
@@ -127,58 +128,107 @@ fun HomeScreen(
                     onClick = {
                         navigateToEducation()
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7F5AF0)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
                     modifier = Modifier  //lto & sto button
-                        .shadow(
-                            elevation = 4.dp,
-                            spotColor = Color(0x40000000),
-                            ambientColor = Color(0x40000000)
-                        )
-                        .weight(1f)
-                        .width(60.dp)
-                        .padding(end = 16.dp)
                         .height(60.dp)
-                        .background(
-                            color = Color(0xFF7F5AF0),
-                            shape = RoundedCornerShape(size = 10.dp)
-                        )
+                        .weight(1f)
+                        .padding(end = 16.dp),
+                    shape = RoundedCornerShape(10.dp)
 
                 ) {
                     Text(
-                        text = "LTO & STO & PLAY",
-                        style = TextStyle(color = Color(0xFFFFFFFF), background = Color(0xFF7F5AF0))
+                        text = "중재 노트",
+                        style = TextStyle(
+                            color = Color(0xFFFFFFFF),
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
+                        )
                     )
                 }
             }
         }
-        Column(modifier = Modifier.weight(1.3f)) {
+        Column(modifier = Modifier.weight(1.0f)) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
 //                    .height(112.dp)
-                    .padding(start = 16.dp, end = 16.dp),
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
 
                 ) {
-                Image(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                        .clickable { /* Define the click action here */ },
-                    painter = painterResource(id = R.drawable.recent_list_btn),
-                    contentDescription = "Recent List Button"
-                )
-                Image(
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(700.dp)
-                        .width(810.dp)
-                        .clickable {
-                            navigateToNotice()
-                        },
-                    painter = painterResource(id = R.drawable.report_btn),
-                    contentDescription = "Report Button"
-                )
+                Button(
+                    onClick = {
 
+                    },
+                    modifier = Modifier
+                        .weight(5f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF0047B3),
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_recent),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "최근 중재 목록",
+                            style = TextStyle(
+                                fontFamily = fontFamily_Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 24.sp,
+                                color = Color.White
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Button(
+                    onClick = {
+
+                    },
+                    modifier = Modifier
+                        .weight(5f)
+                        .fillMaxHeight(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color(0xFF0047B3)
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(width = 2.dp, color = Color(0xFF0047B3))
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_multipages),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "정기검사",
+                            style = TextStyle(
+                                fontFamily = fontFamily_Montserrat,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 24.sp,
+                                color = Color(0xFF0047B3)
+                            )
+                        )
+                    }
+                }
             }
         }
 
@@ -241,7 +291,7 @@ fun HorizonPager(
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel
 
-    ) {
+) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     Column(
         modifier = modifier

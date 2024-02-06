@@ -1,9 +1,20 @@
 package inu.thebite.tory.screens.education.compose.lto
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +29,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
@@ -29,34 +41,100 @@ fun SelectedLTORow(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
-    Row(
+    BoxWithConstraints(
         modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        selectedLTO?.let { selectedLTO ->
-            Text(
-                text = selectedLTO.name,
+        val maxWidth = maxWidth * 0.7f
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            selectedLTO?.let { selectedLTO ->
+                Row(
+                    modifier = Modifier
+                        .weight(7f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = selectedLTO.name,
 
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = fontFamily_Lato,
-                    fontWeight = FontWeight(900),
-                    color = Color(0xFF1D1C1D),
-                ),
-                modifier = Modifier
-                    .padding(horizontal = 15.dp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            LTOButtons(
-                selectedLTO = selectedLTO,
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontFamily = fontFamily_Lato,
+                            fontWeight = FontWeight(900),
+                            color = Color(0xFF1D1C1D),
+                        ),
+                        modifier = Modifier
+                            .widthIn(max = maxWidth),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Button(
+                        onClick = {
 
-                ltoViewModel = ltoViewModel,
-                stoViewModel = stoViewModel
-            )
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(vertical = 12.dp),
+                        border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Black
+                        ),
+                        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
+                    ) {
+                        Text(
+                            text = "언어발달",
+                            style = TextStyle(
+                                fontFamily = fontFamily_Inter,
+                                fontSize = 14.sp,
+                                color = Color.Black
+                            )
+                        )
+                    }
+                    Button(
+                        onClick = {
+
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(vertical = 12.dp),
+                        border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Black
+                        ),
+                        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
+                    ) {
+                        Text(
+                            text = "인지발달",
+                            style = TextStyle(
+                                fontFamily = fontFamily_Inter,
+                                fontSize = 14.sp,
+                                color = Color.Black
+                            )
+                        )
+                    }
+                }
+
+                LTOButtons(
+                    modifier = Modifier,
+                    selectedLTO = selectedLTO,
+
+                    ltoViewModel = ltoViewModel,
+                    stoViewModel = stoViewModel
+                )
+            }
+
         }
-
     }
+
 }

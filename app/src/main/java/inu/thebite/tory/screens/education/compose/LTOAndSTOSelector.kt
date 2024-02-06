@@ -1,9 +1,8 @@
 package inu.thebite.tory.screens.education.compose
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -16,16 +15,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,12 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
@@ -50,14 +42,10 @@ import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.student.StudentResponse
-import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education.compose.sto.STOSelector
-import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
-import inu.thebite.tory.ui.theme.ToryTheme
-import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -75,53 +63,13 @@ fun LTOAndSTOSelector(
     stoViewModel: STOViewModel,
     dragAndDropViewModel: DragAndDropViewModel
 ) {
-    val context = LocalContext.current
-
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val (addLTODialog, setAddLTODialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
-    if(addLTODialog){
-        selectedDEV?.let { selectedDEV ->
-            AddLTODialog(
-                context = context,
-                selectedChild = selectedChild,
-                setAddLTOItem = {setAddLTODialog(it)},
-                selectedDEV = selectedDEV,
-                ltoViewModel = ltoViewModel
-            )
-        }
-    }
-
-    val (deleteLTODialog, setDeleteLTODialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (deleteLTODialog){
-        selectedLTO?.let { selectedLTO ->
-            AlertDialog(
-                title = {Text(text = "LTO : ${selectedLTO.name} 삭제하시겠습니까?")},
-                onDismissRequest = {setDeleteLTODialog(false)},
-                confirmButton = { TextButton(onClick = {
-                    ltoViewModel.deleteLTO(selectedLTO = selectedLTO)
-                    setDeleteLTODialog(false)
-                }) {
-                    Text(text = "삭제")
-                }
-                },
-                dismissButton = { TextButton(onClick = { setDeleteLTODialog(false) }) {
-                    Text(text = "닫기")
-                }
-                }
-            )
-        }
-    }
-
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(Color(0xFFF3F3F3)),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         LazyColumn(
@@ -213,18 +161,6 @@ fun LTOAndSTOSelector(
                                 overflow = TextOverflow.Ellipsis,
                             )
                         }
-
-                        if (selectedLTO == lto) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon_delete),
-                                contentDescription = null,
-                                tint = Color.Black,
-                                modifier = Modifier
-                                    .clickableWithNoRipple {
-                                        setDeleteLTODialog(true)
-                                    }
-                            )
-                        }
                     }
                     AnimatedVisibility(visible = expandedState.value) {
                         STOSelector(
@@ -236,33 +172,6 @@ fun LTOAndSTOSelector(
                     }
                 }
             }
-
-        }
-
-        OutlinedButton(
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth(),
-            onClick = {
-                setAddLTODialog(true)
-            },
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
-            ),
-            border = BorderStroke(width = 0.8.dp, color = Color(0xFFCECECE))
-        ) {
-            Text(
-                text = "LTO 추가",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = fontFamily_Inter,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF000000),
-
-                    )
-            )
         }
     }
 }

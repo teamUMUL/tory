@@ -3,6 +3,7 @@ package inu.thebite.tory.screens.education.compose.dialog.sto
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,12 +21,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -56,6 +60,7 @@ import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Lato
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 
@@ -96,6 +101,31 @@ fun UpdateSTODialog(
 
     val stoTryNum = remember { mutableStateOf(selectedSTO.count) }
 
+    val (deleteSTODialog, setDeleteSTODialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (deleteSTODialog){
+        selectedSTO?.let { selectedSTO ->
+            AlertDialog(
+                title = {Text(text = "STO : ${selectedSTO.name} 삭제하시겠습니까?")},
+                onDismissRequest = {setDeleteSTODialog(false)},
+                confirmButton = { TextButton(onClick = {
+                    stoViewModel.deleteSTO(selectedSTO = selectedSTO)
+                    setDeleteSTODialog(false)
+                    setUpdateSTOItem(false)
+                }) {
+                    Text(text = "삭제")
+                }
+                },
+                dismissButton = { TextButton(onClick = { setDeleteSTODialog(false) }) {
+                    Text(text = "닫기")
+                }
+                }
+            )
+        }
+    }
+
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = {setUpdateSTOItem(false)},
@@ -115,35 +145,46 @@ fun UpdateSTODialog(
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f)
                 .verticalScroll(addSTOScrollState)) {
-                Text(
-                    text = "STO 수정",
-                    style = TextStyle(
-                        fontSize = 33.sp,
-                        fontFamily = fontFamily_Inter,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF000000),
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "STO 수정",
+                        style = TextStyle(
+                            fontSize = 33.sp,
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF000000),
 
-                        textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center,
+                        )
                     )
-                )
+                    OutlinedButton(
+                        onClick = {
+                            setDeleteSTODialog(true)
+                        },
+                        border = BorderStroke(width = 1.dp, color = Color.Red),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "삭제",
+                            style = TextStyle(
+                                fontFamily = fontFamily_Lato,
+                                fontSize = 20.sp,
+                                color = Color.Red
+                            )
+                        )
+                    }
+                }
+
                 updateSTOTextFieldFrame("STO 이름", setInputValue = {stoNameInputValue = it}, inputValue = stoNameInputValue, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
                 updateSTOTextFieldFrame("STO 내용", setInputValue = {stoDetailInputValue = it}, inputValue = stoDetailInputValue, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
                 STOCountSelector(stoCount = stoTryNum.value, setSTOCount = {stoTryNum.value = it})
-//                Text(
-//                    text = "시도 수",
-//                    fontSize = 20.sp,
-//                    modifier = Modifier
-//                        .padding(start = 10.dp)
-//                )
-//                roundedSelectButtons(
-//                    buttonList = listOf(10, 15, 20),
-//                    cornerRadius = 5.dp,
-//                    colorList = listOf(),
-//                    defaultButtonIndex = listOf(10,15,20).indexOf(selectedSTO.count),
-//                    stoTryNum = stoTryNum
-//                )
                 Spacer(modifier = Modifier.height(10.dp))
                 updateSTOTextFieldFrame("준거도달 기준", setInputValue = {stoSuccessStandardInputValue = it}, inputValue = stoSuccessStandardInputValue, isSingleLine = false, isInt = true)
                 Spacer(modifier = Modifier.height(10.dp))

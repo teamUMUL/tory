@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.nativeCanvas
@@ -46,6 +47,7 @@ import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.LineType
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Montserrat
 import kotlin.math.round
 
@@ -56,35 +58,61 @@ fun chart_bar(
     ltoViewModel: LTOViewModel
 ){
     val allDEVs by devViewModel.allDEVs.collectAsState()
-
+    val gradient = Brush.horizontalGradient(
+        colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
+    )
     Column(
         modifier= Modifier
-            .padding(8.dp)
+            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
             .fillMaxWidth()
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(modifier = Modifier  // 해더 부분
-            .padding(top = 10.dp, start = 30.dp, end = 20.dp, bottom = 30.dp)
-            .height(30.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Row (modifier = Modifier.weight(2f)){
-                androidx.compose.material3.Text(
-                    text = " 영역별 발달지표",
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 30.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.End
+        ) {
+            Row(
+                modifier = Modifier
+                    .background(
+                        gradient,
+                        RoundedCornerShape(
+                            topEnd = 0.dp,
+                            topStart = 0.dp,
+                            bottomEnd = 8.dp,
+                            bottomStart = 8.dp
+                        )
+                    ),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "영역별 발달지표",
                     style = TextStyle(
-                        fontSize = 16.sp,
+                        fontSize = 24.sp,
                         lineHeight = 24.sp,
-                        fontFamily = fontFamily_Montserrat,
+                        fontFamily = fontFamily_Inter,
                         fontWeight = FontWeight(600),
-                        color = Color(0xFF000000),
-                        letterSpacing = 0.16.sp,
-                    )
+                        color = Color(0xFFFFFFFF),
+                        letterSpacing = 0.24.sp,
+                    ),
+                    modifier = Modifier
+                        .padding(horizontal = 50.dp, vertical = 10.dp)
                 )
             }
-            Spacer(modifier = Modifier.weight(1.5f))
-            Row(modifier = Modifier.weight(1f)) {
+        }
+        Row(modifier = Modifier  // 해더 부분
+            .fillMaxWidth()
+            .padding(top = 10.dp, start = 30.dp, end = 20.dp, bottom = 30.dp)
+            .height(30.dp),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Row(modifier = Modifier.padding(end = 40.dp)) {
                 Box(
                     modifier = Modifier
                         .padding(top = 5.dp)
@@ -95,18 +123,19 @@ fun chart_bar(
                             shape = RoundedCornerShape(size = 10.dp)
                         )
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(30.dp))
                 Text(
                     text = "23.07",
                     style = TextStyle(
                         fontSize = 14.sp,
+                        fontFamily = fontFamily_Montserrat,
                         fontWeight = FontWeight(500),
-                        color = Color(0xFFA6ACBE),
+                        color = Color(0xFF000000),
                         textAlign = TextAlign.Center,
                         letterSpacing = 0.14.sp,
                     )
                 )
-                Spacer(modifier = Modifier.width(15.dp))
+                Spacer(modifier = Modifier.width(30.dp))
                 Box(
                     modifier = Modifier
                         .padding(top = 5.dp)
@@ -117,20 +146,19 @@ fun chart_bar(
                             shape = RoundedCornerShape(size = 10.dp)
                         ),
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(30.dp))
                 Text(
                     text = "23.10",
                     style = TextStyle(
                         fontSize = 14.sp,
+                        fontFamily = fontFamily_Montserrat,
                         fontWeight = FontWeight(500),
-                        color = Color(0xFFA6ACBE),
+                        color = Color(0xFF000000),
                         textAlign = TextAlign.Center,
                         letterSpacing = 0.14.sp,
                     )
                 )
             }
-
-
         }
 
         allDEVs?.let { allDEVs ->

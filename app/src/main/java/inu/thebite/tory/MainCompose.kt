@@ -400,7 +400,7 @@ fun MainCompose(
             topBar = {
                 TopAppBar(
                     title = { Text(
-                        text = currentRouteToKorean,
+                        text = "",
                         color = when(currentRoute){
                             AllDestinations.CENTERDASHBOARD -> {
                                 Color.Black
@@ -542,52 +542,56 @@ fun MainCompose(
                                     }
                                 }
                                 AllDestinations.EDUCATION -> {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight()
-                                    ) {
-                                        selectedChildInfo?.let {selectedChildInfo ->
-                                            ScheduleTopBar(
-                                                modifier = Modifier.weight(4f),
-                                                selectedChild = selectedChildInfo,
-                                                currentRoute = currentRoute,
-                                                devViewModel = devViewModel,
-                                                ltoViewModel = ltoViewModel,
-                                                stoViewModel = stoViewModel,
-                                                todoViewModel = todoViewModel,
-                                                childSelectViewModel = childSelectViewModel
-                                            )
-                                        }
-
-
+                                    Column {
                                         Row(
                                             modifier = Modifier
+                                                .fillMaxWidth()
                                                 .fillMaxHeight()
-                                                .weight(1f),
-                                            horizontalArrangement = Arrangement.End,
-                                            verticalAlignment = Alignment.CenterVertically
                                         ) {
-
-                                            Row(
-                                                modifier = Modifier.fillMaxHeight(),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                selectedCenter?.let { Text(text = it.name, color = Color.Black) }
-                                                selectedChildClass?.let { Text(text = " > " + it.name, color = Color.Black) }
-                                                selectedChildInfo?.let { Text(text = " > " + it.name, color = Color.Black) }
-                                            }
-                                            IconButton(onClick = {
-                                                setChildDialogOpen(true)
-                                            }) {
-                                                Icon(
-                                                    painter = painterResource(id = R.drawable.icon_user),
-                                                    contentDescription = null,
-                                                    tint = Color.Black
+                                            selectedChildInfo?.let {selectedChildInfo ->
+                                                ScheduleTopBar(
+                                                    modifier = Modifier.weight(4f),
+                                                    selectedChild = selectedChildInfo,
+                                                    currentRoute = currentRoute,
+                                                    devViewModel = devViewModel,
+                                                    ltoViewModel = ltoViewModel,
+                                                    stoViewModel = stoViewModel,
+                                                    todoViewModel = todoViewModel,
+                                                    childSelectViewModel = childSelectViewModel
                                                 )
                                             }
+
+
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxHeight()
+                                                    .weight(1f),
+                                                horizontalArrangement = Arrangement.End,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+
+                                                Row(
+                                                    modifier = Modifier.fillMaxHeight(),
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    selectedCenter?.let { Text(text = it.name, color = Color.Black) }
+                                                    selectedChildClass?.let { Text(text = " > " + it.name, color = Color.Black) }
+                                                    selectedChildInfo?.let { Text(text = " > " + it.name, color = Color.Black) }
+                                                }
+                                                IconButton(onClick = {
+                                                    setChildDialogOpen(true)
+                                                }) {
+                                                    Icon(
+                                                        painter = painterResource(id = R.drawable.icon_user),
+                                                        contentDescription = null,
+                                                        tint = Color.Black
+                                                    )
+                                                }
+                                            }
                                         }
+
                                     }
+
                                 }
                                 AllDestinations.NOTICE ->{
 //                                    Row(

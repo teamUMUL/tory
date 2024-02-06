@@ -100,69 +100,7 @@ fun SelectedSTORow(
 ) {
     val context = LocalContext.current
 
-    val (deleteSTODialog, setDeleteSTODialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
 
-    val points by stoViewModel.points.collectAsState()
-
-    if (deleteSTODialog){
-        selectedSTO?.let { selectedSTO ->
-            AlertDialog(
-                title = {Text(text = "STO : ${selectedSTO.name} 삭제하시겠습니까?")},
-                onDismissRequest = {setDeleteSTODialog(false)},
-                confirmButton = { TextButton(onClick = {
-                    stoViewModel.deleteSTO(selectedSTO = selectedSTO)
-                    setDeleteSTODialog(false)
-                }) {
-                    Text(text = "삭제")
-                }},
-                dismissButton = { TextButton(onClick = { setDeleteSTODialog(false) }) {
-                    Text(text = "닫기")
-                }}
-            )
-        }
-    }
-
-    val (updateSTODialog, setUpdateSTODialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if(updateSTODialog){
-        selectedSTO?.let {selectedSTO ->
-            UpdateSTODialog(
-                context = context,
-                stoViewModel = stoViewModel,
-                selectedSTO = selectedSTO,
-                setUpdateSTOItem = {setUpdateSTODialog(it)},
-            )
-        }
-    }
-
-    val purpleGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
-    )
-    val gray = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF888888), Color(0xFF888888))
-    )
-
-    val (gameDialog, setGameDialog) = remember {
-        mutableStateOf(false)
-    }
-
-    if(gameDialog){
-        GameDialog(
-            context = context,
-            selectedLTO = selectedLTO,
-            selectedSTO = selectedSTO,
-            points = points,
-            setGameDialog = {setGameDialog(it)},
-            dragAndDropViewModel = dragAndDropViewModel,
-            gameViewModel = gameViewModel,
-            imageViewModel = imageViewModel,
-            stoViewModel = stoViewModel
-        )
-    }
 
     Row(
         modifier = modifier
@@ -269,102 +207,6 @@ fun SelectedSTORow(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                OutlinedButton(
-                    onClick = {
-
-                        if (selectedSTO.imageList.isNotEmpty()){
-                            selectedLTO?.let {selectedLTO ->
-                                when(selectedLTO.game){
-                                    "같은 사진 매칭" -> {
-                                        //타겟 아이템 설정
-                                        dragAndDropViewModel.setTargetItems(
-                                            imageViewModel.findImagesByNames(selectedSTO.imageList)
-                                        )
-                                        //타겟 아이템 설정 확인
-                                        if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
-                                            //타겟 아이템 설정 후 랜덤 유무 설정
-                                            if(dragAndDropViewModel.mainItem.value.isNotNull()){
-                                                //선택한 메인 아이템이 있을 경우 랜덤게임이 아니라고 설정
-                                                dragAndDropViewModel.isNotRandomGame()
-                                            } else {
-                                                //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
-                                                dragAndDropViewModel.setMainItem(
-                                                    dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                                                )
-                                                dragAndDropViewModel.isRandomGame()
-                                            }
-
-                                            setGameDialog(true)
-                                        } else {
-                                            Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
-                                        }
-                                    }
-                                    "일반화 매칭" -> {
-                                        //타겟 아이템 설정
-                                        dragAndDropViewModel.setTargetItems(
-                                            imageViewModel.findImagesByNames(selectedSTO.imageList)
-                                        )
-                                        //타겟 아이템 설정 확인
-                                        if(dragAndDropViewModel.targetItems.value.isNotNull() && dragAndDropViewModel.targetItems.value != emptyList<ImageResponse>()){
-                                            //타겟 아이템 설정 후 랜덤 유무 확인
-                                            if(dragAndDropViewModel.mainItem.value.isNotNull()){
-                                                dragAndDropViewModel.isNotRandomGame()
-                                            } else {
-                                                //선택한 메인 아이템이 없을 경우 랜덤게임이라고 설정 및 메인 아이템 랜덤 설정
-                                                dragAndDropViewModel.setMainItem(
-                                                    dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                                                )
-                                                dragAndDropViewModel.isRandomGame()
-                                            }
-                                            dragAndDropViewModel.resetMainItemsGeneralMode(imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
-                                            setGameDialog(true)
-
-                                        } else {
-                                            Toasty.warning(context, "게임아이템을 설정해주세요", Toast.LENGTH_SHORT, true).show()
-                                        }
-                                    }
-                                }
-                            }
-                            //내용 변경
-                            stoViewModel.updateSTO(selectedSTO = selectedSTO, updateSTO = UpdateStoRequest(
-                                name = selectedSTO.name,
-                                contents = getSTODescription(selectedSTO = selectedSTO, isRandom = dragAndDropViewModel.isRandomGame, dragAndDropViewModel = dragAndDropViewModel),
-                                count = selectedSTO.count,
-                                goal = selectedSTO.goal,
-                                urgeType = selectedSTO.urgeType,
-                                urgeContent = selectedSTO.urgeContent,
-                                enforceContent = selectedSTO.enforceContent,
-                                memo = selectedSTO.memo
-                            )
-                            )
-                        } else {
-                            Toasty.warning(context, "사진을 선택해주세요", Toast.LENGTH_SHORT, true).show()
-
-                        }
-
-                    },
-
-                    shape = RoundedCornerShape(10.dp),
-                    border = BorderStroke(width = 2.dp, color = Color(0xFF0047B3)),
-                    contentPadding = PaddingValues(vertical = 5.dp, horizontal = 20.dp),
-
-                    ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow, contentDescription = null,
-                        tint = Color.Black
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(
-                        text = "교육 시작",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontFamily = fontFamily_Lato,
-                            fontWeight = FontWeight(900),
-                            color = Color(0xFF1D1C1D),
-
-                            )
-                    )
-                }
                 IconButton(
                     onClick = {
                         todoList?.let { todoList ->
@@ -379,50 +221,12 @@ fun SelectedSTORow(
                         } ?: todoViewModel.addTodoList(studentId = selectedChild.id, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
                     }
                 ) {
-
                     Icon(
-                        painter = painterResource(id = R.drawable.icon_calendar_2),
+                        painter = painterResource(id = R.drawable.icon_todo),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(20.dp)
-                            .graphicsLayer(alpha = 0.99f)
-                            .drawWithCache {
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(
-                                        brush =
-                                        todoList?.let { todoList ->
-                                            if (todoList.stoList.any { it == selectedSTO.id }) purpleGradient else gray
-                                        } ?: gray,
-                                        blendMode = BlendMode.SrcAtop
-                                    )
-                                }
-                            },
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        setUpdateSTODialog(true)
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_edit),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp),
-                        tint = Color.Gray
-                    )
-
-                }
-                IconButton(
-                    onClick = {
-                        setDeleteSTODialog(true)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp),
-                        tint = Color.Gray
+                            .size(20.dp),
+                        tint = Color.Unspecified
                     )
                 }
             }

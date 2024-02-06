@@ -81,7 +81,7 @@ class LTOViewModel: ViewModel() {
         }
     }
 
-    fun clearSelectedCenter() {
+    fun clearSelectedLTO() {
         _selectedLTO.value = null
     }
 

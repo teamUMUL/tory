@@ -10,7 +10,7 @@ import inu.thebite.tory.screens.navigation.AllDestinations.SETTING
 
 
 object AllDestinations{
-    const val CENTERDASHBOARD = "CenterDashboard"
+    const val CENTERDASHBOARD = "CenterBoard"
     const val TEACHINGBOARD = "TeachingBoard"
     const val SETTING = "Setting"
     const val EDUCATION = "Education"

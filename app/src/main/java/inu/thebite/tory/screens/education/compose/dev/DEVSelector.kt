@@ -1,6 +1,7 @@
 package inu.thebite.tory.screens.education.compose.dev
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +54,8 @@ fun DEVSelector(
 
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(Color(0xFFF3F3F3)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ){
