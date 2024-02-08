@@ -61,8 +61,6 @@ import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
 fun AddCenterDialog(
     context : Context,
     centerViewModel: CenterViewModel,
-    childClassViewModel : ChildClassViewModel,
-    childInfoViewModel : ChildInfoViewModel,
     setAddCenterDialog : (Boolean) -> Unit,
     selectedCenter : CenterResponse?,
     isUpdate : Boolean

@@ -175,7 +175,7 @@ fun ChildClassItemRow(
                                     .clickable {
                                         if (selectedChildClass == childClass) {
                                             childClassViewModel.clearSelectedChildClass()
-                                            childInfoViewModel.clearChildInfos()
+                                            childInfoViewModel.clearAllChildInfos()
                                         } else {
                                             childClassViewModel.setSelectedChildClass(childClass)
 //                                            childInfoViewModel.getChildInfosByClass(childClass)

@@ -47,15 +47,16 @@ fun CenterDialog(
             content = {
                 var chainText by remember { mutableStateOf("") }
 
-                Column(modifier = Modifier
-                    .width(800.dp)
+                Column(
+                    modifier = Modifier
+                        .width(800.dp)
 //                    .height(240.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(Color.White)
-                    .padding(
-                        horizontal = 8.dp,
-                        vertical = 16.dp
-                    )
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color.White)
+                        .padding(
+                            horizontal = 8.dp,
+                            vertical = 16.dp
+                        )
                 ) {
 
                     Text(
@@ -64,12 +65,18 @@ fun CenterDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    CenterSelector(items = allCenters, onDismiss = {onDismiss()}, centerSelectViewModel = centerSelectViewModel, childClassSelectViewModel = childClassSelectViewModel, childSelectViewModel = childSelectViewModel)
+                    CenterSelector(
+                        onDismiss = { onDismiss() },
+                        centerSelectViewModel = centerSelectViewModel,
+                        childClassSelectViewModel = childClassSelectViewModel,
+                        childSelectViewModel = childSelectViewModel
+                    )
                 }
             }
         )
     }
 }
+
 @Composable
 fun ClassDialog(
     showDialog: Boolean,
@@ -91,15 +98,16 @@ fun ClassDialog(
             content = {
                 var classText by remember { mutableStateOf("") }
 
-                Column(modifier = Modifier
-                    .width(800.dp)
+                Column(
+                    modifier = Modifier
+                        .width(800.dp)
 //                    .height(240.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(Color.White)
-                    .padding(
-                        horizontal = 8.dp,
-                        vertical = 16.dp
-                    )
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color.White)
+                        .padding(
+                            horizontal = 8.dp,
+                            vertical = 16.dp
+                        )
                 ) {
 
                     Text(
@@ -108,9 +116,8 @@ fun ClassDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    allChildClasses?.let {childClasses ->
+                    allChildClasses?.let { childClasses ->
                         ClassSelector(
-                            items = childClasses,
                             onDismiss = { onDismiss() },
                             childClassSelectViewModel = childClassSelectViewModel,
                             childSelectViewModel = childSelectViewModel
@@ -121,6 +128,7 @@ fun ClassDialog(
         )
     }
 }
+
 @Composable
 fun ChildDialog(
     showDialog: Boolean,
@@ -139,15 +147,16 @@ fun ChildDialog(
             content = {
 
 
-                Column(modifier = Modifier
-                    .width(800.dp)
+                Column(
+                    modifier = Modifier
+                        .width(800.dp)
 //                    .height(240.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(Color.White)
-                    .padding(
-                        horizontal = 8.dp,
-                        vertical = 16.dp
-                    )
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color.White)
+                        .padding(
+                            horizontal = 8.dp,
+                            vertical = 16.dp
+                        )
                 ) {
 
                     Text(
@@ -156,9 +165,8 @@ fun ChildDialog(
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    childInfos?.let {childInfos ->
+                    childInfos?.let { childInfos ->
                         ChildSelector(
-                            items = childInfos,
                             onDismiss = { onDismiss() },
                             childSelectViewModel = childSelectViewModel
                         )

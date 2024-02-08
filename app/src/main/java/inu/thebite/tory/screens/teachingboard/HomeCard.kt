@@ -133,7 +133,7 @@ fun ClassCard(
     childSelectViewModel: ChildSelectViewModel
 ){
     val context = LocalContext.current
-    val selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
+    val selectedChildClass by childClassSelectViewModel.selectedChildClass.collectAsState()
     val selectedCenter by centerSelectViewModel.selectedCenter.collectAsState()
     var isDialogVisible by remember { mutableStateOf(false) }
 

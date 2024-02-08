@@ -96,12 +96,12 @@ fun ScheduleTopBar(
                 horizontalArrangement = Arrangement.End
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.icon_schedule),
+                    painter = painterResource(id = R.drawable.icon_todo),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(end = 30.dp)
-                        .size(20.dp),
-                    tint = Color(0xFF949494)
+                        .padding(end = 10.dp)
+                        .size(30.dp),
+                    tint = Color.Unspecified
                 )
                 Row(
                     modifier = Modifier

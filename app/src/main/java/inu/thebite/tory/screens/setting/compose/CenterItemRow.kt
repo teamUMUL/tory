@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.center.CenterResponse
-import inu.thebite.tory.retrofit.RetrofitApi
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
@@ -183,7 +182,7 @@ fun CenterItemRow(
                                     }
                                     childClassViewModel.clearSelectedChildClass()
                                     childInfoViewModel.clearSelectedChildInfo()
-                                    childInfoViewModel.clearChildInfos()
+                                    childInfoViewModel.clearAllChildInfos()
 
                                 },
                             shape = RoundedCornerShape(8.dp),

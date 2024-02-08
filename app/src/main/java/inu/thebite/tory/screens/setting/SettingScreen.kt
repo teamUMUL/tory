@@ -97,8 +97,6 @@ fun SettingScreen(
         AddCenterDialog(
             context = context,
             centerViewModel = centerViewModel,
-            childClassViewModel = childClassViewModel,
-            childInfoViewModel = childInfoViewModel,
             setAddCenterDialog = {setAddCenterDialog(it)},
             isUpdate = false,
             selectedCenter = selectedCenter,
@@ -108,8 +106,6 @@ fun SettingScreen(
         AddCenterDialog(
             context = context,
             centerViewModel = centerViewModel,
-            childClassViewModel = childClassViewModel,
-            childInfoViewModel = childInfoViewModel,
             setAddCenterDialog = {setUpdateCenterDialog(it)},
             isUpdate = true,
             selectedCenter = selectedCenter,

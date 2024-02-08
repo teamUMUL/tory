@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,6 +34,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.sto.StoResponse
@@ -124,6 +126,7 @@ fun DragDropList(
             Button(
                 modifier = Modifier
                     .fillMaxHeight()
+                    .widthIn(max = 400.dp)
                     .composed {
                         val offsetOrNull = dragDropListState.elementDisplacement.takeIf {
                             index == dragDropListState.currentIndexOfDraggedItem
@@ -179,7 +182,8 @@ fun DragDropList(
                         fontWeight = FontWeight(500),
                         color = Color(0xFF3A3A3A),
                         textAlign = TextAlign.Center,
-                    )
+                    ),
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

@@ -1,5 +1,7 @@
 package inu.thebite.tory
 
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
@@ -33,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -48,6 +51,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import co.yml.charts.common.extensions.isNotNull
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
@@ -60,13 +65,13 @@ import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
+import inu.thebite.tory.screens.management.ManagementScreen
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
 import inu.thebite.tory.screens.navigation.AppNavigationActions
 import inu.thebite.tory.screens.notice.NoticeScreen
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
-import inu.thebite.tory.screens.setting.SettingScreen
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
@@ -77,7 +82,6 @@ import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -131,6 +135,10 @@ fun MainCompose(
             childClassSelectViewModel.getAllChildClasses(
                 it.id
             )
+            childClassSelectViewModel.clearTempSelectedChildClass()
+            childClassSelectViewModel.clearAllChildClasses()
+            childSelectViewModel.clearTempSelectedChildInfo()
+            childSelectViewModel.clearChildInfos()
         }
     }
 
@@ -139,6 +147,8 @@ fun MainCompose(
             childSelectViewModel.getAllChildInfos(
                 classId = selectedChildClass.id
             )
+            childSelectViewModel.clearTempSelectedChildInfo()
+            childSelectViewModel.clearChildInfos()
         }
     }
 
@@ -196,7 +206,7 @@ fun MainCompose(
                     verticalArrangement = Arrangement.Top
 
                 ) {
-                    allCenters?.let {
+                    allCenters?.let {allCenters ->
                         Text(
                             text = "센터",
                             fontWeight = FontWeight.SemiBold,
@@ -204,76 +214,95 @@ fun MainCompose(
                             modifier = Modifier
                                 .padding(10.dp)
                         )
-                        CenterControl(
-                            items = allCenters,
-                            selectedCenter = _selectedCenter,
+                        CenterSelector(
+                            onDismiss = {  },
                             centerSelectViewModel = centerSelectViewModel,
                             childClassSelectViewModel = childClassSelectViewModel,
                             childSelectViewModel = childSelectViewModel,
+                            containSelectButton = false
                         )
 
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    allChildClasses?.let { childClasses ->
-                        Text(
-                            text = "반",
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 22.sp,
-                            modifier = Modifier
-                                .padding(start = 10.dp, bottom = 10.dp)
-                        )
-                        ChildClassControl(
-                            items = childClasses,
-                            selectedChildClass = _selectedChildClass,
-                            childSelectViewModel = childSelectViewModel,
-                            childClassSelectViewModel = childClassSelectViewModel
-                        )
-                    }
+                    Text(
+                        text = "반",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 22.sp,
+                        modifier = Modifier
+                            .padding(start = 10.dp, bottom = 10.dp)
+                    )
+                    ClassSelector(
+                        onDismiss = {  },
+                        childClassSelectViewModel = childClassSelectViewModel,
+                        childSelectViewModel = childSelectViewModel,
+                        containSelectButton = false
+                    )
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    childInfos?.let { childInfos ->
-                        Text(
-                            text = "아이",
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 22.sp,
-                            modifier = Modifier
-                                .padding(start = 10.dp, bottom = 10.dp)
-                        )
-                        ChildInfoControl(
-                            items = childInfos,
-                            selectedChildInfo = _selectedChildInfo,
-                            childSelectViewModel = childSelectViewModel
-                        )
-                    }
+                    Text(
+                        text = "아이",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 22.sp,
+                        modifier = Modifier
+                            .padding(start = 10.dp, bottom = 10.dp)
+                    )
+                    ChildSelector(
+                        onDismiss = { setChildDialogOpen(false) },
+                        childSelectViewModel = childSelectViewModel,
+                        containSelectButton = false
+                    )
                     Spacer(modifier = Modifier.height(10.dp))
                     _selectedCenter?.let { selectedCenter ->
                         _selectedChildInfo?.let { selectedChildInfo ->
                             _selectedChildClass?.let { selectedChildClass ->
-                                Button(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(55.dp),
-                                    shape = RoundedCornerShape(5.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = colorResource(id = R.color.light_gray)
-                                    ),
-                                    onClick = {
-                                        centerSelectViewModel.setSelectedCenter(selectedCenter)
-                                        childClassSelectViewModel.setSelectedChildClass(
-                                            selectedChildClass
-                                        )
-                                        childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
-//                                        ltoViewModel.clearSelectedLTO()
-//                                        stoViewModel.clearSelectedSTO()
-                                        noticeViewModel.clearAll()
-                                        setChildDialogOpen(false)
-                                    }
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(50.dp)
                                 ) {
-                                    Text(
-                                        text = "선택하기",
-                                        fontSize = 20.sp
-                                    )
+                                    Button(
+                                        modifier = Modifier
+                                            .weight(5f)
+                                            .height(55.dp),
+                                        shape = RoundedCornerShape(5.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFBFBFBF)
+                                        ),
+                                        onClick = {
+                                            centerSelectViewModel.clearTempSelectedCenter()
+                                            childClassSelectViewModel.clearTempSelectedChildClass()
+                                            childSelectViewModel.clearTempSelectedChildInfo()
+                                            setChildDialogOpen(false)
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "취소",
+                                            fontSize = 20.sp
+                                        )
+                                    }
+                                    Button(
+                                        modifier = Modifier
+                                            .weight(5f)
+                                            .height(55.dp),
+                                        shape = RoundedCornerShape(5.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFF0047B3)
+                                        ),
+                                        onClick = {
+                                            centerSelectViewModel.setSelectedCenter(selectedCenter)
+                                            childClassSelectViewModel.setSelectedChildClass(
+                                                selectedChildClass
+                                            )
+                                            childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
+                                            noticeViewModel.clearAll()
+                                            setChildDialogOpen(false)
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "선택하기",
+                                            fontSize = 20.sp
+                                        )
+                                    }
                                 }
+
                             }
                         }
                     }
@@ -756,7 +785,12 @@ fun MainCompose(
                 }
 
                 composable(AllDestinations.SETTING) {
-                    SettingScreen(
+//                    SettingScreen(
+//                        centerViewModel = centerViewModel,
+//                        childClassViewModel = childClassViewModel,
+//                        childInfoViewModel = childInfoViewModel
+//                    )
+                    ManagementScreen(
                         centerViewModel = centerViewModel,
                         childClassViewModel = childClassViewModel,
                         childInfoViewModel = childInfoViewModel
@@ -776,10 +810,13 @@ fun MainCompose(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildSelector(
-    items: List<StudentResponse>,
     onDismiss: () -> Unit,
-    childSelectViewModel: ChildSelectViewModel
+    childSelectViewModel: ChildSelectViewModel,
+    containSelectButton: Boolean = true
 ){
+    val context = LocalContext.current
+
+    val items by childSelectViewModel.childInfos.collectAsState()
 
     val selectedChild by childSelectViewModel.tempSelectedChildInfo.collectAsState()
 
@@ -800,7 +837,13 @@ fun ChildSelector(
                 .fillMaxWidth()
                 .height(80.dp),
             expanded = isExpanded,
-            onExpandedChange = {isExpanded = !isExpanded}
+            onExpandedChange = {
+                if (items.isNotNull()){
+                    isExpanded = !isExpanded
+                } else {
+                    Toasty.warning(context, "반을 선택해주세요", Toast.LENGTH_SHORT, true).show()
+                }
+            }
         ){
             TextField(
                 value = selectedChild?.name ?: "아이를 선택해주세요.",
@@ -838,67 +881,77 @@ fun ChildSelector(
                 modifier = Modifier
                     .exposedDropdownSize(),
             ){
-                items.forEach {item ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = item.name)
-                        },
-                        onClick = {
-                            childSelectViewModel.setTempSelectedChildInfo(item)
-                            isExpanded = false
-                        }
-                    )
+                items?.let { items ->
+                    items.forEach {item ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = item.name)
+                            },
+                            onClick = {
+                                childSelectViewModel.setTempSelectedChildInfo(item)
+                                isExpanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
     }
-    Spacer(modifier = Modifier.height(16.dp))
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Button(
-            onClick = { onDismiss() },
+    if (containSelectButton){
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
             modifier = Modifier
-                .height(50.dp)
-                .weight(1f),
-            shape = RoundedCornerShape(5.dp),
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "취소")
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Button(modifier = Modifier
-            .weight(1f)
-            .height(50.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF0047B3)
-            ),
-            onClick = {
-                selectedChild?.let {selectedChild ->
-                    childSelectViewModel.setSelectedChildInfo(selectedChild)
-                }
-                onDismiss()
-            },
-
+            Button(
+                onClick = { onDismiss() },
+                modifier = Modifier
+                    .height(50.dp)
+                    .weight(1f),
+                shape = RoundedCornerShape(5.dp),
             ) {
-            Text(text = "선택")
+                Text(text = "취소")
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Button(modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF0047B3)
+                ),
+                onClick = {
+                    selectedChild?.let {selectedChild ->
+                        childSelectViewModel.setSelectedChildInfo(selectedChild)
+                    }
+                    onDismiss()
+                },
+
+                ) {
+                Text(text = "선택")
+            }
         }
     }
+
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClassSelector(
-    items: List<ChildClassResponse>,
     onDismiss: () -> Unit,
     childClassSelectViewModel: ChildClassSelectViewModel,
-    childSelectViewModel: ChildSelectViewModel
+    childSelectViewModel: ChildSelectViewModel,
+    containSelectButton: Boolean = true
 ){
+    val items by childClassSelectViewModel.allChildClasses.collectAsState()
+
+    val context = LocalContext.current
+
     val selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
 
     var isExpanded by remember {
@@ -918,7 +971,14 @@ fun ClassSelector(
                 .fillMaxWidth()
                 .height(80.dp),
             expanded = isExpanded,
-            onExpandedChange = {isExpanded = !isExpanded}
+            onExpandedChange = {
+                Log.d("allChildClasses",items.toString())
+                if (items == null){
+                    Toasty.warning(context, "센터를 선택해주세요", Toast.LENGTH_SHORT, true).show()
+                } else {
+                    isExpanded = !isExpanded
+                }
+            }
         ){
             TextField(
                 value = selectedChildClass?.name ?: "반을 선택해주세요.",
@@ -956,74 +1016,83 @@ fun ClassSelector(
                 modifier = Modifier
                     .exposedDropdownSize(),
             ){
-                items.forEach {item ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = item.name)
-                        },
-                        onClick = {
-                            childClassSelectViewModel.setTempSelectedChildClass(item)
-                            isExpanded = false
-                        }
-                    )
+                items?.let { items ->
+                    items.forEach {item ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = item.name)
+                            },
+                            onClick = {
+                                childClassSelectViewModel.setTempSelectedChildClass(item)
+                                isExpanded = false
+                            }
+                        )
+                    }
                 }
+
             }
         }
     }
-    Spacer(modifier = Modifier.height(16.dp))
+    if (containSelectButton){
+        Spacer(modifier = Modifier.height(16.dp))
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Button(
-            onClick = { onDismiss() },
+        Row(
             modifier = Modifier
-                .height(50.dp)
-                .weight(1f),
-            shape = RoundedCornerShape(5.dp),
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "취소")
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Button(modifier = Modifier
-            .weight(1f)
-            .height(50.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF0047B3)
-            ),
-            onClick = {
-                selectedChildClass?.let {selectedChildClass ->
-                    childClassSelectViewModel.setSelectedChildClass(selectedChildClass)
-                }
-                childSelectViewModel.clearTempSelectedChildInfo()
-                childSelectViewModel.clearChildInfos()
-                childSelectViewModel.clearSelectedChildInfo()
-                onDismiss()
-
-            },
-
+            Button(
+                onClick = { onDismiss() },
+                modifier = Modifier
+                    .height(50.dp)
+                    .weight(1f),
+                shape = RoundedCornerShape(5.dp),
             ) {
-            Text(text = "선택")
+                Text(text = "취소")
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Button(modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF0047B3)
+                ),
+                onClick = {
+                    selectedChildClass?.let {selectedChildClass ->
+                        childClassSelectViewModel.setSelectedChildClass(selectedChildClass)
+                    }
+                    childSelectViewModel.clearTempSelectedChildInfo()
+                    childSelectViewModel.clearChildInfos()
+                    childSelectViewModel.clearSelectedChildInfo()
+                    onDismiss()
+
+                },
+
+                ) {
+                Text(text = "선택")
+            }
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CenterSelector(
-    items: List<CenterResponse>,
     onDismiss: () -> Unit,
     centerSelectViewModel: CenterSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
-    childClassSelectViewModel: ChildClassSelectViewModel
-
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    containSelectButton: Boolean = true
 ){
+    val context = LocalContext.current
+
+    val items by centerSelectViewModel.allCenters.collectAsState()
+
     val selectedCenter by centerSelectViewModel.tempSelectedCenter.collectAsState()
 
     var isExpanded by remember {
@@ -1043,7 +1112,9 @@ fun CenterSelector(
                 .fillMaxWidth()
                 .height(80.dp),
             expanded = isExpanded,
-            onExpandedChange = {isExpanded = !isExpanded}
+            onExpandedChange = {
+                isExpanded = !isExpanded
+            }
         ){
             TextField(
                 value = selectedCenter?.name ?: "반을 선택해주세요.",
@@ -1095,51 +1166,54 @@ fun CenterSelector(
             }
         }
     }
-    Spacer(modifier = Modifier.height(16.dp))
+    if (containSelectButton){
+        Spacer(modifier = Modifier.height(16.dp))
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Button(
-            onClick = { onDismiss() },
+        Row(
             modifier = Modifier
-                .height(50.dp)
-                .weight(1f),
-            shape = RoundedCornerShape(5.dp),
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "취소")
-        }
+            Button(
+                onClick = { onDismiss() },
+                modifier = Modifier
+                    .height(50.dp)
+                    .weight(1f),
+                shape = RoundedCornerShape(5.dp),
+            ) {
+                Text(text = "취소")
+            }
 
-        Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
-        Button(modifier = Modifier
-            .weight(1f)
-            .height(50.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF0047B3)
-            ),
-            onClick = {
-                selectedCenter?.let {selectedCenter ->
-                    centerSelectViewModel.setSelectedCenter(selectedCenter)
-                }
+            Button(modifier = Modifier
+                .weight(1f)
+                .height(50.dp),
+                shape = RoundedCornerShape(5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF0047B3)
+                ),
+                onClick = {
+                    selectedCenter?.let {selectedCenter ->
+                        centerSelectViewModel.setSelectedCenter(selectedCenter)
+                    }
 //                onConfirm(chainText)
 //                                viewModel.selectedChildClass = selectedChildClass
-                childSelectViewModel.clearChildInfos()
-                childClassSelectViewModel.clearTempSelectedChildClass()
-                childSelectViewModel.clearTempSelectedChildInfo()
-                childSelectViewModel.clearSelectedChildInfo()
-                onDismiss()
+                    childSelectViewModel.clearChildInfos()
+                    childClassSelectViewModel.clearTempSelectedChildClass()
+                    childSelectViewModel.clearTempSelectedChildInfo()
+                    childSelectViewModel.clearSelectedChildInfo()
+                    onDismiss()
 
-            },
+                },
 
-            ) {
-            Text(text = "선택")
+                ) {
+                Text(text = "선택")
+            }
         }
     }
+
 }
 
 @Composable
@@ -1191,7 +1265,7 @@ fun CenterControl(
                 onClick = {
                     if (selectedCenter == item) {
                         centerSelectViewModel.clearTempSelectedCenter()
-                        childClassSelectViewModel.clearChildClasses()
+                        childClassSelectViewModel.clearAllChildClasses()
                     } else {
                         centerSelectViewModel.setTempSelectedCenter(item)
 //                        childClassSelectViewModel.getChildClassesByCenter(item)

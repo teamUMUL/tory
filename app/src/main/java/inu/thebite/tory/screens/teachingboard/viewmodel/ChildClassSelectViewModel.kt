@@ -3,7 +3,6 @@ package inu.thebite.tory.screens.teachingboard.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.repositories.ChildClass.ChildClassRepoImpl
@@ -56,8 +55,8 @@ class ChildClassSelectViewModel : ViewModel() {
         _tempSelectedChildClass.value = null
     }
 
-    fun clearChildClasses(){
-//        _childClasses.value = null
+    fun clearAllChildClasses(){
+        _allChildClasses.update { null }
     }
     init {
 //        setSelectedChildClass(

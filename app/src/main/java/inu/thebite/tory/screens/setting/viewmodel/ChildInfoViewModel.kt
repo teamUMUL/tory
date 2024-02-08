@@ -36,11 +36,11 @@ class ChildInfoViewModel : ViewModel(){
     }
 
     fun clearSelectedChildInfo() {
-        _selectedChildInfo.value = null
+        _selectedChildInfo.update { null }
     }
 
-    fun clearChildInfos(){
-        _allChildInfos.value = null
+    fun clearAllChildInfos(){
+        _allChildInfos.update { null }
     }
 
     fun clearAll(){

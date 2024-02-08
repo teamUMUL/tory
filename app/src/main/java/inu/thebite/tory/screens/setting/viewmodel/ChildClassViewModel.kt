@@ -35,11 +35,11 @@ class ChildClassViewModel : ViewModel() {
     }
 
     fun clearSelectedChildClass() {
-        _selectedChildClass.value = null
+        _selectedChildClass.update { null }
     }
 
-    fun clearChildClasses(){
-        _childClasses.value = null
+    fun clearAllChildClasses(){
+        _allChildClasses.update { null }
     }
 
     fun clearAll(){

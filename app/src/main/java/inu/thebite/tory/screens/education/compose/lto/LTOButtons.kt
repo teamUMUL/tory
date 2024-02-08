@@ -82,8 +82,6 @@ fun LTOButtons(
                 }
             }
         }
-
-
     }
 
     Row(
@@ -93,8 +91,23 @@ fun LTOButtons(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(end = 20.dp)
         ) {
+            IconButton(
+                onClick = {
+                    ltoViewModel.getLTOGraph(context = context,selectedLTO = selectedLTO)
+                    setIsLTOGraphOn(true)
+                },
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_lto_graph),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(0.6f),
+                    tint = Color.Unspecified
+                )
+            }
             val buttonList = listOf(
                 "완료",
                 "진행중",
@@ -157,18 +170,6 @@ fun LTOButtons(
                 }
             }
         }
-        IconButton(
-            onClick = {
-                ltoViewModel.getLTOGraph(context = context,selectedLTO = selectedLTO)
-                setIsLTOGraphOn(true)
-            },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_lto_graph),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(0.6f),
-            )
 
-        }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -148,34 +150,37 @@ fun SelectedSTORow(
                     verticalArrangement = Arrangement.Center,
 
                     ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = selectedSTO.name,
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                lineHeight = 22.sp,
-                                fontFamily = fontFamily_Lato,
-                                fontWeight = FontWeight(900),
-                                color = Color(0xFF1D1C1D),
+                    BoxWithConstraints {
+                        val nameWidth = maxWidth * 0.7f
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = selectedSTO.name,
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = fontFamily_Lato,
+                                    fontWeight = FontWeight(900),
+                                    color = Color(0xFF1D1C1D),
                                 ),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 2
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = selectedSTO.registerDate,
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                lineHeight = 17.sp,
-                                fontFamily = fontFamily_Lato,
-                                fontWeight = FontWeight(400),
-                                color = Color(0xFF616061),
-
-                                )
-                        )
-
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                modifier = Modifier
+                                    .widthIn(max = nameWidth)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = selectedSTO.registerDate,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    lineHeight = 17.sp,
+                                    fontFamily = fontFamily_Lato,
+                                    fontWeight = FontWeight(400),
+                                    color = Color(0xFF616061),
+                                ),
+                            )
+                        }
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -203,7 +208,7 @@ fun SelectedSTORow(
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxHeight()
-                    .padding(horizontal = 10.dp),
+                    .padding(horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
@@ -221,12 +226,16 @@ fun SelectedSTORow(
                         } ?: todoViewModel.addTodoList(studentId = selectedChild.id, todoListRequest = TodoListRequest(stoId = selectedSTO.id))
                     }
                 ) {
+                    var tint = Color(0xFF8E8E8E)
+                    todoList?.let {
+                        if (todoList.stoList.any{it == selectedSTO.id}){
+                            tint = Color.Unspecified
+                        }
+                    }
                     Icon(
                         painter = painterResource(id = R.drawable.icon_todo),
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(20.dp),
-                        tint = Color.Unspecified
+                        tint = tint
                     )
                 }
             }

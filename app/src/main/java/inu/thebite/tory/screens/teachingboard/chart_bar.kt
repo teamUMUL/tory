@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -79,7 +80,7 @@ fun chart_bar(
             Row(
                 modifier = Modifier
                     .background(
-                        gradient,
+                        Color(0xFFE0E9F5),
                         RoundedCornerShape(
                             topEnd = 0.dp,
                             topStart = 0.dp,
@@ -96,8 +97,8 @@ fun chart_bar(
                         fontSize = 24.sp,
                         lineHeight = 24.sp,
                         fontFamily = fontFamily_Inter,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFFFFFFFF),
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF0047B3),
                         letterSpacing = 0.24.sp,
                     ),
                     modifier = Modifier
