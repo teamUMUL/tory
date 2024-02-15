@@ -164,11 +164,15 @@ fun chart_bar(
 
         allDEVs?.let { allDEVs ->
             val xAxisLabelList = mutableListOf("1. 학습준비", "2. 매칭", "3. 동작모방", "4. 언어모방", "5. 변별", "6. 지시 따르기", "7. 요구하기", "8. 명명하기", "9. 인트라버벌", "10. 사회성")
-            DashBoardDEVGraph(
-                beforeList = listOf(10f, 5f, 3f, 7f, 2f, 1f, 3f, 6f, 3f, 2f),
-                afterList = listOf(10f, 6f, 5f, 7f, 5f, 2f, 5f, 9f, 6f, 5f),
-                xLabelList = xAxisLabelList.map { it.replace(".","").replace(" ", "") }
-            )
+            BoxWithConstraints {
+                val runUnitWidth = maxWidth / 10
+                DashBoardDEVGraph(
+                    beforeList = listOf(10f, 5f, 3f, 7f, 2f, 1f, 3f, 6f, 3f, 2f),
+                    afterList = listOf(10f, 6f, 5f, 7f, 5f, 2f, 5f, 9f, 6f, 5f),
+                    xLabelList = xAxisLabelList.map { it.replace(".","").replace(" ", "") },
+                    runUnitWidth = runUnitWidth
+                )
+            }
         }
 
 
@@ -181,7 +185,8 @@ fun chart_bar(
 fun DashBoardDEVGraph(
     beforeList: List<Float>,
     afterList: List<Float>,
-    xLabelList: List<String>
+    xLabelList: List<String>,
+    runUnitWidth: Dp,
 ){
     if(beforeList.isNotEmpty()){
         val limitFloat = (beforeList+afterList).max()
@@ -223,7 +228,7 @@ fun DashBoardDEVGraph(
         val xAxisLabelList = xLabelList
         val xAxisData = AxisData.Builder()
             .shouldDrawAxisLineTillEnd(false)
-            .axisStepSize(100.dp)
+            .axisStepSize(runUnitWidth)
             .steps(beforeData.size - 1)
             .labelData { i -> "                  "+xAxisLabelList[i]
             }
@@ -263,7 +268,7 @@ fun DashBoardDEVGraph(
                         ),
                         IntersectionPoint(
                             color = Color(0xFF34C648),
-                            radius = 5.dp
+                            radius = 10.dp
                         ),
 //                        selectionHighlightPopUp = SelectionHighlightPopUp(
 //                            popUpLabel = {plusX ,plusY ->

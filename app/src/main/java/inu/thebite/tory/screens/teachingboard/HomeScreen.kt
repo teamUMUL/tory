@@ -27,7 +27,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -45,12 +48,15 @@ import inu.thebite.tory.R
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.teachingboard.dialog.RecentListDialog
 import inu.thebite.tory.screens.teachingboard.recentlto.RecentLTOScreen
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Montserrat
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -65,7 +71,15 @@ fun HomeScreen(
     navigateToEducation: () -> Unit,
     navigateToNotice: () -> Unit,
 ) {
+    val (recentListDialog, setRecentListDialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
 
+    if (recentListDialog){
+        RecentListDialog(
+            setRecentListDialog = {setRecentListDialog(it)}
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -83,15 +97,16 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Teaching Board",
+                    text = "티칭 보드",
                     modifier = Modifier
                         .weight(1f)
-                        .padding(start = 16.dp),
+                        .padding(start = 30.dp),
                     style = TextStyle(
                         fontSize = 33.sp,
-                        fontWeight = FontWeight(400),
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(600),
                         color = Color(0xFF000000),
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                     )
                 )
                 Row(
@@ -153,12 +168,12 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
 //                    .height(112.dp)
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 10.dp),
 
                 ) {
                 Button(
                     onClick = {
-
+                        setRecentListDialog(true)
                     },
                     modifier = Modifier
                         .weight(5f),
@@ -235,21 +250,20 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .weight(8f)
+                .padding(start = 16.dp, bottom = 16.dp, end = 16.dp, top = 16.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp)
             ) {
                 childInfor(
                     modifier = Modifier.weight(1f),
                     childSelectViewModel = childSelectViewModel
                 )
-
+                Spacer(modifier = Modifier.width(10.dp))
                 Row(
                     modifier = modifier
                         .fillMaxHeight()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 4.dp)
                         .weight(3f)
                         .background(
                             color = Color(0xFFFFFFFF),
@@ -261,25 +275,10 @@ fun HomeScreen(
                         devViewModel = devViewModel,
                         ltoViewModel = ltoViewModel
                     )
-//                    pieChartPreview()
-
-
                 }
 
             }
         }
-        Column(modifier = Modifier.weight(1f)) {
-            reportList()
-        }
-//            Row (modifier = Modifier
-//                .padding(16.dp),
-//                horizontalArrangement = Arrangement.Center){
-//                childInfor()
-//                editProgram()
-//                reportList()
-//
-//            }
-
     }
 
 }
@@ -293,6 +292,7 @@ fun HorizonPager(
 
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
+    val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -302,8 +302,9 @@ fun HorizonPager(
         HorizontalPager(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(9.5f),
-            state = pagerState
+                .weight(8.5f),
+            state = pagerState,
+            userScrollEnabled = false,
         ) { index ->
             when (index) {
                 0 -> {
@@ -319,28 +320,93 @@ fun HorizonPager(
 
                 else -> {}
             }
-
         }
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.5f),
-            horizontalArrangement = Arrangement.Center
+                .weight(1.5f)
         ) {
-            repeat(2) { index ->
-                val color =
-                    if (pagerState.currentPage == index) Color(0xFF7F5AF0) else Color(0xFF7F5AF0).copy(
-                        0.5f
-                    )
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .background(color, CircleShape)
-                        .size(10.dp)
-                )
-            }
+            TeachingBoardButton(
+                modifier = Modifier
+                    .weight(1f),
+                currentPage = pagerState.currentPage,
+                moveToPage = 0,
+                contentText = "영역별 발달지표",
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(0)
+                    }
+                }
+            )
+            TeachingBoardButton(
+                modifier = Modifier
+                    .weight(1f),
+                currentPage = pagerState.currentPage,
+                moveToPage = 1,
+                contentText = "LTO 그래프",
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(1)
+                    }
+                }
+            )
+            TeachingBoardButton(
+                modifier = Modifier
+                    .weight(1f),
+                currentPage = pagerState.currentPage,
+                moveToPage = 2,
+                contentText = "런유닛 그래프",
+                onClick = {
+//                    coroutineScope.launch {
+//                        pagerState.animateScrollToPage(3)
+//                    }
+                }
+            )
+            TeachingBoardButton(
+                modifier = Modifier
+                    .weight(1f),
+                currentPage = pagerState.currentPage,
+                moveToPage = 3,
+                contentText = "크리테리아 그래프",
+                onClick = {
+//                    coroutineScope.launch {
+//                        pagerState.animateScrollToPage(3)
+//                    }
+                }
+            )
         }
     }
 }
 
+@Composable
+fun TeachingBoardButton(
+    modifier: Modifier = Modifier,
+    currentPage: Int,
+    moveToPage: Int,
+    contentText: String,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = {
+            onClick()
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (currentPage == moveToPage) Color(0xFFE0E9F5) else Color.White,
+            contentColor = Color(0xFF0047B3)
+        ),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(2.dp, Color(0xFF0047B3)),
+        modifier = modifier
+            .height(70.dp)
+            .padding(top = 0.dp, start = 10.dp, bottom = 10.dp, end = 10.dp)
+    ) {
+        Text(
+            text = contentText,
+            style = TextStyle(
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = fontFamily_Inter,
+                fontSize = 20.sp
+            )
+        )
+    }
+}
 

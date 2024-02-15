@@ -13,6 +13,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -180,6 +181,56 @@ fun NoticeDateColumn(
                     .padding(start = 15.dp, top = 9.dp, bottom = 9.dp)
             )
         }
+
+        item {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(35.dp)
+                    .clickable {
+
+                    }
+                    .background(
+                        Color.Transparent
+                    ),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start
+            ) {
+                Row{
+                    selectedYear?.let { selectedYear ->
+                        selectedMonth?.let { selectedMonth ->
+                            Text(
+                                text = "#",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = fontFamily_Lato,
+                                    fontWeight = FontWeight(400),
+                                    color = Color.Black,
+                                ),
+                                modifier = Modifier
+                                    .padding(start = 20.dp, end = 0.dp, top = 4.dp, bottom = 4.dp)
+                            )
+                            Text(
+                                text = "${selectedYear ?: ""}/ ${selectedMonth ?: ""}월 보고서",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    lineHeight = 22.sp,
+                                    fontFamily = fontFamily_Lato,
+                                    fontWeight = FontWeight(400),
+                                    color = Color.Black,
+                                ),
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp, horizontal = 10.dp)
+                            )
+                        }
+                    }
+
+                }
+                Divider(thickness = 1.dp, color = Color(0xFFD3D3D3))
+            }
+        }
         selectedNoticeDates?.let { selectedNoticeDates ->
             items(selectedNoticeDates) { date ->
                 Row(
@@ -220,27 +271,27 @@ fun NoticeDateColumn(
                         )
                     }
 
-                    if (selectedNoticeDate == date) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_export),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(end = 20.dp)
-                                .clickableWithNoRipple {
-                                    selectedChild?.let {selectedChild ->
-                                        noticeViewModel.createSharePdf(
-                                            studentId = selectedChild.id,
-                                            year = selectedNoticeDate.year,
-                                            month = selectedNoticeDate.month.toString(),
-                                            date = selectedNoticeDate.date
-                                        )
-                                    }
-                                    setNoticePdfDialog(true)
-                                }
-                        )
-                    }
+//                    if (selectedNoticeDate == date) {
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.icon_export),
+//                            contentDescription = null,
+//                            tint = Color.White,
+//                            modifier = Modifier
+//                                .size(40.dp)
+//                                .padding(end = 20.dp)
+//                                .clickableWithNoRipple {
+//                                    selectedChild?.let {selectedChild ->
+//                                        noticeViewModel.createSharePdf(
+//                                            studentId = selectedChild.id,
+//                                            year = selectedNoticeDate.year,
+//                                            month = selectedNoticeDate.month.toString(),
+//                                            date = selectedNoticeDate.date
+//                                        )
+//                                    }
+//                                    setNoticePdfDialog(true)
+//                                }
+//                        )
+//                    }
                 }
             }
         }

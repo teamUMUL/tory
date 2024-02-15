@@ -16,11 +16,16 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.auth.AuthViewModel
 import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.screens.auth.TokenExpirationEvent
 import inu.thebite.tory.screens.auth.TokenManager
+import inu.thebite.tory.screens.auth.find.FindIdScreen
+import inu.thebite.tory.screens.auth.find.FindPasswordScreen
 import inu.thebite.tory.screens.auth.login.LoginScreen
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
@@ -57,6 +62,8 @@ class MainActivity : ComponentActivity() {
                 if (token != null){
                     authViewModel.verifyToken(context = context)
                 }
+
+
 
                 CompositionLocalProvider(LoginState provides authViewModel){
                     ApplicationSwitcher(tokenManager = tokenManager)
@@ -124,7 +131,12 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
             gameViewModel.clearAll()
             noticeViewModel.resetAll()
             todoViewModel.clearAll()
-            LoginScreen()
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "loginScreen") {
+                composable("loginScreen") { LoginScreen(navController) }
+                composable("findId") { FindIdScreen(navController) }
+                composable("findPassword") { FindPasswordScreen(navController) }
+            }
         }
     }
 

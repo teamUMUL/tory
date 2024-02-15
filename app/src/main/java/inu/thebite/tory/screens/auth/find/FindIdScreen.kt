@@ -1,6 +1,5 @@
-package inu.thebite.tory.screens.auth.login
+package inu.thebite.tory.screens.auth.find
 
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,29 +37,27 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.auth.LoginState
+import inu.thebite.tory.screens.auth.common.LabeledTextFieldFindId
 import inu.thebite.tory.screens.auth.common.LabeledTextFieldLogin
-import inu.thebite.tory.ui.theme.ToryTheme
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(
-    navController: NavController
-) {
+fun FindIdScreen(
+    navController : NavController
+){
     val context = LocalContext.current
     val authViewModel = LoginState.current
     val isLoading by authViewModel.isLoading.collectAsState()
-    val userid = remember { mutableStateOf(TextFieldValue()) }
-    val password = remember { mutableStateOf(TextFieldValue()) }
+    val userName = remember { mutableStateOf(TextFieldValue()) }
+    val userEmail = remember { mutableStateOf(TextFieldValue()) }
+    val userPhoneNumber = remember { mutableStateOf(TextFieldValue()) }
     val coroutineScope = rememberCoroutineScope()
     val brush = Brush.horizontalGradient(listOf(Color(0xFF0047B3), Color(0xff7E5DE3)))
 
@@ -101,9 +97,10 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(20.dp))
                     Column(modifier= Modifier) {
 
-                        LabeledTextFieldLogin(
-                            userid = userid,
-                            password = password
+                        LabeledTextFieldFindId(
+                            userName = userName,
+                            userEmail = userEmail,
+                            userPhoneNumber = userPhoneNumber
                         )
 
                     }
@@ -113,7 +110,6 @@ fun LoginScreen(
                         CircularProgressIndicator(modifier = Modifier.size(50.dp))
                     } else {
                         Button(modifier= Modifier
-
                             .width(320.dp)
                             .height(60.dp)
                             .background(
@@ -121,17 +117,17 @@ fun LoginScreen(
                                 shape = RoundedCornerShape(size = 10.dp)
                             ), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
                             onClick = {
-                                if (userid.value.text.trim() == "" || password.value.text.trim() == ""){
-                                    Toasty.warning(context, "아이디와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                if (userName.value.text.trim() == "" || userEmail.value.text.trim() == "" || userPhoneNumber.value.text.trim() == ""){
+                                    Toasty.warning(context, "이름, 이메일, 휴대전화 번호를 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                 } else {
                                     coroutineScope.launch {
-                                        authViewModel.login(context = context,id = userid.value.text.trim(), password = password.value.text.trim())
+//                                        authViewModel.login(context = context,id = userid.value.text.trim(), password = password.value.text.trim())
                                     }
                                 }
                             }
                         ) {
                             Text(
-                                text = "로그인",
+                                text = "아이디 찾기",
                                 style = TextStyle(
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight(500),
@@ -148,9 +144,9 @@ fun LoginScreen(
                         horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
                         ClickableText(
-                            text = AnnotatedString("ID 찾기"),
+                            text = AnnotatedString("로그인"),
                             onClick = {
-                                navController.navigate("findId")
+                                navController.navigate("loginScreen")
                             },
                             style = TextStyle(
                                 fontFamily = fontFamily_Poppins,
@@ -181,13 +177,5 @@ fun LoginScreen(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true, heightDp = 720, widthDp = 1080)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun LoginPreview(){
-    ToryTheme {
     }
 }

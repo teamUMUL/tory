@@ -105,7 +105,7 @@ fun LTOButtons(
                     painter = painterResource(id = R.drawable.icon_lto_graph),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(0.6f),
-                    tint = Color.Unspecified
+                    tint = Color(0xFF8E8E8E)
                 )
             }
             val buttonList = listOf(

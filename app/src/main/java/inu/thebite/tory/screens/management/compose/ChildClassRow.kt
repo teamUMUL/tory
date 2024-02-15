@@ -103,7 +103,6 @@ fun ChildClassRow(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
             text = "Class",

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -25,53 +26,20 @@ fun RecentLTOTopBar(
     modifier: Modifier = Modifier,
     ltoName: String
 ){
-    val gradient = Brush.linearGradient(
+    val gradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF7F5AF0))
     )
 
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .height(50.dp)
+            .padding(start = 20.dp, end = 30.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier
-                .weight(2.5f),
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(start = 20.dp)
-                    .background(
-                        gradient,
-                        RoundedCornerShape(
-                            topEnd = 0.dp,
-                            topStart = 0.dp,
-                            bottomEnd = 8.dp,
-                            bottomStart = 8.dp
-                        )
-                    ),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "최근 LTO",
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        lineHeight = 24.sp,
-                        fontFamily = fontFamily_Inter,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFFFFFFFF),
-                        letterSpacing = 0.24.sp,
-                    )
-                )
-            }
-        }
-        Row(
-            modifier = Modifier
-                .weight(7.5f)
                 .fillMaxHeight(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
@@ -84,11 +52,39 @@ fun RecentLTOTopBar(
                     lineHeight = 24.sp,
                     fontFamily = fontFamily_Inter,
                     fontWeight = FontWeight(600),
-                    color = Color(0xFF0047B3),
+                    brush = gradient,
                     letterSpacing = 0.24.sp,
                 )
             )
 
+        }
+        Row(
+            modifier = Modifier
+                .background(
+                    gradient,
+                    RoundedCornerShape(
+                        topEnd = 0.dp,
+                        topStart = 0.dp,
+                        bottomEnd = 8.dp,
+                        bottomStart = 8.dp
+                    )
+                ),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "영역별 발달지표",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    lineHeight = 24.sp,
+                    fontFamily = fontFamily_Inter,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    letterSpacing = 0.24.sp,
+                ),
+                modifier = Modifier
+                    .padding(horizontal = 50.dp, vertical = 10.dp)
+            )
         }
 
     }

@@ -44,7 +44,8 @@ fun pieChartPreview(
     ) {
 
         Box(
-            modifier = Modifier
+            modifier = Modifier,
+            contentAlignment = Alignment.Center
         ) {
 
 

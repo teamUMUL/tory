@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -80,8 +81,7 @@ fun SelectedLTORow(
 
                         },
                         modifier = Modifier
-                            .wrapContentSize()
-                            .padding(vertical = 12.dp),
+                            .height(25.dp),
                         border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -104,8 +104,7 @@ fun SelectedLTORow(
 
                         },
                         modifier = Modifier
-                            .wrapContentSize()
-                            .padding(vertical = 12.dp),
+                            .height(25.dp),
                         border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(

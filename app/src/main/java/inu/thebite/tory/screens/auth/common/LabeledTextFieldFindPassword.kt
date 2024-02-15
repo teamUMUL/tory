@@ -9,13 +9,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -39,11 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LabeledTextFieldLogin(
-    userid : MutableState<TextFieldValue>,
-    password : MutableState<TextFieldValue>
+fun LabeledTextFieldFindPassword(
+    userName : MutableState<TextFieldValue>,
+    userEmail : MutableState<TextFieldValue>,
+    userPhoneNumber : MutableState<TextFieldValue>
 ){
 
     val passwordVisible = remember {
@@ -69,7 +67,7 @@ fun LabeledTextFieldLogin(
             TextField(
                 label = {
                     Text(
-                        text = "ID를 입력해주세요.",
+                        text = "이름을 입력해주세요",
                         style = TextStyle(
                             textAlign = TextAlign.Start,
                             fontSize = 16.sp,
@@ -81,8 +79,8 @@ fun LabeledTextFieldLogin(
                             .fillMaxWidth()
                     )
                 },
-                value = userid.value,
-                onValueChange = { userid.value = it },
+                value = userName.value,
+                onValueChange = { userName.value = it },
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
@@ -100,14 +98,14 @@ fun LabeledTextFieldLogin(
                         contentDescription = null,
                         modifier = Modifier
                             .clickableWithNoRipple {
-                                userid.value = TextFieldValue("")
+                                userName.value = TextFieldValue("")
                             }
                     )
                 }
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
-        //비밀번호
+        //이메일
         Column(
             modifier = Modifier
 
@@ -115,7 +113,7 @@ fun LabeledTextFieldLogin(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "비밀번호",
+                text = "이메일",
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight(500),
@@ -125,7 +123,7 @@ fun LabeledTextFieldLogin(
             TextField(
                 label = {
                     Text(
-                        text = "비밀번호를 입력해주세요",
+                        text = "이메일을 입력해주세요",
                         style = TextStyle(
                             textAlign = TextAlign.Start,
                             fontSize = 16.sp,
@@ -137,9 +135,9 @@ fun LabeledTextFieldLogin(
                             .fillMaxWidth()
                     )
                 },
-                value = password.value,
+                value = userEmail.value,
                 visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                onValueChange = { password.value = it },
+                onValueChange = { userEmail.value = it },
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
@@ -149,22 +147,77 @@ fun LabeledTextFieldLogin(
                 ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
+                    autoCorrect = true, keyboardType = KeyboardType.Email, imeAction = ImeAction.Done
                 ),
                 trailingIcon = {
-                    val image = if (passwordVisible.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    val description = if (passwordVisible.value) "Hide password" else "Show password"
-
-                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
-                        Icon(imageVector = image, contentDescription = description)
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.Clear,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickableWithNoRipple {
+                                userEmail.value = TextFieldValue("")
+                            }
+                    )
                 },
 
 
+                )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        //휴대전화
+        Column(
+            modifier = Modifier
+
+                .width(400.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "휴대전화",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(500),
+                    color = Color(0xFF7C838A),
+                )
+            )
+            TextField(
+                label = {
+                    Text(
+                        text = "휴대전화 번호를 입력해주세요",
+                        style = TextStyle(
+                            textAlign = TextAlign.Start,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight(400),
+                            color = Color(0x80000000),
+                        ),
+                        modifier = Modifier
+                            .padding(start = 10.dp, end = 10.dp)
+                            .fillMaxWidth()
+                    )
+                },
+                value = userPhoneNumber.value,
+                onValueChange = { userPhoneNumber.value = it },
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrect = true, keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done
+                ),
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.Clear,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickableWithNoRipple {
+                                userPhoneNumber.value = TextFieldValue("")
+                            }
+                    )
+                },
             )
         }
-
-
-
     }
 }

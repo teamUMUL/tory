@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,6 +50,7 @@ import inu.thebite.tory.screens.teachingboard.dialog.ClassDialog
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
+import inu.thebite.tory.ui.theme.fontFamily_Inter
 
 @Composable
 fun CenterDashboardScreen(
@@ -72,20 +74,21 @@ fun CenterDashboardScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = 20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
 
             ) {
                 Text(
-                    text = "Center Board",
+                    text = "센터 보드",
                     modifier = Modifier
                         .width(240.dp)
                         .weight(1f)
                         .height(40.dp)
-                        .padding(start = 16.dp),
+                        .padding(start = 30.dp),
                     style = TextStyle(
                         fontSize = 33.sp,
-                        fontWeight = FontWeight(400),
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(600),
                         color = Color(0xFF000000),
                         textAlign = TextAlign.Start,
                     )
@@ -94,24 +97,27 @@ fun CenterDashboardScreen(
 
                 Button(
                     onClick = { navigateToTeachingBoard() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7F5AF0)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
                     modifier = Modifier  //lto & sto button
-
                         .padding(end = 16.dp)
                         .shadow(
                             elevation = 4.dp,
                             spotColor = Color(0x40000000),
                             ambientColor = Color(0x40000000)
-                        )
-                        .background(
-                            color = Color(0xFF7F5AF0),
-                            shape = RoundedCornerShape(size = 10.dp)
-                        )
-
+                        ),
+                    shape = RoundedCornerShape(10.dp),
+                    contentPadding = PaddingValues(0.dp)
                 ) {
                     Text(
-                        text = "Teaching Board",
-                        style = TextStyle(color = Color(0xFFFFFFFF), background = Color(0xFF7F5AF0))
+                        text = "티칭 보드",
+                        style = TextStyle(
+                            color = Color(0xFFFFFFFF),
+                            fontFamily = fontFamily_Inter,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        modifier = Modifier
+                            .padding(horizontal = 30.dp, vertical = 10.dp)
                     )
                 }
             }

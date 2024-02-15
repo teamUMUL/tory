@@ -1,8 +1,12 @@
 package inu.thebite.tory.screens.education.screen
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.student.StudentResponse
@@ -104,7 +110,10 @@ fun NewEducationScreen(
     LaunchedEffect(selectedSTO) {
         selectedSTO?.let { stoViewModel.getPointList(selectedSTO = it) }
     }
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         Divider(thickness = 1.dp, color = Color.LightGray)
         Row(
             modifier = Modifier
@@ -122,11 +131,7 @@ fun NewEducationScreen(
                     stoViewModel = stoViewModel
                 )
             }
-            Divider(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp), color = Color.LightGray
-            )
+            VerticalDivider(color = Color.LightGray)
             Column(
                 modifier = Modifier
                     .weight(1.6f)
@@ -156,11 +161,7 @@ fun NewEducationScreen(
                     }
                 } ?: LTOAndSTONull(modifier = Modifier.weight(9.5f))
             }
-            Divider(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp), color = Color.LightGray
-            )
+            VerticalDivider()
             Column(
                 modifier = Modifier
                     .weight(8f)
@@ -225,5 +226,20 @@ fun Modifier.clickableWithNoRipple(onClick: () -> Unit): Modifier {
         interactionSource = MutableInteractionSource(),
         indication = null,
         onClick = onClick
+    )
+}
+
+
+@Composable
+fun VerticalDivider(
+    modifier: Modifier = Modifier,
+    color: Color = Color.LightGray,
+    thickness: Dp = 1.dp
+) {
+    Box(
+        modifier
+            .fillMaxHeight()
+            .width(thickness)
+            .background(color = color)
     )
 }

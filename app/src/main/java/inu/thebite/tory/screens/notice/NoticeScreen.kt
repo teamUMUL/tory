@@ -1,12 +1,19 @@
 package inu.thebite.tory.screens.notice
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,9 +26,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import inu.thebite.tory.R
 import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.screens.education.screen.VerticalDivider
+import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.notice.components.NoticeDateColumn
@@ -37,9 +48,6 @@ fun NoticeScreen(
     selectedChild: StudentResponse?,
     childSelectViewModel: ChildSelectViewModel
 ) {
-
-
-
 
 
     val selectedNoticeDates by noticeViewModel.selectedNoticeDates.collectAsState()
@@ -66,7 +74,7 @@ fun NoticeScreen(
 
     }
 
-    LaunchedEffect(selectedChild){
+    LaunchedEffect(selectedChild) {
 
         selectedChild?.let { selectedChild ->
             Log.d("clearAll", selectedChild.name.toString())
@@ -88,9 +96,9 @@ fun NoticeScreen(
     }
 
     LaunchedEffect(selectedMonth) {
-        selectedYear?.let {selectedYear ->
+        selectedYear?.let { selectedYear ->
             selectedMonth?.let { selectedMonth ->
-                selectedChild?.let {selectedChild ->
+                selectedChild?.let { selectedChild ->
                     noticeViewModel.getNoticeDateList(
                         studentId = selectedChild.id,
                         year = selectedYear,
@@ -103,7 +111,7 @@ fun NoticeScreen(
 
     LaunchedEffect(selectedNoticeDate) {
         selectedNoticeDate?.let { selectedNoticeDate ->
-            selectedChild?.let {selectedChild ->
+            selectedChild?.let { selectedChild ->
                 noticeViewModel.getNotice(
                     studentId = selectedChild.id,
                     year = selectedNoticeDate.year,
@@ -121,22 +129,68 @@ fun NoticeScreen(
         }
     }
 
-
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        Divider(thickness = 2.dp, color = Color.LightGray)
         Row(
             modifier = Modifier
-                .weight(2f)
-                .fillMaxHeight(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(Color.White)
         ) {
-            Log.d("NoticeYearAndMonthList", noticeYearList.toString())
-            Log.d("NoticeYearAndMonthList", noticeMonthList.toString())
+            Row(
+                modifier = Modifier
+                    .weight(0.5f)
+                    .fillMaxHeight()
+                    .background(
+                        color = Color(0xFFFBFAF7),
+                    ),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_export),
+                        contentDescription = null,
+                        tint = Color(0xFF8E8E8E),
+                        modifier = Modifier
+                            .padding(top = 30.dp)
+                            .size(40.dp)
+                            .clickableWithNoRipple {
+//                        selectedChild?.let {selectedChild ->
+//                            noticeViewModel.createSharePdf(
+//                                studentId = selectedChild.id,
+//                                year = selectedNoticeDate.year,
+//                                month = selectedNoticeDate.month.toString(),
+//                                date = selectedNoticeDate.date
+//                            )
+//                        }
+//                        setNoticePdfDialog(true)
+                            }
+                    )
+                }
+            }
+            Divider(
+                modifier = Modifier
+                    .width(2.dp)
+                    .fillMaxHeight(),
+                color = Color.LightGray
+            )
+            Row(
+                modifier = Modifier
+                    .weight(2f)
+                    .fillMaxHeight(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Log.d("NoticeYearAndMonthList", noticeYearList.toString())
+                Log.d("NoticeYearAndMonthList", noticeMonthList.toString())
 
-            noticeYearList?.let { noticeYearList ->
+                noticeYearList?.let { noticeYearList ->
                     NoticeDateColumn(
                         noticeYearList = noticeYearList,
                         noticeMonthList = noticeMonthList,
@@ -153,41 +207,44 @@ fun NoticeScreen(
                         navController = navController,
                         selectedChild = selectedChild
                     )
-            } ?: Text(text = "데이터가 없습니다")
-
-        }
-        Divider(
-            modifier = Modifier
-                .width(1.dp)
-                .fillMaxHeight(), color = Color.LightGray
-        )
-        Row(
-            modifier = Modifier
-                .weight(8f)
-                .fillMaxHeight()
-        ) {
-            selectedNoticeDate?.let { selectedNoticeDate ->
-                if (selectedNoticeDate.date.isNotEmpty()) {
-                    selectedNoticeDetailList?.let { selectedNoticeDetailList ->
-                        selectedNotice?.let { selectedNotice ->
-                            selectedChild?.let {selectedChild ->
-                                NoticeInfoColumn(
-                                    selectedDate = selectedNoticeDate,
-                                    selectedNotice = selectedNotice,
-                                    selectedChild = selectedChild,
-                                    selectedNoticeDetailList = selectedNoticeDetailList,
-                                    noticeViewModel = noticeViewModel,
-                                    stoViewModel = stoViewModel,
-                                    ltoViewModel = ltoViewModel
-                                )
+                } ?: Text(text = "데이터가 없습니다")
+            }
+            Divider(
+                modifier = Modifier
+                    .width(2.dp)
+                    .fillMaxHeight(),
+                color = Color.LightGray
+            )
+            Row(
+                modifier = Modifier
+                    .weight(7.5f)
+                    .fillMaxHeight()
+                    .background(Color.White)
+            ) {
+                selectedNoticeDate?.let { selectedNoticeDate ->
+                    if (selectedNoticeDate.date.isNotEmpty()) {
+                        selectedNoticeDetailList?.let { selectedNoticeDetailList ->
+                            selectedNotice?.let { selectedNotice ->
+                                selectedChild?.let { selectedChild ->
+                                    NoticeInfoColumn(
+                                        selectedDate = selectedNoticeDate,
+                                        selectedNotice = selectedNotice,
+                                        selectedChild = selectedChild,
+                                        selectedNoticeDetailList = selectedNoticeDetailList,
+                                        noticeViewModel = noticeViewModel,
+                                        stoViewModel = stoViewModel,
+                                        ltoViewModel = ltoViewModel
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
 
+            }
         }
     }
+
 
 }
 

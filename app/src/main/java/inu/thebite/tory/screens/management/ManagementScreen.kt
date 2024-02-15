@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.screens.management.compose.CenterColumn
 import inu.thebite.tory.screens.management.compose.ChildClassRow
+import inu.thebite.tory.screens.management.compose.ChildInfoRow
 import inu.thebite.tory.screens.setting.dialog.AddChildInfoDialog
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
@@ -68,12 +69,7 @@ fun ManagementScreen(
     val selectedChildInfo by childInfoViewModel.selectedChildInfo.collectAsState()
     val allChildInfos by childInfoViewModel.allChildInfos.collectAsState()
 
-    val (addChildInfoDialog, setAddChildInfoDialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
-    val (updateChildInfoDialog, setUpdateChildInfoDialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
+
 
     LaunchedEffect(Unit) {
         centerViewModel.getAllCenters()
@@ -105,56 +101,6 @@ fun ManagementScreen(
 
 
 
-    if (addChildInfoDialog) {
-        AddChildInfoDialog(
-            context = context,
-            childInfos = allChildInfos,
-            selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            setAddChildInfoDialog = { setAddChildInfoDialog(it) },
-            selectedChildInfo = selectedChildInfo,
-            isUpdate = false
-        )
-    }
-    if (updateChildInfoDialog) {
-        AddChildInfoDialog(
-            context = context,
-            childInfos = allChildInfos,
-            selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            setAddChildInfoDialog = { setUpdateChildInfoDialog(it) },
-            selectedChildInfo = selectedChildInfo,
-            isUpdate = true
-        )
-    }
-
-
-
-
-
-    val (deleteChilInfoDialog, setDeleteChildInfoDialog) = rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (deleteChilInfoDialog){
-        selectedChildInfo?.let { selectedChildInfo ->
-            AlertDialog(
-                title = {Text(text = "Student : ${selectedChildInfo.name} 삭제하시겠습니까?")},
-                onDismissRequest = {setDeleteChildInfoDialog(false)},
-                confirmButton = { TextButton(onClick = {
-                    childInfoViewModel.deleteChildInfo(selectedChildInfo = selectedChildInfo)
-                    setDeleteChildInfoDialog(false)
-                }) {
-                    Text(text = "삭제")
-                }
-                },
-                dismissButton = { TextButton(onClick = { setDeleteChildInfoDialog(false) }) {
-                    Text(text = "닫기")
-                }
-                }
-            )
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -182,7 +128,7 @@ fun ManagementScreen(
                     .weight(1f)
                     .fillMaxHeight()
                     .background(Color.White)
-                    .padding(20.dp),
+                    .padding(10.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 ChildClassRow(
@@ -194,203 +140,17 @@ fun ManagementScreen(
                             color = Color(0xFF0047B3),
                             shape = RoundedCornerShape(10.dp)
                         )
-                        .padding(40.dp),
+                        .padding(10.dp),
                     centerViewModel = centerViewModel,
                     childClassViewModel = childClassViewModel
                 )
 
-                Column(
+                ChildInfoRow(
                     modifier = Modifier
-                        .weight(7f)
-                        .fillMaxWidth()
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xFF0047B3),
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(40.dp)
-                ) {
-                    Text(
-                        text = "Children",
-                        style = TextStyle(
-                            fontSize = 33.sp,
-                            fontFamily = fontFamily_Inter,
-                            fontWeight = FontWeight(500),
-                            color = Color.Black
-                        ),
-                        modifier = Modifier.weight(1.5f)
-                    )
-                    Column(
-                        modifier = Modifier
-                            .weight(7f)
-                            .fillMaxWidth()
-                    ) {
-                        allChildInfos?.let { allChildInfos ->
-                            val itemsPerRow = 9
-                            val childInfoRows = allChildInfos.size / itemsPerRow
-                            val remainItems = allChildInfos.size % itemsPerRow
-                            BoxWithConstraints {
-                                val childNameWidth = maxWidth / 10
-
-                                LazyColumn(
-                                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                                ){
-                                    repeat(childInfoRows){ rowIndex ->
-                                        item {
-                                            LazyRow(
-                                                userScrollEnabled = false,
-                                                horizontalArrangement = Arrangement.spacedBy(30.dp)
-                                            ){
-                                                items(itemsPerRow){ itemIndex ->
-                                                    val index = rowIndex * itemsPerRow + itemIndex
-                                                    val childInfo = allChildInfos[index]
-                                                    Button(
-                                                        onClick = {
-                                                            childInfoViewModel.setSelectedChildInfo(childInfoEntity = childInfo)
-                                                        },
-                                                        colors = ButtonDefaults.buttonColors(
-                                                            containerColor = if (selectedChildInfo == childInfo) Color(0xFFE0E9F5) else Color.White,
-                                                            contentColor = Color.Black
-                                                        ),
-                                                        border = BorderStroke(width = 0.5.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
-                                                        shape = RoundedCornerShape(20.dp),
-                                                        modifier = Modifier
-                                                            .widthIn(max = childNameWidth)
-                                                    ) {
-                                                        Text(
-                                                            text = childInfo.name,
-                                                            style = TextStyle(
-                                                                fontSize = 20.sp,
-                                                                fontWeight = FontWeight.Medium,
-                                                                fontFamily = fontFamily_Inter,
-                                                                color = Color.Black
-                                                            ),
-                                                            maxLines = 1,
-                                                            overflow = TextOverflow.Ellipsis
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (remainItems > 0) {
-                                        item {
-                                            LazyRow(
-                                                userScrollEnabled = false,
-                                                horizontalArrangement = Arrangement.spacedBy(30.dp)
-                                            ){
-                                                items(remainItems){itemIndex ->
-                                                    val index = childInfoRows * itemsPerRow + itemIndex
-                                                    val childInfo = allChildInfos[index]
-                                                    Button(
-                                                        onClick = {
-                                                            childInfoViewModel.setSelectedChildInfo(childInfoEntity = childInfo)
-                                                        },
-                                                        colors = ButtonDefaults.buttonColors(
-                                                            containerColor = if (selectedChildInfo == childInfo) Color(0xFFE0E9F5) else Color.White,
-                                                            contentColor = Color.Black
-                                                        ),
-                                                        border = BorderStroke(width = 0.5.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
-                                                        shape = RoundedCornerShape(20.dp)
-                                                    ) {
-                                                        Text(
-                                                            text = childInfo.name,
-                                                            style = TextStyle(
-                                                                fontSize = 20.sp,
-                                                                fontWeight = FontWeight.Medium,
-                                                                fontFamily = fontFamily_Inter,
-                                                                color = Color.Black
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1.5f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(100.dp)
-                    ) {
-                        if (selectedChildClass.isNotNull()){
-                            Button(
-                                onClick = {
-                                    setAddChildInfoDialog(true)
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF0047B3),
-                                    contentColor = Color.White
-                                ),
-                                modifier = Modifier
-                                    .weight(1f),
-                                shape = RoundedCornerShape(10.dp)
-                            ) {
-                                Text(
-                                    text = "추가",
-                                    style = TextStyle(
-                                        fontFamily = fontFamily_Inter,
-                                        fontSize = 26.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color.White
-                                    )
-                                )
-                            }
-                        }
-                        if (selectedChildInfo.isNotNull()){
-                            Button(
-                                onClick = {
-                                    setUpdateChildInfoDialog(true)
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF0047B3),
-                                    contentColor = Color.White
-                                ),
-                                modifier = Modifier
-                                    .weight(1f),
-                                shape = RoundedCornerShape(10.dp)
-                            ) {
-                                Text(
-                                    text = "수정",
-                                    style = TextStyle(
-                                        fontFamily = fontFamily_Inter,
-                                        fontSize = 26.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color.White
-                                    )
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    setDeleteChildInfoDialog(true)
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFFBFBFBF),
-                                    contentColor = Color.White
-                                ),
-                                modifier = Modifier
-                                    .weight(1f),
-                                shape = RoundedCornerShape(10.dp)
-                            ) {
-                                Text(
-                                    text = "삭제",
-                                    style = TextStyle(
-                                        fontFamily = fontFamily_Inter,
-                                        fontSize = 26.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color.White
-                                    )
-                                )
-                            }
-                        }
-                    }
-
-                }
+                        .weight(7f),
+                    childClassViewModel = childClassViewModel,
+                    childInfoViewModel = childInfoViewModel
+                )
             }
 
         }

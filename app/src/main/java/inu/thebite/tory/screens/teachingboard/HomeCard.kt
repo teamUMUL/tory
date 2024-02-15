@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import es.dmoral.toasty.Toasty
@@ -83,7 +84,7 @@ fun ChainCard(
 
         Row(
             modifier = Modifier
-                .padding(12.dp),
+                .padding(horizontal = 10.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -115,7 +116,9 @@ fun ChainCard(
                         color = Color(0xFF0047B3),
                         letterSpacing = 0.28.sp,
                         textAlign = TextAlign.Center
-                    )
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
@@ -167,7 +170,7 @@ fun ClassCard(
 
         Row(
             modifier = Modifier
-                .padding(12.dp),
+                .padding(horizontal = 10.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -200,7 +203,9 @@ fun ClassCard(
                         color = Color(0xFF7F5AF0),
                         letterSpacing = 0.28.sp,
                         textAlign = TextAlign.Center
-                    )
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -264,7 +269,7 @@ fun ChildrenCard(
 
         Row(
             modifier = Modifier
-                .padding(12.dp),
+                .padding(horizontal = 10.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -297,7 +302,9 @@ fun ChildrenCard(
                         color = Color(0xFF34C648),
                         letterSpacing = 0.28.sp,
                         textAlign = TextAlign.Center
-                    )
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 

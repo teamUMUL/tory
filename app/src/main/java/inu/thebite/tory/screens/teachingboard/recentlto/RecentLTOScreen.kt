@@ -18,7 +18,7 @@ fun RecentLTOScreen(
             .fillMaxSize(),
     ) {
         RecentLTOTopBar(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier,
             ltoName = "같은 사진 매칭"
         )
         val dummyList = listOf(
@@ -29,7 +29,7 @@ fun RecentLTOScreen(
 
         )
         STOsInRecentLTO(
-            modifier = Modifier.weight(9f),
+            modifier = Modifier.weight(1f),
             dummyList = dummyList
         )
     }

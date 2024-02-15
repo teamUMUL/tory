@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -84,7 +85,7 @@ fun SelectedSTODetailsTable(
             modifier = modifier
                 .padding(vertical = 10.dp, horizontal = 20.dp)
                 .fillMaxWidth()
-                .weight(4.5f)
+                .weight(4f)
 //                .border(width = 2.dp, color = Color(0x4D000000), shape = RectangleShape)
         ) {
             LazyColumn(
@@ -129,7 +130,7 @@ fun SelectedSTODetailsTable(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp, horizontal = 20.dp)
-                .weight(5.5f)
+                .weight(6f)
         ) {
             val accidentStates = listOf(
                 "고함", "장난", "폭력", "회피", "자해", "말 끊기", "물건 던지기", "반복 행동", "무발언", "반복 발언", "거부"
@@ -239,7 +240,7 @@ fun RowScope.TableCell(
         ),
         modifier = Modifier
             .weight(weight)
-            .padding(horizontal = 8.dp, vertical = if (isBigger) 30.dp else 15.dp),
+            .padding(horizontal = 8.dp, vertical = if (isBigger) 15.dp else 5.dp),
 
         )
 
@@ -263,7 +264,7 @@ fun RowScope.TableCellWithLeftLine(
         ),
         modifier = Modifier
             .weight(weight)
-            .padding(horizontal = 8.dp, vertical = if (isBigger) 30.dp else 15.dp)
+            .padding(horizontal = 8.dp, vertical = if (isBigger) 15.dp else 5.dp)
             .drawBehind {
                 val strokeWidth = 3f
                 val x = size.width - strokeWidth
@@ -296,8 +297,8 @@ fun STOStateButtonsLazyHorizontalGrid(
 
                 },
                 modifier = Modifier
-                    .wrapContentSize()
-                    .padding(10.dp),
+                    .height(30.dp)
+                    .padding(bottom = 2.dp, end = 5.dp, top = 2.dp),
                 border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(

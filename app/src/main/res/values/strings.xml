@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">PROM</string>
-    <string name="centerDashboard">Center Board</string>
-    <string name="teachingBoard">Teaching Board</string>
-    <string name="setting">Management</string>
-    <string name="ready">Ready</string>
-    <string name="notice">Notice</string>
-    <string name="education">Education</string>
+    <string name="centerDashboard">센터 보드</string>
+    <string name="teachingBoard">티칭 보드</string>
+    <string name="setting">관리</string>
+    <string name="ready">준비</string>
+    <string name="notice">보고서</string>
+    <string name="education">중재 노트</string>
 </resources>

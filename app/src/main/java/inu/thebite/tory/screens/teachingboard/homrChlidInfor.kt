@@ -71,7 +71,7 @@ fun childInfor(
                     Text(
                         text = "이름",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(400),
                             color = Color(0xFF0047B3)
                         )
@@ -79,7 +79,7 @@ fun childInfor(
                     Text(
                         text = selectedChildInfo?.name ?: "",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(600),
                             color = Color(0xFF000000),
 
@@ -88,7 +88,7 @@ fun childInfor(
                     Text(
                         text = "생년월일",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(400),
                             color = Color(0xFF0047B3),
 
@@ -97,7 +97,7 @@ fun childInfor(
                     Text(
                         text = selectedChildInfo?.birth ?: "",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(600),
                             color = Color(0xFF000000),
 
@@ -106,7 +106,7 @@ fun childInfor(
                     Text(
                         text = "프로그램 기간",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(400),
                             color = Color(0xFF0047B3),
                         )
@@ -114,7 +114,7 @@ fun childInfor(
                     Text(
                         text = "${selectedChildInfo?.startDate ?: ""}~${selectedChildInfo?.endDate ?: ""}",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(600),
                             color = Color(0xFF000000),
                         )
@@ -122,7 +122,7 @@ fun childInfor(
                     Text(
                         text = "특징",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(400),
                             color = Color(0xFF0047B3),
                         )
@@ -130,7 +130,7 @@ fun childInfor(
                     Text(
                         text = selectedChildInfo?.etc ?: "",
                         style = TextStyle(
-                            fontSize = 15.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight(600),
                             color = Color(0xFF000000),
                         )

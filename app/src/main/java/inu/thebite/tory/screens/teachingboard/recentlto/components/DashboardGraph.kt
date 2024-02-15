@@ -126,7 +126,7 @@ fun DashboardGraph(
                     Line(
                         dataPoints = pointsData1.toList(),
                         LineStyle(
-                            color = Color.Green,
+                            color = Color(0xFF34C648),
                             lineType = LineType.Straight(isDotted = false),
                             width = 6f
                         ),
@@ -143,7 +143,7 @@ fun DashboardGraph(
                     Line(
                         dataPoints = pointsData2.toList(),
                         LineStyle(
-                            color = Color.Red,
+                            color = Color(0xFFFC605C),
                             lineType = LineType.Straight(isDotted = true),
                             width = 6f
                         ),
