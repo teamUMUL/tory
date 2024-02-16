@@ -164,7 +164,7 @@ fun FindIdScreen(
                         ClickableText(
                             text = AnnotatedString("비밀번호 찾기"),
                             onClick = {
-                                navController.navigate("findPassword")
+                                navController.navigate("findPasswordScreen")
                             },
                             style = TextStyle(
                                 fontFamily = fontFamily_Poppins,

@@ -541,9 +541,7 @@ fun MainCompose(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                            selectedCenter?.let { Text(text = it.name) }
-                                            selectedChildClass?.let { Text(text = " > "+it.name) }
-                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = it.name) }
                                         }
                                         IconButton(onClick = {
                                             setChildDialogOpen(true)
@@ -559,9 +557,8 @@ fun MainCompose(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                            selectedCenter?.let { Text(text = it.name) }
-                                            selectedChildClass?.let { Text(text = " > "+it.name) }
-                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = it.name) }
+
                                         }
                                         IconButton(onClick = {
                                             setChildDialogOpen(true)
@@ -603,9 +600,7 @@ fun MainCompose(
                                                     modifier = Modifier.fillMaxHeight(),
                                                     verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    selectedCenter?.let { Text(text = it.name, color = Color.Black) }
-                                                    selectedChildClass?.let { Text(text = " > " + it.name, color = Color.Black) }
-                                                    selectedChildInfo?.let { Text(text = " > " + it.name, color = Color.Black) }
+                                                    selectedChildInfo?.let { Text(text = it.name) }
                                                 }
                                                 IconButton(onClick = {
                                                     setChildDialogOpen(true)
@@ -649,9 +644,7 @@ fun MainCompose(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                            selectedCenter?.let { Text(text = it.name, color = Color.Black) }
-                                            selectedChildClass?.let { Text(text = " > "+it.name, color = Color.Black) }
-                                            selectedChildInfo?.let { Text(text = " > "+it.name, color = Color.Black) }
+                                            selectedChildInfo?.let { Text(text = it.name, color = Color.Black) }
                                         }
                                         IconButton(onClick = {
                                             setChildDialogOpen(true)
@@ -667,9 +660,7 @@ fun MainCompose(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                            selectedCenter?.let { Text(text = it.name) }
-                                            selectedChildClass?.let { Text(text = " > "+it.name) }
-                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
+                                            selectedChildInfo?.let { Text(text = it.name) }
                                         }
                                         IconButton(onClick = {
                                             setChildDialogOpen(true)
@@ -684,16 +675,14 @@ fun MainCompose(
                                         horizontalArrangement = Arrangement.End,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                                            selectedCenter?.let { Text(text = it.name) }
-                                            selectedChildClass?.let { Text(text = " > "+it.name) }
-                                            selectedChildInfo?.let { Text(text = " > "+it.name) }
-                                        }
-                                        IconButton(onClick = {
-                                            setChildDialogOpen(true)
-                                        }) {
-                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
-                                        }
+//                                        Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
+//                                            selectedChildInfo?.let { Text(text = it.name) }
+//                                        }
+//                                        IconButton(onClick = {
+//                                            setChildDialogOpen(true)
+//                                        }) {
+//                                            Icon(painter = painterResource(id = R.drawable.icon_user), contentDescription = null)
+//                                        }
                                     }
                                 }
                             }

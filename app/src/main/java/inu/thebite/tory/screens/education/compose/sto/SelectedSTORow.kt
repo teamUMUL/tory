@@ -128,7 +128,7 @@ fun SelectedSTORow(
                                     Color(0xFF40B9FC)
                                 }
 
-                                "준거 도달" -> {
+                                "완료" -> {
                                     Color(0xFF34C648)
                                 }
 

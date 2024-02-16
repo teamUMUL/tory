@@ -33,8 +33,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import inu.thebite.tory.R
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.screens.education.compose.dialog.sto.AddGeneralGameItemDialog
-import inu.thebite.tory.screens.education.compose.dialog.sto.AddSameGameItemDialog
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -58,34 +56,7 @@ fun CardSelector(
         mutableStateOf(false)
     }
 
-    if (cardSelectDialog) {
-        selectedSTO?.let { selectedSTO ->
-            ltoViewModel.findLTOById(selectedSTO.ltoId)?.let { foundLTO ->
 
-                when (foundLTO.game){
-                    "같은 사진 매칭" -> {
-                        AddSameGameItemDialog(
-                            selectedSTO = selectedSTO,
-                            setAddGameItem = {setCardSelectDialog(it)},
-                            stoViewModel = stoViewModel,
-                            imageViewModel = imageViewModel
-                        )
-                    }
-                    "일반화 매칭" -> {
-                        AddGeneralGameItemDialog(
-                            selectedSTO = selectedSTO,
-                            setAddGameItem = {setCardSelectDialog(it)},
-                            stoViewModel = stoViewModel,
-                            imageViewModel = imageViewModel
-                        )
-                    }
-                }
-
-            }
-
-
-        }
-    }
 
 
     Column(

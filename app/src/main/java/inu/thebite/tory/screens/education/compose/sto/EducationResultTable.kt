@@ -80,7 +80,7 @@ fun EducationResultTable(
                 horizontalArrangement = Arrangement.spacedBy(30.dp)
 
             ) {
-                val pointButtons = listOf("P", "+", "-", "삭제")
+                val pointButtons = listOf("+", "-", "P", "삭제")
                 Spacer(modifier = Modifier.width(1.dp))
                 pointButtons.forEach { button ->
                     Button(
@@ -204,7 +204,7 @@ fun EducationResultTable(
                         onClick = {
                             val status = if ((takenPoints.count { it == "+" }
                                     .toFloat() / selectedSTO.count.toFloat()) * 100 >= 90f) {
-                                "준거 도달"
+                                "완료"
                             } else {
                                 "진행중"
                             }

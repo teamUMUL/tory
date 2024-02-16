@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,7 +38,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +48,6 @@ import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.screens.auth.common.LabeledTextFieldLogin
 import inu.thebite.tory.ui.theme.ToryTheme
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -102,7 +99,7 @@ fun LoginScreen(
                     Column(modifier= Modifier) {
 
                         LabeledTextFieldLogin(
-                            userid = userid,
+                            userId = userid,
                             password = password
                         )
 
@@ -148,9 +145,27 @@ fun LoginScreen(
                         horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
                         ClickableText(
+                            text = AnnotatedString("회원가입"),
+                            onClick = {
+                                navController.navigate("signupScreen")
+                            },
+                            style = TextStyle(
+                                fontFamily = fontFamily_Poppins,
+                                fontSize = 18.sp,
+                                color = Color(0xff7F5AF0)
+                            )
+                        )
+                        Text(
+                            text = "|",
+                            style = TextStyle(
+                                fontFamily = fontFamily_Poppins,
+                                fontSize = 18.sp,
+                            )
+                        )
+                        ClickableText(
                             text = AnnotatedString("ID 찾기"),
                             onClick = {
-                                navController.navigate("findId")
+                                navController.navigate("findIdScreen")
                             },
                             style = TextStyle(
                                 fontFamily = fontFamily_Poppins,
@@ -168,7 +183,7 @@ fun LoginScreen(
                         ClickableText(
                             text = AnnotatedString("비밀번호 찾기"),
                             onClick = {
-                                navController.navigate("findPassword")
+                                navController.navigate("findPasswordScreen")
                             },
                             style = TextStyle(
                                 fontFamily = fontFamily_Poppins,

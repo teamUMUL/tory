@@ -46,7 +46,7 @@ fun SelectedSTODetail(
                             Color(0xFFC0E9EF).copy(0.5f)
                         }
 
-                        "준거 도달" -> {
+                        "완료" -> {
                             Color(0xFFCCEFC0).copy(0.5f)
 
                         }
@@ -72,7 +72,8 @@ fun SelectedSTODetail(
                 .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         ) {
             SelectedSTODetailsTable(
-                selectedSTO = selectedSTO
+                selectedSTO = selectedSTO,
+                stoViewModel = stoViewModel
             )
         }
         Column(

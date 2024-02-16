@@ -51,178 +51,28 @@ fun LabeledTextFieldFindId(
     }
 
     Column {
-        //아이디
-        Column(
-            modifier = Modifier
-
-                .width(400.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "ID",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF7C838A),
-                )
-            )
-            TextField(
-                label = {
-                    Text(
-                        text = "이름을 입력해주세요",
-                        style = TextStyle(
-                            textAlign = TextAlign.Start,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0x80000000),
-                        ),
-                        modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .fillMaxWidth()
-                    )
-                },
-                value = userName.value,
-                onValueChange = { userName.value = it },
-                shape = RoundedCornerShape(10.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
-                ),
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Clear,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickableWithNoRipple {
-                                userName.value = TextFieldValue("")
-                            }
-                    )
-                }
-            )
-        }
+        //이름
+        TextFieldWithTrailingIcon(
+            title = "이름",
+            placeholderText = "이름을 입력해주세요",
+            input = userName,
+        )
         Spacer(modifier = Modifier.height(10.dp))
         //이메일
-        Column(
-            modifier = Modifier
-
-                .width(400.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "이메일",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF7C838A),
-                )
-            )
-            TextField(
-                label = {
-                    Text(
-                        text = "이메일을 입력해주세요",
-                        style = TextStyle(
-                            textAlign = TextAlign.Start,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0x80000000),
-                        ),
-                        modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .fillMaxWidth()
-                    )
-                },
-                value = userEmail.value,
-                visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                onValueChange = { userEmail.value = it },
-                shape = RoundedCornerShape(10.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Email, imeAction = ImeAction.Done
-                ),
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Clear,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickableWithNoRipple {
-                                userEmail.value = TextFieldValue("")
-                            }
-                    )
-                },
-
-
-                )
-        }
+        TextFieldWithTrailingIcon(
+            title = "E-MAIL",
+            placeholderText = "E-MAIL을 입력해주세요",
+            input = userEmail,
+            keyboardType = KeyboardType.Email
+        )
         Spacer(modifier = Modifier.height(10.dp))
         //휴대전화
-        Column(
-            modifier = Modifier
-
-                .width(400.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "휴대전화",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF7C838A),
-                )
-            )
-            TextField(
-                label = {
-                    Text(
-                        text = "휴대전화 번호를 입력해주세요",
-                        style = TextStyle(
-                            textAlign = TextAlign.Start,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0x80000000),
-                        ),
-                        modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .fillMaxWidth()
-                    )
-                },
-                value = userPhoneNumber.value,
-                onValueChange = { userPhoneNumber.value = it },
-                shape = RoundedCornerShape(10.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done
-                ),
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Clear,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickableWithNoRipple {
-                                userPhoneNumber.value = TextFieldValue("")
-                            }
-                    )
-                },
-
-
-                )
-        }
+        TextFieldWithTrailingIcon(
+            title = "휴대전화",
+            placeholderText = "전화번호를 입력해주세요",
+            input = userPhoneNumber,
+            keyboardType = KeyboardType.Phone
+        )
 
 
 

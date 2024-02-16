@@ -1,4 +1,4 @@
-package inu.thebite.tory.screens.auth.find
+package inu.thebite.tory.screens.auth.signup
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -43,47 +43,63 @@ import androidx.navigation.NavController
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.auth.LoginState
-import inu.thebite.tory.screens.auth.common.LabeledTextFieldFindPassword
+import inu.thebite.tory.screens.auth.common.LabeledTextFieldLogin
+import inu.thebite.tory.screens.auth.common.LabeledTextFieldSignUp
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
 import kotlinx.coroutines.launch
 
 @Composable
-fun FindPasswordScreen(
-    navController : NavController
+fun SignUpScreen(
+    navController: NavController
 ) {
+
     val context = LocalContext.current
     val authViewModel = LoginState.current
     val isLoading by authViewModel.isLoading.collectAsState()
+    val userName = remember { mutableStateOf(TextFieldValue()) }
     val userId = remember { mutableStateOf(TextFieldValue()) }
+    val password = remember { mutableStateOf(TextFieldValue()) }
     val userEmail = remember { mutableStateOf(TextFieldValue()) }
     val userPhoneNumber = remember { mutableStateOf(TextFieldValue()) }
+    val userIdentity = remember { mutableStateOf(TextFieldValue()) }
+    val userCenterCode = remember { mutableStateOf(TextFieldValue()) }
+
     val coroutineScope = rememberCoroutineScope()
     val brush = Brush.horizontalGradient(listOf(Color(0xFF0047B3), Color(0xff7E5DE3)))
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(brush),
-        contentAlignment = Alignment.Center) {
-        Box(modifier = Modifier
-            .shadow(
-                elevation = 4.dp,
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
-            )
-            .width(1022.dp)
-            .height(710.dp)
-            .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp)) ,
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
+                .width(1022.dp)
+                .height(710.dp)
+                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp)),
 
-            ){
-            Row(modifier = Modifier
-            ){
-                Image(painter = painterResource(id = R.drawable.login_image), contentDescription ="logIn_image",modifier= Modifier
-                    .weight(1f)
-                    .fillMaxHeight())
-                Column(modifier= Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(top = 30.dp, bottom = 30.dp),
+            ) {
+            Row(
+                modifier = Modifier
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.login_image),
+                    contentDescription = "logIn_image",
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(top = 30.dp, bottom = 5.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -94,39 +110,62 @@ fun FindPasswordScreen(
                             .width(480.dp)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
-                    Column(modifier= Modifier) {
+                    Column(modifier = Modifier.weight(1f)) {
 
-                        LabeledTextFieldFindPassword(
+                        LabeledTextFieldSignUp(
+                            userName = userName,
                             userId = userId,
+                            password = password,
                             userEmail = userEmail,
-                            userPhoneNumber = userPhoneNumber
+                            userPhoneNumber = userPhoneNumber,
+                            userIdentity = userIdentity,
+                            userCenterCode = userCenterCode
                         )
 
                     }
 
-                    Spacer(modifier = Modifier.height(50.dp))
-                    if (isLoading){
+                    Spacer(modifier = Modifier.height(20.dp))
+                    if (isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(50.dp))
                     } else {
-                        Button(modifier= Modifier
+                        Button(modifier = Modifier
+
                             .width(320.dp)
-                            .height(60.dp)
+                            .height(50.dp)
                             .background(
                                 color = Color(0xFF0047B3),
                                 shape = RoundedCornerShape(size = 10.dp)
-                            ), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
+                            ),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
                             onClick = {
-                                if (userId.value.text.trim() == "" || userEmail.value.text.trim() == "" || userPhoneNumber.value.text.trim() == ""){
-                                    Toasty.warning(context, "이름, 이메일, 휴대전화 번호를 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                if (
+                                    userName.value.text.trim() == "" || 
+                                    userId.value.text.trim() == "" || 
+                                    password.value.text.trim() == "" || 
+                                    userEmail.value.text.trim() == "" || 
+                                    userPhoneNumber.value.text.trim() == "" || 
+                                    userIdentity.value.text.trim() == "" || 
+                                    userCenterCode.value.text.trim() == ""
+                                ) {
+                                    Toasty.warning(
+                                        context,
+                                        "모두 입력해주세요",
+                                        Toast.LENGTH_SHORT,
+                                        true
+                                    ).show()
                                 } else {
-                                    coroutineScope.launch {
-//                                        authViewModel.login(context = context,id = userid.value.text.trim(), password = password.value.text.trim())
-                                    }
+//                                    coroutineScope.launch {
+//                                        authViewModel.login(
+//                                            context = context,
+//                                            id = userId.value.text.trim(),
+//                                            password = password.value.text.trim()
+//                                        )
+//                                    }
                                 }
                             }
                         ) {
                             Text(
-                                text = "비밀번호 찾기",
+                                text = "회원가입",
                                 style = TextStyle(
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight(500),
@@ -138,10 +177,20 @@ fun FindPasswordScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(5.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
+                        Text(
+                            text = "이미 계정이 있으신가요?",
+                            style = TextStyle(
+                                fontFamily = fontFamily_Poppins,
+                                fontSize = 18.sp,
+                                color = Color(0xFF7C838A),
+                                fontWeight = FontWeight(400)
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
                         ClickableText(
                             text = AnnotatedString("로그인"),
                             onClick = {
@@ -153,24 +202,7 @@ fun FindPasswordScreen(
                                 color = Color(0xff7F5AF0)
                             )
                         )
-                        Text(
-                            text = "|",
-                            style = TextStyle(
-                                fontFamily = fontFamily_Poppins,
-                                fontSize = 18.sp,
-                            )
-                        )
-                        ClickableText(
-                            text = AnnotatedString("ID 찾기"),
-                            onClick = {
-                                navController.navigate("findIdScreen")
-                            },
-                            style = TextStyle(
-                                fontFamily = fontFamily_Poppins,
-                                fontSize = 18.sp,
-                                color = Color(0xff7F5AF0)
-                            )
-                        )
+
                     }
 
                 }

@@ -7,52 +7,76 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.sto.StoResponse
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SelectedSTODetailsTable(
     modifier: Modifier = Modifier,
-    selectedSTO: StoResponse?
+    selectedSTO: StoResponse?,
+    stoViewModel: STOViewModel
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    val verticalScrollState = rememberScrollState()
     val STODetailTitles =
         listOf<String>(
             "이름",
@@ -62,8 +86,20 @@ fun SelectedSTODetailsTable(
             "촉구방법",
             "강화 메세지",
         )
-    var stoSignificant by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+//    var stoSignificant by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+//        mutableStateOf(TextFieldValue())
+//    }
+    val stoSignificant by stoViewModel.userInput.collectAsState()
+    val isSaving by stoViewModel.isSavingData.collectAsState()
+
+    val selectedAccidentActivities = remember {
+        mutableStateListOf<String>()
+    }
+    val selectedStressState = remember {
+        mutableStateOf("")
+    }
+    val selectedFocusState = remember {
+        mutableStateOf("")
     }
     Column(
         modifier = modifier
@@ -72,7 +108,7 @@ fun SelectedSTODetailsTable(
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = "STO Details",
+            text = "STO 세부사항",
             style = TextStyle(
                 fontSize = 18.sp,
                 fontFamily = fontFamily_Lato,
@@ -129,6 +165,7 @@ fun SelectedSTODetailsTable(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(verticalScrollState)
                 .padding(vertical = 10.dp, horizontal = 20.dp)
                 .weight(6f)
         ) {
@@ -141,6 +178,7 @@ fun SelectedSTODetailsTable(
             val focusStates = listOf(
                 "매우 나쁨", "나쁨", "보통", "좋음", "매우 좋음"
             )
+
             Text(
                 text = "돌발행동",
                 style = TextStyle(
@@ -152,9 +190,17 @@ fun SelectedSTODetailsTable(
             STOStateButtonsLazyHorizontalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(3f),
+                    .height(70.dp),
                 gridCells = 2,
-                stateList = accidentStates
+                stateList = accidentStates,
+                onClick = {
+                    if (selectedAccidentActivities.contains(it)){
+                        selectedAccidentActivities.remove(it)
+                    } else {
+                        selectedAccidentActivities.add(it)
+                    }
+                },
+                selectedCells = selectedAccidentActivities
             )
             Text(
                 text = "스트레스 상태",
@@ -167,9 +213,17 @@ fun SelectedSTODetailsTable(
             STOStateButtonsLazyHorizontalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.5f),
+                    .height(35.dp),
                 gridCells = 1,
-                stateList = stressStates
+                stateList = stressStates,
+                onClick = {
+                    if (selectedStressState.value == it){
+                        selectedStressState.value = ""
+                    } else {
+                        selectedStressState.value = it
+                    }
+                },
+                selectedCell = selectedStressState.value
             )
             Text(
                 text = "집중도",
@@ -182,38 +236,62 @@ fun SelectedSTODetailsTable(
             STOStateButtonsLazyHorizontalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1.5f),
+                    .height(35.dp),
                 gridCells = 1,
-                stateList = focusStates
+                stateList = focusStates,
+                onClick = {
+                    if (selectedFocusState.value == it){
+                        selectedFocusState.value = ""
+                    } else {
+                        selectedFocusState.value = it
+                    }
+                },
+                selectedCell = selectedFocusState.value
             )
-            Text(
-                text = "특이사항",
-                style = TextStyle(
-                    fontFamily = fontFamily_Lato,
-                    color = Color(0xFF1D1C1D),
-                    fontSize = 18.sp
-                ),
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "특이사항",
+                    style = TextStyle(
+                        fontFamily = fontFamily_Lato,
+                        color = Color(0xFF1D1C1D),
+                        fontSize = 18.sp
+                    ),
+                )
+                if (isSaving){
+                    Spacer(modifier = Modifier.width(5.dp))
+                    CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 3.dp)
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(text = "저장 중...")
+                }
+            }
+
             TextField(
                 value = stoSignificant,
                 onValueChange = {
-                    stoSignificant = it
+                    stoViewModel.updateInput(it)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(4f)
                     .padding(vertical = 10.dp)
                     .border(
                         width = 1.dp,
                         color = Color(0xFF0047B3).copy(alpha = 0.5f),
                         shape = RoundedCornerShape(10.dp)
-                    ),
+                    )
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        stoViewModel.updateFocus(focusState.hasFocus)
+                    },
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                )
+                ),
+                singleLine = false,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.None)
             )
 
         }
@@ -286,15 +364,19 @@ fun STOStateButtonsLazyHorizontalGrid(
     modifier : Modifier = Modifier,
     gridCells: Int,
     stateList: List<String>,
+    onClick : (String) -> Unit,
+    selectedCell : String = "",
+    selectedCells : List<String> = listOf()
 ){
     LazyHorizontalGrid(
         rows = GridCells.Fixed(gridCells),
-        modifier = modifier
+        modifier = modifier,
+        userScrollEnabled = false
     ) {
         items(stateList) { stateItem ->
             Button(
                 onClick = {
-
+                    onClick(stateItem)
                 },
                 modifier = Modifier
                     .height(30.dp)
@@ -302,7 +384,20 @@ fun STOStateButtonsLazyHorizontalGrid(
                 border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent,
+                    containerColor =
+                        if (gridCells == 2) {
+                            if (selectedCells.contains(stateItem)){
+                                Color(0xFFE0E9F5)
+                            } else {
+                                Color.Transparent
+                            }
+                        } else {
+                            if (selectedCell == stateItem){
+                                Color(0xFFE0E9F5)
+                            } else {
+                                Color.Transparent
+                            }
+                        },
                     contentColor = Color.Black
                 ),
                 contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)

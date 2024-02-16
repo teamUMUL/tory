@@ -81,8 +81,8 @@ fun SelectedSTOEducationReadyAndResult(
 
                     ) {
                     val buttonList = listOf(
+                        "완료",
                         "진행중",
-                        "준거 도달",
                         "중지"
                     )
                     buttonList.forEach { button ->
@@ -98,7 +98,7 @@ fun SelectedSTOEducationReadyAndResult(
                             border = BorderStroke(
                                 width = 1.dp,
                                 color = when (button) {
-                                    "준거 도달" -> Color(0xFF34C648)
+                                    "완료" -> Color(0xFF34C648)
                                     "진행중" -> Color(0xFF40B9FC)
                                     "중지" -> Color(0xFFFC605C)
                                     else -> Color.Black
@@ -107,13 +107,13 @@ fun SelectedSTOEducationReadyAndResult(
                             shape = RoundedCornerShape(5.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = when (button) {
-                                    "준거 도달" -> if (selectedSTO.status == button) Color(0xFF34C648) else Color.Transparent
+                                    "완료" -> if (selectedSTO.status == button) Color(0xFF34C648) else Color.Transparent
                                     "진행중" -> if (selectedSTO.status == button) Color(0xFF40B9FC) else Color.Transparent
                                     "중지" -> if (selectedSTO.status == button) Color(0xFFFC605C) else Color.Transparent
                                     else -> if (selectedSTO.status == button) Color.White else Color.White
                                 },
                                 contentColor = when (button) {
-                                    "준거 도달" -> if (selectedSTO.status == button) Color.White else Color(
+                                    "완료" -> if (selectedSTO.status == button) Color.White else Color(
                                         0xFF34C648
                                     )
 
@@ -220,7 +220,7 @@ fun SelectedSTOEducationReadyAndResult(
                     .fillMaxWidth()
                     .weight(2.75f)
                     .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

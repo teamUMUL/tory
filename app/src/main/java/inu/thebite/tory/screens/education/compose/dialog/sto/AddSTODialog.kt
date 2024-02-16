@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,6 +32,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -69,6 +69,7 @@ import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddSTODialog(
     context : Context,
@@ -88,15 +89,15 @@ fun AddSTODialog(
 //        mutableStateOf(TextFieldValue("15"))
 //    }
     var stoSuccessStandardInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(""))
+    }
+    var stoSuccessStandardValueInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue("90"))
     }
     var stoMethodInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
-    var stoScheduleInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
-    var stoMemoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+    var stoReinforceMessageInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
 
@@ -151,13 +152,141 @@ fun AddSTODialog(
 //                    stoTryNum = stoTryNum
 //                )
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("준거도달 기준", stoSuccessStandardInputValue, setInputValue = {stoSuccessStandardInputValue = it}, isSingleLine = false, isInt = true)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(
+                        text = "준거도달 방식을 선택해주세요.",
+                        style = TextStyle(
+                            color = Color(0xFF606060),
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight(400),
+                            fontSize = 20.sp
+                        )
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxHeight(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        RadioButton(selected = (stoSuccessStandardInputValue.text == "퍼센트"), onClick = { stoSuccessStandardInputValue = TextFieldValue("퍼센트") })
+                        Text(
+                            text = "퍼센트",
+                            style = TextStyle(
+                                color = Color(0xFF606060),
+                                fontFamily = fontFamily_Inter,
+                                fontWeight = FontWeight(400),
+                                fontSize = 20.sp
+                            )
+                        )
+                        RadioButton(selected = (stoSuccessStandardInputValue.text == "연속"), onClick = { stoSuccessStandardInputValue = TextFieldValue("연속") })
+                        Text(
+                            text = "연속",
+                            style = TextStyle(
+                                color = Color(0xFF606060),
+                                fontFamily = fontFamily_Inter,
+                                fontWeight = FontWeight(400),
+                                fontSize = 20.sp
+                            )
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .width(150.dp)
+                            .fillMaxHeight()
+                            .background(
+                                color = Color(0xFFDFE3E7),
+                                shape = RoundedCornerShape(10.dp)
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (stoSuccessStandardInputValue.text == "퍼센트") {
+                            TextField(
+                                value = stoSuccessStandardValueInputValue,
+                                onValueChange = {
+                                    stoSuccessStandardValueInputValue = it
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(80.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.None,
+                                    autoCorrect = true, keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
+                                ),
+                                textStyle = TextStyle(
+                                    color = Color.Black, fontSize = 30.sp,
+                                    fontFamily = FontFamily.SansSerif
+                                ),
+                                maxLines = 1,
+                                singleLine = true,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    containerColor = Color(0xFFDFE3E7),
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                ),
+                            )
+                            Text(
+                                text = "%",
+                                style = TextStyle(
+                                    color = Color(0xFF606060),
+                                    fontFamily = fontFamily_Inter,
+                                    fontWeight = FontWeight(400),
+                                    fontSize = 20.sp
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                        } else if (stoSuccessStandardInputValue.text == "연속") {
+                            TextField(
+                                value = stoSuccessStandardValueInputValue,
+                                onValueChange = {
+                                    stoSuccessStandardValueInputValue = it
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(80.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.None,
+                                    autoCorrect = true, keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
+                                ),
+                                textStyle = TextStyle(
+                                    color = Color.Black, fontSize = 30.sp,
+                                    fontFamily = FontFamily.SansSerif
+                                ),
+                                maxLines = 1,
+                                singleLine = true,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    containerColor = Color(0xFFDFE3E7),
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                ),
+                            )
+                            Text(
+                                text = "회",
+                                style = TextStyle(
+                                    color = Color(0xFF606060),
+                                    fontFamily = fontFamily_Inter,
+                                    fontWeight = FontWeight(400),
+                                    fontSize = 20.sp
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("촉구방법", stoMethodInputValue, setInputValue = {stoMethodInputValue = it}, isSingleLine = false)
+                stoTextFieldFrame("촉구 방법", stoMethodInputValue, setInputValue = {stoMethodInputValue = it}, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("강화스케줄", stoScheduleInputValue, setInputValue = {stoScheduleInputValue = it}, isSingleLine = false)
-                Spacer(modifier = Modifier.height(10.dp))
-                stoTextFieldFrame("메모", stoMemoInputValue, setInputValue = {stoMemoInputValue = it}, isSingleLine = false)
+                stoTextFieldFrame("강화메세지", stoReinforceMessageInputValue, setInputValue = {stoReinforceMessageInputValue = it}, isSingleLine = false)
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
@@ -195,7 +324,7 @@ fun AddSTODialog(
                         containerColor = Color(0xFF0047B3)
                     ),
                     onClick = {
-                        val successStandard = stoSuccessStandardInputValue.text.toIntOrNull()
+                        val successStandard = stoSuccessStandardValueInputValue.text.toIntOrNull()
                         successStandard?.let { successStandard ->
                             if(stoNameInputValue.text.isNotEmpty()){
                                 stoViewModel.createSTO(
@@ -207,17 +336,17 @@ fun AddSTODialog(
                                         goal = successStandard,
                                         urgeType = "",
                                         urgeContent = stoMethodInputValue.text,
-                                        enforceContent = stoScheduleInputValue.text,
-                                        memo = stoMemoInputValue.text,
+                                        enforceContent = stoReinforceMessageInputValue.text,
+                                        memo = "",
                                         registrant = "테스트"
                                     )
                                 )
                                 stoNameInputValue = TextFieldValue("")
                                 stoContentInputValue = TextFieldValue("")
+                                stoSuccessStandardValueInputValue = TextFieldValue("")
                                 stoSuccessStandardInputValue = TextFieldValue("")
                                 stoMethodInputValue = TextFieldValue("")
-                                stoScheduleInputValue = TextFieldValue("")
-                                stoMemoInputValue = TextFieldValue("")
+                                stoReinforceMessageInputValue = TextFieldValue("")
                                 setAddSTOItem(false)
                             } else {
                                 Toasty.warning(context, "STO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
@@ -271,7 +400,7 @@ fun stoTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInput
         maxLines = if (isSingleLine) 2 else 100,
         singleLine = isSingleLine,
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+            containerColor = Color(0xFFDFE3E7),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
@@ -404,9 +533,9 @@ fun STOCountSelector(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
-                focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
-                unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
-                disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+                focusedContainerColor= Color(0xFFDFE3E7),
+                unfocusedContainerColor= Color(0xFFDFE3E7),
+                disabledContainerColor= Color(0xFFDFE3E7),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
@@ -425,7 +554,7 @@ fun STOCountSelector(
             onDismissRequest = {isExpanded = false},
             modifier = Modifier
                 .exposedDropdownSize()
-                .background(color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f))
+                .background(color = Color(0xFFDFE3E7))
                 .fillMaxWidth(),
         ){
             repeat(20){ index ->

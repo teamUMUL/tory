@@ -11,11 +11,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -37,12 +35,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabeledTextFieldLogin(
-    userid : MutableState<TextFieldValue>,
+    userId : MutableState<TextFieldValue>,
     password : MutableState<TextFieldValue>
 ){
 
@@ -52,117 +49,19 @@ fun LabeledTextFieldLogin(
 
     Column {
         //아이디
-        Column(
-            modifier = Modifier
-
-                .width(400.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "ID",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF7C838A),
-                )
-            )
-            TextField(
-                label = {
-                    Text(
-                        text = "ID를 입력해주세요.",
-                        style = TextStyle(
-                            textAlign = TextAlign.Start,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0x80000000),
-                        ),
-                        modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .fillMaxWidth()
-                    )
-                },
-                value = userid.value,
-                onValueChange = { userid.value = it },
-                shape = RoundedCornerShape(10.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
-                ),
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Clear,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickableWithNoRipple {
-                                userid.value = TextFieldValue("")
-                            }
-                    )
-                }
-            )
-        }
+        TextFieldWithTrailingIcon(
+            title = "아이디",
+            placeholderText = "ID를 입력해주세요",
+            input = userId,
+        )
         Spacer(modifier = Modifier.height(10.dp))
         //비밀번호
-        Column(
-            modifier = Modifier
-
-                .width(400.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "비밀번호",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF7C838A),
-                )
-            )
-            TextField(
-                label = {
-                    Text(
-                        text = "비밀번호를 입력해주세요",
-                        style = TextStyle(
-                            textAlign = TextAlign.Start,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0x80000000),
-                        ),
-                        modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp)
-                            .fillMaxWidth()
-                    )
-                },
-                value = password.value,
-                visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                onValueChange = { password.value = it },
-                shape = RoundedCornerShape(10.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color(0xFFB0BAC3).copy(alpha = 0.4f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
-                ),
-                trailingIcon = {
-                    val image = if (passwordVisible.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    val description = if (passwordVisible.value) "Hide password" else "Show password"
-
-                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
-                        Icon(imageVector = image, contentDescription = description)
-                    }
-                },
-
-
-            )
-        }
+        TextFieldWithTrailingIcon(
+            title = "비밀번호",
+            placeholderText = "비밀번호를 입력해주세요",
+            input = password,
+            isPassword = true
+        )
 
 
 

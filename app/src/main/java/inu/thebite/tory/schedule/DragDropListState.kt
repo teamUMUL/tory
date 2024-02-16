@@ -157,7 +157,7 @@ fun DragDropList(
                         "진행중" -> {
                             Color(0xFFC0E9EF)
                         }
-                        "준거 도달" -> {
+                        "완료" -> {
                             Color(0xFFCCEFC0)
 
                         }

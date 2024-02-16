@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,9 +23,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -46,6 +51,7 @@ import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NewEducationScreen(
     selectedChild: StudentResponse,
@@ -59,6 +65,9 @@ fun NewEducationScreen(
     noticeViewModel: NoticeViewModel,
     childSelectViewModel: ChildSelectViewModel
 ) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val context = LocalContext.current
 
     val selectedDEV by devViewModel.selectedDEV.collectAsState()
@@ -69,6 +78,7 @@ fun NewEducationScreen(
 
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val points by stoViewModel.points.collectAsState()
+    val hasFocus by stoViewModel.hasFocus.collectAsState()
 
     val todoList by todoViewModel.todoResponse.collectAsState()
 
@@ -113,6 +123,13 @@ fun NewEducationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    // TextField 외부를 탭했을 때만 포커스 해제
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                })
+            }
     ) {
         Divider(thickness = 1.dp, color = Color.LightGray)
         Row(

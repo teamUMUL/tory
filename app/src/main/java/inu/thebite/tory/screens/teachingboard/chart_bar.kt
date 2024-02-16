@@ -165,7 +165,7 @@ fun chart_bar(
         allDEVs?.let { allDEVs ->
             val xAxisLabelList = mutableListOf("1. 학습준비", "2. 매칭", "3. 동작모방", "4. 언어모방", "5. 변별", "6. 지시 따르기", "7. 요구하기", "8. 명명하기", "9. 인트라버벌", "10. 사회성")
             BoxWithConstraints {
-                val runUnitWidth = maxWidth / 10
+                val runUnitWidth = maxWidth / 11
                 DashBoardDEVGraph(
                     beforeList = listOf(10f, 5f, 3f, 7f, 2f, 1f, 3f, 6f, 3f, 2f),
                     afterList = listOf(10f, 6f, 5f, 7f, 5f, 2f, 5f, 9f, 6f, 5f),
@@ -230,7 +230,7 @@ fun DashBoardDEVGraph(
             .shouldDrawAxisLineTillEnd(false)
             .axisStepSize(runUnitWidth)
             .steps(beforeData.size - 1)
-            .labelData { i -> "                  "+xAxisLabelList[i]
+            .labelData { i -> "            "+xAxisLabelList[i]
             }
             .labelAndAxisLinePadding(20.dp)
             .axisLineColor(Color.Black)
@@ -264,11 +264,11 @@ fun DashBoardDEVGraph(
                         LineStyle(
                             color = Color(0xFF34C648),
                             lineType = LineType.Straight(isDotted = false),
-                            width = 10f
+                            width = 6f
                         ),
                         IntersectionPoint(
                             color = Color(0xFF34C648),
-                            radius = 10.dp
+                            radius = 5.dp
                         ),
 //                        selectionHighlightPopUp = SelectionHighlightPopUp(
 //                            popUpLabel = {plusX ,plusY ->
@@ -281,7 +281,7 @@ fun DashBoardDEVGraph(
                         LineStyle(
                             color = Color(0xFF7F5AF0),
                             lineType = LineType.Straight(isDotted = false),
-                            width = 10f
+                            width = 6f
                         ),
                         IntersectionPoint(
                             color = Color(0xFF7F5AF0),

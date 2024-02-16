@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -18,6 +20,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +46,10 @@ fun SelectedLTORow(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
+    val selectedLTODescriptions = remember {
+        mutableStateListOf<String>()
+    }
+
     BoxWithConstraints(
         modifier = modifier
     ) {
@@ -72,55 +80,69 @@ fun SelectedLTORow(
                             color = Color(0xFF1D1C1D),
                         ),
                         modifier = Modifier
-                            .widthIn(max = maxWidth),
+                            .widthIn(max = maxWidth*0.7f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Button(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .height(25.dp),
-                        border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black
-                        ),
-                        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = "언어발달",
-                            style = TextStyle(
-                                fontFamily = fontFamily_Inter,
-                                fontSize = 14.sp,
-                                color = Color.Black
+                        Button(
+                            onClick = {
+                                if (selectedLTODescriptions.contains("언어발달")){
+                                    selectedLTODescriptions.remove("언어발달")
+                                } else {
+                                    selectedLTODescriptions.add("언어발달")
+                                }
+                            },
+                            modifier = Modifier
+                                .height(25.dp),
+                            border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (selectedLTODescriptions.contains("언어발달")) Color(0xFFE0E9F5) else Color.Transparent,
+                                contentColor = Color.Black
+                            ),
+                            contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
+                        ) {
+                            Text(
+                                text = "언어발달",
+                                style = TextStyle(
+                                    fontFamily = fontFamily_Inter,
+                                    fontSize = 14.sp,
+                                    color = Color.Black
+                                )
                             )
-                        )
-                    }
-                    Button(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .height(25.dp),
-                        border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
-                        shape = RoundedCornerShape(10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Black
-                        ),
-                        contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
-                    ) {
-                        Text(
-                            text = "인지발달",
-                            style = TextStyle(
-                                fontFamily = fontFamily_Inter,
-                                fontSize = 14.sp,
-                                color = Color.Black
+                        }
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Button(
+                            onClick = {
+                                if (selectedLTODescriptions.contains("인지발달")){
+                                    selectedLTODescriptions.remove("인지발달")
+                                } else {
+                                    selectedLTODescriptions.add("인지발달")
+                                }
+                            },
+                            modifier = Modifier
+                                .height(25.dp),
+                            border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (selectedLTODescriptions.contains("인지발달")) Color(0xFFE0E9F5) else Color.Transparent,
+                                contentColor = Color.Black
+                            ),
+                            contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
+                        ) {
+                            Text(
+                                text = "인지발달",
+                                style = TextStyle(
+                                    fontFamily = fontFamily_Inter,
+                                    fontSize = 14.sp,
+                                    color = Color.Black
+                                )
                             )
-                        )
+                        }
                     }
                 }
 

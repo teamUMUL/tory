@@ -15,9 +15,11 @@ import inu.thebite.tory.model.sto.UpdateStoRoundRequest
 import inu.thebite.tory.model.sto.UpdateStoStatusRequest
 import inu.thebite.tory.repositories.STO.STORepoImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -44,6 +46,20 @@ class STOViewModel : ViewModel() {
     private val _points = MutableStateFlow<List<String>?>(null)
     val points = _points.asStateFlow()
 
+    private val _isSavingData = MutableStateFlow(false)
+    val isSavingData = _isSavingData.asStateFlow()
+
+    private val _hasFocus = MutableStateFlow(false)
+    val hasFocus = _hasFocus.asStateFlow()
+
+    private val _userInput = MutableStateFlow("")
+    val userInput = _userInput.asStateFlow()
+
+    fun updateFocus(isFocus: Boolean){
+        Log.d("isFocus", isFocus.toString())
+        _hasFocus.update { isFocus }
+    }
+
     fun setSelectedSTO(stoEntity: StoResponse) {
         _selectedSTO.update {
             stoEntity
@@ -66,6 +82,30 @@ class STOViewModel : ViewModel() {
     init {
 //        getDummySTO()
         observeAllSTOs()
+        viewModelScope.launch {
+            userInput
+                .debounce(1000)
+                .collect { input ->
+                    saveDataToServer(input)
+                }
+        }
+    }
+
+    fun updateInput(input: String){
+        _userInput.update { input }
+    }
+
+    private  fun saveDataToServer(input: String){
+        _isSavingData.update { true }
+
+        viewModelScope.launch {
+            try {
+                Log.d("saveDataToServer", input)
+                delay(2000)
+            } finally {
+                _isSavingData.update { false }
+            }
+        }
     }
 
     private fun observeAllSTOs() {
@@ -204,17 +244,6 @@ class STOViewModel : ViewModel() {
             Log.d("allSTOs", allSTOs.value.toString())
         }
     }
-
-//    fun filterSTOsByLTO(
-//        detailGraphList: List<DetailGraphResponse>,
-//        selectedLTO: LtoResponse
-//    ): List<DetailGraphResponse> {
-//        val filteredSTOList = allSTOs.value?.filter { sto ->
-//            detailGraphList.map { it.stoId }.contains(sto.id)
-//        } ?: emptyList()
-//        return filteredSTOList.filter { it.ltoId == selectedLTO.id }
-//    }
-
     fun getSTOsByIds(
         stoIds : List<Long>
     ) : List<StoResponse> {
@@ -232,20 +261,6 @@ class STOViewModel : ViewModel() {
             sto.ltoId == selectedLTO.id
         } ?: emptyList()
     }
-
-//    fun setSTOsByLTO(
-//        selectedLTO: LtoResponse,
-//    ){
-//        try {
-//            _stos.update {
-//                allSTOs.value?.filter {
-//                    it.ltoId == selectedLTO.id
-//                } ?: emptyList()
-//            }
-//        } catch (e: Exception){
-//            Log.e("failed to set STOs By LTO", e.message.toString())
-//        }
-//    }
 
     fun createSTO(
         selectedLTO: LtoResponse,
@@ -465,11 +480,8 @@ class STOViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("failed to update STO ImageList", e.message.toString())
             }
-//            getSTOsByLTO()
-//            getSTOsByLTO(selectedSTO.lto)
         }
     }
-
     fun deleteSTO(
         selectedSTO: StoResponse
     ) {
@@ -495,15 +507,4 @@ class STOViewModel : ViewModel() {
             }
         }
     }
-
-
-//    fun setTodoSTOList(
-//        stoIdList: List<Long>
-//    ){
-//        val allStos = allSTOs.value ?: emptyList()
-//
-//        _todoSTOList.update {
-//            allStos.filter { stoIdList.contains(it.id) }
-//        }
-//    }
 }

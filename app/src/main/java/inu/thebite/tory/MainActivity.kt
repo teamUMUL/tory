@@ -27,6 +27,7 @@ import inu.thebite.tory.screens.auth.TokenManager
 import inu.thebite.tory.screens.auth.find.FindIdScreen
 import inu.thebite.tory.screens.auth.find.FindPasswordScreen
 import inu.thebite.tory.screens.auth.login.LoginScreen
+import inu.thebite.tory.screens.auth.signup.SignUpScreen
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -134,8 +135,9 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "loginScreen") {
                 composable("loginScreen") { LoginScreen(navController) }
-                composable("findId") { FindIdScreen(navController) }
-                composable("findPassword") { FindPasswordScreen(navController) }
+                composable("signupScreen") { SignUpScreen(navController) }
+                composable("findIdScreen") { FindIdScreen(navController) }
+                composable("findPasswordScreen") { FindPasswordScreen(navController) }
             }
         }
     }
