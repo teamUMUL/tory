@@ -83,7 +83,7 @@ fun RecentLTOTopBar(
                     letterSpacing = 0.24.sp,
                 ),
                 modifier = Modifier
-                    .padding(horizontal = 50.dp, vertical = 10.dp)
+                    .padding(horizontal = 50.dp, vertical = 7.dp)
             )
         }
 

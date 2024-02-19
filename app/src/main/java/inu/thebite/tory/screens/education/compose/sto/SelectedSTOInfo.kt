@@ -1,9 +1,11 @@
 package inu.thebite.tory.screens.education.compose.sto
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.StoSummaryResponse
@@ -36,7 +38,8 @@ fun SelectedSTOInfo(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(Color.White),
     ) {
         SelectedSTORow(
             modifier = Modifier.weight(0.7f),

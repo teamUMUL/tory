@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -34,13 +35,14 @@ import kotlin.math.atan2
 @Composable
 fun pieChartPreview(
     modifier: Modifier = Modifier,
-    radius: Float = 240f  //
+    radius: Float = 120f  //
 ) {
     val datalist = mutableListOf(0, 5, 3, 4, 3, 2, 3, 6, 3, 10)
 
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
 
         Box(
@@ -51,8 +53,8 @@ fun pieChartPreview(
 
             PieChart(
                 modifier = Modifier
-                    .size(340.dp)
-                    .padding(top = 80.dp),// 파이차트 전체 사이즈
+                    .fillMaxSize()
+                    .padding(top = 60.dp),// 파이차트 전체 사이즈
 
                 // size - 한 조각의 크기
                 // topleft - 시작지점 설정
@@ -161,8 +163,8 @@ data class PieChartInput(
 @Composable
 fun PieChart(
     modifier: Modifier = Modifier,
-    radius: Float = 240f,  //색 원
-    innerRadius: Float = 200f,  //중앙 하얀 원
+    radius: Float = 180f,  //색 원
+    innerRadius: Float = 150f,  //중앙 하얀 원
     input: List<PieChartInput>,
 ) {
     var circleCenter by remember {

@@ -105,7 +105,8 @@ fun CenterColumn(
     }
 
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = allCenters?.let { Arrangement.Top } ?: run {Arrangement.Bottom}
     ) {
         allCenters?.let { allCenters ->
             LazyColumn(
@@ -195,30 +196,31 @@ fun CenterColumn(
                     }
                 }
             }
-            Button(
-                onClick = {
-                    setAddCenterDialog(true)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
-                ),
-                border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE)),
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp)
-            ) {
-                Text(
-                    text = "Center 추가",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontFamily = fontFamily_Lato,
-                        fontWeight = FontWeight(500),
-                        color = Color.Black
-                    )
+
+        }
+        Button(
+            onClick = {
+                setAddCenterDialog(true)
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            ),
+            border = BorderStroke(width = 1.dp, color = Color(0xFFCECECE)),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp)
+        ) {
+            Text(
+                text = "센터 추가",
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontFamily = fontFamily_Lato,
+                    fontWeight = FontWeight(500),
+                    color = Color.Black
                 )
-            }
+            )
         }
 
     }

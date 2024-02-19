@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -16,11 +17,14 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,6 +59,8 @@ fun AppDrawer(
     ModalDrawerSheet(modifier = Modifier) {
         DrawerHeader(modifier)
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
+        Divider(thickness = 1.dp, color = Color.LightGray)
+        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         NavigationDrawerItem(
             label = {
                 Text(
@@ -67,7 +73,15 @@ fun AppDrawer(
                 closeDrawer()
             },
             icon = { Icon(painter = painterResource(id = R.drawable.icon_centerboard), contentDescription = null, modifier = Modifier.size(30.dp))},
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = Color(0xFF0047B3),
+                unselectedContainerColor = Color.Transparent,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.Black,
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.Black
+            )
         )
         NavigationDrawerItem(
             label = {
@@ -81,12 +95,22 @@ fun AppDrawer(
                 closeDrawer()
             },
             icon = { Icon(painter = painterResource(R.drawable.icon_teachingboard), contentDescription = null)},
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = Color(0xFF0047B3),
+                unselectedContainerColor = Color.Transparent,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.Black,
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.Black
+            )
         )
         NavigationDrawerItem(
             label = {
                 Text(
                     text = stringResource(id = R.string.education),
+                    modifier = Modifier
+                        .padding(start = 5.dp)
                 )
             },
             selected = route == AllDestinations.EDUCATION,
@@ -95,12 +119,22 @@ fun AppDrawer(
                 closeDrawer()
             },
             icon = { Icon(painter = painterResource(id = R.drawable.icon_book), contentDescription = null)},
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = Color(0xFF0047B3),
+                unselectedContainerColor = Color.Transparent,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.Black,
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.Black
+            )
         )
         NavigationDrawerItem(
             label = {
                 Text(
                     text = stringResource(id = R.string.notice),
+                    modifier = Modifier
+                        .padding(start = 5.dp)
                 )
             },
             selected = route == AllDestinations.NOTICE,
@@ -109,12 +143,22 @@ fun AppDrawer(
                 closeDrawer()
             },
             icon = { Icon(painter = painterResource(id = R.drawable.icon_calendar), contentDescription = null)},
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = Color(0xFF0047B3),
+                unselectedContainerColor = Color.Transparent,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.Black,
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.Black
+            )
         )
         NavigationDrawerItem(
             label = {
                 Text(
                     text = stringResource(id = R.string.setting),
+                    modifier = Modifier
+                        .padding(start = 5.dp)
                 )
             },
             selected = route == AllDestinations.SETTING,
@@ -123,7 +167,15 @@ fun AppDrawer(
                 closeDrawer()
             },
             icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = null)},
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
+            colors = NavigationDrawerItemDefaults.colors(
+                selectedContainerColor = Color(0xFF0047B3),
+                unselectedContainerColor = Color.Transparent,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.Black,
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.Black
+            )
         )
 
     }
@@ -139,16 +191,17 @@ fun DrawerHeader(modifier: Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(Color(0xFFF3F3F3))
             .padding(16.dp)
             .fillMaxWidth()
     ){
         Icon(
-            imageVector = Icons.Default.Person, 
+            painterResource(id = R.drawable.icon_logo),
             contentDescription = null,
             modifier = Modifier
-                .size(dimensionResource(id = R.dimen.header_image_size))
-                .clip(CircleShape)
+                .width(200.dp)
+                .clip(CircleShape),
+            tint = Color.Unspecified
         )
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Row(

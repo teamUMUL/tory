@@ -59,6 +59,7 @@ import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.schedule.ScheduleTopBar
 import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
+import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education.screen.NewEducationScreen
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
@@ -128,6 +129,46 @@ fun MainCompose(
     val childInfos by childSelectViewModel.childInfos.collectAsState()
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
     val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
+
+    LaunchedEffect(Unit){
+        centerSelectViewModel.setSelectedCenter(
+            centerEntity = CenterResponse(
+                id = 1L,
+                name = "송도"
+            )
+        )
+        childClassSelectViewModel.setSelectedChildClass(
+            childClassEntity = ChildClassResponse(
+                id = 1L,
+                name = "월수금(오전)",
+                center = CenterResponse(
+                    id = 1L,
+                    name = "송도"
+                )
+            )
+        )
+        childSelectViewModel.setSelectedChildInfo(
+            childInfoEntity = StudentResponse(
+            id = 1L,
+            name = "홍길동",
+            birth = "2002/10/02",
+            etc = "",
+            parentName = "홍길동",
+            startDate = "2023/02/19",
+            endDate = "2024/02/19",
+            registerDate = "2023/02/12",
+            childClass = ChildClassResponse(
+                id = 1L,
+                name = "월수금(오전)",
+                center = CenterResponse(
+                    id = 1L,
+                    name = "송도"
+                )
+            )
+            )
+        )
+
+    }
 
 
     LaunchedEffect(_selectedCenter, allCenters) {
@@ -410,7 +451,7 @@ fun MainCompose(
         colors = listOf(Color(0xFFF3F3F3), Color(0xFFF3F3F3))
     )
     val whiteBackground = Brush.horizontalGradient(
-        colors = listOf(Color(0xFFEFEFEF), Color(0xFFEFEFEF))
+        colors = listOf(Color(0xFFF3F3F3), Color(0xFFF3F3F3))
     )
     ModalNavigationDrawer(drawerContent = {
         AppDrawer(

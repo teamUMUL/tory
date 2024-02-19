@@ -22,6 +22,7 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,8 @@ fun ScheduleTopBar(
     stoViewModel: STOViewModel,
     childSelectViewModel: ChildSelectViewModel
 ) {
+    val context = LocalContext.current
+
     val todoList by todoViewModel.todoResponse.collectAsState()
     val tempTodoList by todoViewModel.tempTodoResponse.collectAsState()
     val todoSTOIdList by todoViewModel.todoSTOIdList.collectAsState()
@@ -64,13 +67,13 @@ fun ScheduleTopBar(
     LaunchedEffect(Unit){
         selectedChild?.let { selectedChild ->
             stoViewModel.getAllSTOs(studentId = selectedChild.id)
-            todoViewModel.getTodoList(studentId = selectedChild.id)
+            todoViewModel.getTodoList(studentId = selectedChild.id, context = context)
         }
     }
 
     LaunchedEffect(selectedChild){
         selectedChild?.let {selectedChild ->
-            todoViewModel.getTodoList(studentId = selectedChild.id)
+            todoViewModel.getTodoList(studentId = selectedChild.id, context = context)
         }
     }
 
@@ -139,7 +142,7 @@ fun ScheduleTopBar(
                 Log.d("isLoading", isLoading.toString())
 
                 if (isSTOListLoading || isLoading){
-                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                    CircularProgressIndicator(modifier = Modifier.size(30.dp))
                 } else {
                     if(!tempTodoList.isNotNull()){
                         Log.d("tempTodoListIsNull", "null")

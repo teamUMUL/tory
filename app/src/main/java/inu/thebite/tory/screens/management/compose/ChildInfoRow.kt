@@ -119,7 +119,7 @@ fun ChildInfoRow(
             .padding(10.dp)
     ) {
         Text(
-            text = "Children",
+            text = "아이",
             style = TextStyle(
                 fontSize = 33.sp,
                 fontFamily = fontFamily_Inter,

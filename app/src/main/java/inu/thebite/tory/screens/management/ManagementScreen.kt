@@ -129,7 +129,7 @@ fun ManagementScreen(
                     .fillMaxHeight()
                     .background(Color.White)
                     .padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 ChildClassRow(
                     modifier = Modifier

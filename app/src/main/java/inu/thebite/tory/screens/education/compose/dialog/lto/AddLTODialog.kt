@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,8 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -86,9 +89,13 @@ fun AddLTODialog(
     val rotationState by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f, label = ""
     )
-    var gameMode by remember {
-        mutableStateOf("교육 선택 안함")
+
+    var ltoMode by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue())
     }
+//    var gameMode by remember {
+//        mutableStateOf("교육 선택 안함")
+//    }
     // AddLTOItemDialog 내용
     Dialog(
         onDismissRequest = {setAddLTOItem(false)},
@@ -142,78 +149,108 @@ fun AddLTODialog(
                     disabledIndicatorColor = Color.Transparent,
                 )
             )
-            ExposedDropdownMenuBox(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
-                expanded = isExpanded,
-                onExpandedChange = {isExpanded = !isExpanded}
-            ){
-                TextField(
-                    value = gameMode,
-                    onValueChange = {},
-                    readOnly = true,
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowDropDown,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(60.dp)
-                                .rotate(rotationState)
-                        )
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
-                        unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
-                        disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                    ),
-                    textStyle = TextStyle(
-                        color = Color.Black, fontSize = 30.sp,
-                        fontFamily = FontFamily.SansSerif
-                    ),
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth()
-                        .height(80.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(30.dp)
+            ) {
+                RadioButton(
+                    selected = (ltoMode.text == "언어발달"),
+                    onClick = { ltoMode = TextFieldValue("언어발달") },
                 )
-                ExposedDropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = {isExpanded = false},
-                    modifier = Modifier
-                        .exposedDropdownSize(),
-                ){
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "교육 선택 안함")
-                        },
-                        onClick = {
-                            gameMode = "교육 선택 안함"
-                            isExpanded = false
-                        }
+                Text(
+                    text = "언어발달",
+                    style = TextStyle(
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(400),
+                        fontSize = 20.sp,
+                        color = Color(0xFF606060)
                     )
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "같은 사진 매칭")
-                        },
-                        onClick = {
-                            gameMode = "같은 사진 매칭"
-                            isExpanded = false
-                        }
+                )
+                RadioButton(
+                    selected = (ltoMode.text == "인지발달"),
+                    onClick = { ltoMode = TextFieldValue("인지발달") })
+                Text(
+                    text = "인지발달",
+                    style = TextStyle(
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight(400),
+                        fontSize = 20.sp,
+                        color = Color(0xFF606060)
                     )
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "일반화 매칭")
-                        },
-                        onClick = {
-                            gameMode = "일반화 매칭"
-                            isExpanded = false
-                        }
-                    )
-                }
+                )
             }
+//            ExposedDropdownMenuBox(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(80.dp),
+//                expanded = isExpanded,
+//                onExpandedChange = {isExpanded = !isExpanded}
+//            ){
+//                TextField(
+//                    value = gameMode,
+//                    onValueChange = {},
+//                    readOnly = true,
+//                    trailingIcon = {
+//                        Icon(
+//                            imageVector = Icons.Filled.ArrowDropDown,
+//                            contentDescription = null,
+//                            modifier = Modifier
+//                                .size(60.dp)
+//                                .rotate(rotationState)
+//                        )
+//                    },
+//                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+//                        focusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+//                        unfocusedContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+//                        disabledContainerColor= MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f),
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent,
+//                        disabledIndicatorColor = Color.Transparent,
+//                    ),
+//                    textStyle = TextStyle(
+//                        color = Color.Black, fontSize = 30.sp,
+//                        fontFamily = FontFamily.SansSerif
+//                    ),
+//                    modifier = Modifier
+//                        .menuAnchor()
+//                        .fillMaxWidth()
+//                        .height(80.dp)
+//                )
+//                ExposedDropdownMenu(
+//                    expanded = isExpanded,
+//                    onDismissRequest = {isExpanded = false},
+//                    modifier = Modifier
+//                        .exposedDropdownSize(),
+//                ){
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(text = "교육 선택 안함")
+//                        },
+//                        onClick = {
+//                            gameMode = "교육 선택 안함"
+//                            isExpanded = false
+//                        }
+//                    )
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(text = "같은 사진 매칭")
+//                        },
+//                        onClick = {
+//                            gameMode = "같은 사진 매칭"
+//                            isExpanded = false
+//                        }
+//                    )
+//                    DropdownMenuItem(
+//                        text = {
+//                            Text(text = "일반화 매칭")
+//                        },
+//                        onClick = {
+//                            gameMode = "일반화 매칭"
+//                            isExpanded = false
+//                        }
+//                    )
+//                }
+//            }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(80.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -226,7 +263,7 @@ fun AddLTODialog(
                     onClick = {
                         setAddLTOItem(false)
                         ltoInputValue = TextFieldValue("")
-                        gameMode = ""
+//                        gameMode = ""
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
                 ){
@@ -253,7 +290,7 @@ fun AddLTODialog(
                                 newLTO = LtoRequest(
                                     name = ltoInputValue.text,
                                     contents = "",
-                                    game = gameMode
+                                    game = ""
                                 ),
                                 studentId = selectedChild.id
                             )
@@ -262,7 +299,7 @@ fun AddLTODialog(
                         }
                         setAddLTOItem(false)
                         ltoInputValue = TextFieldValue("")
-                        gameMode = ""
+//                        gameMode = ""
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3))
                 ){

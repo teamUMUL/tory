@@ -1,20 +1,25 @@
 package inu.thebite.tory.schedule
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.model.sto.StoResponse
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.todo.TodoListRequest
 import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.repositories.todo.TodoRepoImpl
+import inu.thebite.tory.screens.education.compose.sidebar.currentToast
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 class TodoViewModel : ViewModel() {
 
@@ -131,27 +136,44 @@ class TodoViewModel : ViewModel() {
         }
     }
 
-    fun getTodoList(
-        studentId: Long
-    ){
+    fun getTodoList(studentId: Long, context: Context) {
         viewModelScope.launch {
             _isLoading.update { true }
             try {
-                val response = repo.getTodoList(studentId = studentId)
-
-                if (response.isSuccessful) {
-                    val gotTodoResponse = response.body() ?: throw Exception("Todo 정보가 비어있습니다.")
-                    Log.d("gotTodoResponse", gotTodoResponse.stoList.toString())
-                    _todoResponse.update {
-                        gotTodoResponse
-                    }
-                } else {
-                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
-                    throw Exception("Todo 가져오기 실패: $errorBody")
+                // withTimeoutOrNull을 사용하여 5초(5000ms) 동안 작업을 시도합니다.
+                val response = withTimeoutOrNull(5000) {
+                    repo.getTodoList(studentId = studentId)
                 }
 
+                if (response == null) {
+                    // 시간 초과로 인해 response가 null인 경우, 로딩 실패 처리
+                    Log.e("getTodoList", "Todo 가져오기 시간 초과")
+                    // 여기서 사용자에게 가져오기 실패를 알리는 로직을 추가할 수 있습니다.
+                    _isLoading.update { false }
+                    currentToast?.cancel()
+                    val newToast = Toasty.error(context, "To Do 목록 가져오기 실패", Toast.LENGTH_SHORT, true)
+                    newToast.show()
+                    currentToast = newToast
+
+                } else {
+                    // 응답 처리 로직
+                    if (response.isSuccessful) {
+                        val gotTodoResponse = response.body() ?: throw Exception("Todo 정보가 비어있습니다.")
+                        Log.d("gotTodoResponse", gotTodoResponse.stoList.toString())
+                        _todoResponse.update {
+                            gotTodoResponse
+                        }
+                    } else {
+                        val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                        throw Exception("Todo 가져오기 실패: $errorBody")
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                Log.e("getTodoList", "요청 시간 초과: ${e.message}")
+                // 요청 시간 초과 처리 로직
             } catch (e: Exception) {
-                Log.e("failed to get Todo", e.message.toString())
+                Log.e("getTodoList", "실패: ${e.message}")
+                // 예외 처리 로직
             } finally {
                 _isLoading.update { false }
             }

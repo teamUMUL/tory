@@ -105,7 +105,7 @@ fun ChildClassRow(
         modifier = modifier,
     ) {
         Text(
-            text = "Class",
+            text = "반",
             style = TextStyle(
                 fontSize = 33.sp,
                 fontFamily = fontFamily_Inter,

@@ -100,46 +100,62 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (loginState && tokenExpired.value == false) {
-            MainCompose(
-                centerSelectViewModel = centerSelectViewModel,
-                childClassSelectViewModel = childClassSelectViewModel,
-                childSelectViewModel = childSelectViewModel,
-                centerViewModel = centerViewModel,
-                childClassViewModel = childClassViewModel,
-                childInfoViewModel = childInfoViewModel,
-                devViewModel = devViewModel,
-                ltoViewModel = ltoViewModel,
-                stoViewModel = stoViewModel,
-                imageViewModel = imageViewModel,
-                dragAndDropViewModel = dragAndDropViewModel,
-                gameViewModel = gameViewModel,
-                noticeViewModel = noticeViewModel,
-                todoViewModel = todoViewModel
-            )
-        } else {
-            centerSelectViewModel.clearAll()
-            childClassSelectViewModel.clearAll()
-            childSelectViewModel.clearAll()
-            centerViewModel.clearAll()
-            childClassViewModel.clearAll()
-            childInfoViewModel.clearAll()
-            devViewModel.clearAll()
-            ltoViewModel.clearAll()
-            stoViewModel.clearAll()
-            dragAndDropViewModel.clearAll()
-            gameViewModel.clearAll()
-            gameViewModel.clearAll()
-            noticeViewModel.resetAll()
-            todoViewModel.clearAll()
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "loginScreen") {
-                composable("loginScreen") { LoginScreen(navController) }
-                composable("signupScreen") { SignUpScreen(navController) }
-                composable("findIdScreen") { FindIdScreen(navController) }
-                composable("findPasswordScreen") { FindPasswordScreen(navController) }
-            }
-        }
+        MainCompose(
+            centerSelectViewModel = centerSelectViewModel,
+            childClassSelectViewModel = childClassSelectViewModel,
+            childSelectViewModel = childSelectViewModel,
+            centerViewModel = centerViewModel,
+            childClassViewModel = childClassViewModel,
+            childInfoViewModel = childInfoViewModel,
+            devViewModel = devViewModel,
+            ltoViewModel = ltoViewModel,
+            stoViewModel = stoViewModel,
+            imageViewModel = imageViewModel,
+            dragAndDropViewModel = dragAndDropViewModel,
+            gameViewModel = gameViewModel,
+            noticeViewModel = noticeViewModel,
+            todoViewModel = todoViewModel
+        )
+//        if (loginState && tokenExpired.value == false) {
+//            MainCompose(
+//                centerSelectViewModel = centerSelectViewModel,
+//                childClassSelectViewModel = childClassSelectViewModel,
+//                childSelectViewModel = childSelectViewModel,
+//                centerViewModel = centerViewModel,
+//                childClassViewModel = childClassViewModel,
+//                childInfoViewModel = childInfoViewModel,
+//                devViewModel = devViewModel,
+//                ltoViewModel = ltoViewModel,
+//                stoViewModel = stoViewModel,
+//                imageViewModel = imageViewModel,
+//                dragAndDropViewModel = dragAndDropViewModel,
+//                gameViewModel = gameViewModel,
+//                noticeViewModel = noticeViewModel,
+//                todoViewModel = todoViewModel
+//            )
+//        } else {
+//            centerSelectViewModel.clearAll()
+//            childClassSelectViewModel.clearAll()
+//            childSelectViewModel.clearAll()
+//            centerViewModel.clearAll()
+//            childClassViewModel.clearAll()
+//            childInfoViewModel.clearAll()
+//            devViewModel.clearAll()
+//            ltoViewModel.clearAll()
+//            stoViewModel.clearAll()
+//            dragAndDropViewModel.clearAll()
+//            gameViewModel.clearAll()
+//            gameViewModel.clearAll()
+//            noticeViewModel.resetAll()
+//            todoViewModel.clearAll()
+//            val navController = rememberNavController()
+//            NavHost(navController = navController, startDestination = "loginScreen") {
+//                composable("loginScreen") { LoginScreen(navController) }
+//                composable("signupScreen") { SignUpScreen(navController) }
+//                composable("findIdScreen") { FindIdScreen(navController) }
+//                composable("findPasswordScreen") { FindPasswordScreen(navController) }
+//            }
+//        }
     }
 
 }

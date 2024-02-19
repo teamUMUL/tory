@@ -25,33 +25,47 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.ui.theme.fontFamily_Inter
+import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 @Composable
 fun TeacherInfor(
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+    onClickEdit : () -> Unit
+ ) {
 
-    Row(modifier= modifier
-        .shadow(
-            elevation = 4.dp,
-            spotColor = Color(0x40000000),
-            ambientColor = Color(0x40000000)
-        )
+    Row(
+        modifier = modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
 //            .width(241.dp)
 //            .height(440.dp)
-        .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
-        .padding(4.dp),
+            .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 10.dp))
+            .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier= Modifier
-            .fillMaxSize()
-            .padding(start = 25.dp, end = 25.dp),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 25.dp, end = 25.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(modifier= Modifier. weight(1f).fillMaxSize().padding(16.dp),painter = painterResource(id = R.drawable.teacher_image), contentDescription ="" )
-            Column(modifier = Modifier. weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top))
+            Image(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .padding(16.dp),
+                painter = painterResource(id = R.drawable.teacher_image),
+                contentDescription = ""
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top)
+            )
             {
                 Text(
                     text = "이름/ 자격",
@@ -104,21 +118,26 @@ fun TeacherInfor(
                         color = Color(0xFF000000),
                     )
                 )
-                Spacer(modifier = Modifier. height(25.dp))
+                Spacer(modifier = Modifier.height(25.dp))
                 Button(
-                    onClick = { /* Define the click action here */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCECECE)),
+                    onClick = { onClickEdit()},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF0047B3)
+                    ),
                     modifier = Modifier  //lto & sto button
-                        .fillMaxWidth()
-                        .background(
-                            color = Color(0xFFcecece),
-                            shape = RoundedCornerShape(size = 10.dp)
-                        )
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp)
+
 
                 ) {
                     Text(
-                        text = "edit",
-                        style = TextStyle(color = Color(0xFFFFFFFF), fontSize = 16.sp, background = Color(0xFFcecece))
+                        text = "프로필 편집",
+                        style = TextStyle(
+                            color = Color(0xFFFFFFFF),
+                            fontSize = 24.sp,
+                            fontFamily = fontFamily_Inter,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
             }

@@ -176,7 +176,7 @@ fun NewEducationScreen(
                             dragAndDropViewModel = dragAndDropViewModel
                         )
                     }
-                } ?: LTOAndSTONull(modifier = Modifier.weight(9.5f))
+                } ?: LTOAndSTONull(modifier = Modifier.weight(9.5f).background(Color(0xFFF3F3F3)))
             }
             VerticalDivider()
             Column(
@@ -227,10 +227,9 @@ fun LTOAndSTONull(
         Text(
             text = "발달영역을 선택해주세요",
             style = TextStyle(
-                fontSize = 35.sp,
-                lineHeight = 22.sp,
+                fontSize = 18.sp,
                 fontFamily = fontFamily_Lato,
-                fontWeight = FontWeight(800),
+                fontWeight = FontWeight(400),
                 color = Color(0xFF000000),
             )
         )

@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 class STOViewModel : ViewModel() {
     private val repo: STORepoImpl = STORepoImpl()
@@ -226,22 +227,29 @@ class STOViewModel : ViewModel() {
         }
     }
 
-    fun getAllSTOs(
-        studentId: Long
-    ) {
-        viewModelScope.launch {
-            _isSTOListLoading.update{ true }
+    fun getAllSTOs(studentId: Long) {
+        viewModelScope.launch(coroutineExceptionHandler) {
+            _isSTOListLoading.update { true }
             try {
-                _allSTOs.update {
+                // withTimeoutOrNull을 사용하여 5초 동안 작업을 시도합니다.
+                val result = withTimeoutOrNull(5000L) {
                     repo.getAllSTOs(studentId = studentId)
                 }
 
+                if (result == null) {
+                    // 시간 초과로 인해 작업이 완료되지 않았을 경우의 처리를 여기에 작성합니다.
+                    Log.e("getAllSTOs", "시간 초과로 STO 목록을 가져오지 못했습니다.")
+                    // 여기서 사용자에게 시간 초과를 알리는 로직을 추가할 수 있습니다.
+                } else {
+                    // 시간 내에 작업이 성공적으로 완료되었을 때의 처리를 여기에 작성합니다.
+                    _allSTOs.update { result }
+                }
             } catch (e: Exception) {
-                Log.e("failed to get all STOs", e.message.toString())
+                Log.e("getAllSTOs", "STO 목록 가져오기 실패: ${e.message}", e)
+                // 예외 처리 로직을 여기에 작성합니다.
             } finally {
-                _isSTOListLoading.update{ false }
+                _isSTOListLoading.update { false }
             }
-            Log.d("allSTOs", allSTOs.value.toString())
         }
     }
     fun getSTOsByIds(

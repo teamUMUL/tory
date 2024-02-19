@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.centerdashboardscreen.dialog.EditProfileDialog
+import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
@@ -64,6 +67,15 @@ fun CenterDashboardScreen(
     val allChildClasses by childClassViewModel.allChildClasses.collectAsState()
     val allChildInfos by childInfoViewModel.allChildInfos.collectAsState()
 
+    val (editProfileDialog, setEditProfileDialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (editProfileDialog){
+        EditProfileDialog(setEditProfileDialog = {setEditProfileDialog(it)})
+
+    }
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()
@@ -74,16 +86,15 @@ fun CenterDashboardScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(top = 0.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
 
             ) {
                 Text(
                     text = "센터 보드",
                     modifier = Modifier
-                        .width(240.dp)
                         .weight(1f)
-                        .height(40.dp)
                         .padding(start = 30.dp),
                     style = TextStyle(
                         fontSize = 33.sp,
@@ -131,7 +142,7 @@ fun CenterDashboardScreen(
                     .fillMaxWidth()
                     .padding(start = 12.dp)
             ) {
-                TeacherInfor(modifier = Modifier.weight(1f))
+                TeacherInfor(modifier = Modifier.weight(1f), onClickEdit = {setEditProfileDialog(true)})
 
                 Column(modifier = Modifier
                     .fillMaxHeight()
@@ -418,7 +429,6 @@ fun CenterDashboardScreen(
                                             .height(40.dp)
                                             .width(40.dp)
                                             .padding(start = 8.dp)
-                                            .weight(0.8f)
                                             .background(
                                                 color = Color(0xFF7E5DE3),
                                                 shape = RoundedCornerShape(size = 12.dp)
@@ -466,8 +476,7 @@ fun CenterDashboardScreen(
                                     }
                                     Text(
                                         modifier = Modifier
-                                            .padding(16.dp)
-                                            .weight(2f),
+                                            .padding(16.dp),
                                         text = "오후 3: 11",
                                         style = TextStyle(
                                             fontSize = 16.sp,
@@ -499,7 +508,6 @@ fun CenterDashboardScreen(
                                             .height(40.dp)
                                             .width(40.dp)
                                             .padding(start = 8.dp)
-                                            .weight(0.8f)
                                             .background(
                                                 color = Color(0xFF7E5DE3),
                                                 shape = RoundedCornerShape(size = 12.dp)
@@ -547,8 +555,7 @@ fun CenterDashboardScreen(
                                     }
                                     Text(
                                         modifier = Modifier
-                                            .padding(16.dp)
-                                            .weight(2f),
+                                            .padding(16.dp),
                                         text = "오후 3: 11",
                                         style = TextStyle(
                                             fontSize = 16.sp,
@@ -580,7 +587,6 @@ fun CenterDashboardScreen(
                                             .height(40.dp)
                                             .width(40.dp)
                                             .padding(start = 8.dp)
-                                            .weight(0.8f)
                                             .background(
                                                 color = Color(0xFF7E5DE3),
                                                 shape = RoundedCornerShape(size = 12.dp)
@@ -628,8 +634,7 @@ fun CenterDashboardScreen(
                                     }
                                     Text(
                                         modifier = Modifier
-                                            .padding(16.dp)
-                                            .weight(2f),
+                                            .padding(16.dp),
                                         text = "오후 3: 11",
                                         style = TextStyle(
                                             fontSize = 16.sp,
@@ -661,7 +666,6 @@ fun CenterDashboardScreen(
                                             .height(40.dp)
                                             .width(40.dp)
                                             .padding(start = 8.dp)
-                                            .weight(0.8f)
                                             .background(
                                                 color = Color(0xFF7E5DE3),
                                                 shape = RoundedCornerShape(size = 12.dp)
@@ -709,8 +713,7 @@ fun CenterDashboardScreen(
                                     }
                                     Text(
                                         modifier = Modifier
-                                            .padding(16.dp)
-                                            .weight(2f),
+                                            .padding(16.dp),
                                         text = "오후 3: 11",
                                         style = TextStyle(
                                             fontSize = 16.sp,
@@ -742,7 +745,6 @@ fun CenterDashboardScreen(
                                             .height(40.dp)
                                             .width(40.dp)
                                             .padding(start = 8.dp)
-                                            .weight(0.8f)
                                             .background(
                                                 color = Color(0xFF7E5DE3),
                                                 shape = RoundedCornerShape(size = 12.dp)
@@ -790,8 +792,7 @@ fun CenterDashboardScreen(
                                     }
                                     Text(
                                         modifier = Modifier
-                                            .padding(16.dp)
-                                            .weight(2f),
+                                            .padding(16.dp),
                                         text = "오후 3: 11",
                                         style = TextStyle(
                                             fontSize = 16.sp,

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
+import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.screens.education.compose.dialog.dev.AddDEVDialog
+import inu.thebite.tory.screens.education.compose.dialog.dev.UpdateDEVDialog
 import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education.compose.dialog.lto.UpdateLTOItemDialog
 import inu.thebite.tory.screens.education.compose.dialog.sto.AddSTODialog
@@ -51,10 +55,79 @@ fun Sidebar(
 
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
 
+    //    LaunchedEffect(Unit){
+//        devViewModel.setSelectedDEV(
+//            devEntity = DomainResponse(
+//                id = 1L,
+//                templateNum = 1,
+//                type = "",
+//                status = "",
+//                name = "1. 매칭",
+//                contents = "",
+//                useYN = "",
+//                delYN = "",
+//                registerDate = ""
+//            )
+//        )
+//        setAddLTODialog(true)
+//    }
+
+    //DEV 추가 다이얼로그
+    val (addDEVDialog, setAddDEVDialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if(addDEVDialog){
+        selectedChild?.let { selectedChild ->
+            AddDEVDialog(
+                context = context,
+                selectedChild = selectedChild,
+                devViewModel = devViewModel,
+                setDEVDialog = {setAddDEVDialog(it)}
+            )
+        } ?: run {
+            currentToast?.cancel()
+            val newToast = Toasty.warning(context, "발달영역을 추가할 아이를 선택해주세요", Toast.LENGTH_SHORT, true)
+            newToast.show()
+
+            currentToast = newToast
+
+            setAddDEVDialog(false)
+        }
+    }
+
+    //DEV 수정 다이얼로그
+    val (updateDEVDialog, setUpdateDEVDialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if(updateDEVDialog){
+        selectedChild?.let { selectedChild ->
+            selectedDEV?.let { selectedDEV ->
+                UpdateDEVDialog(
+                    context = context,
+                    selectedChild = selectedChild,
+                    devViewModel = devViewModel,
+                    setDEVDialog = {setUpdateDEVDialog(it)}
+                )
+            } ?: run {
+                currentToast?.cancel()
+
+                val newToast = Toasty.warning(context, "수정할 발달영역을 선택해주세요", Toast.LENGTH_SHORT, true)
+                newToast.show()
+
+                currentToast = newToast
+
+                setUpdateDEVDialog(false)
+            }
+        }
+    }
+
     //LTO 추가 다이얼로그
     val (addLTODialog, setAddLTODialog) = rememberSaveable {
         mutableStateOf(false)
     }
+
     if(addLTODialog){
         selectedChild?.let { selectedChild ->
             selectedDEV?.let {selectedDEV ->
@@ -66,6 +139,8 @@ fun Sidebar(
                     ltoViewModel = ltoViewModel
                 )
             } ?: run {
+                currentToast?.cancel()
+
                 val newToast = Toasty.warning(context, "LTO를 추가할 발달영역을 선택해주세요", Toast.LENGTH_SHORT, true)
                 newToast.show()
 
@@ -90,6 +165,8 @@ fun Sidebar(
                 ltoViewModel = ltoViewModel
             )
         } ?: run {
+            currentToast?.cancel()
+
             val newToast = Toasty.warning(context, "수정할 LTO를 선택해주세요", Toast.LENGTH_SHORT, true)
             newToast.show()
 
@@ -114,6 +191,8 @@ fun Sidebar(
                 selectedLTO = selectedLTO
             )
         } ?: run {
+            currentToast?.cancel()
+
             val newToast = Toasty.warning(context, "STO를 추가할LTO를 선택해주세요", Toast.LENGTH_SHORT, true)
             newToast.show()
 
@@ -136,6 +215,8 @@ fun Sidebar(
                 setUpdateSTOItem = {setUpdateSTODialog(it)},
             )
         } ?: run {
+            currentToast?.cancel()
+
             val newToast = Toasty.warning(context, "수정할 STO를 선택해주세요", Toast.LENGTH_SHORT, true)
             newToast.show()
 
@@ -155,18 +236,21 @@ fun Sidebar(
         IconButton(
             modifier = Modifier
                 .padding(top = 30.dp),
-            onClick = {}
+            onClick = {
+                setAddDEVDialog(true)
+            }
         ) {
             Icon(painter = painterResource(id = R.drawable.icon_dev_add), contentDescription = null, tint = Color(0xFF8E8E8E))
         }
         IconButton(
-            onClick = {}
+            onClick = {
+                setUpdateDEVDialog(true)
+            }
         ) {
             Icon(painter = painterResource(id = R.drawable.icon_dev_update), contentDescription = null, tint = Color(0xFF8E8E8E))
         }
         IconButton(
             onClick = {
-                currentToast?.cancel()
                 setAddLTODialog(true)
             }
         ) {
@@ -174,7 +258,6 @@ fun Sidebar(
         }
         IconButton(
             onClick = {
-                currentToast?.cancel()
                 setUpdateLTODialog(true)
             }
         ) {
@@ -182,7 +265,6 @@ fun Sidebar(
         }
         IconButton(
             onClick = {
-                currentToast?.cancel()
                 setAddSTODialog(true)
             }
         ) {
@@ -190,7 +272,6 @@ fun Sidebar(
         }
         IconButton(
             onClick = {
-                currentToast?.cancel()
                 setUpdateSTODialog(true)
             }
         ) {
