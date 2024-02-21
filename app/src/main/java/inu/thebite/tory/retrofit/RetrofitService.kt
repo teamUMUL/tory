@@ -20,6 +20,7 @@ import inu.thebite.tory.model.member.LoginResponse
 import inu.thebite.tory.model.member.MemberLoginRequest
 import inu.thebite.tory.model.member.ValidationTokenResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.AutoCommentResponse
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
@@ -252,7 +253,7 @@ interface RetrofitService {
 
     // notice 자동 멘트 생성
     @GET("/notices/{studentId}/auto/comment")
-    suspend fun getNoticeAutoComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<String>
+    suspend fun getNoticeAutoComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<AutoCommentResponse>
 
     /** http://{서버 ip}:8081/notices/{studentId}/reports?year=2023&month=12&date=12*/
     @POST("/notices/{studentId}/reports")
@@ -272,7 +273,7 @@ interface RetrofitService {
 
     // Detail 멘트 자동 생성
     @GET("/details/{studentId}/{ltoId}/auto/comment")
-    suspend fun getDetailAutoComment(@Path("studentId") studentId: Long, @Path("ltoId") ltoId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<String>
+    suspend fun getDetailAutoComment(@Path("studentId") studentId: Long, @Path("ltoId") ltoId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<AutoCommentResponse>
 
     /**
      * Member Api
