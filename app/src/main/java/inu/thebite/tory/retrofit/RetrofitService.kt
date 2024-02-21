@@ -100,11 +100,11 @@ interface RetrofitService {
     suspend fun deleteStudent(@Path("studentId") studentId: Long) : Response<Boolean>
 
     // domain
-    @POST("/domains")
-    suspend fun addDomain(@Body addDomainRequest: AddDomainRequest) : Response<DomainResponse>
+    @POST("/domains/{centerId}")
+    suspend fun addDomain(@Body addDomainRequest: AddDomainRequest, @Path("centerId") centerId: Long) : Response<DomainResponse>
 
-    @GET("/domains")
-    suspend fun getDomainList() : List<DomainResponse>
+    @GET("/domains/{centerId}")
+    suspend fun getDomainList(@Path("centerId") centerId: Long) : List<DomainResponse>
 
     @DELETE("/domains/{domainId}")
     suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>

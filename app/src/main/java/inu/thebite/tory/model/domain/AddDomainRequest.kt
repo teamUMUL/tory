@@ -7,9 +7,4 @@ data class AddDomainRequest(
     @SerializedName("name")
     var name: String,
 
-    @SerializedName("type")
-    var type: String,
-
-    @SerializedName("contents")
-    var contents: String
 )

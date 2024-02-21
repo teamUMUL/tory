@@ -227,7 +227,7 @@ fun ChildrenCard(
 
     LaunchedEffect(selectedChildInfo){
         selectedChildInfo?.let {selectedChildInfo ->
-            devViewModel.getAllDEVs()
+            devViewModel.getAllDEVs(centerId = selectedChildInfo.childClass.center.id)
             ltoViewModel.getAllLTOs(studentId = selectedChildInfo.id)
             stoViewModel.getAllSTOs(studentId = selectedChildInfo.id)
         }

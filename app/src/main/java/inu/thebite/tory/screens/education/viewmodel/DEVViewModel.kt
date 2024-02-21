@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
+import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.repositories.DEV.DEVRepoImpl
@@ -73,13 +74,9 @@ class DEVViewModel : ViewModel() {
             val dummyData = DomainResponse(
                 id = i.toLong(),
                 templateNum = i,
-                type = "",
-                status = "",
                 name = "$i. 예시 데이터 DEV",
-                contents = "",
-                useYN = "",
-                delYN = "",
-                registerDate = ""
+                registerDate = "",
+                centerId = 1L
             )
             dummyDataList.add(dummyData)
         }
@@ -89,12 +86,40 @@ class DEVViewModel : ViewModel() {
         }
     }
 
+    fun addDEV(
+        addDomainRequest: AddDomainRequest,
+        centerId: Long
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.createDEV(newDEV = addDomainRequest, centerId = centerId)
 
-    fun getAllDEVs(){
+                if (response.isSuccessful) {
+                    val newDEVResponse = response.body() ?: throw Exception("DEV 정보가 비어있습니다.")
+                    _allDEVs.update { currentDEVs ->
+                        currentDEVs?.let {
+                            // 현재 DEV 리스트가 null이 아니면 새 STO를 추가
+                            it + newDEVResponse
+                        } ?: listOf(newDEVResponse) // 현재 DEV 리스트가 null이면 새 리스트를 생성
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("DEV 추가 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to add DEV", e.message.toString())
+            }
+        }
+    }
+
+
+    fun getAllDEVs(centerId: Long){
         viewModelScope.launch {
             try {
                 _allDEVs.update {
-                    repo.getAllDEVs()
+                    repo.getAllDEVs(centerId = centerId)
                 }
             } catch (e: Exception) {
                 Log.e("failed to get all DEVs", e.message.toString())
