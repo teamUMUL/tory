@@ -398,12 +398,12 @@ class NoticeViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = repo.getNoticeAutoComment(studentId = studentId, year = year, month = month, date = date)
-
+                Log.d("selectedNotice",selectedNotice.value.toString())
                 if (response.isSuccessful) {
                     val gottenAutoComment = response.body() ?: throw Exception("AutoComment 정보가 비어있습니다.")
                     _selectedNotice.update {
                         selectedNotice.value?.copy(
-                            comment = gottenAutoComment
+                            comment = gottenAutoComment.comment
                         )
                     }
                 } else {
@@ -422,18 +422,19 @@ class NoticeViewModel : ViewModel() {
         studentId: Long,
         year: String,
         month: Int,
-        date: String
+        date: String,
+        ltoId: Long
     ){
         viewModelScope.launch {
             try {
-                val response = repo.getNoticeAutoComment(studentId = studentId, year = year, month = month, date = date)
+                val response = repo.getDetailAutoComment(studentId = studentId, year = year, month = month, date = date, ltoId = ltoId)
 
                 if (response.isSuccessful) {
                     val gottenAutoComment = response.body() ?: throw Exception("AutoComment 정보가 비어있습니다.")
                     _selectedNoticeDetailList.update {currentNoticeDetailList ->
                         currentNoticeDetailList?.map {detail ->
                             if(detail.id == selectedDetailObjectResponse.id){
-                                detail.copy(comment = gottenAutoComment)
+                                detail.copy(comment = gottenAutoComment.comment)
                             } else {
                                 detail
                             }

@@ -3,6 +3,7 @@ package inu.thebite.tory.repositories.notice
 import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.AutoCommentResponse
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
@@ -51,7 +52,7 @@ class NoticeRepoImpl : NoticeRepo {
         year: String,
         month: Int,
         date: String
-    ): Response<String> {
+    ): Response<AutoCommentResponse> {
         return noticeRetrofit.getDetailAutoComment(studentId = studentId, ltoId = ltoId, year = year, month = month, date = date)
     }
 
@@ -60,7 +61,7 @@ class NoticeRepoImpl : NoticeRepo {
         year: String,
         month: Int,
         date: String
-    ): Response<String> {
+    ): Response<AutoCommentResponse> {
         return noticeRetrofit.getNoticeAutoComment(studentId = studentId, year = year, month = month, date = date)
 
     }

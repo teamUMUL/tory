@@ -23,6 +23,6 @@ data class NoticeResponse(
     @SerializedName("comment")
     var comment: String,
 
-    @SerializedName("student")
-    var student: StudentResponse
+    @SerializedName("studentId")
+    var studentId: Long
 )

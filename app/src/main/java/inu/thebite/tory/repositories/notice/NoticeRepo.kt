@@ -4,6 +4,7 @@ import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
+import inu.thebite.tory.model.notice.AutoCommentResponse
 import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
@@ -32,7 +33,7 @@ interface NoticeRepo {
 
     suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String)
 
-    suspend fun getDetailAutoComment(studentId: Long, ltoId: Long, year: String, month: Int, date: String) : Response<String>
+    suspend fun getDetailAutoComment(studentId: Long, ltoId: Long, year: String, month: Int, date: String) : Response<AutoCommentResponse>
 
-    suspend fun getNoticeAutoComment(studentId: Long, year: String, month: Int, date: String) : Response<String>
+    suspend fun getNoticeAutoComment(studentId: Long, year: String, month: Int, date: String) : Response<AutoCommentResponse>
 }

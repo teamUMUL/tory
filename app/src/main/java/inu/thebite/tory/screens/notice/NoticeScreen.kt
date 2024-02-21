@@ -276,6 +276,7 @@ fun NoticeScreen(
                     .background(Color.White)
             ) {
                 if (monthNotice){
+
                     MonthInfoColumn(
 
                     )
