@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.domain.AddDomainRequest
+import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
@@ -59,13 +61,13 @@ fun UpdateDEVDialog(
     context : Context,
     selectedChild : StudentResponse,
     setDEVDialog: (Boolean) -> Unit,
-    devViewModel: DEVViewModel
+    devViewModel: DEVViewModel,
+    selectedDEV: DomainResponse,
 ) {
     var devInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+        mutableStateOf(TextFieldValue(selectedDEV.name))
     }
 
-    val selectedDEV by devViewModel.selectedDEV.collectAsState()
 
     val (deleteDEVDialog, setDeleteDEVDialog) = rememberSaveable {
         mutableStateOf(false)
@@ -77,7 +79,7 @@ fun UpdateDEVDialog(
                 title = {Text(text = "발달영역 : ${selectedDEV.name} 삭제하시겠습니까?")},
                 onDismissRequest = {setDeleteDEVDialog(false)},
                 confirmButton = { TextButton(onClick = {
-//                    ltoViewModel.deleteLTO(selectedLTO = selectedLTO)
+                    devViewModel.deleteDEV(domainId = selectedDEV.id)
                     setDeleteDEVDialog(false)
                     setDEVDialog(false)
                 }) {
@@ -200,7 +202,13 @@ fun UpdateDEVDialog(
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
                         if(devInputValue.text.isNotEmpty()){
-                            //발달영역 추가 코드
+                            //발달영역 수정 코드
+                            devViewModel.updateDEV(
+                                domainId = selectedDEV.id,
+                                addDomainRequest = AddDomainRequest(
+                                    name = devInputValue.text
+                                )
+                            )
 
                         } else{
                             Toasty.warning(context, "발달영역의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
@@ -212,7 +220,7 @@ fun UpdateDEVDialog(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3))
                 ){
                     Text(
-                        text = "추가",
+                        text = "수정",
                         style = TextStyle(
                             fontSize = 26.sp,
                             fontFamily = fontFamily_Poppins,

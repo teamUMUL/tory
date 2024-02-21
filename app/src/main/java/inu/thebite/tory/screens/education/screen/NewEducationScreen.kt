@@ -154,12 +154,15 @@ fun NewEducationScreen(
                     .weight(1.6f)
                     .fillMaxHeight()
             ) {
-                DEVSelector(
-                    modifier = Modifier
-                        .weight(0.5f),
-                    devViewModel = devViewModel,
-                    ltoViewModel = ltoViewModel
-                )
+                selectedChild?.let {selectedChild ->
+                    DEVSelector(
+                        modifier = Modifier
+                            .weight(0.5f),
+                        devViewModel = devViewModel,
+                        ltoViewModel = ltoViewModel,
+                        selectedChild = selectedChild
+                    )
+                }
                 Divider(thickness = 1.dp, color = Color.LightGray)
                 ltos?.let {
                     selectedChild?.let { selectedChild ->

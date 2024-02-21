@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.student.StudentResponse
@@ -150,6 +151,12 @@ fun AddDEVDialog(
                     onClick = {
                         if(devInputValue.text.isNotEmpty()){
                             //발달영역 추가 코드
+                            devViewModel.addDEV(
+                                addDomainRequest = AddDomainRequest(
+                                    name = devInputValue.text
+                                ),
+                                centerId = selectedChild.childClass.center.id
+                            )
 
                         } else{
                             Toasty.warning(context, "발달영역의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()

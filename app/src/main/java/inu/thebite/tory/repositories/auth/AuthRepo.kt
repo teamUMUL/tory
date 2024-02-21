@@ -10,9 +10,9 @@ import retrofit2.Response
 interface AuthRepo {
     suspend fun login(memberLoginRequest: MemberLoginRequest) : Response<LoginResponse>
 
-    suspend fun signUpCenterDirector(addDirectorRequest: AddDirectorRequest) : Response<Void>
+    suspend fun signUpCenterDirector(addDirectorRequest: AddDirectorRequest) : Response<Boolean>
 
-    suspend fun signUpCenterTeacher(addTherapistRequest: AddTherapistRequest) : Response<Void>
+    suspend fun signUpCenterTeacher(addTherapistRequest: AddTherapistRequest) : Response<Boolean>
 
     suspend fun validationToken() : Response<ValidationTokenResponse>
 }

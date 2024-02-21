@@ -31,20 +31,30 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     private val _signUpLoading = MutableStateFlow<Boolean>(false)
     val signUpLoading = _signUpLoading.asStateFlow()
 
+    private val _signUpSuccess = MutableStateFlow<Boolean>(false)
+    val signUpSuccess = _signUpSuccess.asStateFlow()
+
     private val _userName = MutableStateFlow<String?>(null)
     val userName = _userName.asStateFlow()
 
+
+
     suspend fun login(
         context: Context,
-        id : String,
+        id: String,
         password: String
-    ){
+    ) {
         viewModelScope.launch {
             try {
                 _isLoading.update { true }
                 delay(1500)
 
-                val response = repo.login(memberLoginRequest = MemberLoginRequest(id = id, password = password))
+                val response = repo.login(
+                    memberLoginRequest = MemberLoginRequest(
+                        id = id,
+                        password = password
+                    )
+                )
 
                 if (response.isSuccessful) {
                     val userInfo = response.body() ?: throw Exception("로그인 정보가 비어있습니다.")
@@ -77,26 +87,35 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
         email: String,
         phone: String,
         identity: String
-    ){
+    ) {
         viewModelScope.launch {
             try {
                 _signUpLoading.update { true }
                 delay(1500)
 
-                val response = repo.signUpCenterDirector(addDirectorRequest = AddDirectorRequest(
-                    name = name,
-                    id = id,
-                    password = password,
-                    email = email,
-                    phone = phone,
-                ))
+                val response = repo.signUpCenterDirector(
+                    addDirectorRequest = AddDirectorRequest(
+                        name = name,
+                        id = id,
+                        password = password,
+                        email = email,
+                        phone = phone,
+                    )
+                )
                 Log.d("signUpResponse", response.toString())
-                if (response.isSuccessful){
-                    _signUpLoading.update { false }
+                if (response.isSuccessful) {
+                    val isSuccess = response.body() ?: throw Exception("유저 정보가 비어있습니다.")
+                    if (isSuccess){
+                        _signUpSuccess.update { true }
+                    } else {
+                        _signUpSuccess.update { false }
+                    }
+
                 }
 
             } catch (e: Exception) {
                 Log.e("failed to signUp", e.message.toString())
+                _signUpSuccess.update { false }
             } finally {
                 _signUpLoading.update { false }
             }
@@ -111,36 +130,47 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
         phone: String,
         identity: String,
         centerCode: Long
-    ){
+    ) : Boolean {
         viewModelScope.launch {
             try {
                 _signUpLoading.update { true }
                 delay(1500)
 
-                val response = repo.signUpCenterTeacher(addTherapistRequest = AddTherapistRequest(
-                    name = name,
-                    id = id,
-                    password = password,
-                    email = email,
-                    phone = phone,
-                    centerId = centerCode
+                val response = repo.signUpCenterTeacher(
+                    addTherapistRequest = AddTherapistRequest(
+                        name = name,
+                        id = id,
+                        password = password,
+                        email = email,
+                        phone = phone,
+                        centerId = centerCode
+                    )
                 )
-                )
-                if (response.isSuccessful){
-                    _signUpLoading.update { false }
+                Log.d("signUpResponse", response.toString())
+                if (response.isSuccessful) {
+                    val isSuccess = response.body() ?: throw Exception("유저 정보가 비어있습니다.")
+                    if (isSuccess){
+                        _signUpSuccess.update { true }
+                    } else {
+                        _signUpSuccess.update { false }
+                    }
+
                 }
 
             } catch (e: Exception) {
                 Log.e("failed to signUp", e.message.toString())
+                _signUpSuccess.update { false }
+
             } finally {
                 _signUpLoading.update { false }
             }
         }
+        return false
     }
 
     fun logout(
 
-    ){
+    ) {
         _isLoading.update { true }
         _loginState.update { false }
         _isLoading.update { false }
@@ -148,7 +178,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
         tokenManager.clearToken()
     }
 
-    fun verifyToken(context: Context){
+    fun verifyToken(context: Context) {
         viewModelScope.launch {
             try {
                 _isLoading.update { true }
@@ -157,7 +187,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
 
                 if (response.isSuccessful) {
                     val userInfo = response.body() ?: throw Exception("유저 정보가 비어있습니다.")
-                    if (userInfo.result){
+                    if (userInfo.result) {
                         _userName.update { userInfo.name }
                         Log.d("isValidated", userInfo.toString())
                         _loginState.update { true }
@@ -179,4 +209,4 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     }
 }
 
-val LoginState = compositionLocalOf<AuthViewModel> { error("User State Context Not Found!")}
+val LoginState = compositionLocalOf<AuthViewModel> { error("User State Context Not Found!") }

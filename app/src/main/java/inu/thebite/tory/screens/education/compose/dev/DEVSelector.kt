@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.compose.dev
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +30,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 
@@ -38,7 +42,8 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun DEVSelector(
     modifier : Modifier = Modifier,
     devViewModel: DEVViewModel,
-    ltoViewModel: LTOViewModel
+    ltoViewModel: LTOViewModel,
+    selectedChild: StudentResponse
 ){
 
 
@@ -51,6 +56,12 @@ fun DEVSelector(
         targetValue = if (expandedState.value) 180f else 0f, label = ""
     )
 
+    LaunchedEffect(expandedState.value){
+        if (expandedState.value){
+            Log.d("isSelectedDEVSelector", "isSelected")
+            devViewModel.getAllDEVs(selectedChild.childClass.center.id)
+        }
+    }
 
     Row(
         modifier = modifier

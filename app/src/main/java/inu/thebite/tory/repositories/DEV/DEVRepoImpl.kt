@@ -17,11 +17,11 @@ class DEVRepoImpl: DEVRepo {
         return devRetrofit.getDomainList(centerId = centerId)
     }
 
-//    override suspend fun updateDEV(updatedLTO: LTOEntity) {
-//        devRetrofit.updateD(updatedLTO)
-//    }
+    override suspend fun updateDEV(domainId: Long, addDomainRequest: AddDomainRequest) : Response<DomainResponse> {
+        return devRetrofit.updateDomain(domainId = domainId, addDomainRequest = addDomainRequest)
+    }
 
-    override suspend fun deleteDEV(selectedDEV: DomainResponse) {
-        devRetrofit.deleteDomain(selectedDEV.id)
+    override suspend fun deleteDEV(domainId: Long) : Response<Boolean> {
+        return devRetrofit.deleteDomain(domainId = domainId)
     }
 }

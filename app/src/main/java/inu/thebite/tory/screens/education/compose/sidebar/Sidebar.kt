@@ -108,7 +108,8 @@ fun Sidebar(
                     context = context,
                     selectedChild = selectedChild,
                     devViewModel = devViewModel,
-                    setDEVDialog = {setUpdateDEVDialog(it)}
+                    setDEVDialog = {setUpdateDEVDialog(it)},
+                    selectedDEV = selectedDEV
                 )
             } ?: run {
                 currentToast?.cancel()

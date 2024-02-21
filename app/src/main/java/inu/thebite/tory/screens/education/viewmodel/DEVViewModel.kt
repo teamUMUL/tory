@@ -65,6 +65,11 @@ class DEVViewModel : ViewModel() {
                     allDEVs.firstOrNull()
                 }
             }
+            _selectedDEV.update {
+                allDEVs.find { dev ->
+                    selectedDEV.value?.id == dev.id
+                } ?: allDEVs.firstOrNull()
+            }
         }
     }
 
@@ -110,6 +115,54 @@ class DEVViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Log.e("failed to add DEV", e.message.toString())
+            }
+        }
+    }
+
+    fun updateDEV(
+        domainId: Long,
+        addDomainRequest: AddDomainRequest
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repo.updateDEV(domainId = domainId, addDomainRequest = addDomainRequest)
+                if (response.isSuccessful) {
+                    val updatedDEV = response.body() ?: throw Exception("DEV 정보가 비어있습니다.")
+                    Log.d("response", updatedDEV.toString())
+                    _allDEVs.update {
+                        allDEVs.value?.let { allDEVs ->
+                            allDEVs.map { if (it.id == updatedDEV.id) updatedDEV else it}
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("DEV 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update DEV", e.message.toString())
+            }
+        }
+    }
+
+    fun deleteDEV(domainId: Long){
+        viewModelScope.launch {
+            try {
+                val response = repo.deleteDEV(domainId = domainId)
+
+                if (response.isSuccessful) {
+                    val isDeleted = response.body() ?: throw Exception("DEV 정보가 비어있습니다.")
+                    _allDEVs.update {currentDEVs ->
+                        currentDEVs?.filterNot { it.id == domainId }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("DEV 식제 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to delete DEV", e.message.toString())
             }
         }
     }

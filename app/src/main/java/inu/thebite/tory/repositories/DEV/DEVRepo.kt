@@ -7,5 +7,8 @@ import retrofit2.Response
 interface DEVRepo {
     suspend fun createDEV(newDEV: AddDomainRequest, centerId: Long) : Response<DomainResponse>
     suspend fun getAllDEVs(centerId: Long): List<DomainResponse>
-    suspend fun deleteDEV(selectedDEV: DomainResponse)
+
+    suspend fun updateDEV(domainId: Long, addDomainRequest: AddDomainRequest): Response<DomainResponse>
+
+    suspend fun deleteDEV(domainId: Long) : Response<Boolean>
 }

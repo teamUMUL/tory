@@ -15,11 +15,11 @@ class AuthRepoImpl : AuthRepo {
         return authRetrofit.login(memberLoginRequest = memberLoginRequest)
     }
 
-    override suspend fun signUpCenterDirector(addDirectorRequest: AddDirectorRequest): Response<Void> {
+    override suspend fun signUpCenterDirector(addDirectorRequest: AddDirectorRequest): Response<Boolean> {
         return authRetrofit.joinPrincipalUser(addDirectorRequest = addDirectorRequest)
     }
 
-    override suspend fun signUpCenterTeacher(addTherapistRequest: AddTherapistRequest): Response<Void> {
+    override suspend fun signUpCenterTeacher(addTherapistRequest: AddTherapistRequest): Response<Boolean> {
         return authRetrofit.joinTherapistUser(addTherapistRequest = addTherapistRequest)
     }
 

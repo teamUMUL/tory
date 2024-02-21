@@ -46,6 +46,7 @@ import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.screens.auth.common.LabeledTextFieldLogin
 import inu.thebite.tory.screens.auth.common.LabeledTextFieldSignUp
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -57,6 +58,8 @@ fun SignUpScreen(
     val authViewModel = LoginState.current
     val isLoading by authViewModel.isLoading.collectAsState()
     val signUpLoading by authViewModel.signUpLoading.collectAsState()
+    val signUpSuccess by authViewModel.signUpSuccess.collectAsState()
+
 
     val userName = remember { mutableStateOf(TextFieldValue()) }
     val userId = remember { mutableStateOf(TextFieldValue()) }
@@ -66,8 +69,11 @@ fun SignUpScreen(
     val userIdentity = remember { mutableStateOf(TextFieldValue()) }
     val userCenterCode = remember { mutableStateOf(TextFieldValue()) }
 
+
+
     val coroutineScope = rememberCoroutineScope()
     val brush = Brush.horizontalGradient(listOf(Color(0xFF0047B3), Color(0xff7E5DE3)))
+
 
     Box(
         modifier = Modifier
@@ -140,57 +146,62 @@ fun SignUpScreen(
                             ),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0047B3)),
                             onClick = {
-                                if (
-                                    userName.value.text.trim() == "" || 
-                                    userId.value.text.trim() == "" || 
-                                    password.value.text.trim() == "" || 
-                                    userEmail.value.text.trim() == "" || 
-                                    userPhoneNumber.value.text.trim() == "" || 
-                                    userIdentity.value.text.trim() == ""
-                                ) {
-                                    Toasty.warning(
-                                        context,
-                                        "모두 입력해주세요",
-                                        Toast.LENGTH_SHORT,
-                                        true
-                                    ).show()
-                                } else {
-                                    if (userIdentity.value.text == "센터장/소장"){
-                                        authViewModel.signUpDirector(
-                                            name = userName.value.text.trim(),
-                                            id = userId.value.text.trim(),
-                                            password = password.value.text.trim(),
-                                            email = userEmail.value.text.trim(),
-                                            phone = userPhoneNumber.value.text.trim(),
-                                            identity = userIdentity.value.text.trim(),
-                                        )
-                                    } else if (userIdentity.value.text == "센터 소속 교사"){
-                                        val centerCode = userCenterCode.value.text.toLongOrNull()
-                                        centerCode?.let { centerCode ->
-                                            authViewModel.signUpTherapist(
+                                coroutineScope.launch {
+                                    if (
+                                        userName.value.text.trim() == "" ||
+                                        userId.value.text.trim() == "" ||
+                                        password.value.text.trim() == "" ||
+                                        userEmail.value.text.trim() == "" ||
+                                        userPhoneNumber.value.text.trim() == "" ||
+                                        userIdentity.value.text.trim() == ""
+                                    ) {
+                                        Toasty.warning(
+                                            context,
+                                            "모두 입력해주세요",
+                                            Toast.LENGTH_SHORT,
+                                            true
+                                        ).show()
+                                    } else {
+                                        if (userIdentity.value.text == "센터장/소장"){
+                                            authViewModel.signUpDirector(
                                                 name = userName.value.text.trim(),
                                                 id = userId.value.text.trim(),
                                                 password = password.value.text.trim(),
                                                 email = userEmail.value.text.trim(),
                                                 phone = userPhoneNumber.value.text.trim(),
                                                 identity = userIdentity.value.text.trim(),
-                                                centerCode = centerCode
                                             )
-                                        } ?: run {
-                                            Toasty.warning(context, "센터 코드를 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                        } else if (userIdentity.value.text == "센터 소속 교사"){
+                                            val centerCode = userCenterCode.value.text.toLongOrNull()
+                                            centerCode?.let { centerCode ->
+                                                authViewModel.signUpTherapist(
+                                                    name = userName.value.text.trim(),
+                                                    id = userId.value.text.trim(),
+                                                    password = password.value.text.trim(),
+                                                    email = userEmail.value.text.trim(),
+                                                    phone = userPhoneNumber.value.text.trim(),
+                                                    identity = userIdentity.value.text.trim(),
+                                                    centerCode = centerCode
+                                                )
+                                            } ?: run {
+                                                Toasty.warning(context, "센터 코드를 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                            }
                                         }
+                                    }
+
+                                    userName.value = TextFieldValue("")
+                                    userId.value = TextFieldValue("")
+                                    password.value = TextFieldValue("")
+                                    userEmail.value = TextFieldValue("")
+                                    userPhoneNumber.value = TextFieldValue("")
+                                    userIdentity.value = TextFieldValue("")
+                                    userCenterCode.value = TextFieldValue("")
+                                    delay(2000)
+                                    if (signUpSuccess){
+                                        navController.navigate("loginScreen")
                                     }
                                 }
 
-                                userName.value = TextFieldValue("")
-                                userId.value = TextFieldValue("")
-                                password.value = TextFieldValue("")
-                                userEmail.value = TextFieldValue("")
-                                userPhoneNumber.value = TextFieldValue("")
-                                userIdentity.value = TextFieldValue("")
-                                userCenterCode.value = TextFieldValue("")
-
-                                navController.navigate("loginScreen")
                             }
                         ) {
                             Text(

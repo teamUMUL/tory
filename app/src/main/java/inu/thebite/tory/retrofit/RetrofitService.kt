@@ -106,10 +106,10 @@ interface RetrofitService {
     suspend fun getDomainList(@Path("centerId") centerId: Long) : List<DomainResponse>
 
     @DELETE("/domains/{domainId}")
-    suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Void>
+    suspend fun deleteDomain(@Path("domainId") domainId: Long) : Response<Boolean>
 
     @PATCH("/domains/{domainId}")
-    suspend fun updateDomain(@Path("domainId") domainId: Long, @Body addDomainRequest: AddDomainRequest) : Response<Void>
+    suspend fun updateDomain(@Path("domainId") domainId: Long, @Body addDomainRequest: AddDomainRequest) : Response<DomainResponse>
 
     // lto
     @POST("/{domainId}/ltos/{studentId}")
@@ -240,11 +240,11 @@ interface RetrofitService {
 
     // 원장님 회원가입
     @POST("/members/join")
-    suspend fun joinPrincipalUser(@Body addDirectorRequest: AddDirectorRequest) : Response<Void>
+    suspend fun joinPrincipalUser(@Body addDirectorRequest: AddDirectorRequest) : Response<Boolean>
 
     // 치료사 회원가입
     @POST("/members/therapist/join")
-    suspend fun joinTherapistUser(@Body addTherapistRequest: AddTherapistRequest) : Response<Void>
+    suspend fun joinTherapistUser(@Body addTherapistRequest: AddTherapistRequest) : Response<Boolean>
 
     @POST("/members/login")
     suspend fun login(@Body memberLoginRequest: MemberLoginRequest) : Response<LoginResponse>
