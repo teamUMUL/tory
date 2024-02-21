@@ -5,6 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class AddDomainRequest(
 
     @SerializedName("name")
-    var name: String,
+    var name: String
 
 )
