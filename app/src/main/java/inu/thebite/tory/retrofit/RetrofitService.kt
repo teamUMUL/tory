@@ -5,6 +5,7 @@ import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassRequest
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
@@ -246,6 +247,14 @@ interface RetrofitService {
     @GET("/notices/{studentId}/dates")
     suspend fun getNoticeDates(@Path("studentId") studentId: Long) : Response<List<NoticeDatesResponse>>
 
+    // 월간 보고서 조회
+    @GET("/notices/{studentId}/monthly")
+    suspend fun getMonthlyNotice(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int) : Response<List<NoticeResponse>>
+
+    // notice 자동 멘트 생성
+    @GET("/notices/{studentId}/auto/comment")
+    suspend fun getAutoComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<String>
+
     /** http://{서버 ip}:8081/notices/{studentId}/reports?year=2023&month=12&date=12*/
     @POST("/notices/{studentId}/reports")
     suspend fun showWebView(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<Void>
@@ -260,7 +269,11 @@ interface RetrofitService {
     suspend fun updateComment(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String, @Query("stoId") stoId: Long, @Body addCommentRequest: AddCommentRequest) : Response<DetailResponse>
 
     @GET("/details/{studentId}")
-    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<List<DetailGraphResponse>>
+    suspend fun getDetailList(@Path("studentId") studentId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<List<DetailObjectResponse>>
+
+    // Detail 멘트 자동 생성
+    @GET("/details/{studentId}/{ltoId}/auto/comment")
+    suspend fun getDetailAutoComment(@Path("studentId") studentId: Long, @Path("ltoId") ltoId: Long, @Query("year") year: String, @Query("month") month: Int, @Query("date") date: String) : Response<String>
 
     /**
      * Member Api

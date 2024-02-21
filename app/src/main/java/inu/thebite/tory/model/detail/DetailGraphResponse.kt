@@ -4,12 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class DetailGraphResponse(
 
-    @SerializedName("id")
-    var id: Long,
-
-    @SerializedName("comment")
-    var comment: String,
-
     @SerializedName("results")
     var results: List<Float>,
 
