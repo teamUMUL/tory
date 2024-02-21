@@ -352,13 +352,9 @@ fun ArticleCardPreview() {
                 selectedDEV = DomainResponse(
                     id = 1L,
                     templateNum = 1,
-                    type = "",
-                    status = "",
                     name = "Example DEV",
-                    contents = "",
-                    useYN = "",
-                    delYN = "",
-                    registerDate = ""
+                    registerDate = "",
+                    centerId = 1L
                 ),
                 ltoViewModel = LTOViewModel()
             )

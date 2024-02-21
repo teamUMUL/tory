@@ -56,6 +56,8 @@ fun SignUpScreen(
     val context = LocalContext.current
     val authViewModel = LoginState.current
     val isLoading by authViewModel.isLoading.collectAsState()
+    val signUpLoading by authViewModel.signUpLoading.collectAsState()
+
     val userName = remember { mutableStateOf(TextFieldValue()) }
     val userId = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
@@ -125,7 +127,7 @@ fun SignUpScreen(
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    if (isLoading) {
+                    if (signUpLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(50.dp))
                     } else {
                         Button(modifier = Modifier
@@ -144,8 +146,7 @@ fun SignUpScreen(
                                     password.value.text.trim() == "" || 
                                     userEmail.value.text.trim() == "" || 
                                     userPhoneNumber.value.text.trim() == "" || 
-                                    userIdentity.value.text.trim() == "" || 
-                                    userCenterCode.value.text.trim() == ""
+                                    userIdentity.value.text.trim() == ""
                                 ) {
                                     Toasty.warning(
                                         context,
@@ -154,14 +155,42 @@ fun SignUpScreen(
                                         true
                                     ).show()
                                 } else {
-//                                    coroutineScope.launch {
-//                                        authViewModel.login(
-//                                            context = context,
-//                                            id = userId.value.text.trim(),
-//                                            password = password.value.text.trim()
-//                                        )
-//                                    }
+                                    if (userIdentity.value.text == "센터장/소장"){
+                                        authViewModel.signUpDirector(
+                                            name = userName.value.text.trim(),
+                                            id = userId.value.text.trim(),
+                                            password = password.value.text.trim(),
+                                            email = userEmail.value.text.trim(),
+                                            phone = userPhoneNumber.value.text.trim(),
+                                            identity = userIdentity.value.text.trim(),
+                                        )
+                                    } else if (userIdentity.value.text == "센터 소속 교사"){
+                                        val centerCode = userCenterCode.value.text.toLongOrNull()
+                                        centerCode?.let { centerCode ->
+                                            authViewModel.signUpTherapist(
+                                                name = userName.value.text.trim(),
+                                                id = userId.value.text.trim(),
+                                                password = password.value.text.trim(),
+                                                email = userEmail.value.text.trim(),
+                                                phone = userPhoneNumber.value.text.trim(),
+                                                identity = userIdentity.value.text.trim(),
+                                                centerCode = centerCode
+                                            )
+                                        } ?: run {
+                                            Toasty.warning(context, "센터 코드를 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                        }
+                                    }
                                 }
+
+                                userName.value = TextFieldValue("")
+                                userId.value = TextFieldValue("")
+                                password.value = TextFieldValue("")
+                                userEmail.value = TextFieldValue("")
+                                userPhoneNumber.value = TextFieldValue("")
+                                userIdentity.value = TextFieldValue("")
+                                userCenterCode.value = TextFieldValue("")
+
+                                navController.navigate("loginScreen")
                             }
                         ) {
                             Text(

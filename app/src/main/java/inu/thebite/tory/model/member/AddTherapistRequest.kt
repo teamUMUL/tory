@@ -2,8 +2,7 @@ package inu.thebite.tory.model.member
 
 import com.google.gson.annotations.SerializedName
 
-data class AddMemberRequest (
-
+data class AddTherapistRequest (
     @SerializedName("id")
     var id: String,
 
@@ -17,5 +16,10 @@ data class AddMemberRequest (
     var email: String,
 
     @SerializedName("phone")
-    var phone: String
+    var phone: String,
+
+    @SerializedName("centerId")
+    var centerId: Long,
 )
+
+

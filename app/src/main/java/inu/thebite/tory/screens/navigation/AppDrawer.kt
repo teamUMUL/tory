@@ -213,7 +213,7 @@ fun DrawerHeader(modifier: Modifier) {
                 text = userName ?: "",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = Color.Black
             )
             Button(
                 onClick = {

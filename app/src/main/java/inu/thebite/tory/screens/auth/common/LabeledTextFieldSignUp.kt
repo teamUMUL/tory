@@ -125,14 +125,17 @@ fun LabeledTextFieldSignUp(
                 )
             )
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        //이메일
-        TextFieldWithTrailingIcon(
-            title = "센터 코드",
-            placeholderText = "센터 코드를 입력해주세요",
-            input = userCenterCode,
-            keyboardType = KeyboardType.Number
-        )
+        if (userIdentity.value.text == "센터 소속 교사"){
+            Spacer(modifier = Modifier.height(5.dp))
+            //센터코드
+            TextFieldWithTrailingIcon(
+                title = "센터 코드",
+                placeholderText = "센터 코드를 입력해주세요",
+                input = userCenterCode,
+                keyboardType = KeyboardType.Number
+            )
+        }
+
 
     }
 }

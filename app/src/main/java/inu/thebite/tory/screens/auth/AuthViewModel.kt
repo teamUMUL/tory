@@ -7,6 +7,8 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.dmoral.toasty.Toasty
+import inu.thebite.tory.model.member.AddDirectorRequest
+import inu.thebite.tory.model.member.AddTherapistRequest
 import inu.thebite.tory.model.member.MemberLoginRequest
 import inu.thebite.tory.repositories.STO.STORepoImpl
 import inu.thebite.tory.repositories.auth.AuthRepoImpl
@@ -24,6 +26,10 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
 
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading = _isLoading.asStateFlow()
+
+
+    private val _signUpLoading = MutableStateFlow<Boolean>(false)
+    val signUpLoading = _signUpLoading.asStateFlow()
 
     private val _userName = MutableStateFlow<String?>(null)
     val userName = _userName.asStateFlow()
@@ -62,6 +68,74 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
             }
         }
 
+    }
+
+    fun signUpDirector(
+        name: String,
+        id: String,
+        password: String,
+        email: String,
+        phone: String,
+        identity: String
+    ){
+        viewModelScope.launch {
+            try {
+                _signUpLoading.update { true }
+                delay(1500)
+
+                val response = repo.signUpCenterDirector(addDirectorRequest = AddDirectorRequest(
+                    name = name,
+                    id = id,
+                    password = password,
+                    email = email,
+                    phone = phone,
+                ))
+                Log.d("signUpResponse", response.toString())
+                if (response.isSuccessful){
+                    _signUpLoading.update { false }
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to signUp", e.message.toString())
+            } finally {
+                _signUpLoading.update { false }
+            }
+        }
+    }
+
+    fun signUpTherapist(
+        name: String,
+        id: String,
+        password: String,
+        email: String,
+        phone: String,
+        identity: String,
+        centerCode: Long
+    ){
+        viewModelScope.launch {
+            try {
+                _signUpLoading.update { true }
+                delay(1500)
+
+                val response = repo.signUpCenterTeacher(addTherapistRequest = AddTherapistRequest(
+                    name = name,
+                    id = id,
+                    password = password,
+                    email = email,
+                    phone = phone,
+                    centerId = centerCode
+                )
+                )
+                if (response.isSuccessful){
+                    _signUpLoading.update { false }
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to signUp", e.message.toString())
+            } finally {
+                _signUpLoading.update { false }
+            }
+        }
     }
 
     fun logout(

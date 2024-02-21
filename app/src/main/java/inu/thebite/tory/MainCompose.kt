@@ -130,45 +130,45 @@ fun MainCompose(
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
     val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
 
-    LaunchedEffect(Unit){
-        centerSelectViewModel.setSelectedCenter(
-            centerEntity = CenterResponse(
-                id = 1L,
-                name = "송도"
-            )
-        )
-        childClassSelectViewModel.setSelectedChildClass(
-            childClassEntity = ChildClassResponse(
-                id = 1L,
-                name = "월수금(오전)",
-                center = CenterResponse(
-                    id = 1L,
-                    name = "송도"
-                )
-            )
-        )
-        childSelectViewModel.setSelectedChildInfo(
-            childInfoEntity = StudentResponse(
-            id = 1L,
-            name = "홍길동",
-            birth = "2002/10/02",
-            etc = "",
-            parentName = "홍길동",
-            startDate = "2023/02/19",
-            endDate = "2024/02/19",
-            registerDate = "2023/02/12",
-            childClass = ChildClassResponse(
-                id = 1L,
-                name = "월수금(오전)",
-                center = CenterResponse(
-                    id = 1L,
-                    name = "송도"
-                )
-            )
-            )
-        )
-
-    }
+//    LaunchedEffect(Unit){
+//        centerSelectViewModel.setSelectedCenter(
+//            centerEntity = CenterResponse(
+//                id = 1L,
+//                name = "송도"
+//            )
+//        )
+//        childClassSelectViewModel.setSelectedChildClass(
+//            childClassEntity = ChildClassResponse(
+//                id = 1L,
+//                name = "월수금(오전)",
+//                center = CenterResponse(
+//                    id = 1L,
+//                    name = "송도"
+//                )
+//            )
+//        )
+//        childSelectViewModel.setSelectedChildInfo(
+//            childInfoEntity = StudentResponse(
+//            id = 1L,
+//            name = "홍길동",
+//            birth = "2002/10/02",
+//            etc = "",
+//            parentName = "홍길동",
+//            startDate = "2023/02/19",
+//            endDate = "2024/02/19",
+//            registerDate = "2023/02/12",
+//            childClass = ChildClassResponse(
+//                id = 1L,
+//                name = "월수금(오전)",
+//                center = CenterResponse(
+//                    id = 1L,
+//                    name = "송도"
+//                )
+//            )
+//            )
+//        )
+//
+//    }
 
 
     LaunchedEffect(_selectedCenter, allCenters) {

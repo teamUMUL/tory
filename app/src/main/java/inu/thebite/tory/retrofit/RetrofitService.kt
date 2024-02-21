@@ -14,7 +14,8 @@ import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
-import inu.thebite.tory.model.member.AddMemberRequest
+import inu.thebite.tory.model.member.AddDirectorRequest
+import inu.thebite.tory.model.member.AddTherapistRequest
 import inu.thebite.tory.model.member.LoginResponse
 import inu.thebite.tory.model.member.MemberLoginRequest
 import inu.thebite.tory.model.member.ValidationTokenResponse
@@ -236,11 +237,11 @@ interface RetrofitService {
 
     // 원장님 회원가입
     @POST("/members/join")
-    suspend fun joinPrincipalUser(@Body addMemberRequest: AddMemberRequest) : Response<Void>
+    suspend fun joinPrincipalUser(@Body addDirectorRequest: AddDirectorRequest) : Response<Void>
 
     // 치료사 회원가입
-    @POST("/members/{centerId}/join")
-    suspend fun joinTherapistUser(@Path("centerId") centerId: Long, @Body addMemberRequest: AddMemberRequest) : Response<Void>
+    @POST("/members/therapist/join")
+    suspend fun joinTherapistUser(@Body addTherapistRequest: AddTherapistRequest) : Response<Void>
 
     @POST("/members/login")
     suspend fun login(@Body memberLoginRequest: MemberLoginRequest) : Response<LoginResponse>
