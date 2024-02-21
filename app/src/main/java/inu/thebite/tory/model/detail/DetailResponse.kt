@@ -12,7 +12,7 @@ data class DetailResponse(
     var comment: String,
 
     @SerializedName("stoId")
-    var stoId: Long,
+    var stoId: Set<Long>,
 
     @SerializedName("ltoId")
     var ltoId: Long,
