@@ -1,6 +1,7 @@
 package inu.thebite.tory.retrofit
 
 import android.content.Context
+import com.google.gson.GsonBuilder
 import inu.thebite.tory.screens.auth.TokenExpirationInterceptor
 import inu.thebite.tory.screens.auth.TokenInterceptor
 import inu.thebite.tory.screens.auth.TokenManager

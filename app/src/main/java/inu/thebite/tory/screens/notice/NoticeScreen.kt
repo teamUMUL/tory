@@ -47,6 +47,7 @@ import inu.thebite.tory.screens.education.screen.VerticalDivider
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.notice.components.MonthInfoColumn
 import inu.thebite.tory.screens.notice.components.NoticeDateColumn
 import inu.thebite.tory.screens.notice.components.NoticeInfoColumn
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
@@ -72,37 +73,42 @@ fun NoticeScreen(
     val selectedNotice by noticeViewModel.selectedNotice.collectAsState()
     val noticeMonthList by noticeViewModel.noticeMonthList.collectAsState()
     val selectedNoticeDetailList by noticeViewModel.selectedNoticeDetailList.collectAsState()
+    val pdfUrl by noticeViewModel.pdfUrl.collectAsState()
 
     val (noticePdfDialog, setNoticePdfDialog) = rememberSaveable {
         mutableStateOf(false)
     }
 
+    val (monthNotice, setMonthNotice) = rememberSaveable {
+        mutableStateOf(false)
+    }
 
     if (noticePdfDialog){
-        val url = "https://google.com"
-
-        AlertDialog(
-            onDismissRequest = { setNoticePdfDialog(false) },
-            text = {
-                AndroidView(
-                    factory = { context ->
-                        WebView(context).apply {
-                            webViewClient = WebViewClient()
-                            settings.javaScriptEnabled = true
-                            loadUrl(url)
-                        }
-                    },
+        pdfUrl?.let { pdfUrl ->
+            AlertDialog(
+                onDismissRequest = { setNoticePdfDialog(false) },
+                text = {
+                    AndroidView(
+                        factory = { context ->
+                            WebView(context).apply {
+                                webViewClient = WebViewClient()
+                                settings.javaScriptEnabled = true
+                                loadUrl(pdfUrl)
+                            }
+                        },
+                    )
+                },
+                confirmButton = {
+                    Button(onClick = {setNoticePdfDialog(false)}) {
+                        Text("닫기")
+                    }
+                },
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false
                 )
-            },
-            confirmButton = {
-                Button(onClick = {setNoticePdfDialog(false)}) {
-                    Text("닫기")
-                }
-            },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
             )
-        )
+        }
+
     }
 
     LaunchedEffect(Unit) {
@@ -244,6 +250,7 @@ fun NoticeScreen(
                         selectedNoticeDate = selectedNoticeDate,
                         setSelectedDate = {
                             noticeViewModel.setSelectedNoticeDate(it)
+                            setMonthNotice(false)
                         },
                         selectedYear = selectedYear,
                         setSelectedYear = { noticeViewModel.setSelectedYear(it) },
@@ -251,7 +258,8 @@ fun NoticeScreen(
                         setSelectedMonth = { noticeViewModel.setSelectedMonth((it)) },
                         noticeViewModel = noticeViewModel,
                         navController = navController,
-                        selectedChild = selectedChild
+                        selectedChild = selectedChild,
+                        setMonthNotice = {setMonthNotice(true)}
                     )
                 } ?: Text(text = "데이터가 없습니다")
             }
@@ -267,25 +275,32 @@ fun NoticeScreen(
                     .fillMaxHeight()
                     .background(Color.White)
             ) {
-                selectedNoticeDate?.let { selectedNoticeDate ->
-                    if (selectedNoticeDate.date.isNotEmpty()) {
-                        selectedNoticeDetailList?.let { selectedNoticeDetailList ->
-                            selectedNotice?.let { selectedNotice ->
-                                selectedChild?.let { selectedChild ->
-                                    NoticeInfoColumn(
-                                        selectedDate = selectedNoticeDate,
-                                        selectedNotice = selectedNotice,
-                                        selectedChild = selectedChild,
-                                        selectedNoticeDetailList = selectedNoticeDetailList,
-                                        noticeViewModel = noticeViewModel,
-                                        stoViewModel = stoViewModel,
-                                        ltoViewModel = ltoViewModel
-                                    )
+                if (monthNotice){
+                    MonthInfoColumn(
+
+                    )
+                } else {
+                    selectedNoticeDate?.let { selectedNoticeDate ->
+                        if (selectedNoticeDate.date.isNotEmpty()) {
+                            selectedNoticeDetailList?.let { selectedNoticeDetailList ->
+                                selectedNotice?.let { selectedNotice ->
+                                    selectedChild?.let { selectedChild ->
+                                        NoticeInfoColumn(
+                                            selectedDate = selectedNoticeDate,
+                                            selectedNotice = selectedNotice,
+                                            selectedChild = selectedChild,
+                                            selectedNoticeDetailList = selectedNoticeDetailList,
+                                            noticeViewModel = noticeViewModel,
+                                            stoViewModel = stoViewModel,
+                                            ltoViewModel = ltoViewModel
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
 
             }
         }

@@ -1,9 +1,8 @@
 package inu.thebite.tory.repositories.notice
 
-import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
-import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
@@ -38,11 +37,33 @@ class NoticeRepoImpl : NoticeRepo {
         return noticeRetrofit.addDetail(studentId = studentId, year = year, month = month.toInt(), date = date, stoId = stoId)
     }
 
-    override suspend fun getDetailList(studentId: Long, year:String, month:String, date: String): Response<List<DetailGraphResponse>> {
+    override suspend fun getDetailList(studentId: Long, year:String, month:String, date: String): Response<List<DetailObjectResponse>> {
         return noticeRetrofit.getDetailList(studentId = studentId, year = year, month = month.toInt(), date = date)
     }
 
     override suspend fun createSharePdf(studentId: Long, year: String, month: Int, date: String) {
         noticeRetrofit.showWebView(studentId = studentId, year = year, month = month, date = date)
     }
+
+    override suspend fun getDetailAutoComment(
+        studentId: Long,
+        ltoId: Long,
+        year: String,
+        month: Int,
+        date: String
+    ): Response<String> {
+        return noticeRetrofit.getDetailAutoComment(studentId = studentId, ltoId = ltoId, year = year, month = month, date = date)
+    }
+
+    override suspend fun getNoticeAutoComment(
+        studentId: Long,
+        year: String,
+        month: Int,
+        date: String
+    ): Response<String> {
+        return noticeRetrofit.getNoticeAutoComment(studentId = studentId, year = year, month = month, date = date)
+
+    }
+
+
 }

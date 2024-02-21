@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
@@ -57,7 +58,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 fun NoticeItemTextField(
     selectedDate: DateResponse,
     selectedChild: StudentResponse,
-    selectedDetail: DetailGraphResponse,
+    selectedDetail: DetailObjectResponse,
     noticeViewModel: NoticeViewModel
 ) {
 
@@ -145,37 +146,64 @@ fun NoticeItemTextField(
 
                 }
             } else {
-                Button(
-                    onClick = {
-                        isLTOCommentReadOnly.value = !isLTOCommentReadOnly.value
-                        noticeViewModel.updateLTOComment(
-                            studentId = selectedChild.id,
-                            year = selectedDate.year,
-                            month = selectedDate.month.toString(),
-                            date = selectedDate.date,
-                            addCommentRequest = AddCommentRequest(comment = ltoComment.text),
-                            stoId = selectedDetail.stoId
+                Row {
+                    Button(
+                        onClick = {
+                            noticeViewModel.createDetailAutoComment(selectedDetailObjectResponse = selectedDetail, studentId = selectedChild.id, year = selectedDate.year, month = selectedDate.month, date = selectedDate.date)
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF7F5AF0),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .padding(top = 15.dp, end = 15.dp)
+                    ) {
+                        Text(
+                            text = "자동생성",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                lineHeight = 15.sp,
+                                fontFamily = fontFamily_Lato,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFFFFFFFF),
+                            )
                         )
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF7F5AF0),
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .padding(top = 15.dp, end = 15.dp)
-                ) {
-                    Text(
-                        text = "저장하기",
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            lineHeight = 15.sp,
-                            fontFamily = fontFamily_Lato,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFFFFFFFF),
+                    }
+                    Button(
+                        onClick = {
+                            isLTOCommentReadOnly.value = !isLTOCommentReadOnly.value
+                            noticeViewModel.updateLTOComment(
+                                studentId = selectedChild.id,
+                                year = selectedDate.year,
+                                month = selectedDate.month.toString(),
+                                date = selectedDate.date,
+                                addCommentRequest = AddCommentRequest(comment = ltoComment.text),
+                                stoId = selectedDetail.detailGraphResponse.stoId
+                            )
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF7F5AF0),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .padding(top = 15.dp, end = 15.dp)
+                    ) {
+                        Text(
+                            text = "저장하기",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                lineHeight = 15.sp,
+                                fontFamily = fontFamily_Lato,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFFFFFFFF),
+                            )
                         )
-                    )
+                    }
+
                 }
+
 
             }
         }

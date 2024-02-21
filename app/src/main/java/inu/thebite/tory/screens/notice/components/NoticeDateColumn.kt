@@ -81,6 +81,7 @@ fun NoticeDateColumn(
     noticeViewModel: NoticeViewModel,
     navController: NavController,
     selectedChild: StudentResponse?,
+    setMonthNotice : () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -189,7 +190,7 @@ fun NoticeDateColumn(
                     .fillMaxWidth()
                     .height(35.dp)
                     .clickable {
-
+                        setMonthNotice()
                     }
                     .background(
                         Color.Transparent

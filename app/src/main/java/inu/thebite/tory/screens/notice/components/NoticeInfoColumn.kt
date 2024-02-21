@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
 import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.DateResponse
@@ -68,10 +69,10 @@ fun NoticeInfoColumn(
     selectedDate: DateResponse,
     selectedNotice: NoticeResponse,
     selectedChild: StudentResponse,
-    selectedNoticeDetailList :  List<DetailGraphResponse>,
+    selectedNoticeDetailList :  List<DetailObjectResponse>,
     noticeViewModel: NoticeViewModel,
     stoViewModel: STOViewModel,
-    ltoViewModel: LTOViewModel
+    ltoViewModel: LTOViewModel,
 ) {
     val gradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF0047B3))
@@ -86,6 +87,7 @@ fun NoticeInfoColumn(
     LaunchedEffect(selectedNotice){
         todayComment = TextFieldValue(selectedNotice.comment)
     }
+
 
     val focusRequester = FocusRequester()
 
@@ -137,7 +139,7 @@ fun NoticeInfoColumn(
 //            )
 //        )
 //    }
-    val selectedNoticeSTOList = stoViewModel.findSTOsByIds(selectedNoticeDetailList.map { it.stoId })
+    val selectedNoticeSTOList = stoViewModel.findSTOsByIds(selectedNoticeDetailList.map { it.detailGraphResponse.stoId })
     val uniqueLTOIdList = selectedNoticeSTOList.map { it.ltoId }.distinctBy { it }
     val uniqueLTOList = ltoViewModel.findLTOsByIds(uniqueLTOIdList)
     LazyColumn {
@@ -297,38 +299,65 @@ fun NoticeInfoColumn(
 
                             }
                         } else {
-                            Button(
-                                onClick = {
-                                    isTodayCommentReadOnly.value = !isTodayCommentReadOnly.value
-                                    noticeViewModel.updateTodayComment(
-                                        studentId = selectedChild.id,
-                                        addCommentRequest = AddCommentRequest(
-                                            comment = todayComment.text
-                                        ),
-                                        year = selectedDate.year,
-                                        month = selectedDate.month.toString(),
-                                        date = selectedDate.date
+                            Row {
+                                Button(
+                                    onClick = {
+                                        noticeViewModel.createNoticeAutoComment(studentId = selectedChild.id, year = selectedDate.year, month = selectedDate.month, date = selectedDate.date)
+                                    },
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF7F5AF0),
+                                        contentColor = Color.White
+                                    ),
+                                    modifier = Modifier
+                                        .padding(top = 15.dp, end = 15.dp)
+                                ){
+                                    Text(
+                                        text = "자동생성",
+                                        style = TextStyle(
+                                            fontSize = 15.sp,
+                                            lineHeight = 15.sp,
+                                            fontFamily = fontFamily_Lato,
+                                            fontWeight = FontWeight(400),
+                                            color = Color(0xFFFFFFFF),
+                                        )
                                     )
-                                },
-                                shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF7F5AF0),
-                                    contentColor = Color.White
-                                ),
-                                modifier = Modifier
-                                    .padding(top = 15.dp, end = 15.dp)
-                            ){
-                                Text(
-                                    text = "저장하기",
-                                    style = TextStyle(
-                                        fontSize = 15.sp,
-                                        lineHeight = 15.sp,
-                                        fontFamily = fontFamily_Lato,
-                                        fontWeight = FontWeight(400),
-                                        color = Color(0xFFFFFFFF),
+                                }
+                                Button(
+                                    onClick = {
+                                        isTodayCommentReadOnly.value = !isTodayCommentReadOnly.value
+                                        noticeViewModel.updateTodayComment(
+                                            studentId = selectedChild.id,
+                                            addCommentRequest = AddCommentRequest(
+                                                comment = todayComment.text
+                                            ),
+                                            year = selectedDate.year,
+                                            month = selectedDate.month.toString(),
+                                            date = selectedDate.date
+                                        )
+                                    },
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFF7F5AF0),
+                                        contentColor = Color.White
+                                    ),
+                                    modifier = Modifier
+                                        .padding(top = 15.dp, end = 15.dp)
+                                ){
+                                    Text(
+                                        text = "저장하기",
+                                        style = TextStyle(
+                                            fontSize = 15.sp,
+                                            lineHeight = 15.sp,
+                                            fontFamily = fontFamily_Lato,
+                                            fontWeight = FontWeight(400),
+                                            color = Color(0xFFFFFFFF),
+                                        )
                                     )
-                                )
+                                }
+
                             }
+
 
                         }
 

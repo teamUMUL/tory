@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import co.yml.charts.common.model.Point
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -37,11 +38,11 @@ import inu.thebite.tory.ui.theme.fontFamily_Inter
 
 @Composable
 fun NoticeItemGraphRow(
-    stoList: List<DetailGraphResponse>,
+    stoList: List<DetailObjectResponse>,
     stoViewModel: STOViewModel,
 ) {
     val context = LocalContext.current
-    val dummyReportSTOList = mutableListOf<DetailGraphResponse>().toMutableStateList()
+    val dummyReportSTOList = mutableListOf<DetailObjectResponse>().toMutableStateList()
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,7 +52,7 @@ fun NoticeItemGraphRow(
         items(stoList) { sto ->
             val plusList = mutableListOf<Float>()
             val minusList = mutableListOf<Float>()
-            sto.results.forEachIndexed { index, data ->
+            sto.detailGraphResponse.results.forEachIndexed { index, data ->
                 if (index % 2 == 0) {
                     // If the index is even, add it to plusList
                     plusList.add(data)
@@ -110,7 +111,7 @@ fun NoticeItemGraphRow(
                     }
             ) {
                 Text(
-                    text = stoViewModel.findSTOById(sto.stoId)?.name ?: "",
+                    text = stoViewModel.findSTOById(sto.detailGraphResponse.stoId)?.name ?: "",
                     style = TextStyle(
                         fontSize = 24.sp,
                         lineHeight = 15.sp,
@@ -130,8 +131,8 @@ fun NoticeItemGraphRow(
                 NoticeItemGraph(
                     plusList = plusList,
                     minusList = minusList,
-                    dateList = sto.dates,
-                    successData = stoViewModel.findSTOById(sto.stoId)?.goal?.toFloat() ?: 90f
+                    dateList = sto.detailGraphResponse.dates,
+                    successData = stoViewModel.findSTOById(sto.detailGraphResponse.stoId)?.goal?.toFloat() ?: 90f
                 )
             }
         }

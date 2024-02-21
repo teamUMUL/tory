@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.DateResponse
@@ -31,7 +32,7 @@ fun LTOItem(
     lto: LtoResponse,
     selectedChild: StudentResponse,
     selectedDate: DateResponse,
-    selectedNoticeDetailList: List<DetailGraphResponse>,
+    selectedNoticeDetailList: List<DetailObjectResponse>,
     noticeViewModel: NoticeViewModel,
     stoViewModel: STOViewModel
 ) {
@@ -111,13 +112,13 @@ fun LTOItem(
             NoticeItemTextField(
                 selectedDate = selectedDate,
                 selectedChild = selectedChild,
-                selectedDetail = selectedNoticeDetailList.first { it.ltoId == lto.id },
+                selectedDetail = selectedNoticeDetailList.first { it.detailGraphResponse.ltoId == lto.id },
                 noticeViewModel = noticeViewModel
             )
         }
         AnimatedVisibility(visible = expandedState.value) {
             NoticeItemGraphRow(
-                stoList = selectedNoticeDetailList.filter { it.ltoId == lto.id },
+                stoList = selectedNoticeDetailList.filter { it.detailGraphResponse.ltoId == lto.id },
                 stoViewModel = stoViewModel
             )
         }

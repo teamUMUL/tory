@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import inu.thebite.tory.model.detail.DetailGraphResponse
+import inu.thebite.tory.model.detail.DetailObjectResponse
 import inu.thebite.tory.model.detail.DetailResponse
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
@@ -44,7 +45,7 @@ class NoticeViewModel : ViewModel() {
     private val _noticeMonthList: MutableStateFlow<List<String>?> = MutableStateFlow(null)
     val noticeMonthList = _noticeMonthList.asStateFlow()
 
-    private val _selectedNoticeDetailList: MutableStateFlow<List<DetailGraphResponse>?> = MutableStateFlow(null)
+    private val _selectedNoticeDetailList: MutableStateFlow<List<DetailObjectResponse>?> = MutableStateFlow(null)
     val selectedNoticeDetailList = _selectedNoticeDetailList.asStateFlow()
 
     private val _selectedYear: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -55,6 +56,13 @@ class NoticeViewModel : ViewModel() {
 
     private val _pdfUrl: MutableStateFlow<String?> = MutableStateFlow(null)
     val pdfUrl = _pdfUrl.asStateFlow()
+
+    private val _noticeAutoComment: MutableStateFlow<String?> = MutableStateFlow(null)
+    val noticeAutoComment = _noticeAutoComment.asStateFlow()
+
+    private val _detailAutoComment: MutableStateFlow<String?> = MutableStateFlow(null)
+    val detailAutoComment = _detailAutoComment.asStateFlow()
+
 
     fun setSelectedYear(
         selectedYear: String
@@ -372,12 +380,74 @@ class NoticeViewModel : ViewModel() {
         year: String,
         month: String,
         date: String,
-    ) : String {
+    ) {
         viewModelScope.launch {
             repo.createSharePdf(studentId = studentId, year = year, month = month.toInt(), date = date)
-
         }
-        return "http://192.168.35.225:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
+        _pdfUrl.update {
+            "http://${"192.168.35.81"}:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
+        }
+    }
+
+    fun createNoticeAutoComment(
+        studentId: Long,
+        year: String,
+        month: Int,
+        date: String
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.getNoticeAutoComment(studentId = studentId, year = year, month = month, date = date)
+
+                if (response.isSuccessful) {
+                    val gottenAutoComment = response.body() ?: throw Exception("AutoComment 정보가 비어있습니다.")
+                    _selectedNotice.update {
+                        selectedNotice.value?.copy(
+                            comment = gottenAutoComment
+                        )
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("AutoComment 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update AutoComment", e.message.toString())
+            }
+        }
+    }
+
+    fun createDetailAutoComment(
+        selectedDetailObjectResponse: DetailObjectResponse,
+        studentId: Long,
+        year: String,
+        month: Int,
+        date: String
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.getNoticeAutoComment(studentId = studentId, year = year, month = month, date = date)
+
+                if (response.isSuccessful) {
+                    val gottenAutoComment = response.body() ?: throw Exception("AutoComment 정보가 비어있습니다.")
+                    _selectedNoticeDetailList.update {currentNoticeDetailList ->
+                        currentNoticeDetailList?.map {detail ->
+                            if(detail.id == selectedDetailObjectResponse.id){
+                                detail.copy(comment = gottenAutoComment)
+                            } else {
+                                detail
+                            }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("AutoComment 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update AutoComment", e.message.toString())
+            }
+        }
     }
 }
 
