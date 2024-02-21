@@ -25,6 +25,7 @@ import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
+import inu.thebite.tory.model.sto.EtcRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
@@ -139,7 +140,9 @@ interface RetrofitService {
     @DELETE("/ltos/{ltoId}")
     suspend fun deleteLto(@Path("ltoId") ltoId: Long): Response<Boolean>
 
-    // sto
+    /**
+     * STO API
+     */
     @POST("/{ltoId}/stos")
     suspend fun addSto(@Path("ltoId") ltoId: Long, @Body addStoRequest: AddStoRequest): Response<StoResponse>
 
@@ -160,6 +163,31 @@ interface RetrofitService {
 
     @PATCH("/stos/{stoId}/hit/round")
     suspend fun updateStoHitRound(@Path("stoId") stoId: Long, @Body updateStoRoundRequest: UpdateStoRoundRequest) : Response<StoResponse>
+
+    // 스트레스 지수 업데이트
+    @PATCH("/stos/{stoId}/stress")
+    suspend fun updateStressStatus(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+
+    // 집중도 업데이트
+    @PATCH("/stos/{stoId}/concentration")
+    suspend fun updateConcentration(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+
+    // 특이 사항 업데이트
+    @PATCH("/stos/{stoId}/significant")
+    suspend fun updateSignificant(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+
+    // 돌발 상황 선택
+    @PATCH("/stos/{stoId}/selection/lc")
+    suspend fun updateLooseCannons(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+
+    // 돌발 상황 해제
+    @PATCH("/stos/{stoId}/removal/lc")
+    suspend fun removeLooseCannon(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+
+    // 돌발 상황 리스트 가져오기
+    @GET("/stos/{stoId}/lc")
+    suspend fun getLooseCannonListBySto(@Path("stoId") stoId: Long) : List<String>
+
 
     @GET("/{studentId}/stos")
     suspend fun getStoList(@Path("studentId") studentId: Long): List<StoResponse>

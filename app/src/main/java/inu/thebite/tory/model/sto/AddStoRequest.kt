@@ -16,8 +16,11 @@ data class AddStoRequest(
     @SerializedName("goal")
     var goal: Int,
 
-    @SerializedName("urgeType")
-    var urgeType: String,
+    @SerializedName("goalType")
+    var goalType: String,
+
+    @SerializedName("goalAmount")
+    var goalAmount: Int,
 
     @SerializedName("urgeContent")
     var urgeContent: String,

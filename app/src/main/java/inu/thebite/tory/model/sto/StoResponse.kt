@@ -27,14 +27,14 @@ data class StoResponse(
     @SerializedName("goal")
     var goal: Int,
 
-    @SerializedName("goalPercent")
-    var goalPercent: Int,
+    @SerializedName("goalType")
+    var goalType: String,
+
+    @SerializedName("goalAmount")
+    var goalAmount: Int,
 
     @SerializedName("achievementOrNot")
     var achievementOrNot: String,
-
-    @SerializedName("urgeType")
-    var urgeType: String,
 
     @SerializedName("urgeContent")
     var urgeContent: String,

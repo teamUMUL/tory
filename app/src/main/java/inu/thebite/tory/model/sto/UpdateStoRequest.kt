@@ -16,8 +16,8 @@ data class UpdateStoRequest(
     @SerializedName("goal")
     var goal: Int,
 
-    @SerializedName("urgeType")
-    var urgeType: String,
+    @SerializedName("goalAmount")
+    var goalAmount: Int,
 
     @SerializedName("urgeContent")
     var urgeContent: String,
