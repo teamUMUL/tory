@@ -64,10 +64,10 @@ import inu.thebite.tory.ui.theme.fontFamily_Poppins
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun UpdateSTODialog(
-    context : Context,
+    context: Context,
     stoViewModel: STOViewModel,
     selectedSTO: StoResponse,
-    setUpdateSTOItem : (Boolean) -> Unit,
+    setUpdateSTOItem: (Boolean) -> Unit,
 ) {
     val addSTOScrollState = rememberScrollState()
 
@@ -81,10 +81,10 @@ fun UpdateSTODialog(
         mutableStateOf(TextFieldValue(selectedSTO.count.toString()))
     }
     var stoSuccessStandardInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
+        mutableStateOf(TextFieldValue(selectedSTO.goalType))
     }
     var stoSuccessStandardValueInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(selectedSTO.goal.toString()))
+        mutableStateOf(TextFieldValue(selectedSTO.goalAmount.toString()))
     }
     var stoMethodInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(selectedSTO.urgeContent))
@@ -100,22 +100,24 @@ fun UpdateSTODialog(
         mutableStateOf(false)
     }
 
-    if (deleteSTODialog){
+    if (deleteSTODialog) {
         selectedSTO?.let { selectedSTO ->
             AlertDialog(
-                title = {Text(text = "STO : ${selectedSTO.name} 삭제하시겠습니까?")},
-                onDismissRequest = {setDeleteSTODialog(false)},
-                confirmButton = { TextButton(onClick = {
-                    stoViewModel.deleteSTO(selectedSTO = selectedSTO)
-                    setDeleteSTODialog(false)
-                    setUpdateSTOItem(false)
-                }) {
-                    Text(text = "삭제")
-                }
+                title = { Text(text = "STO : ${selectedSTO.name} 삭제하시겠습니까?") },
+                onDismissRequest = { setDeleteSTODialog(false) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        stoViewModel.deleteSTO(selectedSTO = selectedSTO)
+                        setDeleteSTODialog(false)
+                        setUpdateSTOItem(false)
+                    }) {
+                        Text(text = "삭제")
+                    }
                 },
-                dismissButton = { TextButton(onClick = { setDeleteSTODialog(false) }) {
-                    Text(text = "닫기")
-                }
+                dismissButton = {
+                    TextButton(onClick = { setDeleteSTODialog(false) }) {
+                        Text(text = "닫기")
+                    }
                 }
             )
         }
@@ -123,8 +125,8 @@ fun UpdateSTODialog(
 
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
-        onDismissRequest = {setUpdateSTOItem(false)},
-    ){
+        onDismissRequest = { setUpdateSTOItem(false) },
+    ) {
         Column(
             modifier = Modifier
                 .width(900.dp)
@@ -135,11 +137,13 @@ fun UpdateSTODialog(
                     horizontal = 50.dp,
                     vertical = 16.dp
                 )
-        ){
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.9f)
-                .verticalScroll(addSTOScrollState)) {
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.9f)
+                    .verticalScroll(addSTOScrollState)
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -175,11 +179,21 @@ fun UpdateSTODialog(
                     }
                 }
 
-                updateSTOTextFieldFrame("STO 이름", setInputValue = {stoNameInputValue = it}, inputValue = stoNameInputValue, isSingleLine = false)
+                updateSTOTextFieldFrame(
+                    "STO 이름",
+                    setInputValue = { stoNameInputValue = it },
+                    inputValue = stoNameInputValue,
+                    isSingleLine = false
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame("STO 내용", setInputValue = {stoDetailInputValue = it}, inputValue = stoDetailInputValue, isSingleLine = false)
+                updateSTOTextFieldFrame(
+                    "STO 내용",
+                    setInputValue = { stoDetailInputValue = it },
+                    inputValue = stoDetailInputValue,
+                    isSingleLine = false
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                STOCountSelector(stoCount = stoTryNum.value, setSTOCount = {stoTryNum.value = it})
+                STOCountSelector(stoCount = stoTryNum.value, setSTOCount = { stoTryNum.value = it })
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier
@@ -203,7 +217,12 @@ fun UpdateSTODialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        RadioButton(selected = (stoSuccessStandardInputValue.text == "퍼센트"), onClick = { stoSuccessStandardInputValue = TextFieldValue("퍼센트") })
+                        RadioButton(
+                            selected = (stoSuccessStandardInputValue.text == "퍼센트"),
+                            onClick = {
+                                stoSuccessStandardInputValue = TextFieldValue("퍼센트")
+                                stoSuccessStandardValueInputValue = TextFieldValue("90")
+                            })
                         Text(
                             text = "퍼센트",
                             style = TextStyle(
@@ -213,7 +232,12 @@ fun UpdateSTODialog(
                                 fontSize = 20.sp
                             )
                         )
-                        RadioButton(selected = (stoSuccessStandardInputValue.text == "연속"), onClick = { stoSuccessStandardInputValue = TextFieldValue("연속") })
+                        RadioButton(
+                            selected = (stoSuccessStandardInputValue.text == "연속"),
+                            onClick = {
+                                stoSuccessStandardInputValue = TextFieldValue("연속")
+                                stoSuccessStandardValueInputValue = TextFieldValue("3")
+                            })
                         Text(
                             text = "연속",
                             style = TextStyle(
@@ -247,7 +271,9 @@ fun UpdateSTODialog(
                                 shape = RoundedCornerShape(8.dp),
                                 keyboardOptions = KeyboardOptions(
                                     capitalization = KeyboardCapitalization.None,
-                                    autoCorrect = true, keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
+                                    autoCorrect = true,
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
                                 ),
                                 textStyle = TextStyle(
                                     color = Color.Black, fontSize = 30.sp,
@@ -284,7 +310,9 @@ fun UpdateSTODialog(
                                 shape = RoundedCornerShape(8.dp),
                                 keyboardOptions = KeyboardOptions(
                                     capitalization = KeyboardCapitalization.None,
-                                    autoCorrect = true, keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
+                                    autoCorrect = true,
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
                                 ),
                                 textStyle = TextStyle(
                                     color = Color.Black, fontSize = 30.sp,
@@ -313,11 +341,27 @@ fun UpdateSTODialog(
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame("준거 도달 기준", setInputValue = {stoSuccessStandardValueInputValue = it}, inputValue = stoSuccessStandardValueInputValue, isSingleLine = false, isInt = true)
+                updateSTOTextFieldFrame(
+                    "준거 도달 기준",
+                    setInputValue = { stoSuccessStandardValueInputValue = it },
+                    inputValue = stoSuccessStandardValueInputValue,
+                    isSingleLine = false,
+                    isInt = true
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame("촉구 방법", setInputValue = {stoMethodInputValue = it}, inputValue = stoMethodInputValue, isSingleLine = false)
+                updateSTOTextFieldFrame(
+                    "촉구 방법",
+                    setInputValue = { stoMethodInputValue = it },
+                    inputValue = stoMethodInputValue,
+                    isSingleLine = false
+                )
                 Spacer(modifier = Modifier.height(10.dp))
-                updateSTOTextFieldFrame("강화 메세지", setInputValue = {stoReinforceMessageInputValue = it}, inputValue = stoReinforceMessageInputValue, isSingleLine = false)
+                updateSTOTextFieldFrame(
+                    "강화 메세지",
+                    setInputValue = { stoReinforceMessageInputValue = it },
+                    inputValue = stoReinforceMessageInputValue,
+                    isSingleLine = false
+                )
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
@@ -335,7 +379,7 @@ fun UpdateSTODialog(
                         containerColor = Color(0xFFBFBFBF)
                     ),
                     onClick = { setUpdateSTOItem(false) }
-                ){
+                ) {
                     Text(
                         text = "취소",
                         style = TextStyle(
@@ -357,7 +401,7 @@ fun UpdateSTODialog(
                     onClick = {
                         val successStandard = stoSuccessStandardValueInputValue.text.toIntOrNull()
                         successStandard?.let { successStandard ->
-                            if(stoNameInputValue.text.isNotEmpty()){
+                            if (stoNameInputValue.text.isNotEmpty() && stoSuccessStandardInputValue.text.isNotEmpty() && stoSuccessStandardValueInputValue.text.isNotEmpty()) {
                                 //업데이트 코드
                                 stoViewModel.updateSTO(
                                     selectedSTO = selectedSTO,
@@ -366,10 +410,11 @@ fun UpdateSTODialog(
                                         contents = stoDetailInputValue.text,
                                         count = stoTryNum.value,
                                         goal = successStandard,
-                                        urgeType = "",
                                         urgeContent = stoMethodInputValue.text,
                                         enforceContent = stoReinforceMessageInputValue.text,
-                                        memo = ""
+                                        memo = "",
+                                        goalAmount = successStandard,
+                                        goalType = stoSuccessStandardInputValue.text
                                     )
                                 )
                                 //----
@@ -382,15 +427,21 @@ fun UpdateSTODialog(
                                 stoMethodInputValue = TextFieldValue("")
                                 stoReinforceMessageInputValue = TextFieldValue("")
                             } else {
-                                Toasty.warning(context, "STO의 이름을 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                Toasty.warning(context, "STO의 이름과 준거도달 기준을 입력해주세요", Toast.LENGTH_SHORT, true)
+                                    .show()
                             }
                         } ?: run {
-                            Toasty.warning(context, "준거 도달 기준은 숫자로 입력해주세요..", Toast.LENGTH_SHORT, true).show()
+                            Toasty.warning(
+                                context,
+                                "준거 도달 기준은 숫자로 입력해주세요..",
+                                Toast.LENGTH_SHORT,
+                                true
+                            ).show()
                         }
 
 
                     },
-                ){
+                ) {
                     Text(
                         text = "수정",
                         style = TextStyle(
@@ -412,7 +463,14 @@ fun UpdateSTODialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, setInputValue:(TextFieldValue) -> Unit, isSingleLine: Boolean, isReadOnly : Boolean = false, isInt : Boolean = false){
+fun updateSTOTextFieldFrame(
+    typeOfInput: String,
+    inputValue: TextFieldValue,
+    setInputValue: (TextFieldValue) -> Unit,
+    isSingleLine: Boolean,
+    isReadOnly: Boolean = false,
+    isInt: Boolean = false
+) {
     val containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     val containerColor1 = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
     TextField(
@@ -427,7 +485,9 @@ fun updateSTOTextFieldFrame(typeOfInput : String, inputValue: TextFieldValue, se
         label = { Text(text = typeOfInput) },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
-            autoCorrect = true, keyboardType = if(isInt) KeyboardType.Number else KeyboardType.Text, imeAction = ImeAction.Done
+            autoCorrect = true,
+            keyboardType = if (isInt) KeyboardType.Number else KeyboardType.Text,
+            imeAction = ImeAction.Done
         ),
         textStyle = TextStyle(
             color = Color.Black, fontSize = 30.sp,

@@ -9,6 +9,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
+import inu.thebite.tory.model.sto.EtcRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
@@ -65,6 +66,9 @@ class STOViewModel : ViewModel() {
         _selectedSTO.update {
             stoEntity
         }
+        _userInput.update {
+            stoEntity.significant
+        }
     }
 
     fun clearSelectedSTO() {
@@ -85,9 +89,11 @@ class STOViewModel : ViewModel() {
         observeAllSTOs()
         viewModelScope.launch {
             userInput
-                .debounce(1000)
+                .debounce(1500)
                 .collect { input ->
-                    saveDataToServer(input)
+                    selectedSTO.value?.let { selectedSTO ->
+                        saveDataToServer(selectedSTO,input)
+                    }
                 }
         }
     }
@@ -96,12 +102,13 @@ class STOViewModel : ViewModel() {
         _userInput.update { input }
     }
 
-    private  fun saveDataToServer(input: String){
+    private  fun saveDataToServer(selectedSTO: StoResponse,input: String){
         _isSavingData.update { true }
 
         viewModelScope.launch {
             try {
                 Log.d("saveDataToServer", input)
+                updateSTOSignificant(stoId = selectedSTO.id, etcRequest = EtcRequest(input))
                 delay(2000)
             } finally {
                 _isSavingData.update { false }
@@ -455,6 +462,140 @@ class STOViewModel : ViewModel() {
         }
     }
 
+    fun updateSTOLooseCannon(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repo.updateLooseCannons(stoId = stoId, etcRequest = etcRequest)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO", e.message.toString())
+            }
+        }
+    }
+
+    fun removeSTOLooseCannon(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repo.removeLooseCannon(stoId = stoId, etcRequest = etcRequest)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    Log.d("updatedSTOLooseCannons", updatedSTO.looseCannonList.toString())
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO", e.message.toString())
+            }
+        }
+    }
+
+    fun updateSTOStressStatus(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repo.updateStressStatus(stoId = stoId, etcRequest = etcRequest)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO", e.message.toString())
+            }
+        }
+    }
+
+    fun updateSTOConcentration(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repo.updateConcentration(stoId = stoId, etcRequest = etcRequest)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO", e.message.toString())
+            }
+        }
+    }
+
+    fun updateSTOSignificant(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = repo.updateSignificant(stoId = stoId, etcRequest = etcRequest)
+
+                if (response.isSuccessful) {
+                    val updatedSTO = response.body() ?: throw Exception("STO 정보가 비어있습니다.")
+                    _allSTOs.update {
+                        allSTOs.value?.let { allSTOs ->
+                            allSTOs.map { if (it.id == updatedSTO.id) updatedSTO else it }
+                        }
+                    }
+                    _userInput.update {
+                        updatedSTO.significant
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("STO 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update STO", e.message.toString())
+            }
+        }
+    }
+
     fun updateSTOImageList(
         selectedSTO: StoResponse,
         updateImageList: List<String>
@@ -490,6 +631,8 @@ class STOViewModel : ViewModel() {
             }
         }
     }
+
+
     fun deleteSTO(
         selectedSTO: StoResponse
     ) {

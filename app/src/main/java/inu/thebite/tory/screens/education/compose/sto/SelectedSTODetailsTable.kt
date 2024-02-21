@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.compose.sto
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,12 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -40,8 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -52,15 +48,13 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.model.sto.EtcRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
@@ -71,7 +65,7 @@ import inu.thebite.tory.ui.theme.fontFamily_Lato
 @Composable
 fun SelectedSTODetailsTable(
     modifier: Modifier = Modifier,
-    selectedSTO: StoResponse?,
+    selectedSTO: StoResponse,
     stoViewModel: STOViewModel
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -137,13 +131,13 @@ fun SelectedSTODetailsTable(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val selectedSTODetail = listOf(
-                            selectedSTO?.name ?: "",
-                            selectedSTO?.contents ?: "",
-                            "${selectedSTO?.count ?: ""}회",
-                            "${selectedSTO?.goal ?: ""}%",
-                            selectedSTO?.urgeContent ?: "",
-                            selectedSTO?.enforceContent ?: "",
-                            selectedSTO?.memo ?: "",
+                            selectedSTO.name ?: "",
+                            selectedSTO.contents ?: "",
+                            "${selectedSTO.count ?: ""}회",
+                            if (selectedSTO.goalType == "퍼센트") "${selectedSTO.goalAmount ?: ""}%" else "연속 ${selectedSTO.goalAmount}회",
+                            selectedSTO.urgeContent ?: "",
+                            selectedSTO.enforceContent ?: "",
+                            selectedSTO.memo ?: "",
                         )
                         TableCell(
                             text = stoDetailItem,
@@ -175,7 +169,7 @@ fun SelectedSTODetailsTable(
             val stressStates = listOf(
                 "매우 나쁨", "나쁨", "보통", "좋음", "매우 좋음"
             )
-            val focusStates = listOf(
+            val concentrations = listOf(
                 "매우 나쁨", "나쁨", "보통", "좋음", "매우 좋음"
             )
 
@@ -194,13 +188,13 @@ fun SelectedSTODetailsTable(
                 gridCells = 2,
                 stateList = accidentStates,
                 onClick = {
-                    if (selectedAccidentActivities.contains(it)){
-                        selectedAccidentActivities.remove(it)
+                    if (selectedSTO.looseCannonList.contains(it)){
+                        stoViewModel.removeSTOLooseCannon(stoId = selectedSTO.id, etcRequest = EtcRequest(it))
                     } else {
-                        selectedAccidentActivities.add(it)
+                        stoViewModel.updateSTOLooseCannon(stoId = selectedSTO.id, etcRequest = EtcRequest(it))
                     }
                 },
-                selectedCells = selectedAccidentActivities
+                selectedCells = selectedSTO.looseCannonList
             )
             Text(
                 text = "스트레스 상태",
@@ -217,13 +211,13 @@ fun SelectedSTODetailsTable(
                 gridCells = 1,
                 stateList = stressStates,
                 onClick = {
-                    if (selectedStressState.value == it){
-                        selectedStressState.value = ""
+                    if (selectedSTO.stressStatus == it){
+                        stoViewModel.updateSTOStressStatus(stoId = selectedSTO.id, etcRequest = EtcRequest("없음"))
                     } else {
-                        selectedStressState.value = it
+                        stoViewModel.updateSTOStressStatus(stoId = selectedSTO.id, etcRequest = EtcRequest(it))
                     }
                 },
-                selectedCell = selectedStressState.value
+                selectedCell = selectedSTO.stressStatus
             )
             Text(
                 text = "집중도",
@@ -238,15 +232,15 @@ fun SelectedSTODetailsTable(
                     .fillMaxWidth()
                     .height(35.dp),
                 gridCells = 1,
-                stateList = focusStates,
+                stateList = concentrations,
                 onClick = {
-                    if (selectedFocusState.value == it){
-                        selectedFocusState.value = ""
+                    if (selectedSTO.concentration == it){
+                        stoViewModel.updateSTOConcentration(stoId = selectedSTO.id, etcRequest = EtcRequest("없음"))
                     } else {
-                        selectedFocusState.value = it
+                        stoViewModel.updateSTOConcentration(stoId = selectedSTO.id, etcRequest = EtcRequest(it))
                     }
                 },
-                selectedCell = selectedFocusState.value
+                selectedCell = selectedSTO.concentration
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

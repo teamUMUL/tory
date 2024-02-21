@@ -152,9 +152,12 @@ class DEVViewModel : ViewModel() {
 
                 if (response.isSuccessful) {
                     val isDeleted = response.body() ?: throw Exception("DEV 정보가 비어있습니다.")
-                    _allDEVs.update {currentDEVs ->
-                        currentDEVs?.filterNot { it.id == domainId }
+                    if (isDeleted){
+                        _allDEVs.update {currentDEVs ->
+                            currentDEVs?.filterNot { it.id == domainId }
+                        }
                     }
+
 
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"

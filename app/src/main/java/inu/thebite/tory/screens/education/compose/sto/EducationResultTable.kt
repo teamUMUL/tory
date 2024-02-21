@@ -92,6 +92,25 @@ fun EducationResultTable(
                             if (points.size < selectedSTO.count) {
                                 when (button) {
                                     "+" -> {
+                                        if (selectedSTO.goalType == "연속"){
+                                            val recentPlusCount = points.reversed().takeWhile { it == "+" }.count() + 1
+
+                                            if (recentPlusCount >= selectedSTO.goalAmount) {
+                                                stoViewModel.setSelectedSTOStatus(selectedSTO = selectedSTO, changeState = "완료")
+                                            }
+                                        } else if (selectedSTO.goalType == "퍼센트"){
+                                            val takenPoints = points.take(selectedSTO.count)
+
+                                            val status = if ((takenPoints.count { it == "+" }.toFloat() / selectedSTO.count.toFloat()) * 100 >= selectedSTO.goalAmount.toFloat()) {
+                                                "완료"
+                                            } else {
+                                                "진행중"
+                                            }
+
+                                            if (status == "완료"){
+                                                stoViewModel.setSelectedSTOStatus(selectedSTO = selectedSTO, changeState = "완료")
+                                            }
+                                        }
                                         stoViewModel.addPoint(
                                             selectedSTO = selectedSTO,
                                             addPointRequest = AddPointRequest(

@@ -71,10 +71,12 @@ fun SelectedSTODetail(
                 .padding(10.dp)
                 .background(color = Color.White, shape = RoundedCornerShape(10.dp))
         ) {
-            SelectedSTODetailsTable(
-                selectedSTO = selectedSTO,
-                stoViewModel = stoViewModel
-            )
+            selectedSTO?.let {selectedSTO ->
+                SelectedSTODetailsTable(
+                    selectedSTO = selectedSTO,
+                    stoViewModel = stoViewModel
+                )
+            }
         }
         Column(
             modifier = Modifier

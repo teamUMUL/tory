@@ -5,6 +5,7 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.point.AddPointRequest
 import inu.thebite.tory.model.point.DeletePointRequest
 import inu.thebite.tory.model.sto.AddStoRequest
+import inu.thebite.tory.model.sto.EtcRequest
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.model.sto.UpdateStoRequest
 import inu.thebite.tory.model.sto.UpdateStoRoundRequest
@@ -76,5 +77,44 @@ class STORepoImpl: STORepo {
 
     override suspend fun deletePoint(selectedSTO: StoResponse) {
         stoRetrofit.deletePoint(stoId = selectedSTO.id)
+    }
+
+    override suspend fun updateStressStatus(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ): Response<StoResponse> {
+        return  stoRetrofit.updateStressStatus(stoId = stoId, etcRequest = etcRequest)
+    }
+
+    override suspend fun updateConcentration(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ): Response<StoResponse> {
+        return  stoRetrofit.updateConcentration(stoId = stoId, etcRequest = etcRequest)
+
+    }
+
+    override suspend fun updateSignificant(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ): Response<StoResponse> {
+        return  stoRetrofit.updateSignificant(stoId = stoId, etcRequest = etcRequest)
+
+    }
+
+    override suspend fun updateLooseCannons(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ): Response<StoResponse> {
+        return  stoRetrofit.updateLooseCannons(stoId = stoId, etcRequest = etcRequest)
+
+    }
+
+    override suspend fun removeLooseCannon(
+        stoId: Long,
+        etcRequest: EtcRequest
+    ): Response<StoResponse> {
+        return  stoRetrofit.removeLooseCannon(stoId = stoId, etcRequest = etcRequest)
+
     }
 }
