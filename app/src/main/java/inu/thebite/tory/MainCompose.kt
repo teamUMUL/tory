@@ -1147,7 +1147,7 @@ fun CenterSelector(
             }
         ){
             TextField(
-                value = selectedCenter?.name ?: "반을 선택해주세요.",
+                value = selectedCenter?.name ?: "센터를 선택해주세요.",
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = {
