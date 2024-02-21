@@ -166,27 +166,27 @@ interface RetrofitService {
 
     // 스트레스 지수 업데이트
     @PATCH("/stos/{stoId}/stress")
-    suspend fun updateStressStatus(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+    suspend fun updateStressStatus(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<StoResponse>
 
     // 집중도 업데이트
     @PATCH("/stos/{stoId}/concentration")
-    suspend fun updateConcentration(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+    suspend fun updateConcentration(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<StoResponse>
 
     // 특이 사항 업데이트
     @PATCH("/stos/{stoId}/significant")
-    suspend fun updateSignificant(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+    suspend fun updateSignificant(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<StoResponse>
 
     // 돌발 상황 선택
     @PATCH("/stos/{stoId}/selection/lc")
-    suspend fun updateLooseCannons(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+    suspend fun updateLooseCannons(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<StoResponse>
 
     // 돌발 상황 해제
     @PATCH("/stos/{stoId}/removal/lc")
-    suspend fun removeLooseCannon(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<Void>
+    suspend fun removeLooseCannon(@Path("stoId") stoId: Long, @Body etcRequest: EtcRequest) : Response<StoResponse>
 
     // 돌발 상황 리스트 가져오기
-    @GET("/stos/{stoId}/lc")
-    suspend fun getLooseCannonListBySto(@Path("stoId") stoId: Long) : List<String>
+//    @GET("/stos/{stoId}/lc")
+//    suspend fun getLooseCannonListBySto(@Path("stoId") stoId: Long) : List<String>
 
 
     @GET("/{studentId}/stos")

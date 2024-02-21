@@ -63,6 +63,18 @@ data class StoResponse(
     @SerializedName("pointList")
     var pointList: List<PointResponse>,
 
+    @SerializedName("stressStatus")
+    var stressStatus: String,
+
+    @SerializedName("concentration")
+    var concentration: String,
+
+    @SerializedName("significant")
+    var significant: String,
+
+    @SerializedName("looseCannonList")
+    var looseCannonList: List<String>,
+
     @SerializedName("ltoId")
     var ltoId: Long
 
