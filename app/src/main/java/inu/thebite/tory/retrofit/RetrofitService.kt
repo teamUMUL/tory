@@ -14,11 +14,11 @@ import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
+import inu.thebite.tory.model.member.AddMemberRequest
 import inu.thebite.tory.model.member.LoginResponse
 import inu.thebite.tory.model.member.MemberLoginRequest
 import inu.thebite.tory.model.member.ValidationTokenResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
-import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
@@ -39,8 +39,6 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -235,6 +233,15 @@ interface RetrofitService {
     /**
      * Member Api
      */
+
+    // 원장님 회원가입
+    @POST("/members/join")
+    suspend fun joinPrincipalUser(@Body addMemberRequest: AddMemberRequest) : Response<Void>
+
+    // 치료사 회원가입
+    @POST("/members/{centerId}/join")
+    suspend fun joinTherapistUser(@Path("centerId") centerId: Long, @Body addMemberRequest: AddMemberRequest) : Response<Void>
+
     @POST("/members/login")
     suspend fun login(@Body memberLoginRequest: MemberLoginRequest) : Response<LoginResponse>
 
