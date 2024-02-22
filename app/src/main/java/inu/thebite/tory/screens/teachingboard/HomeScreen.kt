@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.teachingboard
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -38,13 +39,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
+import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
@@ -70,15 +75,25 @@ fun HomeScreen(
     stoViewModel: STOViewModel,
     navigateToEducation: () -> Unit,
     navigateToNotice: () -> Unit,
+    todoViewModel: TodoViewModel,
+    selectedChild: StudentResponse?
 ) {
+    val context = LocalContext.current
+
     val (recentListDialog, setRecentListDialog) = rememberSaveable {
         mutableStateOf(false)
     }
 
     if (recentListDialog){
-        RecentListDialog(
-            setRecentListDialog = {setRecentListDialog(it)}
-        )
+        selectedChild?.let {selectedChild ->
+            RecentListDialog(
+                setRecentListDialog = {setRecentListDialog(it)},
+                todoViewModel = todoViewModel,
+                selectedChild = selectedChild
+            )
+        } ?: run {
+            Toasty.warning(context, "아이를 선택해주세요.", Toast.LENGTH_SHORT, true)
+        }
     }
 
     Column(

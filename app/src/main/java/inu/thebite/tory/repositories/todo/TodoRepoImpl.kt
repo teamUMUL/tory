@@ -1,6 +1,7 @@
 package inu.thebite.tory.repositories.todo
 
 import inu.thebite.tory.model.sto.StoSummaryResponse
+import inu.thebite.tory.model.todo.RecentTodoWithDateResponse
 import inu.thebite.tory.model.todo.TodoListRequest
 import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
@@ -21,5 +22,13 @@ class TodoRepoImpl : TodoRepo {
 
     override suspend fun getTodoList(studentId: Long) : Response<TodoResponse>  {
         return todoRetrofit.getTodoList(studentId = studentId)
+    }
+
+    override suspend fun getRecentTodoListWithDate(
+        studentId: Long,
+        startDate: String,
+        endDate: String
+    ): Response<List<RecentTodoWithDateResponse>> {
+        return todoRetrofit.getRecentTodoListWithDate(studentId = studentId, startDate = startDate, endDate = endDate)
     }
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -22,15 +21,18 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,17 +41,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
+import kotlinx.coroutines.delay
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecentListDialog(
-    setRecentListDialog: (Boolean) -> Unit
+    setRecentListDialog: (Boolean) -> Unit,
+    todoViewModel: TodoViewModel,
+    selectedChild: StudentResponse
 ) {
-    var stoState by remember {
-        mutableStateOf("")
+
+    val recentTodosFilterState by todoViewModel.recentTodosFilterState.collectAsState()
+
+    val recentTodos by todoViewModel.recentTodos.collectAsState()
+    val filteredRecentTodos by todoViewModel.filteredRecentTodos.collectAsState()
+
+    val isRecentTodoLoading by todoViewModel.isRecentTodoLoading.collectAsState()
+
+    LaunchedEffect(recentTodosFilterState){
+        recentTodosFilterState?.let { recentTodosFilterState ->
+            todoViewModel.filterRecentTodoByState(state = recentTodosFilterState)
+        }
     }
+
     Dialog(
         onDismissRequest = {
             setRecentListDialog(false)
@@ -63,120 +88,262 @@ fun RecentListDialog(
                 .background(Color(0xFFE3E3E3), shape = RoundedCornerShape(10.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            RecentListDialogTopBar(stoState = stoState, changeState = { stoState = it })
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-            ) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                            .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = "11/ 16",
-                            style = TextStyle(
-                                color = Color(0xFF898989),
-                                fontFamily = fontFamily_Inter,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold
-                            ),
-                            modifier = Modifier
-                                .padding(start = 30.dp, end = 20.dp)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .width(60.dp)
-                                .fillMaxHeight()
-                                .padding(vertical = 10.dp)
-                                .background(
-                                    color = Color(0xFFE3E3E3),
-                                    shape = RoundedCornerShape(10.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "홍길동",
-                                style = TextStyle(
-                                    color = Color(0xFF3A3A3A),
-                                    fontFamily = fontFamily_Inter,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            )
-                        }
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(10.dp)
-                        ) {
-                            item {
-                                Surface(
+            RecentListDialogTopBar(
+                stoState = recentTodosFilterState ?: "",
+                changeState = {
+                    if (recentTodosFilterState.toString() == it){
+                        todoViewModel.clearFilteredRecentTodos()
+                        todoViewModel.clearRecentTodosFilterState()
+                    } else {
+                        todoViewModel.setRecentTodosFilterState(it)
+                    }
+                },
+                todoViewModel = todoViewModel,
+                selectedChild = selectedChild
+            )
+            if (isRecentTodoLoading){
+                CircularProgressIndicator()
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                ) {
+                    filteredRecentTodos?.let { filteredRecentTodos ->
+                        items(filteredRecentTodos){todo ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(10.dp)
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Text(
+                                    text = todo.date.toString(),
+                                    style = TextStyle(
+                                        color = Color(0xFF898989),
+                                        fontFamily = fontFamily_Inter,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    ),
                                     modifier = Modifier
-                                        .width(150.dp)
-                                        .fillMaxHeight(),
-                                    shape = RoundedCornerShape(10.dp),
-                                    color = Color.White,
-                                    elevation = 2.dp
+                                        .padding(start = 30.dp, end = 20.dp)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .width(60.dp)
+                                        .fillMaxHeight()
+                                        .padding(vertical = 10.dp)
+                                        .background(
+                                            color = Color(0xFFE3E3E3),
+                                            shape = RoundedCornerShape(10.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
                                 ) {
-                                    Column{
-                                        Row(
+                                    Text(
+                                        text = todo.teacher,
+                                        style = TextStyle(
+                                            color = Color(0xFF3A3A3A),
+                                            fontFamily = fontFamily_Inter,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    )
+                                }
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(10.dp)
+                                ) {
+                                    items(todo.sto){sto ->
+                                        Surface(
                                             modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                                .background(
-                                                    color = Color(0xFFCCEFC0),
-                                                    shape = RoundedCornerShape(
-                                                        topStart = 10.dp,
-                                                        topEnd = 10.dp,
-                                                        bottomEnd = 0.dp,
-                                                        bottomStart = 0.dp
+                                                .width(150.dp)
+                                                .fillMaxHeight(),
+                                            shape = RoundedCornerShape(10.dp),
+                                            color = Color.White,
+                                            elevation = 2.dp
+                                        ) {
+                                            Column {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .weight(1f)
+                                                        .background(
+                                                            color = when(todo.stoStatus[todo.sto.indexOf(sto)]){
+                                                                "완료" -> Color(0xFFCCEFC0)
+                                                                "진행중" -> Color(0xFFC0C5EF)
+                                                                "중지" -> Color(0xFFEFC0C0)
+                                                                else -> Color.Black
+                                                            },
+                                                            shape = RoundedCornerShape(
+                                                                topStart = 10.dp,
+                                                                topEnd = 10.dp,
+                                                                bottomEnd = 0.dp,
+                                                                bottomStart = 0.dp
+                                                            )
+                                                        ),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = todo.lto[todo.sto.indexOf(sto)],
+                                                        style = TextStyle(
+                                                            fontFamily = fontFamily_Inter,
+                                                            fontWeight = FontWeight.SemiBold,
+                                                            fontSize = 12.sp,
+                                                            color = Color.Black
+                                                        )
                                                     )
-                                                ),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(
-                                                text = "같은 사진 매칭(6)",
-                                                style = TextStyle(
-                                                    fontFamily = fontFamily_Inter,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    fontSize = 12.sp,
-                                                    color = Color.Black
-                                                )
-                                            )
-                                        }
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(
-                                                text = "STO1",
-                                                style = TextStyle(
-                                                    fontFamily = fontFamily_Inter,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    fontSize = 12.sp,
-                                                    color = Color.Black
-                                                )
-                                            )
+                                                }
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .weight(1f),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = sto,
+                                                        style = TextStyle(
+                                                            fontFamily = fontFamily_Inter,
+                                                            fontWeight = FontWeight.SemiBold,
+                                                            fontSize = 12.sp,
+                                                            color = Color.Black
+                                                        )
+                                                    )
+                                                }
+                                            }
                                         }
                                     }
                                 }
-
+                            }
+                        }
+                    } ?: run {
+                        recentTodos?.let { recentTodos ->
+                            items(recentTodos){todo ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(100.dp)
+                                        .background(
+                                            color = Color.White,
+                                            shape = RoundedCornerShape(10.dp)
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Text(
+                                        text = todo.date.toString(),
+                                        style = TextStyle(
+                                            color = Color(0xFF898989),
+                                            fontFamily = fontFamily_Inter,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        ),
+                                        modifier = Modifier
+                                            .padding(start = 30.dp, end = 20.dp)
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .width(60.dp)
+                                            .fillMaxHeight()
+                                            .padding(vertical = 10.dp)
+                                            .background(
+                                                color = Color(0xFFE3E3E3),
+                                                shape = RoundedCornerShape(10.dp)
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = todo.teacher,
+                                            style = TextStyle(
+                                                color = Color(0xFF3A3A3A),
+                                                fontFamily = fontFamily_Inter,
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        )
+                                    }
+                                    LazyRow(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(10.dp)
+                                    ) {
+                                        items(todo.sto){sto ->
+                                            Surface(
+                                                modifier = Modifier
+                                                    .width(150.dp)
+                                                    .fillMaxHeight(),
+                                                shape = RoundedCornerShape(10.dp),
+                                                color = Color.White,
+                                                elevation = 2.dp
+                                            ) {
+                                                Column {
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .weight(1f)
+                                                            .background(
+                                                                color = when(todo.stoStatus[todo.sto.indexOf(sto)]){
+                                                                    "완료" -> Color(0xFFCCEFC0)
+                                                                    "진행중" -> Color(0xFFC0C5EF)
+                                                                    "중지" -> Color(0xFFEFC0C0)
+                                                                    else -> Color.Black
+                                                                },
+                                                                shape = RoundedCornerShape(
+                                                                    topStart = 10.dp,
+                                                                    topEnd = 10.dp,
+                                                                    bottomEnd = 0.dp,
+                                                                    bottomStart = 0.dp
+                                                                )
+                                                            ),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Text(
+                                                            text = todo.lto[todo.sto.indexOf(sto)],
+                                                            style = TextStyle(
+                                                                fontFamily = fontFamily_Inter,
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                fontSize = 12.sp,
+                                                                color = Color.Black
+                                                            )
+                                                        )
+                                                    }
+                                                    Row(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .weight(1f),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.Center
+                                                    ) {
+                                                        Text(
+                                                            text = sto,
+                                                            style = TextStyle(
+                                                                fontFamily = fontFamily_Inter,
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                fontSize = 12.sp,
+                                                                color = Color.Black
+                                                            )
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+
             Button(
                 onClick = {
                     setRecentListDialog(false)
@@ -210,12 +377,64 @@ fun RecentListDialog(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecentListDialogTopBar(
     stoState: String,
-    changeState: (String) -> Unit
+    changeState: (String) -> Unit,
+    todoViewModel: TodoViewModel,
+    selectedChild: StudentResponse
 ) {
 
+
+    val startDate by todoViewModel.startDate.collectAsState()
+    val endDate by todoViewModel.endDate.collectAsState()
+    val recentTodosFilterState by todoViewModel.recentTodosFilterState.collectAsState()
+
+
+    LaunchedEffect(Unit) {
+        if (startDate.isNullOrEmpty() && endDate.isNullOrEmpty()){
+            todoViewModel.setStartDate(getDates().second)
+            todoViewModel.setFinishDate(getDates().first)
+
+            delay(500)
+            startDate?.let {startDate ->
+                endDate?.let { endDate ->
+                    todoViewModel.getRecentTodoListWithDate(
+                        studentId = selectedChild.id,
+                        startDate = startDate,
+                        endDate = endDate
+                    )
+                }
+            }
+        }
+
+    }
+
+
+
+    val startDateCalendarState = rememberSheetState()
+    CalendarDialog(
+        state = startDateCalendarState,
+        config = CalendarConfig(
+            monthSelection = true,
+            yearSelection = true,
+        ),
+        selection = CalendarSelection.Date { date ->
+            todoViewModel.setStartDate(formatDate(date))
+        }
+    )
+    val finishDateCalendarState = rememberSheetState()
+    CalendarDialog(
+        state = finishDateCalendarState,
+        config = CalendarConfig(
+            monthSelection = true,
+            yearSelection = true,
+        ),
+        selection = CalendarSelection.Date { date ->
+            todoViewModel.setFinishDate(formatDate(date))
+        }
+    )
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -239,7 +458,7 @@ fun RecentListDialogTopBar(
         ) {
             Button(
                 onClick = {
-
+                    startDateCalendarState.show()
                 },
                 modifier = Modifier
                     .height(35.dp),
@@ -251,7 +470,7 @@ fun RecentListDialogTopBar(
                 contentPadding = PaddingValues(horizontal = 10.dp)
             ) {
                 Text(
-                    text = "2023/11/01",
+                    text = startDate ?: "YYYY-MM-DD",
                     style = TextStyle(
                         fontFamily = fontFamily_Lato,
                         fontWeight = FontWeight(400),
@@ -274,7 +493,7 @@ fun RecentListDialogTopBar(
             )
             Button(
                 onClick = {
-
+                    finishDateCalendarState.show()
                 },
                 modifier = Modifier
                     .height(35.dp),
@@ -286,7 +505,7 @@ fun RecentListDialogTopBar(
                 contentPadding = PaddingValues(horizontal = 10.dp)
             ) {
                 Text(
-                    text = "2024/01/30",
+                    text = endDate ?: "YYYY-MM-DD",
                     style = TextStyle(
                         fontFamily = fontFamily_Lato,
                         fontWeight = FontWeight(400),
@@ -298,7 +517,15 @@ fun RecentListDialogTopBar(
             }
             Button(
                 onClick = {
-
+                    startDate?.let {startDate ->
+                        endDate?.let { endDate ->
+                            todoViewModel.getRecentTodoListWithDate(
+                                studentId = selectedChild.id,
+                                startDate = startDate,
+                                endDate = endDate
+                            )
+                        }
+                    }
                 },
                 modifier = Modifier
                     .height(35.dp),
@@ -326,7 +553,7 @@ fun RecentListDialogTopBar(
             ) {
                 val buttonList = listOf(
                     "진행중",
-                    "준거 도달",
+                    "완료",
                     "중지"
                 )
                 buttonList.forEach { button ->
@@ -340,7 +567,7 @@ fun RecentListDialogTopBar(
                         border = BorderStroke(
                             width = 1.dp,
                             color = when (button) {
-                                "준거 도달" -> Color(0xFF34C648)
+                                "완료" -> Color(0xFF34C648)
                                 "진행중" -> Color(0xFF40B9FC)
                                 "중지" -> Color(0xFFFC605C)
                                 else -> Color.Black
@@ -349,7 +576,7 @@ fun RecentListDialogTopBar(
                         shape = RoundedCornerShape(5.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = when (button) {
-                                "준거 도달" -> if (stoState == button) Color(
+                                "완료" -> if (stoState == button) Color(
                                     0xFF34C648
                                 ) else Color.Transparent
 
@@ -358,7 +585,7 @@ fun RecentListDialogTopBar(
                                 else -> if (stoState == button) Color.White else Color.White
                             },
                             contentColor = when (button) {
-                                "준거 도달" -> if (stoState == button) Color.White else Color(
+                                "완료" -> if (stoState == button) Color.White else Color(
                                     0xFF34C648
                                 )
 
@@ -383,7 +610,7 @@ fun RecentListDialogTopBar(
                                 fontWeight = FontWeight(500),
                                 textAlign = TextAlign.Center,
                                 color = when (button) {
-                                    "준거 도달" -> if (stoState == button) Color.White else Color(
+                                    "완료" -> if (stoState == button) Color.White else Color(
                                         0xFF34C648
                                     )
 
@@ -404,4 +631,19 @@ fun RecentListDialogTopBar(
             }
         }
     }
+}
+
+fun getDates(): Pair<String, String> {
+    val today = LocalDate.now()
+    val fiveDaysAgo = today.minusDays(5)
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val formattedToday = today.format(formatter)
+    val formattedFiveDaysAgo = fiveDaysAgo.format(formatter)
+
+    return Pair(formattedToday, formattedFiveDaysAgo)
+}
+
+fun formatDate(date: LocalDate): String {
+    return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }

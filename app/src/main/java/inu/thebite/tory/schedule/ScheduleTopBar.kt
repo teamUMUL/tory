@@ -118,7 +118,7 @@ fun ScheduleTopBar(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = currentDate,
+                        text = todoList?.date ?: currentDate,
                         style = TextStyle(
                             fontFamily = fontFamily_Lato,
                             fontSize = 18.sp,

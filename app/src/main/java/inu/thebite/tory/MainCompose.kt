@@ -774,7 +774,9 @@ fun MainCompose(
                         ltoViewModel = ltoViewModel,
                         stoViewModel = stoViewModel,
                         navigateToEducation = { navController.navigate(AllDestinations.EDUCATION) },
-                        navigateToNotice = {navController.navigate(AllDestinations.NOTICE)}
+                        navigateToNotice = {navController.navigate(AllDestinations.NOTICE)},
+                        todoViewModel = todoViewModel,
+                        selectedChild = selectedChildInfo
                     )
 //                    CenterHome(
 //                        centerSelectViewModel = centerSelectViewModel,

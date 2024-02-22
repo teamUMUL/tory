@@ -241,7 +241,7 @@ interface RetrofitService {
     suspend fun getTodoList(@Path("studentId") studentId: Long) : Response<TodoResponse>
 
     @GET("/todos/{studentId}/recent")
-    suspend fun getRecentTodoListWithDate(@Path("studentId") studentId: Long, @Query("startDate") startDate: String, @Query("endDate") endDate: String) : Response<RecentTodoWithDateResponse>
+    suspend fun getRecentTodoListWithDate(@Path("studentId") studentId: Long, @Query("startDate") startDate: String, @Query("endDate") endDate: String) : Response<List<RecentTodoWithDateResponse>>
 
     /**
      * Notice Api = 오늘의 총평 부분 알림장

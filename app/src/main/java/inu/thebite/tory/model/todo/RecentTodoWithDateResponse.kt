@@ -6,10 +6,13 @@ import java.time.LocalDate
 data class RecentTodoWithDateResponse(
 
     @SerializedName("date")
-    var date: LocalDate,
+    var date: String,
 
     @SerializedName("sto")
     var sto: List<String>,
+
+    @SerializedName("stoStatus")
+    var stoStatus: List<String>,
 
     @SerializedName("lto")
     var lto: List<String>,
