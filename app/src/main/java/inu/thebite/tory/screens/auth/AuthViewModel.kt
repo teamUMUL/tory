@@ -9,7 +9,14 @@ import androidx.lifecycle.viewModelScope
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.member.AddDirectorRequest
 import inu.thebite.tory.model.member.AddTherapistRequest
+import inu.thebite.tory.model.member.EditProfileRequest
+import inu.thebite.tory.model.member.FindMemberIdRequest
+import inu.thebite.tory.model.member.FindMemberIdResponse
+import inu.thebite.tory.model.member.FindMemberPasswordRequest
 import inu.thebite.tory.model.member.MemberLoginRequest
+import inu.thebite.tory.model.member.MemberResponse
+import inu.thebite.tory.model.member.TemporaryPasswordResponse
+import inu.thebite.tory.model.member.UpdatePasswordRequest
 import inu.thebite.tory.repositories.STO.STORepoImpl
 import inu.thebite.tory.repositories.auth.AuthRepoImpl
 import kotlinx.coroutines.delay
@@ -17,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     private val repo: AuthRepoImpl = AuthRepoImpl()
@@ -37,7 +45,22 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     private val _userName = MutableStateFlow<String?>(null)
     val userName = _userName.asStateFlow()
 
+    private val _foundId = MutableStateFlow<FindMemberIdResponse?>(null)
+    val foundId = _foundId.asStateFlow()
 
+    private val _temporaryPassword = MutableStateFlow<TemporaryPasswordResponse?>(null)
+    val temporaryPassword = _temporaryPassword.asStateFlow()
+
+    private val _userInfo = MutableStateFlow<MemberResponse?>(null)
+    val userInfo = _userInfo.asStateFlow()
+
+    fun clearFoundId(){
+        _foundId.update { null }
+    }
+
+    fun clearTemporaryPassword(){
+        _temporaryPassword.update { null }
+    }
 
     suspend fun login(
         context: Context,
@@ -207,6 +230,88 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
             }
         }
     }
+
+    fun updatePassword(context: Context, updatePasswordRequest: UpdatePasswordRequest) {
+        viewModelScope.launch {
+            try {
+
+                val response = repo.updatePassword(updatePasswordRequest = updatePasswordRequest)
+
+                if (response.isSuccessful) {
+                    val isChanged = response.body() ?: throw Exception("비밀번호 변경 성공 유무가 비어있습니다.")
+                    if (isChanged) {
+                        Toasty.success(context, "비밀번호 변경에 성공하셨습니다.", Toast.LENGTH_SHORT, true).show()
+                    } else {
+                        Toasty.warning(context, "비밀번호 변경에 실패하셨습니다.", Toast.LENGTH_SHORT, true).show()
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("비밀번호 변경 실패: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("failed to change password", e.message.toString())
+            }
+        }
+    }
+
+    fun findMemberId(findMemberIdRequest: FindMemberIdRequest) {
+        viewModelScope.launch {
+            try {
+
+                val response = repo.findMemberId(findMemberIdRequest = findMemberIdRequest)
+
+                if (response.isSuccessful) {
+                    val gottenId = response.body() ?: throw Exception("아이디 정보가 비어있습니다.")
+                    _foundId.update { gottenId }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("아이디 찾기 실패: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("failed to find Id", e.message.toString())
+            }
+        }
+    }
+
+    fun findMemberPassword(findMemberPasswordRequest: FindMemberPasswordRequest) {
+        viewModelScope.launch {
+            try {
+
+                val response = repo.findMemberPassword(findMemberPasswordRequest = findMemberPasswordRequest)
+
+                if (response.isSuccessful) {
+                    val gottenTemporaryPassword = response.body() ?: throw Exception("임시 비밀번호 정보가 비어있습니다.")
+                    _temporaryPassword.update { gottenTemporaryPassword }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("임시 비밀번호 부여 실패: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("failed to get temporary password", e.message.toString())
+            }
+        }
+    }
+
+    fun editProfile(editProfileRequest: EditProfileRequest) {
+        viewModelScope.launch {
+            try {
+
+                val response = repo.editProfile(editProfileRequest = editProfileRequest)
+
+                if (response.isSuccessful) {
+                    val gottenTemporaryPassword = response.body() ?: throw Exception("프로필 수정 정보가 비어있습니다.")
+                    _userInfo.update { gottenTemporaryPassword }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("프로필 수정 실패: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("failed to edit profile", e.message.toString())
+            }
+        }
+    }
+    
 }
 
 val LoginState = compositionLocalOf<AuthViewModel> { error("User State Context Not Found!") }
