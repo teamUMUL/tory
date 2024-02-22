@@ -16,8 +16,15 @@ import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.lto.UpdateLtoStatusRequest
 import inu.thebite.tory.model.member.AddDirectorRequest
 import inu.thebite.tory.model.member.AddTherapistRequest
+import inu.thebite.tory.model.member.EditProfileRequest
+import inu.thebite.tory.model.member.FindMemberIdRequest
+import inu.thebite.tory.model.member.FindMemberIdResponse
+import inu.thebite.tory.model.member.FindMemberPasswordRequest
 import inu.thebite.tory.model.member.LoginResponse
 import inu.thebite.tory.model.member.MemberLoginRequest
+import inu.thebite.tory.model.member.MemberResponse
+import inu.thebite.tory.model.member.TemporaryPasswordResponse
+import inu.thebite.tory.model.member.UpdatePasswordRequest
 import inu.thebite.tory.model.member.ValidationTokenResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
 import inu.thebite.tory.model.notice.AutoCommentResponse
@@ -292,5 +299,21 @@ interface RetrofitService {
 
     @POST("/valid/token")
     suspend fun validationToken() : Response<ValidationTokenResponse>
+
+    // 비밀번호 변경
+    @POST("/members/password")
+    suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordRequest) : Response<Boolean>
+
+    // 아이디 찾기
+    @GET("/members/find/id")
+    suspend fun findMemberId(@Body findMemberIdRequest: FindMemberIdRequest) : Response<FindMemberIdResponse>
+
+    // 비밀번호 찾기
+    @GET("/members/find/password")
+    suspend fun findMemberPassword(@Body findMemberPasswordRequest: FindMemberPasswordRequest) : Response<TemporaryPasswordResponse>
+
+    // 프로필 편집
+    @PATCH("/edit/profile")
+    suspend fun editProfile(@Body editProfileRequest: EditProfileRequest) : Response<MemberResponse>
 
 }
