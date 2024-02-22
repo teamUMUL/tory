@@ -42,6 +42,7 @@ import inu.thebite.tory.model.student.AddStudentRequest
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.student.UpdateStudentDateRequest
 import inu.thebite.tory.model.student.UpdateStudentRequest
+import inu.thebite.tory.model.todo.RecentTodoWithDateResponse
 import inu.thebite.tory.model.todo.TodoListRequest
 import inu.thebite.tory.model.todo.TodoResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
@@ -238,6 +239,9 @@ interface RetrofitService {
 
     @GET("/todos/{studentId}")
     suspend fun getTodoList(@Path("studentId") studentId: Long) : Response<TodoResponse>
+
+    @GET("/todos/{studentId}/recent")
+    suspend fun getRecentTodoListWithDate(@Path("studentId") studentId: Long, @Query("startDate") startDate: String, @Query("endDate") endDate: String) : Response<RecentTodoWithDateResponse>
 
     /**
      * Notice Api = 오늘의 총평 부분 알림장
