@@ -36,4 +36,7 @@ interface NoticeRepo {
     suspend fun getDetailAutoComment(studentId: Long, ltoId: Long, year: String, month: Int, date: String) : Response<AutoCommentResponse>
 
     suspend fun getNoticeAutoComment(studentId: Long, year: String, month: Int, date: String) : Response<AutoCommentResponse>
+
+    suspend fun getMonthlyNotice(studentId: Long, year: String, month: Int) : Response<List<NoticeResponse>>
+
 }

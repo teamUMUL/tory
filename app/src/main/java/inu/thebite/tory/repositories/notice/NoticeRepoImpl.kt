@@ -66,5 +66,13 @@ class NoticeRepoImpl : NoticeRepo {
 
     }
 
+    override suspend fun getMonthlyNotice(
+        studentId: Long,
+        year: String,
+        month: Int
+    ): Response<List<NoticeResponse>> {
+        return noticeRetrofit.getMonthlyNotice(studentId = studentId, year = year, month = month)
+    }
+
 
 }

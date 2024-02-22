@@ -81,7 +81,8 @@ fun NoticeDateColumn(
     noticeViewModel: NoticeViewModel,
     navController: NavController,
     selectedChild: StudentResponse?,
-    setMonthNotice : () -> Unit
+    setMonthNotice : () -> Unit,
+    monthNotice: Boolean
 ) {
     val context = LocalContext.current
 
@@ -193,7 +194,7 @@ fun NoticeDateColumn(
                         setMonthNotice()
                     }
                     .background(
-                        Color.Transparent
+                        if (monthNotice) Color(0xFF1264A3) else Color.Transparent
                     ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
@@ -208,7 +209,7 @@ fun NoticeDateColumn(
                                     lineHeight = 22.sp,
                                     fontFamily = fontFamily_Lato,
                                     fontWeight = FontWeight(400),
-                                    color = Color.Black,
+                                    color = if (monthNotice) Color.White else Color.Black,
                                 ),
                                 modifier = Modifier
                                     .padding(start = 20.dp, end = 0.dp, top = 4.dp, bottom = 4.dp)
@@ -220,7 +221,7 @@ fun NoticeDateColumn(
                                     lineHeight = 22.sp,
                                     fontFamily = fontFamily_Lato,
                                     fontWeight = FontWeight(400),
-                                    color = Color.Black,
+                                    color = if (monthNotice) Color.White else Color.Black,
                                 ),
                                 modifier = Modifier
                                     .padding(vertical = 4.dp, horizontal = 10.dp)
@@ -229,8 +230,8 @@ fun NoticeDateColumn(
                     }
 
                 }
-                Divider(thickness = 1.dp, color = Color(0xFFD3D3D3))
             }
+            Divider(thickness = 1.dp, color = Color(0xFFD3D3D3))
         }
         selectedNoticeDates?.let { selectedNoticeDates ->
             items(selectedNoticeDates) { date ->
@@ -240,7 +241,7 @@ fun NoticeDateColumn(
                         .height(35.dp)
                         .clickable { setSelectedDate(date) }
                         .background(
-                            if (selectedNoticeDate == date) Color(0xFF1264A3) else Color.Transparent
+                            if (selectedNoticeDate == date && !monthNotice) Color(0xFF1264A3) else Color.Transparent
                         ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -253,7 +254,7 @@ fun NoticeDateColumn(
                                 lineHeight = 22.sp,
                                 fontFamily = fontFamily_Lato,
                                 fontWeight = FontWeight(400),
-                                color = if (selectedNoticeDate == date) Color.White else Color.Black,
+                                color = if (selectedNoticeDate == date && !monthNotice) Color.White else Color.Black,
                             ),
                             modifier = Modifier
                                 .padding(start = 20.dp, end = 0.dp, top = 4.dp, bottom = 4.dp)
@@ -265,7 +266,7 @@ fun NoticeDateColumn(
                                 lineHeight = 22.sp,
                                 fontFamily = fontFamily_Lato,
                                 fontWeight = FontWeight(400),
-                                color = if (selectedNoticeDate == date) Color.White else Color.Black,
+                                color = if (selectedNoticeDate == date && !monthNotice) Color.White else Color.Black,
                             ),
                             modifier = Modifier
                                 .padding(vertical = 4.dp, horizontal = 10.dp)

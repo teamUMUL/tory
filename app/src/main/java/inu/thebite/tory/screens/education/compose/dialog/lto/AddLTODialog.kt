@@ -37,6 +37,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -90,8 +91,8 @@ fun AddLTODialog(
         targetValue = if (isExpanded) 180f else 0f, label = ""
     )
 
-    var ltoMode by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+    val ltoMode = remember {
+        mutableStateListOf<String>()
     }
 //    var gameMode by remember {
 //        mutableStateOf("교육 선택 안함")
@@ -154,8 +155,14 @@ fun AddLTODialog(
                 horizontalArrangement = Arrangement.spacedBy(30.dp)
             ) {
                 RadioButton(
-                    selected = (ltoMode.text == "언어발달"),
-                    onClick = { ltoMode = TextFieldValue("언어발달") },
+                    selected = (ltoMode.contains("언어발달")),
+                    onClick = {
+                        if (ltoMode.contains("언어발달")){
+                            ltoMode.remove("언어발달")
+                        } else {
+                            ltoMode.add("언어발달")
+                        }
+                    },
                 )
                 Text(
                     text = "언어발달",
@@ -167,8 +174,14 @@ fun AddLTODialog(
                     )
                 )
                 RadioButton(
-                    selected = (ltoMode.text == "인지발달"),
-                    onClick = { ltoMode = TextFieldValue("인지발달") })
+                    selected = (ltoMode.contains("인지발달")),
+                    onClick = {
+                        if (ltoMode.contains("인지발달")){
+                            ltoMode.remove("인지발달")
+                        } else {
+                            ltoMode.add("인지발달")
+                        }
+                    })
                 Text(
                     text = "인지발달",
                     style = TextStyle(

@@ -70,6 +70,10 @@ fun NoticeItemTextField(
         mutableStateOf(TextFieldValue(selectedDetail.comment))
     }
 
+    LaunchedEffect(Unit){
+        ltoComment = TextFieldValue(selectedDetail.comment)
+    }
+
     LaunchedEffect(selectedDetail){
         ltoComment = TextFieldValue(selectedDetail.comment)
     }

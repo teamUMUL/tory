@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import co.yml.charts.common.extensions.isNotNull
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
+import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.screen.VerticalDivider
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
@@ -99,13 +100,19 @@ fun NoticeScreen(
                     )
                 },
                 confirmButton = {
-                    Button(onClick = {setNoticePdfDialog(false)}) {
+                    Button(onClick = {
+                        setNoticePdfDialog(false)
+                        noticeViewModel.clearPdfUrl()
+                    }) {
                         Text("닫기")
                     }
                 },
                 properties = DialogProperties(
                     usePlatformDefaultWidth = false
-                )
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .fillMaxHeight()
             )
         }
 
@@ -259,7 +266,10 @@ fun NoticeScreen(
                         noticeViewModel = noticeViewModel,
                         navController = navController,
                         selectedChild = selectedChild,
-                        setMonthNotice = {setMonthNotice(true)}
+                        setMonthNotice = {
+                            setMonthNotice(true)
+                        },
+                        monthNotice = monthNotice
                     )
                 } ?: Text(text = "데이터가 없습니다")
             }
@@ -277,9 +287,12 @@ fun NoticeScreen(
             ) {
                 if (monthNotice){
 
-                    MonthInfoColumn(
-
-                    )
+                    selectedChild?.let {selectedChild ->
+                        MonthInfoColumn(
+                            noticeViewModel = noticeViewModel,
+                            selectedChild = selectedChild
+                        )
+                    }
                 } else {
                     selectedNoticeDate?.let { selectedNoticeDate ->
                         if (selectedNoticeDate.date.isNotEmpty()) {

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class NoticeViewModel : ViewModel() {
 
@@ -48,6 +49,9 @@ class NoticeViewModel : ViewModel() {
     private val _selectedNoticeDetailList: MutableStateFlow<List<DetailObjectResponse>?> = MutableStateFlow(null)
     val selectedNoticeDetailList = _selectedNoticeDetailList.asStateFlow()
 
+    private val _monthlyNotice: MutableStateFlow<List<NoticeResponse>?> = MutableStateFlow(null)
+    val monthlyNotice = _monthlyNotice.asStateFlow()
+
     private val _selectedYear: MutableStateFlow<String?> = MutableStateFlow(null)
     val selectedYear = _selectedYear.asStateFlow()
 
@@ -57,11 +61,7 @@ class NoticeViewModel : ViewModel() {
     private val _pdfUrl: MutableStateFlow<String?> = MutableStateFlow(null)
     val pdfUrl = _pdfUrl.asStateFlow()
 
-    private val _noticeAutoComment: MutableStateFlow<String?> = MutableStateFlow(null)
-    val noticeAutoComment = _noticeAutoComment.asStateFlow()
 
-    private val _detailAutoComment: MutableStateFlow<String?> = MutableStateFlow(null)
-    val detailAutoComment = _detailAutoComment.asStateFlow()
 
 
     fun setSelectedYear(
@@ -80,6 +80,7 @@ class NoticeViewModel : ViewModel() {
         _selectedNoticeDate.update { null }
         _selectedNoticeDates.update { null }
         _noticeMonthList.update { null }
+        _monthlyNotice.update { null }
 //        _noticeYearList.update { null }
     }
 
@@ -94,6 +95,7 @@ class NoticeViewModel : ViewModel() {
         _noticeYearList.update { null }
         _pdfUrl.update { null }
         _noticeYearAndMonthList.update { null }
+        _monthlyNotice.update { null }
     }
 
     fun setSelectedMonth(
@@ -102,6 +104,13 @@ class NoticeViewModel : ViewModel() {
         _selectedMonth.update {
             selectedMonth
         }
+    }
+
+    fun clearPdfUrl(){
+        _pdfUrl.update { null }
+    }
+    fun clearSelectedNotice(){
+        _selectedNotice.update { null }
     }
 
     fun clearSelectedMonth(
@@ -385,7 +394,7 @@ class NoticeViewModel : ViewModel() {
             repo.createSharePdf(studentId = studentId, year = year, month = month.toInt(), date = date)
         }
         _pdfUrl.update {
-            "http://${"192.168.35.81"}:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
+            "http://${"192.168.35.139"}:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
         }
     }
 
@@ -447,6 +456,34 @@ class NoticeViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Log.e("failed to update AutoComment", e.message.toString())
+            }
+        }
+    }
+
+    fun getMonthlyNotice(
+        studentId: Long,
+        year: String,
+        month: Int
+    ){
+
+        viewModelScope.launch {
+            try {
+                val response = repo.getMonthlyNotice(studentId = studentId, year = year, month = month)
+
+                if (response.isSuccessful) {
+                    val gottenMonthlyNotice = response.body() ?: throw Exception("월간보고서 정보가 비어있습니다.")
+
+                    _monthlyNotice.update {
+                        gottenMonthlyNotice
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("월간보고서 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update MonthlyNotice", e.message.toString())
             }
         }
     }
