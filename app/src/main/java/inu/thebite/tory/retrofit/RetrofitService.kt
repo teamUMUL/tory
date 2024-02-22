@@ -316,4 +316,8 @@ interface RetrofitService {
     @PATCH("/edit/profile")
     suspend fun editProfile(@Body editProfileRequest: EditProfileRequest) : Response<MemberResponse>
 
+    // 프로필 조회
+    @GET("/profile")
+    suspend fun getProfile() : Response<MemberResponse>
+
 }
