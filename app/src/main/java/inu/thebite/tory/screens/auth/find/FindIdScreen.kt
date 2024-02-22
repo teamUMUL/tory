@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,9 +43,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
+import inu.thebite.tory.model.member.FindMemberIdRequest
 import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.screens.auth.common.LabeledTextFieldFindId
 import inu.thebite.tory.screens.auth.common.LabeledTextFieldLogin
+import inu.thebite.tory.screens.auth.common.isPhoneNumberFormattedCorrectly
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
 import kotlinx.coroutines.launch
 
@@ -60,6 +63,8 @@ fun FindIdScreen(
     val userPhoneNumber = remember { mutableStateOf(TextFieldValue()) }
     val coroutineScope = rememberCoroutineScope()
     val brush = Brush.horizontalGradient(listOf(Color(0xFF0047B3), Color(0xff7E5DE3)))
+
+    val foundId by authViewModel.foundId.collectAsState()
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -96,12 +101,57 @@ fun FindIdScreen(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Column(modifier= Modifier) {
+                        foundId?.let { foundId ->
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 40.dp),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.Start,
+                            ) {
+                                Text(
+                                    text = "아이디는",
+                                    style = TextStyle(
+                                        fontFamily = fontFamily_Poppins,
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 16.sp,
+                                        color = Color(0xFF7C838A)
+                                    )
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .padding(start = 10.dp)
+                                ) {
+                                    Text(
+                                        text = "${foundId.id}",
+                                        style = TextStyle(
+                                            fontFamily = fontFamily_Poppins,
+                                            fontWeight = FontWeight(400),
+                                            fontSize = 20.sp,
+                                            color = Color(0xFF7F5AF0)
+                                        )
+                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(
+                                        text = "입니다",
+                                        style = TextStyle(
+                                            fontFamily = fontFamily_Poppins,
+                                            fontWeight = FontWeight(400),
+                                            fontSize = 20.sp,
+                                            color = Color(0xFF7C838A)
+                                        )
+                                    )
+                                }
 
-                        LabeledTextFieldFindId(
-                            userName = userName,
-                            userEmail = userEmail,
-                            userPhoneNumber = userPhoneNumber
-                        )
+                            }
+                        } ?: run {
+                            LabeledTextFieldFindId(
+                                userName = userName,
+                                userEmail = userEmail,
+                                userPhoneNumber = userPhoneNumber
+                            )
+                        }
+
 
                     }
 
@@ -120,9 +170,13 @@ fun FindIdScreen(
                                 if (userName.value.text.trim() == "" || userEmail.value.text.trim() == "" || userPhoneNumber.value.text.trim() == ""){
                                     Toasty.warning(context, "이름, 이메일, 휴대전화 번호를 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                 } else {
-                                    coroutineScope.launch {
-//                                        authViewModel.login(context = context,id = userid.value.text.trim(), password = password.value.text.trim())
+                                    if (isPhoneNumberFormattedCorrectly(userPhoneNumber.value.text.trim())){
+                                        authViewModel.findMemberId(findMemberIdRequest = FindMemberIdRequest(name = userName.value.text.trim(), phone = userPhoneNumber.value.text.trim(), email = userEmail.value.text.trim()))
+                                    } else {
+                                        Toasty.warning(context, "휴대전화 번호를 (010-0000-0000)과 같은 형태로 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                     }
+
+
                                 }
                             }
                         ) {
@@ -146,6 +200,7 @@ fun FindIdScreen(
                         ClickableText(
                             text = AnnotatedString("로그인"),
                             onClick = {
+                                authViewModel.clearFoundId()
                                 navController.navigate("loginScreen")
                             },
                             style = TextStyle(
@@ -164,6 +219,7 @@ fun FindIdScreen(
                         ClickableText(
                             text = AnnotatedString("비밀번호 찾기"),
                             onClick = {
+                                authViewModel.clearFoundId()
                                 navController.navigate("findPasswordScreen")
                             },
                             style = TextStyle(

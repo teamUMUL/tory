@@ -67,6 +67,7 @@ fun GraphRow(
                 stoViewModel.findSTOById(sto.stoId)?.let {
                     stoName = it.name
                 }
+                val selectedSTO = stoViewModel.findSTOById(sto.stoId)
                 val stoId = sto.stoId
                 if(plusList.isNotEmpty()){
                     val steps = 5
@@ -187,7 +188,7 @@ fun GraphRow(
                                 Line(
                                     dataPoints = successLine.toList(),
                                     LineStyle(
-                                        color = Color.Red.copy(0.2f),
+                                        color = if (selectedSTO?.goalType == "연속") Color.Transparent else Color.Red.copy(0.2f),
                                         lineType = LineType.Straight(isDotted = true)
                                     ),
                                     IntersectionPoint(

@@ -49,4 +49,8 @@ class AuthRepoImpl : AuthRepo {
     override suspend fun editProfile(editProfileRequest: EditProfileRequest): Response<MemberResponse> {
         return authRetrofit.editProfile(editProfileRequest = editProfileRequest)
     }
+
+    override suspend fun getProfile(): Response<MemberResponse> {
+        return authRetrofit.getProfile()
+    }
 }

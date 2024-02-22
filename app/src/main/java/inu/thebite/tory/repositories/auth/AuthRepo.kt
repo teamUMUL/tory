@@ -37,4 +37,7 @@ interface AuthRepo {
 
     // 프로필 편집
     suspend fun editProfile(editProfileRequest: EditProfileRequest) : Response<MemberResponse>
+
+    suspend fun getProfile() : Response<MemberResponse>
+
 }

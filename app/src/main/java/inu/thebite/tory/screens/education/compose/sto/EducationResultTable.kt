@@ -221,12 +221,8 @@ fun EducationResultTable(
                             .fillMaxWidth()
                             .padding(horizontal = 20.dp),
                         onClick = {
-                            val status = if ((takenPoints.count { it == "+" }
-                                    .toFloat() / selectedSTO.count.toFloat()) * 100 >= 90f) {
-                                "완료"
-                            } else {
-                                "진행중"
-                            }
+                            val status = selectedSTO.status
+
                             val plusRate = (takenPoints.count { it == "+" }
                                 .toFloat() / selectedSTO.count.toFloat()) * 100
                             val minusRate = (takenPoints.count { it == "-" }

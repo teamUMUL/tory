@@ -7,9 +7,6 @@ data class EditProfileRequest(
     @SerializedName("name")
     var name: String,
 
-    @SerializedName("centerCode")
-    var centerCode: Long,
-
     @SerializedName("forte")
     var forte: String,
 

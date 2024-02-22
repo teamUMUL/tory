@@ -17,14 +17,12 @@ import inu.thebite.tory.model.member.MemberLoginRequest
 import inu.thebite.tory.model.member.MemberResponse
 import inu.thebite.tory.model.member.TemporaryPasswordResponse
 import inu.thebite.tory.model.member.UpdatePasswordRequest
-import inu.thebite.tory.repositories.STO.STORepoImpl
 import inu.thebite.tory.repositories.auth.AuthRepoImpl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
 class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     private val repo: AuthRepoImpl = AuthRepoImpl()
@@ -39,11 +37,14 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     private val _signUpLoading = MutableStateFlow<Boolean>(false)
     val signUpLoading = _signUpLoading.asStateFlow()
 
-    private val _signUpSuccess = MutableStateFlow<Boolean>(false)
+    private val _signUpSuccess = MutableStateFlow<Boolean?>(null)
     val signUpSuccess = _signUpSuccess.asStateFlow()
 
     private val _userName = MutableStateFlow<String?>(null)
     val userName = _userName.asStateFlow()
+
+    private val _selectedQualifications = MutableStateFlow<List<String>?>(null)
+    val selectedQualifications = _selectedQualifications.asStateFlow()
 
     private val _foundId = MutableStateFlow<FindMemberIdResponse?>(null)
     val foundId = _foundId.asStateFlow()
@@ -58,10 +59,30 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
         _foundId.update { null }
     }
 
+    fun clearSignUpSuccess(){
+        _signUpSuccess.update { null }
+    }
+
     fun clearTemporaryPassword(){
         _temporaryPassword.update { null }
     }
 
+    fun addSelectedQualification(qualification : String){
+        _selectedQualifications.update {beforeQualifications ->
+            beforeQualifications?.plus(qualification) ?: listOf(qualification)
+        }
+    }
+
+    fun setSelectedQualification(qualifications : List<String>){
+        _selectedQualifications.update {
+            qualifications
+        }
+    }
+    fun removeSelectedQualification(qualification : String){
+        _selectedQualifications.update {beforeQualifications ->
+            beforeQualifications?.filter { it != qualification }
+        }
+    }
     suspend fun login(
         context: Context,
         id: String,
@@ -104,6 +125,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     }
 
     fun signUpDirector(
+        context : Context,
         name: String,
         id: String,
         password: String,
@@ -130,6 +152,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                     val isSuccess = response.body() ?: throw Exception("유저 정보가 비어있습니다.")
                     if (isSuccess){
                         _signUpSuccess.update { true }
+                        Toasty.success(context, "회원가입에 성공했습니다", Toast.LENGTH_SHORT, true).show()
                     } else {
                         _signUpSuccess.update { false }
                     }
@@ -146,6 +169,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
     }
 
     fun signUpTherapist(
+        context : Context,
         name: String,
         id: String,
         password: String,
@@ -174,6 +198,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                     val isSuccess = response.body() ?: throw Exception("유저 정보가 비어있습니다.")
                     if (isSuccess){
                         _signUpSuccess.update { true }
+                        Toasty.success(context, "회원가입에 성공했습니다", Toast.LENGTH_SHORT, true).show()
                     } else {
                         _signUpSuccess.update { false }
                     }
@@ -300,8 +325,8 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                 val response = repo.editProfile(editProfileRequest = editProfileRequest)
 
                 if (response.isSuccessful) {
-                    val gottenTemporaryPassword = response.body() ?: throw Exception("프로필 수정 정보가 비어있습니다.")
-                    _userInfo.update { gottenTemporaryPassword }
+                    val editedProfile = response.body() ?: throw Exception("프로필 수정 정보가 비어있습니다.")
+                    _userInfo.update { editedProfile }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
                     throw Exception("프로필 수정 실패: $errorBody")
@@ -311,7 +336,26 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
             }
         }
     }
-    
+
+    fun getProfile(){
+        viewModelScope.launch {
+            try {
+
+                val response = repo.getProfile()
+
+                if (response.isSuccessful) {
+                    val gottenProfile = response.body() ?: throw Exception("프로필  정보가 비어있습니다.")
+                    _userInfo.update { gottenProfile }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("프로필 조회 실패: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("failed to get profile", e.message.toString())
+            }
+        }
+    }
+
 }
 
 val LoginState = compositionLocalOf<AuthViewModel> { error("User State Context Not Found!") }

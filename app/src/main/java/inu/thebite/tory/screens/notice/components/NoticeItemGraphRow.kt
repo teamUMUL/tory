@@ -132,7 +132,8 @@ fun NoticeItemGraphRow(
                     plusList = plusList,
                     minusList = minusList,
                     dateList = sto.detailGraphResponse.dates,
-                    successData = stoViewModel.findSTOById(sto.detailGraphResponse.stoId)?.goal?.toFloat() ?: 90f
+                    successData = stoViewModel.findSTOById(sto.detailGraphResponse.stoId)?.goal?.toFloat() ?: 90f,
+                    goalType = stoViewModel.findSTOById(sto.detailGraphResponse.stoId)?.goalType ?: "연속"
                 )
             }
         }

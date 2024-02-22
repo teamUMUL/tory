@@ -69,7 +69,7 @@ fun LabeledTextFieldFindId(
         //휴대전화
         TextFieldWithTrailingIcon(
             title = "휴대전화",
-            placeholderText = "전화번호를 입력해주세요",
+            placeholderText = "전화번호를 입력해주세요(010-0000-0000)",
             input = userPhoneNumber,
             keyboardType = KeyboardType.Phone
         )

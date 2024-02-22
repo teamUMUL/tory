@@ -58,6 +58,8 @@ import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.schedule.ScheduleTopBar
 import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.screens.auth.AuthViewModel
+import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
 import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education.screen.NewEducationScreen
@@ -107,10 +109,12 @@ fun MainCompose(
     dragAndDropViewModel: DragAndDropViewModel,
     gameViewModel: GameViewModel,
     noticeViewModel: NoticeViewModel,
-    todoViewModel: TodoViewModel
+    todoViewModel: TodoViewModel,
 //    dragAndDropViewModel : DragAndDropViewModel,
 //    gameViewModel : GameViewModel
 ) {
+//    val authViewModel = LoginState.current
+    val authViewModel = LoginState.current
 
     val (childDialogOpen, setChildDialogOpen) = rememberSaveable {
         mutableStateOf(false)
@@ -129,6 +133,7 @@ fun MainCompose(
     val childInfos by childSelectViewModel.childInfos.collectAsState()
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
     val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
+
 
 //    LaunchedEffect(Unit){
 //        centerSelectViewModel.setSelectedCenter(
@@ -169,7 +174,9 @@ fun MainCompose(
 //        )
 //
 //    }
-
+    LaunchedEffect(Unit){
+        authViewModel.getProfile()
+    }
 
     LaunchedEffect(_selectedCenter, allCenters) {
         _selectedCenter?.let {
@@ -747,7 +754,9 @@ fun MainCompose(
                         centerViewModel = centerViewModel,
                         childClassViewModel = childClassViewModel,
                         childInfoViewModel = childInfoViewModel,
-                        navigateToTeachingBoard = { navController.navigate(AllDestinations.TEACHINGBOARD) }
+                        navigateToTeachingBoard = { navController.navigate(AllDestinations.TEACHINGBOARD) },
+//                        authViewModel = authViewModel,
+
                     )
 //                    CenterHome(
 //                        centerSelectViewModel = centerSelectViewModel,

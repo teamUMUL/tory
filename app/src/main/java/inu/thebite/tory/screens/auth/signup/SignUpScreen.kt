@@ -21,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,10 +44,9 @@ import androidx.navigation.NavController
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
 import inu.thebite.tory.screens.auth.LoginState
-import inu.thebite.tory.screens.auth.common.LabeledTextFieldLogin
 import inu.thebite.tory.screens.auth.common.LabeledTextFieldSignUp
+import inu.thebite.tory.screens.auth.common.isPhoneNumberFormattedCorrectly
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,6 +74,21 @@ fun SignUpScreen(
     val coroutineScope = rememberCoroutineScope()
     val brush = Brush.horizontalGradient(listOf(Color(0xFF0047B3), Color(0xff7E5DE3)))
 
+    LaunchedEffect(signUpSuccess){
+        signUpSuccess?.let {signUpSuccess ->
+            if (signUpSuccess){
+                userName.value = TextFieldValue("")
+                userId.value = TextFieldValue("")
+                password.value = TextFieldValue("")
+                userEmail.value = TextFieldValue("")
+                userPhoneNumber.value = TextFieldValue("")
+                userIdentity.value = TextFieldValue("")
+                userCenterCode.value = TextFieldValue("")
+                navController.navigate("loginScreen")
+                authViewModel.clearSignUpSuccess()
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -163,43 +178,47 @@ fun SignUpScreen(
                                         ).show()
                                     } else {
                                         if (userIdentity.value.text == "센터장/소장"){
-                                            authViewModel.signUpDirector(
-                                                name = userName.value.text.trim(),
-                                                id = userId.value.text.trim(),
-                                                password = password.value.text.trim(),
-                                                email = userEmail.value.text.trim(),
-                                                phone = userPhoneNumber.value.text.trim(),
-                                                identity = userIdentity.value.text.trim(),
-                                            )
+                                            if (isPhoneNumberFormattedCorrectly(userPhoneNumber.value.text.trim())){
+                                                coroutineScope.launch {
+                                                    authViewModel.signUpDirector(
+                                                        context = context,
+                                                        name = userName.value.text.trim(),
+                                                        id = userId.value.text.trim(),
+                                                        password = password.value.text.trim(),
+                                                        email = userEmail.value.text.trim(),
+                                                        phone = userPhoneNumber.value.text.trim(),
+                                                        identity = userIdentity.value.text.trim(),
+                                                    )
+                                                }
+                                            } else {
+                                                Toasty.warning(context, "휴대전화 번호를 (010-0000-0000)과 같은 형태로 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                            }
+
                                         } else if (userIdentity.value.text == "센터 소속 교사"){
                                             val centerCode = userCenterCode.value.text.toLongOrNull()
                                             centerCode?.let { centerCode ->
-                                                authViewModel.signUpTherapist(
-                                                    name = userName.value.text.trim(),
-                                                    id = userId.value.text.trim(),
-                                                    password = password.value.text.trim(),
-                                                    email = userEmail.value.text.trim(),
-                                                    phone = userPhoneNumber.value.text.trim(),
-                                                    identity = userIdentity.value.text.trim(),
-                                                    centerCode = centerCode
-                                                )
+                                                if (isPhoneNumberFormattedCorrectly(userPhoneNumber.value.text.trim())){
+                                                    authViewModel.signUpTherapist(
+                                                        context = context,
+                                                        name = userName.value.text.trim(),
+                                                        id = userId.value.text.trim(),
+                                                        password = password.value.text.trim(),
+                                                        email = userEmail.value.text.trim(),
+                                                        phone = userPhoneNumber.value.text.trim(),
+                                                        identity = userIdentity.value.text.trim(),
+                                                        centerCode = centerCode
+                                                    )
+                                                } else {
+                                                    Toasty.warning(context, "휴대전화 번호를 (010-0000-0000)과 같은 형태로 입력해주세요", Toast.LENGTH_SHORT, true).show()
+                                                }
                                             } ?: run {
                                                 Toasty.warning(context, "센터 코드를 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                             }
                                         }
                                     }
 
-                                    userName.value = TextFieldValue("")
-                                    userId.value = TextFieldValue("")
-                                    password.value = TextFieldValue("")
-                                    userEmail.value = TextFieldValue("")
-                                    userPhoneNumber.value = TextFieldValue("")
-                                    userIdentity.value = TextFieldValue("")
-                                    userCenterCode.value = TextFieldValue("")
-                                    delay(2000)
-                                    if (signUpSuccess){
-                                        navController.navigate("loginScreen")
-                                    }
+
+
                                 }
 
                             }
@@ -235,6 +254,7 @@ fun SignUpScreen(
                             text = AnnotatedString("로그인"),
                             onClick = {
                                 navController.navigate("loginScreen")
+                                authViewModel.clearSignUpSuccess()
                             },
                             style = TextStyle(
                                 fontFamily = fontFamily_Poppins,

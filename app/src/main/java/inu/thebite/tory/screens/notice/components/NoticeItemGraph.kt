@@ -30,7 +30,8 @@ fun NoticeItemGraph(
     plusList: List<Float>,
     minusList: List<Float>,
     dateList: List<String>,
-    successData : Float
+    successData : Float,
+    goalType: String
 ) {
 //    val plusList = mutableListOf<Float>()
 //    val minusList = mutableListOf<Float>()
@@ -182,7 +183,7 @@ fun NoticeItemGraph(
                     Line(
                         dataPoints = successLine.toList(),
                         LineStyle(
-                            color = Color.Red.copy(0.2f),
+                            color = if (goalType == "연속") Color.Transparent else Color.Red.copy(0.2f),
                             lineType = LineType.Straight(isDotted = true)
                         ),
 //                        IntersectionPoint(

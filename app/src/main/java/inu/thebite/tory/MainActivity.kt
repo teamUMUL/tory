@@ -95,6 +95,7 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
     val gameViewModel : GameViewModel = koinViewModel()
     val noticeViewModel : NoticeViewModel = koinViewModel()
     val todoViewModel : TodoViewModel = koinViewModel()
+    val authViewModel : AuthViewModel = koinViewModel()
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -131,7 +132,7 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
                 dragAndDropViewModel = dragAndDropViewModel,
                 gameViewModel = gameViewModel,
                 noticeViewModel = noticeViewModel,
-                todoViewModel = todoViewModel
+                todoViewModel = todoViewModel,
             )
         } else {
             centerSelectViewModel.clearAll()

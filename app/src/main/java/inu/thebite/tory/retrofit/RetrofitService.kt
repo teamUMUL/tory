@@ -305,11 +305,11 @@ interface RetrofitService {
     suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordRequest) : Response<Boolean>
 
     // 아이디 찾기
-    @GET("/members/find/id")
+    @POST("/members/find/id")
     suspend fun findMemberId(@Body findMemberIdRequest: FindMemberIdRequest) : Response<FindMemberIdResponse>
 
     // 비밀번호 찾기
-    @GET("/members/find/password")
+    @POST("/members/find/password")
     suspend fun findMemberPassword(@Body findMemberPasswordRequest: FindMemberPasswordRequest) : Response<TemporaryPasswordResponse>
 
     // 프로필 편집

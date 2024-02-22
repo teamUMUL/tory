@@ -10,11 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -25,14 +31,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.R
+import inu.thebite.tory.screens.auth.AuthViewModel
+import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Poppins
 
 @Composable
 fun TeacherInfor(
     modifier: Modifier = Modifier,
-    onClickEdit : () -> Unit
+    onClickEdit : () -> Unit,
  ) {
+    val authViewModel = LoginState.current
+
+    val userInfo by authViewModel.userInfo.collectAsState()
+
+    val verticalScrollState = rememberScrollState()
 
     Row(
         modifier = modifier
@@ -63,12 +76,16 @@ fun TeacherInfor(
                 contentDescription = ""
             )
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top)
+                modifier = Modifier
+                    .verticalScroll(verticalScrollState)
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
+                horizontalAlignment = Alignment.Start
             )
             {
                 Text(
-                    text = "이름/ 자격",
+                    text = "이름",
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(400),
@@ -76,7 +93,7 @@ fun TeacherInfor(
                     )
                 )
                 Text(
-                    text = "",
+                    text = userInfo?.let { it.name } ?: run {""},
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
@@ -94,7 +111,7 @@ fun TeacherInfor(
                         )
                 )
                 Text(
-                    text = "",
+                    text = userInfo?.let { it.forte } ?: run {""},
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
@@ -111,35 +128,55 @@ fun TeacherInfor(
                     )
                 )
                 Text(
-                    text = "",
+                    text = userInfo?.let { it.centerName } ?: run {""},
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight(600),
                         color = Color(0xFF000000),
                     )
                 )
-                Spacer(modifier = Modifier.height(25.dp))
-                Button(
-                    onClick = { onClickEdit()},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF0047B3)
-                    ),
-                    modifier = Modifier  //lto & sto button
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp)
-
-
-                ) {
-                    Text(
-                        text = "프로필 편집",
-                        style = TextStyle(
-                            color = Color(0xFFFFFFFF),
-                            fontSize = 24.sp,
-                            fontFamily = fontFamily_Inter,
-                            fontWeight = FontWeight.Bold
-                        )
+                Text(
+                    text = "자격",
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF0047B3),
                     )
+                )
+                userInfo?.let { userInfo ->
+                    userInfo.qualification.forEach { qualification ->
+                        Text(
+                            text = qualification,
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight(600),
+                                color = Color(0xFF000000),
+                            )
+                        )
+                    }
                 }
+            }
+            Spacer(modifier = Modifier.height(25.dp))
+            Button(
+                onClick = { onClickEdit()},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF0047B3)
+                ),
+                modifier = Modifier  //lto & sto button
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp)
+
+
+            ) {
+                Text(
+                    text = "프로필 편집",
+                    style = TextStyle(
+                        color = Color(0xFFFFFFFF),
+                        fontSize = 24.sp,
+                        fontFamily = fontFamily_Inter,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             }
         }
     }

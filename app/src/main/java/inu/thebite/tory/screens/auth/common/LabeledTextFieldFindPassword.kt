@@ -40,7 +40,7 @@ import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 @Composable
 fun LabeledTextFieldFindPassword(
     userId : MutableState<TextFieldValue>,
-    userEmail : MutableState<TextFieldValue>,
+    userName : MutableState<TextFieldValue>,
     userPhoneNumber : MutableState<TextFieldValue>
 ){
 
@@ -56,16 +56,16 @@ fun LabeledTextFieldFindPassword(
         Spacer(modifier = Modifier.height(10.dp))
         //이메일
         TextFieldWithTrailingIcon(
-            title = "E-MAIL",
-            placeholderText = "E-MAIL을 입력해주세요",
-            input = userEmail,
-            keyboardType = KeyboardType.Email
+            title = "이름",
+            placeholderText = "이름을 입력해주세요",
+            input = userName,
+            keyboardType = KeyboardType.Text
         )
         Spacer(modifier = Modifier.height(10.dp))
         //휴대전화
         TextFieldWithTrailingIcon(
             title = "휴대전화",
-            placeholderText = "전화번호를 입력해주세요",
+            placeholderText = "전화번호를 입력해주세요(010-0000-0000)",
             input = userPhoneNumber,
             keyboardType = KeyboardType.Phone
         )

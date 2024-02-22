@@ -38,6 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.R
+import inu.thebite.tory.model.member.MemberResponse
+import inu.thebite.tory.screens.auth.AuthViewModel
+import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.screens.centerdashboardscreen.dialog.EditProfileDialog
 import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
@@ -61,8 +64,12 @@ fun CenterDashboardScreen(
     centerViewModel: CenterViewModel,
     childClassViewModel: ChildClassViewModel,
     childInfoViewModel: ChildInfoViewModel,
-    navigateToTeachingBoard : () -> Unit
+    navigateToTeachingBoard : () -> Unit,
+//    authViewModel: AuthViewModel,
 ){
+    val authViewModel = LoginState.current
+    val userInfo by authViewModel.userInfo.collectAsState()
+
     val allCenters by centerViewModel.allCenters.collectAsState()
     val allChildClasses by childClassViewModel.allChildClasses.collectAsState()
     val allChildInfos by childInfoViewModel.allChildInfos.collectAsState()
@@ -71,8 +78,15 @@ fun CenterDashboardScreen(
         mutableStateOf(false)
     }
 
+//    val userInfo by authViewModel.userInfo.collectAsState()
+
     if (editProfileDialog){
-        EditProfileDialog(setEditProfileDialog = {setEditProfileDialog(it)})
+        userInfo?.let {userInfo ->
+            EditProfileDialog(
+                setEditProfileDialog = {setEditProfileDialog(it)},
+                userInfo = userInfo
+            )
+        }
 
     }
 
