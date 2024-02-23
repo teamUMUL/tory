@@ -44,6 +44,7 @@ import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.student.StudentResponse
+import inu.thebite.tory.screens.education.compose.sidebar.currentToast
 import inu.thebite.tory.screens.education.screen.VerticalDivider
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
@@ -86,34 +87,43 @@ fun NoticeScreen(
 
     if (noticePdfDialog){
         pdfUrl?.let { pdfUrl ->
-            AlertDialog(
-                onDismissRequest = { setNoticePdfDialog(false) },
-                text = {
-                    AndroidView(
-                        factory = { context ->
-                            WebView(context).apply {
-                                webViewClient = WebViewClient()
-                                settings.javaScriptEnabled = true
-                                loadUrl(pdfUrl)
-                            }
-                        },
-                    )
-                },
-                confirmButton = {
-                    Button(onClick = {
-                        setNoticePdfDialog(false)
-                        noticeViewModel.clearPdfUrl()
-                    }) {
-                        Text("닫기")
-                    }
-                },
-                properties = DialogProperties(
-                    usePlatformDefaultWidth = false
-                ),
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .fillMaxHeight()
-            )
+            if (!monthNotice){
+                AlertDialog(
+                    onDismissRequest = { setNoticePdfDialog(false) },
+                    text = {
+                        AndroidView(
+                            factory = { context ->
+                                WebView(context).apply {
+                                    webViewClient = WebViewClient()
+                                    settings.javaScriptEnabled = true
+                                    loadUrl(pdfUrl)
+                                }
+                            },
+                        )
+                    },
+                    confirmButton = {
+                        Button(onClick = {
+                            setNoticePdfDialog(false)
+                            noticeViewModel.clearPdfUrl()
+                        }) {
+                            Text("닫기")
+                        }
+                    },
+                    properties = DialogProperties(
+                        usePlatformDefaultWidth = false
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .fillMaxHeight()
+                )
+            } else {
+                currentToast?.cancel()
+                val newToast = Toasty.warning(context, "월간 보고서는 개발중입니다.", Toast.LENGTH_SHORT, true)
+                newToast.show()
+                currentToast = newToast
+                setNoticePdfDialog(false)
+            }
+
         }
 
     }
@@ -267,6 +277,7 @@ fun NoticeScreen(
                         navController = navController,
                         selectedChild = selectedChild,
                         setMonthNotice = {
+//                            noticeViewModel.clearSelectedNotice()
                             setMonthNotice(true)
                         },
                         monthNotice = monthNotice

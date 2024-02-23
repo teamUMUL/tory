@@ -145,7 +145,8 @@ fun NewEducationScreen(
                     childSelectViewModel = childSelectViewModel,
                     devViewModel = devViewModel,
                     ltoViewModel = ltoViewModel,
-                    stoViewModel = stoViewModel
+                    stoViewModel = stoViewModel,
+                    todoViewModel = todoViewModel
                 )
             }
             VerticalDivider(color = Color.LightGray)

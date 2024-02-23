@@ -3,20 +3,12 @@ package inu.thebite.tory.screens.notice
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import inu.thebite.tory.model.detail.DetailGraphResponse
 import inu.thebite.tory.model.detail.DetailObjectResponse
-import inu.thebite.tory.model.detail.DetailResponse
-import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.notice.AddCommentRequest
-import inu.thebite.tory.model.notice.ConvertPdfRequest
 import inu.thebite.tory.model.notice.DateResponse
 import inu.thebite.tory.model.notice.NoticeDatesResponse
 import inu.thebite.tory.model.notice.NoticeResponse
-import inu.thebite.tory.model.notice.PdfLtoResponse
-import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.repositories.notice.NoticeRepoImpl
-import inu.thebite.tory.screens.education.compose.sto.getCurrentMonth
-import inu.thebite.tory.screens.education.compose.sto.getCurrentYear
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
@@ -394,7 +386,7 @@ class NoticeViewModel : ViewModel() {
             repo.createSharePdf(studentId = studentId, year = year, month = month.toInt(), date = date)
         }
         _pdfUrl.update {
-            "http://${"192.168.35.139"}:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
+            "http://${"192.168.35.103"}:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
         }
     }
 
@@ -410,10 +402,68 @@ class NoticeViewModel : ViewModel() {
                 Log.d("selectedNotice",selectedNotice.value.toString())
                 if (response.isSuccessful) {
                     val gottenAutoComment = response.body() ?: throw Exception("AutoComment 정보가 비어있습니다.")
-                    _selectedNotice.update {
-                        selectedNotice.value?.copy(
-                            comment = gottenAutoComment.comment
-                        )
+
+                    _selectedNotice.value?.let {
+                        // _selectedNotice가 null이 아닐 때만 업데이트
+                        _selectedNotice.update { currentNotice ->
+                            currentNotice?.copy(comment = gottenAutoComment.comment)
+                        }
+                    } ?: run {
+                        // _selectedNotice가 null일 때 _monthlyNotice에서 해당 notice 찾아 comment 업데이트
+                        _monthlyNotice.value?.let { monthlyNotices ->
+                            val matchedNotice = monthlyNotices.firstOrNull { notice ->
+                                notice.year == year && notice.month == month && notice.date == date
+                            }
+                            matchedNotice?.let { notice ->
+                                val updatedNotice = notice.copy(comment = gottenAutoComment.comment)
+                                Log.d("updatedNotice", updatedNotice.toString())
+                                _monthlyNotice.update { notices ->
+                                    notices?.map {
+                                        if (it.id == updatedNotice.id) updatedNotice else it
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("AutoComment 업데이트 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update AutoComment", e.message.toString())
+            }
+        }
+    }
+
+    fun createMonthlyNoticeAutoComment(
+        studentId: Long,
+        year: String,
+        month: Int,
+        date: String
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.getNoticeAutoComment(studentId = studentId, year = year, month = month, date = date)
+                Log.d("selectedNotice",selectedNotice.value.toString())
+                if (response.isSuccessful) {
+                    val gottenAutoComment = response.body() ?: throw Exception("AutoComment 정보가 비어있습니다.")
+
+
+                    // _selectedNotice가 null일 때 _monthlyNotice에서 해당 notice 찾아 comment 업데이트
+                    _monthlyNotice.value?.let { monthlyNotices ->
+                        val matchedNotice = monthlyNotices.firstOrNull { notice ->
+                            notice.year == year && notice.month == month && notice.date == date
+                        }
+                        matchedNotice?.let { notice ->
+                            val updatedNotice = notice.copy(comment = gottenAutoComment.comment)
+                            _monthlyNotice.update { notices ->
+                                notices?.map {
+                                    if (it.id == updatedNotice.id) updatedNotice else it
+                                }
+                            }
+
+                        }
                     }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
@@ -463,16 +513,15 @@ class NoticeViewModel : ViewModel() {
     fun getMonthlyNotice(
         studentId: Long,
         year: String,
-        month: Int
+        month: String
     ){
 
         viewModelScope.launch {
             try {
-                val response = repo.getMonthlyNotice(studentId = studentId, year = year, month = month)
+                val response = repo.getMonthlyNotice(studentId = studentId, year = year, month = month.toInt())
 
                 if (response.isSuccessful) {
                     val gottenMonthlyNotice = response.body() ?: throw Exception("월간보고서 정보가 비어있습니다.")
-
                     _monthlyNotice.update {
                         gottenMonthlyNotice
                     }

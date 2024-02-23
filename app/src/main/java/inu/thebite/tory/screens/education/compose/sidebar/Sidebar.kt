@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
 import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.schedule.TodoViewModel
 import inu.thebite.tory.screens.education.compose.dialog.dev.AddDEVDialog
 import inu.thebite.tory.screens.education.compose.dialog.dev.UpdateDEVDialog
 import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
@@ -36,6 +37,7 @@ import inu.thebite.tory.screens.education.compose.dialog.sto.UpdateSTODialog
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
+import inu.thebite.tory.screens.teachingboard.dialog.RecentListDialog
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 
 var currentToast: Toast? = null
@@ -44,7 +46,8 @@ fun Sidebar(
     childSelectViewModel: ChildSelectViewModel,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
-    stoViewModel: STOViewModel
+    stoViewModel: STOViewModel,
+    todoViewModel: TodoViewModel
 ){
     val context = LocalContext.current
     val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
@@ -227,6 +230,14 @@ fun Sidebar(
         }
     }
 
+    val (recentTodoDialog, setRecentTodoDialog) = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if  (recentTodoDialog){
+        selectedChild?.let { RecentListDialog(setRecentListDialog = {setRecentTodoDialog(it)}, todoViewModel = todoViewModel, selectedChild = it) }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -279,7 +290,9 @@ fun Sidebar(
             Icon(painter = painterResource(id = R.drawable.icon_sto_update), contentDescription = null, tint = Color(0xFF8E8E8E))
         }
         IconButton(
-            onClick = {}
+            onClick = {
+                setRecentTodoDialog(true)
+            }
         ) {
             Icon(painter = painterResource(id = R.drawable.icon_todo), contentDescription = null, tint = Color.Unspecified)
         }

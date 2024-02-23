@@ -11,5 +11,8 @@ data class LtoRequest(
     var contents: String,
 
     @SerializedName("game")
-    var game: String
+    var game: String,
+
+    @SerializedName("developType")
+    var developType: List<String>,
 )

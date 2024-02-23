@@ -54,12 +54,13 @@ import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
+import kotlinx.coroutines.delay
 
 @Composable
 fun NoticeItem(
     selectedNotice: NoticeResponse,
     selectedChild: StudentResponse,
-    noticeViewModel: NoticeViewModel
+    noticeViewModel: NoticeViewModel,
 ){
     val gradient = Brush.horizontalGradient(
         colors = listOf(Color(0xFF0047B3), Color(0xFF0047B3))
@@ -71,10 +72,13 @@ fun NoticeItem(
     var todayComment by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(selectedNotice.comment))
     }
-    LaunchedEffect(selectedNotice){
+    LaunchedEffect(selectedNotice.comment){
         todayComment = TextFieldValue(selectedNotice.comment)
     }
 
+    LaunchedEffect(Unit){
+        todayComment = TextFieldValue(selectedNotice.comment)
+    }
 
     val focusRequester = FocusRequester()
     Column(
@@ -207,7 +211,7 @@ fun NoticeItem(
                     ),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.None,
-                        autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                        autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Default
                     ),
                     onTextLayout = {textLayoutResult ->
                         if (todayComment.selection.collapsed && todayComment.selection.start != textLayoutResult.lineCount) {
@@ -235,7 +239,9 @@ fun NoticeItem(
                     Row {
                         Button(
                             onClick = {
-                                noticeViewModel.createNoticeAutoComment(studentId = selectedChild.id, year = selectedNotice.year, month = selectedNotice.month, date = selectedNotice.date)
+                                noticeViewModel.createMonthlyNoticeAutoComment(studentId = selectedChild.id, year = selectedNotice.year, month = selectedNotice.month, date = selectedNotice.date)
+                                todayComment = TextFieldValue(selectedNotice.comment)
+
                             },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(

@@ -154,6 +154,7 @@ fun NoticeItemTextField(
                     Button(
                         onClick = {
                             noticeViewModel.createDetailAutoComment(selectedDetailObjectResponse = selectedDetail, studentId = selectedChild.id, year = selectedDate.year, month = selectedDate.month, date = selectedDate.date, ltoId = selectedDetail.detailGraphResponse.ltoId)
+                            ltoComment = TextFieldValue(selectedDetail.comment)
                         },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(

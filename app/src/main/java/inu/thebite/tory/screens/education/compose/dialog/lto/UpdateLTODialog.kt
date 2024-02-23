@@ -37,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -99,6 +100,12 @@ fun UpdateLTOItemDialog(
     }
     val ltoMode = remember {
         mutableStateListOf<String>()
+    }
+
+    LaunchedEffect(Unit){
+        selectedLTO.developType.forEach {
+            ltoMode.add(it)
+        }
     }
 
     if (deleteLTODialog){
@@ -278,7 +285,8 @@ fun UpdateLTOItemDialog(
                                 updateLTO = LtoRequest(
                                     name = ltoInputValue.text,
                                     contents = selectedLTO.contents,
-                                    game = ""
+                                    game = "",
+                                    developType = ltoMode
                                 )
                             )
                             ltoInputValue = TextFieldValue("")
@@ -331,7 +339,8 @@ fun updateLTO() {
                         registerDate = "",
                         delYN = "",
                         domainId = 1L,
-                        studentId = 1L
+                        studentId = 1L,
+                        developType = listOf()
                     ),
                 ltoViewModel = LTOViewModel()
             )

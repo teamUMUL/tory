@@ -303,7 +303,8 @@ fun AddLTODialog(
                                 newLTO = LtoRequest(
                                     name = ltoInputValue.text,
                                     contents = "",
-                                    game = ""
+                                    game = "",
+                                    developType = ltoMode
                                 ),
                                 studentId = selectedChild.id
                             )

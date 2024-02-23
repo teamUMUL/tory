@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,7 +109,8 @@ fun RecentListDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     filteredRecentTodos?.let { filteredRecentTodos ->
                         items(filteredRecentTodos){todo ->
@@ -158,7 +160,8 @@ fun RecentListDialog(
                                 LazyRow(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(10.dp)
+                                        .padding(10.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                                 ) {
                                     items(todo.sto){sto ->
                                         Surface(
@@ -175,7 +178,9 @@ fun RecentListDialog(
                                                         .fillMaxWidth()
                                                         .weight(1f)
                                                         .background(
-                                                            color = when(todo.stoStatus[todo.sto.indexOf(sto)]){
+                                                            color = when (todo.stoStatus[todo.sto.indexOf(
+                                                                sto
+                                                            )]) {
                                                                 "완료" -> Color(0xFFCCEFC0)
                                                                 "진행중" -> Color(0xFFC0C5EF)
                                                                 "중지" -> Color(0xFFEFC0C0)
@@ -273,7 +278,8 @@ fun RecentListDialog(
                                     LazyRow(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .padding(10.dp)
+                                            .padding(10.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                                     ) {
                                         items(todo.sto){sto ->
                                             Surface(
@@ -290,7 +296,9 @@ fun RecentListDialog(
                                                             .fillMaxWidth()
                                                             .weight(1f)
                                                             .background(
-                                                                color = when(todo.stoStatus[todo.sto.indexOf(sto)]){
+                                                                color = when (todo.stoStatus[todo.sto.indexOf(
+                                                                    sto
+                                                                )]) {
                                                                     "완료" -> Color(0xFFCCEFC0)
                                                                     "진행중" -> Color(0xFFC0C5EF)
                                                                     "중지" -> Color(0xFFEFC0C0)

@@ -22,6 +22,9 @@ data class LtoResponse(
     @SerializedName("game")
     var game: String,
 
+    @SerializedName("developType")
+    var developType: List<String>,
+
     @SerializedName("achieveDate")
     var achieveDate: String,
 

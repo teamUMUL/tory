@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitApi : KoinComponent{
 
-    private const val BASE_URL = "http://192.168.35.139:8081"
+    private const val BASE_URL = "http://192.168.35.103:8081"
 
     private val tokenManager: TokenManager by inject()
 

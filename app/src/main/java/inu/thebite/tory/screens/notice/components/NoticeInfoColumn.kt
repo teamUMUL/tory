@@ -303,6 +303,8 @@ fun NoticeInfoColumn(
                                 Button(
                                     onClick = {
                                         noticeViewModel.createNoticeAutoComment(studentId = selectedChild.id, year = selectedDate.year, month = selectedDate.month, date = selectedDate.date)
+                                        todayComment = TextFieldValue(selectedNotice.comment)
+
                                     },
                                     shape = RoundedCornerShape(10.dp),
                                     colors = ButtonDefaults.buttonColors(

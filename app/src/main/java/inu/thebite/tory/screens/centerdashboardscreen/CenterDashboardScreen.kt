@@ -165,28 +165,28 @@ fun CenterDashboardScreen(
                     .fillMaxHeight()
                     .background(color = Color(0xFFE7EBF0), shape = RoundedCornerShape(size = 10.dp))
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-
-                    ) {
-                        CenterCardInCenterDashboard(
-                            modifier = Modifier.weight(1f),
-                            allCentersSize = allCenters?.size.toString()
-                        )// 지점 선택
-                        ClassCardInCenterDashboard(
-                            modifier = Modifier.weight(1f),
-                            allChildClassesSize = allChildClasses?.size.toString()
-
-                        ) //반 선택
-                        ChildrenCardInCenterDashboard(
-                            modifier = Modifier.weight(1f),
-                            allChildInfosSize = allChildInfos?.size.toString()
-                        ) //아이 선택
-
-                    }
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(16.dp),
+//                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+//
+//                    ) {
+//                        CenterCardInCenterDashboard(
+//                            modifier = Modifier.weight(1f),
+//                            allCentersSize = allCenters?.size.toString()
+//                        )// 지점 선택
+//                        ClassCardInCenterDashboard(
+//                            modifier = Modifier.weight(1f),
+//                            allChildClassesSize = allChildClasses?.size.toString()
+//
+//                        ) //반 선택
+//                        ChildrenCardInCenterDashboard(
+//                            modifier = Modifier.weight(1f),
+//                            allChildInfosSize = allChildInfos?.size.toString()
+//                        ) //아이 선택
+//
+//                    }
                     Row {
                         Box(
                             modifier = Modifier

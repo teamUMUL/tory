@@ -799,7 +799,13 @@ fun MainCompose(
                             noticeViewModel = noticeViewModel,
                             childSelectViewModel = childSelectViewModel
                         )
-                    } ?: NoChildSelect()
+                    } ?: NoChildSelect(
+                        centerSelectViewModel = centerSelectViewModel,
+                        childClassSelectViewModel = childClassSelectViewModel,
+                        childSelectViewModel = childSelectViewModel,
+                        noticeViewModel = noticeViewModel,
+                        setChildDialogOpen = {setChildDialogOpen(it)}
+                    )
 //                    EducationScreen(
 //                        ltoViewModel = ltoViewModel,
 //                        childSelectViewModel = childSelectViewModel,
@@ -822,7 +828,13 @@ fun MainCompose(
                             selectedChild = selectedChildInfo,
                             childSelectViewModel = childSelectViewModel
                         )
-                    } ?: NoChildSelect()
+                    } ?: NoChildSelect(
+                        centerSelectViewModel = centerSelectViewModel,
+                        childClassSelectViewModel = childClassSelectViewModel,
+                        childSelectViewModel = childSelectViewModel,
+                        noticeViewModel = noticeViewModel,
+                        setChildDialogOpen = {setChildDialogOpen(it)}
+                    )
                 }
 
                 composable(AllDestinations.SETTING) {
@@ -851,9 +863,11 @@ fun MainCompose(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildSelector(
+    modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     childSelectViewModel: ChildSelectViewModel,
-    containSelectButton: Boolean = true
+    containSelectButton: Boolean = true,
+    isFillMaxWidth: Boolean = true
 ){
     val context = LocalContext.current
 
@@ -869,8 +883,7 @@ fun ChildSelector(
     )
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = if (isFillMaxWidth) modifier.fillMaxWidth() else modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ExposedDropdownMenuBox(
@@ -984,10 +997,12 @@ fun ChildSelector(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClassSelector(
+    modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     childClassSelectViewModel: ChildClassSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
-    containSelectButton: Boolean = true
+    containSelectButton: Boolean = true,
+    isFillMaxWidth: Boolean = true
 ){
     val items by childClassSelectViewModel.allChildClasses.collectAsState()
 
@@ -1003,8 +1018,7 @@ fun ClassSelector(
     )
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = if (isFillMaxWidth) modifier.fillMaxWidth() else modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ExposedDropdownMenuBox(
@@ -1124,11 +1138,13 @@ fun ClassSelector(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CenterSelector(
+    modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     centerSelectViewModel: CenterSelectViewModel,
     childSelectViewModel: ChildSelectViewModel,
     childClassSelectViewModel: ChildClassSelectViewModel,
-    containSelectButton: Boolean = true
+    containSelectButton: Boolean = true,
+    isFillMaxWidth: Boolean = true,
 ){
     val context = LocalContext.current
 
@@ -1144,8 +1160,8 @@ fun CenterSelector(
     )
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = if (isFillMaxWidth) modifier.fillMaxWidth() else modifier,
+
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ExposedDropdownMenuBox(
@@ -1597,54 +1613,144 @@ fun ChildInfoControl(
 
 @Composable
 fun NoChildSelect(
-
+    centerSelectViewModel: CenterSelectViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel,
+    noticeViewModel: NoticeViewModel,
+    setChildDialogOpen: (Boolean) -> Unit
 ){
 
-//    val (noticePdfDialog, setNoticePdfDialog) = remember {
-//        mutableStateOf(false)
-//    }
-//    if (noticePdfDialog) {
-//        val exampleURL = "http://192.168.35.225:8081/notices/4/reports?year=2023&month=12&date=12"
-//
-//        Dialog(
-//            properties = DialogProperties(
-//                usePlatformDefaultWidth = false,
-//
-//            ),
-//            onDismissRequest = { setNoticePdfDialog(false) }
-//        ) {
-//
-//            AndroidView(factory = { context ->
-//                WebView(context).apply {
-//                    webViewClient = WebViewClient()
-//                    loadUrl(exampleURL)
-//                    settings.javaScriptEnabled = true
-//                }
-//            })
-//
-//        }
-//    }
-//    LaunchedEffect(Unit){
-//        setNoticePdfDialog(true)
-//    }
+    val allCenters by centerSelectViewModel.allCenters.collectAsState()
+    val _selectedCenter by centerSelectViewModel.tempSelectedCenter.collectAsState()
+
+
+    val _selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
+
+    val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxWidth()
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
+
     ) {
         Text(
-            text = "아이를 선택해주세요",
+            text = "아이를 선택해주세요.",
             style = TextStyle(
-                fontSize = 28.sp,
-                lineHeight = 28.sp,
                 fontFamily = fontFamily_Inter,
-                fontWeight = FontWeight(600),
-                color = Color.Black,
-                letterSpacing = 0.24.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 30.sp,
+                color = Color.Black
             )
         )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "센터",
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
+            modifier = Modifier
+                .padding(10.dp)
+        )
+        CenterSelector(
+            modifier = Modifier.width(400.dp),
+            onDismiss = {  },
+            centerSelectViewModel = centerSelectViewModel,
+            childClassSelectViewModel = childClassSelectViewModel,
+            childSelectViewModel = childSelectViewModel,
+            containSelectButton = false,
+            isFillMaxWidth = false
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = "반",
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
+            modifier = Modifier
+                .padding(start = 10.dp, bottom = 10.dp)
+        )
+        ClassSelector(
+            modifier = Modifier.width(400.dp),
+            onDismiss = {  },
+            childClassSelectViewModel = childClassSelectViewModel,
+            childSelectViewModel = childSelectViewModel,
+            containSelectButton = false,
+            isFillMaxWidth = false
 
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(
+            text = "아이",
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
+            modifier = Modifier
+                .padding(start = 10.dp, bottom = 10.dp)
+        )
+        ChildSelector(
+            modifier = Modifier.width(400.dp),
+            onDismiss = { setChildDialogOpen(false) },
+            childSelectViewModel = childSelectViewModel,
+            containSelectButton = false,
+            isFillMaxWidth = false
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        _selectedCenter?.let { selectedCenter ->
+            _selectedChildInfo?.let { selectedChildInfo ->
+                _selectedChildClass?.let { selectedChildClass ->
+                    Row(
+                        modifier = Modifier
+                            .width(600.dp),
+                        horizontalArrangement = Arrangement.spacedBy(50.dp)
+                    ) {
+                        Button(
+                            modifier = Modifier
+                                .weight(5f)
+                                .height(55.dp),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFBFBFBF)
+                            ),
+                            onClick = {
+                                centerSelectViewModel.clearTempSelectedCenter()
+                                childClassSelectViewModel.clearTempSelectedChildClass()
+                                childSelectViewModel.clearTempSelectedChildInfo()
+                                setChildDialogOpen(false)
+                            }
+                        ) {
+                            Text(
+                                text = "취소",
+                                fontSize = 20.sp
+                            )
+                        }
+                        Button(
+                            modifier = Modifier
+                                .weight(5f)
+                                .height(55.dp),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF0047B3)
+                            ),
+                            onClick = {
+                                centerSelectViewModel.setSelectedCenter(selectedCenter)
+                                childClassSelectViewModel.setSelectedChildClass(
+                                    selectedChildClass
+                                )
+                                childSelectViewModel.setSelectedChildInfo(selectedChildInfo)
+                                noticeViewModel.clearAll()
+                                setChildDialogOpen(false)
+                            }
+                        ) {
+                            Text(
+                                text = "선택하기",
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+
+                }
+            }
+        }
     }
 }

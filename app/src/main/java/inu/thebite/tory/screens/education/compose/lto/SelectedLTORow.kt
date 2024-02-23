@@ -47,9 +47,8 @@ fun SelectedLTORow(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel
 ) {
-    val selectedLTODescriptions = remember {
-        mutableStateListOf<String>()
-    }
+
+
 
     BoxWithConstraints(
         modifier = modifier
@@ -92,10 +91,10 @@ fun SelectedLTORow(
                     ) {
                         Button(
                             onClick = {
-                                if (selectedLTODescriptions.contains("언어발달")){
-                                    selectedLTODescriptions.remove("언어발달")
+                                if (selectedLTO.developType.contains("언어발달")){
+                                    //삭제
                                 } else {
-                                    selectedLTODescriptions.add("언어발달")
+                                    //추가
                                 }
                             },
                             modifier = Modifier
@@ -103,7 +102,7 @@ fun SelectedLTORow(
                             border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (selectedLTODescriptions.contains("언어발달")) Color(0xFFE0E9F5) else Color.Transparent,
+                                containerColor = if (selectedLTO.developType.contains("언어발달")) Color(0xFFE0E9F5) else Color.Transparent,
                                 contentColor = Color.Black
                             ),
                             contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
@@ -120,10 +119,10 @@ fun SelectedLTORow(
                         Spacer(modifier = Modifier.width(5.dp))
                         Button(
                             onClick = {
-                                if (selectedLTODescriptions.contains("인지발달")){
-                                    selectedLTODescriptions.remove("인지발달")
+                                if (selectedLTO.developType.contains("인지발달")){
+                                    //삭제
                                 } else {
-                                    selectedLTODescriptions.add("인지발달")
+                                    //추가
                                 }
                             },
                             modifier = Modifier
@@ -131,7 +130,7 @@ fun SelectedLTORow(
                             border = BorderStroke(width = 1.dp, color = Color(0xFF0047B3).copy(alpha = 0.5f)),
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (selectedLTODescriptions.contains("인지발달")) Color(0xFFE0E9F5) else Color.Transparent,
+                                containerColor = if (selectedLTO.developType.contains("인지발달")) Color(0xFFE0E9F5) else Color.Transparent,
                                 contentColor = Color.Black
                             ),
                             contentPadding = PaddingValues(vertical = 1.dp, horizontal = 10.dp)
