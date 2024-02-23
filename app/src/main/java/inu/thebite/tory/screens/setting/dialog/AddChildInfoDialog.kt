@@ -69,6 +69,7 @@ fun AddChildInfoDialog(
     childInfoViewModel: ChildInfoViewModel,
     setAddChildInfoDialog : (Boolean) -> Unit,
     isUpdate : Boolean,
+    onFinish : () -> Unit
 
 ){
 
@@ -207,6 +208,7 @@ fun AddChildInfoDialog(
                                                     registerDate = ""
                                                 )
                                             )
+                                            onFinish()
                                         }
                                     }else{
                                         childInfoViewModel.createChildInfo(
@@ -219,6 +221,7 @@ fun AddChildInfoDialog(
                                                 startDate = childInfoStartDateInputValue.text
                                             )
                                         )
+                                        onFinish()
                                     }
 
                                     childInfoNameInputValue = TextFieldValue("")

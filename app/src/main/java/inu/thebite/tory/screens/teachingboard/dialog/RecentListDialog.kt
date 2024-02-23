@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.teachingboard.dialog
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -69,11 +70,33 @@ fun RecentListDialog(
     val filteredRecentTodos by todoViewModel.filteredRecentTodos.collectAsState()
 
     val isRecentTodoLoading by todoViewModel.isRecentTodoLoading.collectAsState()
+    val startDate by todoViewModel.startDate.collectAsState()
+    val endDate by todoViewModel.endDate.collectAsState()
+
 
     LaunchedEffect(recentTodosFilterState){
         recentTodosFilterState?.let { recentTodosFilterState ->
             todoViewModel.filterRecentTodoByState(state = recentTodosFilterState)
         }
+    }
+    LaunchedEffect(Unit) {
+        if (startDate.isNullOrEmpty() && endDate.isNullOrEmpty()){
+            todoViewModel.setStartDate(getDates().second)
+            todoViewModel.setFinishDate(getDates().first)
+            Log.d("selectedChild", selectedChild.toString())
+
+            delay(500)
+            startDate?.let {startDate ->
+                endDate?.let { endDate ->
+                    todoViewModel.getRecentTodoListWithDate(
+                        studentId = selectedChild.id,
+                        startDate = startDate,
+                        endDate = endDate
+                    )
+                }
+            }
+        }
+
     }
 
     Dialog(
@@ -184,7 +207,7 @@ fun RecentListDialog(
                                                                 "완료" -> Color(0xFFCCEFC0)
                                                                 "진행중" -> Color(0xFFC0C5EF)
                                                                 "중지" -> Color(0xFFEFC0C0)
-                                                                else -> Color.Black
+                                                                else -> Color(0xFFE3E3E3)
                                                             },
                                                             shape = RoundedCornerShape(
                                                                 topStart = 10.dp,
@@ -302,7 +325,7 @@ fun RecentListDialog(
                                                                     "완료" -> Color(0xFFCCEFC0)
                                                                     "진행중" -> Color(0xFFC0C5EF)
                                                                     "중지" -> Color(0xFFEFC0C0)
-                                                                    else -> Color.Black
+                                                                    else -> Color(0xFFE3E3E3)
                                                                 },
                                                                 shape = RoundedCornerShape(
                                                                     topStart = 10.dp,
@@ -397,27 +420,9 @@ fun RecentListDialogTopBar(
 
     val startDate by todoViewModel.startDate.collectAsState()
     val endDate by todoViewModel.endDate.collectAsState()
-    val recentTodosFilterState by todoViewModel.recentTodosFilterState.collectAsState()
 
 
-    LaunchedEffect(Unit) {
-        if (startDate.isNullOrEmpty() && endDate.isNullOrEmpty()){
-            todoViewModel.setStartDate(getDates().second)
-            todoViewModel.setFinishDate(getDates().first)
 
-            delay(500)
-            startDate?.let {startDate ->
-                endDate?.let { endDate ->
-                    todoViewModel.getRecentTodoListWithDate(
-                        studentId = selectedChild.id,
-                        startDate = startDate,
-                        endDate = endDate
-                    )
-                }
-            }
-        }
-
-    }
 
 
 

@@ -41,6 +41,7 @@ import inu.thebite.tory.screens.teachingboard.dialog.RecentListDialog
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 
 var currentToast: Toast? = null
+
 @Composable
 fun Sidebar(
     childSelectViewModel: ChildSelectViewModel,
@@ -48,7 +49,7 @@ fun Sidebar(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
     todoViewModel: TodoViewModel
-){
+) {
     val context = LocalContext.current
     val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
 
@@ -80,13 +81,13 @@ fun Sidebar(
         mutableStateOf(false)
     }
 
-    if(addDEVDialog){
+    if (addDEVDialog) {
         selectedChild?.let { selectedChild ->
             AddDEVDialog(
                 context = context,
                 selectedChild = selectedChild,
                 devViewModel = devViewModel,
-                setDEVDialog = {setAddDEVDialog(it)}
+                setDEVDialog = { setAddDEVDialog(it) }
             )
         } ?: run {
             currentToast?.cancel()
@@ -104,14 +105,14 @@ fun Sidebar(
         mutableStateOf(false)
     }
 
-    if(updateDEVDialog){
+    if (updateDEVDialog) {
         selectedChild?.let { selectedChild ->
             selectedDEV?.let { selectedDEV ->
                 UpdateDEVDialog(
                     context = context,
                     selectedChild = selectedChild,
                     devViewModel = devViewModel,
-                    setDEVDialog = {setUpdateDEVDialog(it)},
+                    setDEVDialog = { setUpdateDEVDialog(it) },
                     selectedDEV = selectedDEV
                 )
             } ?: run {
@@ -132,9 +133,9 @@ fun Sidebar(
         mutableStateOf(false)
     }
 
-    if(addLTODialog){
+    if (addLTODialog) {
         selectedChild?.let { selectedChild ->
-            selectedDEV?.let {selectedDEV ->
+            selectedDEV?.let { selectedDEV ->
                 AddLTODialog(
                     context = context,
                     selectedChild = selectedChild,
@@ -145,7 +146,8 @@ fun Sidebar(
             } ?: run {
                 currentToast?.cancel()
 
-                val newToast = Toasty.warning(context, "LTO를 추가할 발달영역을 선택해주세요", Toast.LENGTH_SHORT, true)
+                val newToast =
+                    Toasty.warning(context, "LTO를 추가할 발달영역을 선택해주세요", Toast.LENGTH_SHORT, true)
                 newToast.show()
 
                 currentToast = newToast
@@ -210,13 +212,13 @@ fun Sidebar(
         mutableStateOf(false)
     }
 
-    if(updateSTODialog){
-        selectedSTO?.let {selectedSTO ->
+    if (updateSTODialog) {
+        selectedSTO?.let { selectedSTO ->
             UpdateSTODialog(
                 context = context,
                 stoViewModel = stoViewModel,
                 selectedSTO = selectedSTO,
-                setUpdateSTOItem = {setUpdateSTODialog(it)},
+                setUpdateSTOItem = { setUpdateSTODialog(it) },
             )
         } ?: run {
             currentToast?.cancel()
@@ -234,8 +236,20 @@ fun Sidebar(
         mutableStateOf(false)
     }
 
-    if  (recentTodoDialog){
-        selectedChild?.let { RecentListDialog(setRecentListDialog = {setRecentTodoDialog(it)}, todoViewModel = todoViewModel, selectedChild = it) }
+    if (recentTodoDialog) {
+        selectedChild?.let {
+            RecentListDialog(
+                setRecentListDialog = {
+                    setRecentTodoDialog(it)
+                    todoViewModel.clearRecentTodosFilterState()
+                    todoViewModel.clearFilteredRecentTodos()
+                    todoViewModel.clearStartDate()
+                    todoViewModel.clearEndDate()
+                },
+                todoViewModel = todoViewModel,
+                selectedChild = it,
+            )
+        }
     }
 
     Column(
@@ -252,49 +266,77 @@ fun Sidebar(
                 setAddDEVDialog(true)
             }
         ) {
-            Icon(painter = painterResource(id = R.drawable.icon_dev_add), contentDescription = null, tint = Color(0xFF8E8E8E))
+            Icon(
+                painter = painterResource(id = R.drawable.icon_dev_add),
+                contentDescription = null,
+                tint = Color(0xFF8E8E8E)
+            )
         }
         IconButton(
             onClick = {
                 setUpdateDEVDialog(true)
             }
         ) {
-            Icon(painter = painterResource(id = R.drawable.icon_dev_update), contentDescription = null, tint = Color(0xFF8E8E8E))
+            Icon(
+                painter = painterResource(id = R.drawable.icon_dev_update),
+                contentDescription = null,
+                tint = Color(0xFF8E8E8E)
+            )
         }
         IconButton(
             onClick = {
                 setAddLTODialog(true)
             }
         ) {
-            Icon(painter = painterResource(id = R.drawable.icon_lto_add), contentDescription = null, tint = Color(0xFF8E8E8E))
+            Icon(
+                painter = painterResource(id = R.drawable.icon_lto_add),
+                contentDescription = null,
+                tint = Color(0xFF8E8E8E)
+            )
         }
         IconButton(
             onClick = {
                 setUpdateLTODialog(true)
             }
         ) {
-            Icon(painter = painterResource(id = R.drawable.icon_lto_update), contentDescription = null, tint = Color(0xFF8E8E8E))
+            Icon(
+                painter = painterResource(id = R.drawable.icon_lto_update),
+                contentDescription = null,
+                tint = Color(0xFF8E8E8E)
+            )
         }
         IconButton(
             onClick = {
                 setAddSTODialog(true)
             }
         ) {
-            Icon(painter = painterResource(id = R.drawable.icon_sto_add), contentDescription = null, tint = Color(0xFF8E8E8E))
+            Icon(
+                painter = painterResource(id = R.drawable.icon_sto_add),
+                contentDescription = null,
+                tint = Color(0xFF8E8E8E)
+            )
         }
         IconButton(
             onClick = {
                 setUpdateSTODialog(true)
             }
         ) {
-            Icon(painter = painterResource(id = R.drawable.icon_sto_update), contentDescription = null, tint = Color(0xFF8E8E8E))
+            Icon(
+                painter = painterResource(id = R.drawable.icon_sto_update),
+                contentDescription = null,
+                tint = Color(0xFF8E8E8E)
+            )
         }
         IconButton(
             onClick = {
                 setRecentTodoDialog(true)
             }
         ) {
-            Icon(painter = painterResource(id = R.drawable.icon_todo), contentDescription = null, tint = Color.Unspecified)
+            Icon(
+                painter = painterResource(id = R.drawable.icon_todo),
+                contentDescription = null,
+                tint = Color.Unspecified
+            )
         }
     }
 

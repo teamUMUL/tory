@@ -48,6 +48,9 @@ import inu.thebite.tory.screens.setting.dialog.AddChildInfoDialog
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import java.lang.Integer.min
 
@@ -55,7 +58,10 @@ import java.lang.Integer.min
 fun ManagementScreen(
     centerViewModel: CenterViewModel,
     childClassViewModel: ChildClassViewModel,
-    childInfoViewModel: ChildInfoViewModel
+    childInfoViewModel: ChildInfoViewModel,
+    centerSelectViewModel: CenterSelectViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ) {
     val context = LocalContext.current
 
@@ -116,7 +122,8 @@ fun ManagementScreen(
                     .width(300.dp)
                     .fillMaxHeight()
                     .background(Color(0xFFF3F3F3)),
-                centerViewModel = centerViewModel
+                centerViewModel = centerViewModel,
+                centerSelectViewModel = centerSelectViewModel
             )
             Divider(
                 modifier = Modifier
@@ -142,14 +149,16 @@ fun ManagementScreen(
                         )
                         .padding(10.dp),
                     centerViewModel = centerViewModel,
-                    childClassViewModel = childClassViewModel
+                    childClassViewModel = childClassViewModel,
+                    childClassSelectViewModel = childClassSelectViewModel
                 )
 
                 ChildInfoRow(
                     modifier = Modifier
                         .weight(7f),
                     childClassViewModel = childClassViewModel,
-                    childInfoViewModel = childInfoViewModel
+                    childInfoViewModel = childInfoViewModel,
+                    childSelectViewModel = childSelectViewModel
                 )
             }
 

@@ -57,6 +57,7 @@ class TodoViewModel : ViewModel() {
 
     init {
         observeTodoList()
+        observeRecentTodoList()
 //        observeTempTodoList()
     }
 //    private fun observeTempTodoList() {
@@ -66,6 +67,31 @@ class TodoViewModel : ViewModel() {
 //            }.collect()
 //        }
 //    }
+
+    private fun observeRecentTodoList(){
+        viewModelScope.launch {
+
+            recentTodos.onEach { recentTodos ->
+                updateFilteredRecentTodoList(recentTodos)
+            }.collect()
+        }
+    }
+
+    private fun updateFilteredRecentTodoList(recentTodos : List<RecentTodoWithDateResponse>?){
+        recentTodos?.let { recentList ->
+            // 기존에 필터링된 recentTodos와 일치하는 날짜를 찾아 해당 항목만 업데이트합니다.
+            val updatedFilteredTodos = filteredRecentTodos.value?.map { filteredTodo ->
+                // recentList에서 같은 날짜를 가진 항목을 찾습니다.
+                recentList.find { it.date == filteredTodo.date }?.let { matchingRecentTodo ->
+                    // 일치하는 날짜가 있는 경우, 해당 recentTodo로 업데이트합니다.
+                    matchingRecentTodo
+                } ?: filteredTodo // 일치하는 날짜가 없는 경우, 기존의 filteredTodo를 유지합니다.
+            } ?: recentList // _filteredRecentTodos가 null이거나 비어있는 경우, recentTodos로 초기화합니다.
+
+            // 업데이트된 리스트로 _filteredRecentTodos를 업데이트합니다.
+            _filteredRecentTodos.update { updatedFilteredTodos }
+        }
+    }
 
     fun setStartDate(date: String){
         _startDate.update { date }
@@ -87,7 +113,9 @@ class TodoViewModel : ViewModel() {
     fun clearStartDate(){
         _startDate.update { null }
     }
-    fun clearFinishDate(){
+
+
+    fun clearEndDate(){
         _endDate.update { null }
     }
     fun clearAll(){

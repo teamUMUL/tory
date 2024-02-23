@@ -35,13 +35,15 @@ import co.yml.charts.common.extensions.isNotNull
 import inu.thebite.tory.screens.setting.dialog.AddChildInfoDialog
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildInfoViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 
 @Composable
 fun ChildInfoRow(
     modifier: Modifier = Modifier,
     childClassViewModel: ChildClassViewModel,
-    childInfoViewModel: ChildInfoViewModel
+    childInfoViewModel: ChildInfoViewModel,
+    childSelectViewModel: ChildSelectViewModel
 ) {
     val context = LocalContext.current
 
@@ -65,7 +67,10 @@ fun ChildInfoRow(
             childInfoViewModel = childInfoViewModel,
             setAddChildInfoDialog = { setAddChildInfoDialog(it) },
             selectedChildInfo = selectedChildInfo,
-            isUpdate = false
+            isUpdate = false,
+            onFinish = {
+                selectedChildClass?.let { childSelectViewModel.getAllChildInfos(classId = it.id) }
+            }
         )
     }
     if (updateChildInfoDialog) {
@@ -76,7 +81,10 @@ fun ChildInfoRow(
             childInfoViewModel = childInfoViewModel,
             setAddChildInfoDialog = { setUpdateChildInfoDialog(it) },
             selectedChildInfo = selectedChildInfo,
-            isUpdate = true
+            isUpdate = true,
+            onFinish = {
+                selectedChildClass?.let { childSelectViewModel.getAllChildInfos(classId = it.id) }
+            }
         )
     }
 

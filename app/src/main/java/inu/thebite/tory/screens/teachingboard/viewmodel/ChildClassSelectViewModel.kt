@@ -8,6 +8,8 @@ import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.repositories.ChildClass.ChildClassRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -71,7 +73,35 @@ class ChildClassSelectViewModel : ViewModel() {
 //        )
 //        getAllChildClasses()
     }
+    init {
+        observeAllChildClasses()
+    }
 
+    private fun observeAllChildClasses() {
+        viewModelScope.launch {
+
+            allChildClasses.onEach { allChildClasses ->
+                updateChildClassesAndSelectedChildClass(allChildClasses)
+            }.collect()
+        }
+    }
+
+    private fun updateChildClassesAndSelectedChildClass(allChildClasses: List<ChildClassResponse>?) {
+        allChildClasses?.let { allChildClasses ->
+            _childClasses.update {currentChildClasses ->
+                allChildClasses.filter {childClass ->
+                    currentChildClasses?.map { it.id }?.contains(childClass.id) == true
+                }
+            }
+            _selectedChildClass.update {
+                val foundChildClass = allChildClasses.find {childClass ->
+
+                    childClass.id == selectedChildClass.value?.id
+                }
+                foundChildClass
+            }
+        }
+    }
     fun getAllChildClasses(centerId : Long){
         viewModelScope.launch{
             try {

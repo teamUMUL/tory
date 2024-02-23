@@ -63,7 +63,8 @@ fun AddCenterDialog(
     centerViewModel: CenterViewModel,
     setAddCenterDialog : (Boolean) -> Unit,
     selectedCenter : CenterResponse?,
-    isUpdate : Boolean
+    isUpdate : Boolean,
+    onFinish : () -> Unit
 ){
     val defaultCenterValue = if(isUpdate) selectedCenter!!.name else ""
 
@@ -141,6 +142,7 @@ fun AddCenterDialog(
                                                 name = centerNameInputValue.text
                                             )
                                         )
+                                        onFinish()
                                     }
 //                                    centerViewModel.clearSelectedCenter()
 //                                    childClassViewModel.clearSelectedChildClass()
@@ -152,6 +154,7 @@ fun AddCenterDialog(
                                             name = centerNameInputValue.text
                                         )
                                     )
+                                    onFinish()
                                 }
                                 centerNameInputValue = TextFieldValue("")
                                 setAddCenterDialog(false)

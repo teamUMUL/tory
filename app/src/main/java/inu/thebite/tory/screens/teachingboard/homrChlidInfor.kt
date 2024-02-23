@@ -41,6 +41,9 @@ fun childInfor(
 ) {
     val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
     val fontSize = 17.sp
+
+    
+
     Row(
         modifier = modifier
             .shadow(

@@ -87,12 +87,19 @@ fun HomeScreen(
     if (recentListDialog){
         selectedChild?.let {selectedChild ->
             RecentListDialog(
-                setRecentListDialog = {setRecentListDialog(it)},
+                setRecentListDialog = {
+                    setRecentListDialog(it)
+                    todoViewModel.clearRecentTodosFilterState()
+                    todoViewModel.clearFilteredRecentTodos()
+                    todoViewModel.clearStartDate()
+                    todoViewModel.clearEndDate()
+                },
                 todoViewModel = todoViewModel,
                 selectedChild = selectedChild
             )
         } ?: run {
-            Toasty.warning(context, "아이를 선택해주세요.", Toast.LENGTH_SHORT, true)
+            Toasty.warning(context, "아이를 선택해주세요.", Toast.LENGTH_SHORT, true).show()
+            setRecentListDialog(false)
         }
     }
 

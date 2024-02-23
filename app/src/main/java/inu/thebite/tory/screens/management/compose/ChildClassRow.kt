@@ -33,6 +33,7 @@ import inu.thebite.tory.screens.setting.dialog.AddChildClassDialog
 import inu.thebite.tory.screens.setting.dialog.AddChildInfoDialog
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
 import inu.thebite.tory.screens.setting.viewmodel.ChildClassViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 
 @Composable
@@ -40,6 +41,7 @@ fun ChildClassRow(
     modifier: Modifier = Modifier,
     centerViewModel: CenterViewModel,
     childClassViewModel: ChildClassViewModel,
+    childClassSelectViewModel: ChildClassSelectViewModel
 ) {
     val context = LocalContext.current
 
@@ -67,7 +69,10 @@ fun ChildClassRow(
             childClassViewModel = childClassViewModel,
             setAddChildClassDialog = { setAddChildClassDialog(it) },
             selectedChildClass = selectedChildClass,
-            isUpdate = false
+            isUpdate = false,
+            onFinish = {
+                selectedCenter?.let { childClassSelectViewModel.getAllChildClasses(centerId = it.id) }
+            }
         )
     }
     if (updateChildClassDialog) {
@@ -77,7 +82,10 @@ fun ChildClassRow(
             childClassViewModel = childClassViewModel,
             setAddChildClassDialog = { setUpdateChildClassDialog(it) },
             selectedChildClass = selectedChildClass,
-            isUpdate = true
+            isUpdate = true,
+            onFinish = {
+                selectedCenter?.let { childClassSelectViewModel.getAllChildClasses(centerId = it.id) }
+            }
         )
     }
 

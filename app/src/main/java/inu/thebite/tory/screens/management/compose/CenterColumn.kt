@@ -41,12 +41,14 @@ import androidx.compose.ui.unit.sp
 import inu.thebite.tory.screens.education.screen.clickableWithNoRipple
 import inu.thebite.tory.screens.setting.dialog.AddCenterDialog
 import inu.thebite.tory.screens.setting.viewmodel.CenterViewModel
+import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 @Composable
 fun CenterColumn(
     modifier: Modifier = Modifier,
-    centerViewModel: CenterViewModel
+    centerViewModel: CenterViewModel,
+    centerSelectViewModel: CenterSelectViewModel
 ) {
     val context = LocalContext.current
     val selectedCenter by centerViewModel.selectedCenter.collectAsState()
@@ -63,6 +65,9 @@ fun CenterColumn(
             setAddCenterDialog = { setAddCenterDialog(it) },
             isUpdate = false,
             selectedCenter = selectedCenter,
+            onFinish = {
+                centerSelectViewModel.getAllCenters()
+            }
         )
     }
 
@@ -77,6 +82,9 @@ fun CenterColumn(
             setAddCenterDialog = { setUpdateCenterDialog(it) },
             isUpdate = true,
             selectedCenter = selectedCenter,
+            onFinish = {
+                centerSelectViewModel.getAllCenters()
+            }
         )
     }
 

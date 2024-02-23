@@ -846,7 +846,10 @@ fun MainCompose(
                     ManagementScreen(
                         centerViewModel = centerViewModel,
                         childClassViewModel = childClassViewModel,
-                        childInfoViewModel = childInfoViewModel
+                        childInfoViewModel = childInfoViewModel,
+                        centerSelectViewModel = centerSelectViewModel,
+                        childClassSelectViewModel = childClassSelectViewModel,
+                        childSelectViewModel = childSelectViewModel
                     )
                 }
 

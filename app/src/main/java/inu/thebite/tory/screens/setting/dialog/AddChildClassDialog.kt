@@ -57,6 +57,7 @@ fun AddChildClassDialog(
     setAddChildClassDialog : (Boolean) -> Unit,
     isUpdate : Boolean,
     selectedChildClass : ChildClassResponse?,
+    onFinish : () -> Unit
 ){
     val defaultChildClassValue = if(isUpdate) selectedChildClass!!.name else ""
 
@@ -133,6 +134,7 @@ fun AddChildClassDialog(
                                                     name = childClassNameInputValue.text
                                                 )
                                             )
+                                            onFinish()
                                         }
 //                                        childClassViewModel.clearSelectedChildClass()
                                     } else {
@@ -142,6 +144,7 @@ fun AddChildClassDialog(
                                                 name = childClassNameInputValue.text
                                             )
                                         )
+                                        onFinish()
                                     }
                                     childClassNameInputValue = TextFieldValue("")
                                     setAddChildClassDialog(false)

@@ -93,66 +93,66 @@ fun SettingScreen(
         }
     }
 
-    if(addCenterDialog){
-        AddCenterDialog(
-            context = context,
-            centerViewModel = centerViewModel,
-            setAddCenterDialog = {setAddCenterDialog(it)},
-            isUpdate = false,
-            selectedCenter = selectedCenter,
-        )
-    }
-    if(updateCenterDialog){
-        AddCenterDialog(
-            context = context,
-            centerViewModel = centerViewModel,
-            setAddCenterDialog = {setUpdateCenterDialog(it)},
-            isUpdate = true,
-            selectedCenter = selectedCenter,
-        )
-    }
-    if(addChildClassDialog){
-        AddChildClassDialog(
-            context = context,
-            selectedCenter = selectedCenter,
-            childClassViewModel = childClassViewModel,
-            setAddChildClassDialog = {setAddChildClassDialog(it)},
-            selectedChildClass = selectedChildClass,
-            isUpdate = false
-        )
-    }
-    if(updateChildClassDialog){
-        AddChildClassDialog(
-            context = context,
-            selectedCenter = selectedCenter,
-            childClassViewModel = childClassViewModel,
-            setAddChildClassDialog = {setUpdateChildClassDialog(it)},
-            selectedChildClass = selectedChildClass,
-            isUpdate = true
-        )
-    }
-    if(addChildInfoDialog){
-        AddChildInfoDialog(
-            context = context,
-            childInfos = allChildInfos,
-            selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            setAddChildInfoDialog = {setAddChildInfoDialog(it)},
-            selectedChildInfo = selectedChildInfo,
-            isUpdate = false
-        )
-    }
-    if(updateChildInfoDialog){
-        AddChildInfoDialog(
-            context = context,
-            childInfos = allChildInfos,
-            selectedChildClass = selectedChildClass,
-            childInfoViewModel = childInfoViewModel,
-            setAddChildInfoDialog = {setUpdateChildInfoDialog(it)},
-            selectedChildInfo = selectedChildInfo,
-            isUpdate = true
-        )
-    }
+//    if(addCenterDialog){
+//        AddCenterDialog(
+//            context = context,
+//            centerViewModel = centerViewModel,
+//            setAddCenterDialog = {setAddCenterDialog(it)},
+//            isUpdate = false,
+//            selectedCenter = selectedCenter,
+//        )
+//    }
+//    if(updateCenterDialog){
+//        AddCenterDialog(
+//            context = context,
+//            centerViewModel = centerViewModel,
+//            setAddCenterDialog = {setUpdateCenterDialog(it)},
+//            isUpdate = true,
+//            selectedCenter = selectedCenter,
+//        )
+//    }
+//    if(addChildClassDialog){
+//        AddChildClassDialog(
+//            context = context,
+//            selectedCenter = selectedCenter,
+//            childClassViewModel = childClassViewModel,
+//            setAddChildClassDialog = {setAddChildClassDialog(it)},
+//            selectedChildClass = selectedChildClass,
+//            isUpdate = false
+//        )
+//    }
+//    if(updateChildClassDialog){
+//        AddChildClassDialog(
+//            context = context,
+//            selectedCenter = selectedCenter,
+//            childClassViewModel = childClassViewModel,
+//            setAddChildClassDialog = {setUpdateChildClassDialog(it)},
+//            selectedChildClass = selectedChildClass,
+//            isUpdate = true
+//        )
+//    }
+//    if(addChildInfoDialog){
+//        AddChildInfoDialog(
+//            context = context,
+//            childInfos = allChildInfos,
+//            selectedChildClass = selectedChildClass,
+//            childInfoViewModel = childInfoViewModel,
+//            setAddChildInfoDialog = {setAddChildInfoDialog(it)},
+//            selectedChildInfo = selectedChildInfo,
+//            isUpdate = false
+//        )
+//    }
+//    if(updateChildInfoDialog){
+//        AddChildInfoDialog(
+//            context = context,
+//            childInfos = allChildInfos,
+//            selectedChildClass = selectedChildClass,
+//            childInfoViewModel = childInfoViewModel,
+//            setAddChildInfoDialog = {setUpdateChildInfoDialog(it)},
+//            selectedChildInfo = selectedChildInfo,
+//            isUpdate = true
+//        )
+//    }
 
     Column(
         modifier = Modifier.fillMaxSize()

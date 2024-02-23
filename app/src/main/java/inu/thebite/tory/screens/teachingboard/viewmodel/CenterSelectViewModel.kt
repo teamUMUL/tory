@@ -7,6 +7,8 @@ import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.repositories.Center.CenterRepoImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -60,6 +62,26 @@ class CenterSelectViewModel : ViewModel() {
 //            )
 //        )
         getAllCenters()
+        observeAllCenters()
+    }
+
+    private fun observeAllCenters() {
+        viewModelScope.launch {
+            allCenters.onEach { allCenters ->
+                updateSelectedCenter(allCenters)
+            }.collect()
+        }
+    }
+
+    private fun updateSelectedCenter(allCenters: List<CenterResponse>?) {
+        allCenters?.let { allCenters ->
+            _selectedCenter.update {
+                val foundCenter = allCenters.find { center ->
+                    selectedCenter.value?.id == center.id
+                }
+                foundCenter
+            }
+        }
     }
 
     fun getAllCenters(){
