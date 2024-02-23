@@ -10,6 +10,8 @@ import inu.thebite.tory.model.domain.AddDomainRequest
 import inu.thebite.tory.model.domain.DomainResponse
 import inu.thebite.tory.model.image.ImageResponse
 import inu.thebite.tory.model.image.UpdateImageListRequest
+import inu.thebite.tory.model.lto.DevelopTypeRequest
+import inu.thebite.tory.model.lto.DevelopTypeResponse
 import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
@@ -133,6 +135,14 @@ interface RetrofitService {
 
     @PATCH("/ltos/{ltoId}")
     suspend fun updateLto(@Path("ltoId") ltoId: Long, @Body ltoRequest: LtoRequest) : Response<LtoResponse>
+
+    // select develop type
+    @PATCH("/ltos/{ltoId}/develop/add")
+    suspend fun updateDevelopType(@Path("ltoId") ltoId: Long, @Body developTypeRequest: DevelopTypeRequest) : Response<DevelopTypeResponse>
+
+    // remove develop type
+    @PATCH("/ltos/{ltoId}/develop/remove")
+    suspend fun removeDevelopType(@Path("ltoId") ltoId: Long, @Body developTypeRequest: DevelopTypeRequest) : Response<DevelopTypeResponse>
 
     @GET("/{studentId}/ltos")
     suspend fun getLtoList(@Path("studentId") studentId: Long): List<LtoResponse>
