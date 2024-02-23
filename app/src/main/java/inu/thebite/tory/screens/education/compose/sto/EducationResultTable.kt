@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.education.compose.sto
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -99,16 +100,17 @@ fun EducationResultTable(
                                                 stoViewModel.setSelectedSTOStatus(selectedSTO = selectedSTO, changeState = "완료")
                                             }
                                         } else if (selectedSTO.goalType == "퍼센트"){
-                                            val takenPoints = points.take(selectedSTO.count)
+                                            val plusCountBeforeAdd = points.count { it == "+" }
+                                            val newPlusCount = plusCountBeforeAdd + 1 // "+" 추가 후
+                                            val percentage = (newPlusCount.toFloat() / selectedSTO.count.toFloat()) * 100
 
-                                            val status = if ((takenPoints.count { it == "+" }.toFloat() / selectedSTO.count.toFloat()) * 100 >= selectedSTO.goalAmount.toFloat()) {
-                                                "완료"
-                                            } else {
-                                                "진행중"
-                                            }
+                                            Log.d("percentage", percentage.toString())
 
-                                            if (status == "완료"){
+                                            // 90% 이상인 경우에만 완료 상태로 업데이트
+                                            if (percentage >= selectedSTO.goalAmount.toFloat()) {
                                                 stoViewModel.setSelectedSTOStatus(selectedSTO = selectedSTO, changeState = "완료")
+                                            } else {
+                                                // 90% 미만인 경우 추가 로직 (필요한 경우)
                                             }
                                         }
                                         stoViewModel.addPoint(

@@ -171,7 +171,7 @@ fun FindIdScreen(
                                     Toasty.warning(context, "이름, 이메일, 휴대전화 번호를 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                 } else {
                                     if (isPhoneNumberFormattedCorrectly(userPhoneNumber.value.text.trim())){
-                                        authViewModel.findMemberId(findMemberIdRequest = FindMemberIdRequest(name = userName.value.text.trim(), phone = userPhoneNumber.value.text.trim(), email = userEmail.value.text.trim()))
+                                        authViewModel.findMemberId(context = context,findMemberIdRequest = FindMemberIdRequest(name = userName.value.text.trim(), phone = userPhoneNumber.value.text.trim(), email = userEmail.value.text.trim()))
                                     } else {
                                         Toasty.warning(context, "휴대전화 번호를 (010-0000-0000)과 같은 형태로 입력해주세요", Toast.LENGTH_SHORT, true).show()
                                     }

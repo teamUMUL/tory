@@ -121,7 +121,7 @@ fun NoticeItemTextField(
                 ),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
-                    autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                    autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Default
                 ),
                 onTextLayout = { textLayoutResult ->
                     if (ltoComment.selection.collapsed && ltoComment.selection.start != textLayoutResult.lineCount) {

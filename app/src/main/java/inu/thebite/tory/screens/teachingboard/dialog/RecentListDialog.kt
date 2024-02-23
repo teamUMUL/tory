@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.isPopupLayout
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -74,6 +75,7 @@ fun RecentListDialog(
     val endDate by todoViewModel.endDate.collectAsState()
 
 
+
     LaunchedEffect(recentTodosFilterState){
         recentTodosFilterState?.let { recentTodosFilterState ->
             todoViewModel.filterRecentTodoByState(state = recentTodosFilterState)
@@ -83,9 +85,8 @@ fun RecentListDialog(
         if (startDate.isNullOrEmpty() && endDate.isNullOrEmpty()){
             todoViewModel.setStartDate(getDates().second)
             todoViewModel.setFinishDate(getDates().first)
-            Log.d("selectedChild", selectedChild.toString())
-
             delay(500)
+            Log.d("selectedChild", selectedChild.toString())
             startDate?.let {startDate ->
                 endDate?.let { endDate ->
                     todoViewModel.getRecentTodoListWithDate(
@@ -95,6 +96,7 @@ fun RecentListDialog(
                     )
                 }
             }
+            delay(500)
         }
 
     }

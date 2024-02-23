@@ -18,6 +18,7 @@ import inu.thebite.tory.model.member.MemberResponse
 import inu.thebite.tory.model.member.TemporaryPasswordResponse
 import inu.thebite.tory.model.member.UpdatePasswordRequest
 import inu.thebite.tory.repositories.auth.AuthRepoImpl
+import inu.thebite.tory.screens.education.compose.sidebar.currentToast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -280,7 +281,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
         }
     }
 
-    fun findMemberId(findMemberIdRequest: FindMemberIdRequest) {
+    fun findMemberId(context: Context,findMemberIdRequest: FindMemberIdRequest) {
         viewModelScope.launch {
             try {
 
@@ -291,15 +292,23 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                     _foundId.update { gottenId }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    currentToast?.cancel()
+                    val newToast = Toasty.warning(context, "해당하는 정보의 유저가 존재하지 않습니다.", Toast.LENGTH_SHORT, true)
+                    newToast.show()
+                    currentToast = newToast
                     throw Exception("아이디 찾기 실패: $errorBody")
                 }
             } catch (e: Exception) {
                 Log.e("failed to find Id", e.message.toString())
+                currentToast?.cancel()
+                val newToast = Toasty.warning(context, "해당하는 정보의 유저가 존재하지 않습니다.", Toast.LENGTH_SHORT, true)
+                newToast.show()
+                currentToast = newToast
             }
         }
     }
 
-    fun findMemberPassword(findMemberPasswordRequest: FindMemberPasswordRequest) {
+    fun findMemberPassword(context : Context, findMemberPasswordRequest: FindMemberPasswordRequest) {
         viewModelScope.launch {
             try {
 
@@ -310,10 +319,18 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                     _temporaryPassword.update { gottenTemporaryPassword }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    currentToast?.cancel()
+                    val newToast = Toasty.warning(context, "해당하는 정보의 유저가 존재하지 않습니다.", Toast.LENGTH_SHORT, true)
+                    newToast.show()
+                    currentToast = newToast
                     throw Exception("임시 비밀번호 부여 실패: $errorBody")
                 }
             } catch (e: Exception) {
                 Log.e("failed to get temporary password", e.message.toString())
+                currentToast?.cancel()
+                val newToast = Toasty.warning(context, "해당하는 정보의 유저가 존재하지 않습니다.", Toast.LENGTH_SHORT, true)
+                newToast.show()
+                currentToast = newToast
             }
         }
     }
@@ -329,6 +346,7 @@ class AuthViewModel(private val tokenManager: TokenManager) : ViewModel() {
                     _userInfo.update { editedProfile }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+
                     throw Exception("프로필 수정 실패: $errorBody")
                 }
             } catch (e: Exception) {

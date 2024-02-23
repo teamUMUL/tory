@@ -386,7 +386,7 @@ class NoticeViewModel : ViewModel() {
             repo.createSharePdf(studentId = studentId, year = year, month = month.toInt(), date = date)
         }
         _pdfUrl.update {
-            "http://${"192.168.35.103"}:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
+            "http://${"35.216.88.74"}:8081/notices/${studentId}/reports?year=${year}&month=${month}&date=${date}"
         }
     }
 
@@ -493,6 +493,7 @@ class NoticeViewModel : ViewModel() {
                     _selectedNoticeDetailList.update {currentNoticeDetailList ->
                         currentNoticeDetailList?.map {detail ->
                             if(detail.id == selectedDetailObjectResponse.id){
+                                Log.d("updateNotice", detail.toString())
                                 detail.copy(comment = gottenAutoComment.comment)
                             } else {
                                 detail

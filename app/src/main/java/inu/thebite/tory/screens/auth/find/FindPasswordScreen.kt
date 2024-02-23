@@ -207,6 +207,7 @@ fun FindPasswordScreen(
                                         if (isPhoneNumberFormattedCorrectly(userPhoneNumber.value.text.trim())){
                                             coroutineScope.launch {
                                                 authViewModel.findMemberPassword(
+                                                    context = context,
                                                     findMemberPasswordRequest = FindMemberPasswordRequest(
                                                         id = userId.value.text.trim(),
                                                         name = userName.value.text.trim(),
