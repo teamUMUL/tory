@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.DevelopTypeRequest
 import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
@@ -355,6 +356,71 @@ class LTOViewModel: ViewModel() {
 
             } catch (e: Exception) {
                 Log.e("failed to delete LTO", e.message.toString())
+            }
+        }
+    }
+
+
+    fun updateLTODevelopType(
+        ltoId: Long,
+        developTypeRequest: DevelopTypeRequest
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.updateDevelopType(ltoId = ltoId, developTypeRequest = developTypeRequest)
+
+                if (response.isSuccessful) {
+                    val updatedDevelopType = response.body() ?: throw Exception("developType 정보가 비어있습니다.")
+
+                    _allLTOs.update {currentLTOs ->
+                        val matchedLTO = currentLTOs?.find { it.id == ltoId }
+                        Log.d("matchedLTO", matchedLTO.toString())
+                        matchedLTO?.let { matchedLTO ->
+                            currentLTOs.map {
+                                if (it.id==ltoId) matchedLTO.copy(developType = updatedDevelopType.developType) else it
+                            }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("developType 수정 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update developType", e.message.toString())
+            }
+        }
+    }
+
+    fun removeLTODevelopType(
+        ltoId: Long,
+        developTypeRequest: DevelopTypeRequest
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repo.removeDevelopType(ltoId = ltoId, developTypeRequest = developTypeRequest)
+
+                if (response.isSuccessful) {
+                    val removedDevelopType = response.body() ?: throw Exception("developType 정보가 비어있습니다.")
+
+                    _allLTOs.update {currentLTOs ->
+                        val matchedLTO = currentLTOs?.find { it.id == ltoId }
+                        Log.d("matchedLTO", matchedLTO.toString())
+                        matchedLTO?.let { matchedLTO ->
+                            currentLTOs.map {
+                                if (it.id==ltoId) matchedLTO.copy(developType = removedDevelopType.developType) else it
+                            }
+                        }
+                    }
+
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "알 수 없는 에러 발생"
+                    throw Exception("developType 수정 실패: $errorBody")
+                }
+
+            } catch (e: Exception) {
+                Log.e("failed to update developType", e.message.toString())
             }
         }
     }

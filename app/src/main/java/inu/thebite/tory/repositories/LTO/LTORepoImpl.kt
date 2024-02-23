@@ -2,6 +2,8 @@ package inu.thebite.tory.repositories.LTO
 
 
 import inu.thebite.tory.model.domain.DomainResponse
+import inu.thebite.tory.model.lto.DevelopTypeRequest
+import inu.thebite.tory.model.lto.DevelopTypeResponse
 import inu.thebite.tory.model.lto.LtoGraphResponse
 import inu.thebite.tory.model.lto.LtoRequest
 import inu.thebite.tory.model.lto.LtoResponse
@@ -49,5 +51,19 @@ class LTORepoImpl: LTORepo {
 
     override suspend fun getLTOGraph(selectedLTO: LtoResponse): List<LtoGraphResponse> {
         return ltoRetrofit.getLtoGraph(ltoId = selectedLTO.id)
+    }
+
+    override suspend fun updateDevelopType(
+        ltoId: Long,
+        developTypeRequest: DevelopTypeRequest
+    ): Response<DevelopTypeResponse> {
+        return ltoRetrofit.updateDevelopType(ltoId = ltoId, developTypeRequest = developTypeRequest)
+    }
+
+    override suspend fun removeDevelopType(
+        ltoId: Long,
+        developTypeRequest: DevelopTypeRequest
+    ): Response<DevelopTypeResponse> {
+        return ltoRetrofit.removeDevelopType(ltoId = ltoId, developTypeRequest = developTypeRequest)
     }
 }

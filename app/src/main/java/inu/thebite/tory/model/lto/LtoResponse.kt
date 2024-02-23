@@ -19,9 +19,6 @@ data class LtoResponse(
     @SerializedName("contents")
     var contents: String,
 
-    @SerializedName("game")
-    var game: String,
-
     @SerializedName("developType")
     var developType: List<String>,
 

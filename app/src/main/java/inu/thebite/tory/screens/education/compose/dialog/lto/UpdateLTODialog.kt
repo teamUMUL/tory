@@ -285,7 +285,6 @@ fun UpdateLTOItemDialog(
                                 updateLTO = LtoRequest(
                                     name = ltoInputValue.text,
                                     contents = selectedLTO.contents,
-                                    game = "",
                                     developType = ltoMode
                                 )
                             )
@@ -334,7 +333,6 @@ fun updateLTO() {
                         status = "",
                         name = "Example LTO",
                         contents = "",
-                        game = "",
                         achieveDate = "",
                         registerDate = "",
                         delYN = "",

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import inu.thebite.tory.model.lto.DevelopTypeRequest
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
@@ -93,8 +94,10 @@ fun SelectedLTORow(
                             onClick = {
                                 if (selectedLTO.developType.contains("언어발달")){
                                     //삭제
+                                    ltoViewModel.removeLTODevelopType(ltoId = selectedLTO.id, developTypeRequest = DevelopTypeRequest("언어발달"))
                                 } else {
                                     //추가
+                                    ltoViewModel.updateLTODevelopType(ltoId = selectedLTO.id, developTypeRequest = DevelopTypeRequest("언어발달"))
                                 }
                             },
                             modifier = Modifier
@@ -121,8 +124,10 @@ fun SelectedLTORow(
                             onClick = {
                                 if (selectedLTO.developType.contains("인지발달")){
                                     //삭제
+                                    ltoViewModel.removeLTODevelopType(ltoId = selectedLTO.id, developTypeRequest = DevelopTypeRequest("인지발달"))
                                 } else {
                                     //추가
+                                    ltoViewModel.updateLTODevelopType(ltoId = selectedLTO.id, developTypeRequest = DevelopTypeRequest("인지발달"))
                                 }
                             },
                             modifier = Modifier

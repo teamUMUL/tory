@@ -60,290 +60,290 @@ fun GameTopBar(
     imageViewModel: ImageViewModel
 
 ){
-    val systemUiController = rememberSystemUiController()
-    systemUiController.isStatusBarVisible = false // Status bar
-    systemUiController.isNavigationBarVisible = false // Navigation bar
-    systemUiController.isSystemBarsVisible = false // Status & Navigation bars
-    systemUiController.navigationBarDarkContentEnabled =false
-    val gameButtons1 = listOf("P", "C")
-    val gameButtons2 = listOf("M", "T")
-    val cornerRadius = 4.dp
-
-//    val points by stoViewModel.points.collectAsState()
-
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.065f)
-            .background(Color(0xFFF5F5F5)),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            modifier = Modifier
-                .size(60.dp)
-                .padding(10.dp)
-                .clickable {
-                    setGameDialog(false)
-                    dragAndDropViewModel.isWrong()
-                    if (dragAndDropViewModel.isRandomGame) {
-                        dragAndDropViewModel.clearMainItem()
-                    }
-                    setGameButton1Index(-1)
-                    setGameButton2Index(-1)
-                },
-            painter = painterResource(id = R.drawable.icon_back),
-            contentDescription = null
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(5.dp)
-                .border(
-                    2.dp,
-                    MaterialTheme.colorScheme.secondary,
-                    RoundedCornerShape(4.dp)
-                ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(6f)
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.Center
-            ) {
-                LazyRow(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    items(points) { gameResult ->
-                        if (gameResult != "n") {
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 5.dp),
-                                fontSize = 20.sp,
-                                text = gameResult,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(3.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(
-                    text = (selectedSTO.count - points.size).toString(),
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-            }
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(3.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Timer(timerStart = timerStart, timerRestart = timerRestart, gameButtonIndex = gameButton1Index, gameViewModel = gameViewModel, dragAndDropViewModel = dragAndDropViewModel, setIsCardSelectEnd = {setIsCardSelectEnd(it)})
-            }
-
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(3.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                gameButtons1.forEachIndexed { index, item ->
-                    OutlinedButton(
-                        onClick = {
-                            if(!timerStart.value){
-                                setGameButton1Index(index)
-                                if(index == gameButton1Index){
-                                    setGameButton1Index(-1)
-                                    gameViewModel.clearOneGameResult()
-                                }
-                                if(item == "C"){
-                                    gameViewModel.setOneGameResult("C")
-                                }else{
-                                    gameViewModel.setOneGameResult("P")
-                                }
-                            }
-                        },
-                        shape = when (index) {
-                            // left outer button
-                            0 -> RoundedCornerShape(
-                                topStart = cornerRadius,
-                                topEnd = 0.dp,
-                                bottomStart = cornerRadius,
-                                bottomEnd = 0.dp
-                            )
-                            // right outer button
-                            gameButtons1.size - 1 -> RoundedCornerShape(
-                                topStart = 0.dp,
-                                topEnd = cornerRadius,
-                                bottomStart = 0.dp,
-                                bottomEnd = cornerRadius
-                            )
-                            // middle button
-                            else -> RoundedCornerShape(
-                                topStart = 0.dp,
-                                topEnd = 0.dp,
-                                bottomStart = 0.dp,
-                                bottomEnd = 0.dp
-                            )
-                        },
-                        border = BorderStroke(
-                            1.dp,
-                            if (gameButton1Index == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(
-                                alpha = 0.75f
-                            )
-                        ),
-                        modifier = when (index) {
-                            0 ->
-                                Modifier
-                                    .offset(0.dp, 0.dp)
-                                    .zIndex(if (gameButton1Index == index) 1f else 0f)
-
-                            else ->
-                                Modifier
-                                    .offset((-1 * index).dp, 0.dp)
-                                    .zIndex(if (gameButton1Index == index) 1f else 0f)
-                        },
-                        colors =
-                        if (gameButton1Index == index) {
-                            ButtonDefaults.outlinedButtonColors(
-                                containerColor = Color(0xFFE4E4E4),
-                                contentColor = Color.Black
-                            )
-                        } else {
-                            ButtonDefaults.outlinedButtonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.Black
-                            )
-                        },
-                        contentPadding = PaddingValues(0.dp)
-
-                    ) {
-                        Text(
-
-                            text = gameButtons1[index],
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-                }
-            }
-
-
-            Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(3.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                gameButtons2.forEachIndexed { index, item ->
-                    OutlinedButton(
-                        onClick = {
-                            if(item == "M"){
-                                if(selectedLTO.game == "같은 사진 매칭"){
-                                    dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
-                                }
-                                else{
-                                    if(dragAndDropViewModel.isRandomGame){
-                                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
-                                        imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
-                                            dragAndDropViewModel.setMainItem(foundImage)
-                                            dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
-                                        }
-                                    } else {
-                                        dragAndDropViewModel.restartGeneralMode(
-                                            imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
-                                        )
-                                    }
-                                }
-                            }else{
-                                if(gameButton1Index == -1) {
-                                    timerStart.value = true
-                                }
-                            }
-
-                        },
-                        shape = when (index) {
-                            // left outer button
-                            0 -> RoundedCornerShape(
-                                topStart = cornerRadius,
-                                topEnd = 0.dp,
-                                bottomStart = cornerRadius,
-                                bottomEnd = 0.dp
-                            )
-                            // right outer button
-                            gameButtons2.size - 1 -> RoundedCornerShape(
-                                topStart = 0.dp,
-                                topEnd = cornerRadius,
-                                bottomStart = 0.dp,
-                                bottomEnd = cornerRadius
-                            )
-                            // middle button
-                            else -> RoundedCornerShape(
-                                topStart = 0.dp,
-                                topEnd = 0.dp,
-                                bottomStart = 0.dp,
-                                bottomEnd = 0.dp
-                            )
-                        },
-                        border = BorderStroke(
-                            1.dp,
-                            if (gameButton2Index == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(
-                                alpha = 0.75f
-                            )
-                        ),
-                        modifier = when (index) {
-                            0 ->
-                                Modifier
-                                    .offset(0.dp, 0.dp)
-                                    .zIndex(if (gameButton2Index == index) 1f else 0f)
-
-                            else ->
-                                Modifier
-                                    .offset((-1 * index).dp, 0.dp)
-                                    .zIndex(if (gameButton2Index == index) 1f else 0f)
-                        },
-                        colors =
-                        if (gameButton2Index == index) {
-                            ButtonDefaults.outlinedButtonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.Black
-                            )
-                        } else {
-                            ButtonDefaults.outlinedButtonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.Black
-                            )
-                        },
-                        contentPadding = PaddingValues(0.dp)
-
-                    ) {
-                        Text(
-                            text = gameButtons2[index],
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
-        }
-    }
+//    val systemUiController = rememberSystemUiController()
+//    systemUiController.isStatusBarVisible = false // Status bar
+//    systemUiController.isNavigationBarVisible = false // Navigation bar
+//    systemUiController.isSystemBarsVisible = false // Status & Navigation bars
+//    systemUiController.navigationBarDarkContentEnabled =false
+//    val gameButtons1 = listOf("P", "C")
+//    val gameButtons2 = listOf("M", "T")
+//    val cornerRadius = 4.dp
+//
+////    val points by stoViewModel.points.collectAsState()
+//
+//
+//    Row(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .fillMaxHeight(0.065f)
+//            .background(Color(0xFFF5F5F5)),
+//        verticalAlignment = Alignment.CenterVertically
+//    ) {
+//        Icon(
+//            modifier = Modifier
+//                .size(60.dp)
+//                .padding(10.dp)
+//                .clickable {
+//                    setGameDialog(false)
+//                    dragAndDropViewModel.isWrong()
+//                    if (dragAndDropViewModel.isRandomGame) {
+//                        dragAndDropViewModel.clearMainItem()
+//                    }
+//                    setGameButton1Index(-1)
+//                    setGameButton2Index(-1)
+//                },
+//            painter = painterResource(id = R.drawable.icon_back),
+//            contentDescription = null
+//        )
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .fillMaxHeight()
+//                .padding(5.dp)
+//                .border(
+//                    2.dp,
+//                    MaterialTheme.colorScheme.secondary,
+//                    RoundedCornerShape(4.dp)
+//                ),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Box(
+//                modifier = Modifier
+//                    .weight(6f)
+//                    .fillMaxHeight(),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                LazyRow(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.Center
+//                ) {
+//                    items(points) { gameResult ->
+//                        if (gameResult != "n") {
+//                            Text(
+//                                modifier = Modifier
+//                                    .padding(start = 5.dp),
+//                                fontSize = 20.sp,
+//                                text = gameResult,
+//                                fontWeight = FontWeight.SemiBold
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//            Row(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .fillMaxHeight()
+//                    .padding(3.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center
+//            ){
+//                Text(
+//                    text = (selectedSTO.count - points.size).toString(),
+//                    fontSize = 15.sp,
+//                    color = MaterialTheme.colorScheme.secondary
+//                )
+//
+//            }
+//            Row(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .fillMaxHeight()
+//                    .padding(3.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center
+//            ){
+//                Timer(timerStart = timerStart, timerRestart = timerRestart, gameButtonIndex = gameButton1Index, gameViewModel = gameViewModel, dragAndDropViewModel = dragAndDropViewModel, setIsCardSelectEnd = {setIsCardSelectEnd(it)})
+//            }
+//
+//            Row(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .fillMaxHeight()
+//                    .padding(3.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center,
+//            ) {
+//                gameButtons1.forEachIndexed { index, item ->
+//                    OutlinedButton(
+//                        onClick = {
+//                            if(!timerStart.value){
+//                                setGameButton1Index(index)
+//                                if(index == gameButton1Index){
+//                                    setGameButton1Index(-1)
+//                                    gameViewModel.clearOneGameResult()
+//                                }
+//                                if(item == "C"){
+//                                    gameViewModel.setOneGameResult("C")
+//                                }else{
+//                                    gameViewModel.setOneGameResult("P")
+//                                }
+//                            }
+//                        },
+//                        shape = when (index) {
+//                            // left outer button
+//                            0 -> RoundedCornerShape(
+//                                topStart = cornerRadius,
+//                                topEnd = 0.dp,
+//                                bottomStart = cornerRadius,
+//                                bottomEnd = 0.dp
+//                            )
+//                            // right outer button
+//                            gameButtons1.size - 1 -> RoundedCornerShape(
+//                                topStart = 0.dp,
+//                                topEnd = cornerRadius,
+//                                bottomStart = 0.dp,
+//                                bottomEnd = cornerRadius
+//                            )
+//                            // middle button
+//                            else -> RoundedCornerShape(
+//                                topStart = 0.dp,
+//                                topEnd = 0.dp,
+//                                bottomStart = 0.dp,
+//                                bottomEnd = 0.dp
+//                            )
+//                        },
+//                        border = BorderStroke(
+//                            1.dp,
+//                            if (gameButton1Index == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(
+//                                alpha = 0.75f
+//                            )
+//                        ),
+//                        modifier = when (index) {
+//                            0 ->
+//                                Modifier
+//                                    .offset(0.dp, 0.dp)
+//                                    .zIndex(if (gameButton1Index == index) 1f else 0f)
+//
+//                            else ->
+//                                Modifier
+//                                    .offset((-1 * index).dp, 0.dp)
+//                                    .zIndex(if (gameButton1Index == index) 1f else 0f)
+//                        },
+//                        colors =
+//                        if (gameButton1Index == index) {
+//                            ButtonDefaults.outlinedButtonColors(
+//                                containerColor = Color(0xFFE4E4E4),
+//                                contentColor = Color.Black
+//                            )
+//                        } else {
+//                            ButtonDefaults.outlinedButtonColors(
+//                                containerColor = Color.Transparent,
+//                                contentColor = Color.Black
+//                            )
+//                        },
+//                        contentPadding = PaddingValues(0.dp)
+//
+//                    ) {
+//                        Text(
+//
+//                            text = gameButtons1[index],
+//                            fontSize = 15.sp,
+//                            fontWeight = FontWeight.Bold,
+//                        )
+//                    }
+//                }
+//            }
+//
+//
+//            Row(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .fillMaxHeight()
+//                    .padding(3.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center
+//            ) {
+//                gameButtons2.forEachIndexed { index, item ->
+//                    OutlinedButton(
+//                        onClick = {
+//                            if(item == "M"){
+//                                if(selectedLTO.game == "같은 사진 매칭"){
+//                                    dragAndDropViewModel.restartSameMode(imageViewModel.allImages.value?: emptyList())
+//                                }
+//                                else{
+//                                    if(dragAndDropViewModel.isRandomGame){
+//                                        val randomMainItem = dragAndDropViewModel.targetItems.value!![getRandomIndex(dragAndDropViewModel.targetItems.value!!.size)]
+//                                        imageViewModel.findImageByName(randomMainItem.name)?.let {foundImage ->
+//                                            dragAndDropViewModel.setMainItem(foundImage)
+//                                            dragAndDropViewModel.restartGeneralMode(imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name))
+//                                        }
+//                                    } else {
+//                                        dragAndDropViewModel.restartGeneralMode(
+//                                            imagesByCategory = imageViewModel.getImagesByCategory(dragAndDropViewModel.mainItem.value!!.category.name)
+//                                        )
+//                                    }
+//                                }
+//                            }else{
+//                                if(gameButton1Index == -1) {
+//                                    timerStart.value = true
+//                                }
+//                            }
+//
+//                        },
+//                        shape = when (index) {
+//                            // left outer button
+//                            0 -> RoundedCornerShape(
+//                                topStart = cornerRadius,
+//                                topEnd = 0.dp,
+//                                bottomStart = cornerRadius,
+//                                bottomEnd = 0.dp
+//                            )
+//                            // right outer button
+//                            gameButtons2.size - 1 -> RoundedCornerShape(
+//                                topStart = 0.dp,
+//                                topEnd = cornerRadius,
+//                                bottomStart = 0.dp,
+//                                bottomEnd = cornerRadius
+//                            )
+//                            // middle button
+//                            else -> RoundedCornerShape(
+//                                topStart = 0.dp,
+//                                topEnd = 0.dp,
+//                                bottomStart = 0.dp,
+//                                bottomEnd = 0.dp
+//                            )
+//                        },
+//                        border = BorderStroke(
+//                            1.dp,
+//                            if (gameButton2Index == index) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondary.copy(
+//                                alpha = 0.75f
+//                            )
+//                        ),
+//                        modifier = when (index) {
+//                            0 ->
+//                                Modifier
+//                                    .offset(0.dp, 0.dp)
+//                                    .zIndex(if (gameButton2Index == index) 1f else 0f)
+//
+//                            else ->
+//                                Modifier
+//                                    .offset((-1 * index).dp, 0.dp)
+//                                    .zIndex(if (gameButton2Index == index) 1f else 0f)
+//                        },
+//                        colors =
+//                        if (gameButton2Index == index) {
+//                            ButtonDefaults.outlinedButtonColors(
+//                                containerColor = Color.Transparent,
+//                                contentColor = Color.Black
+//                            )
+//                        } else {
+//                            ButtonDefaults.outlinedButtonColors(
+//                                containerColor = Color.Transparent,
+//                                contentColor = Color.Black
+//                            )
+//                        },
+//                        contentPadding = PaddingValues(0.dp)
+//
+//                    ) {
+//                        Text(
+//                            text = gameButtons2[index],
+//                            fontSize = 15.sp,
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

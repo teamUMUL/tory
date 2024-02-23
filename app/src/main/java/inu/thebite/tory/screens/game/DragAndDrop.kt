@@ -41,63 +41,63 @@ fun DraggableScreen(
     timerRestart : MutableState<Boolean>,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val state = remember { DragTargetInfo() }
-    CompositionLocalProvider(
-        LocalDragTargetInfo provides state
-    ) {
-        Box(modifier = modifier.fillMaxSize())
-        {
-            content()
-
-            if (state.isDragging) {
-                var targetSize by remember {
-                    mutableStateOf(IntSize.Zero)
-                }
-                if(timerRestart.value){
-
-                } else{
-                    Box(modifier = Modifier
-                        .graphicsLayer {
-                            val offset = (state.dragPosition + state.dragOffset)
-                            scaleX = 1.0f
-                            scaleY = 1.0f
-                            alpha = if (targetSize == IntSize.Zero) 0f else .9f
-                            translationX = offset.x.minus(targetSize.width / 2)
-                            translationY = offset.y.minus(targetSize.height / 2)
-                        }
-                        .onGloballyPositioned {
-                            targetSize = it.size
-                        }
-                    ) {
-                        if(selectedLTO.game == "같은 사진 매칭"){
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(dragAndDropViewModel.mainItem.value!!.url)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(id = R.drawable.icon_edit),
-                                contentDescription = null,
-//                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.size(cardSize),
-                            )
-                        } else if(selectedLTO.game == "일반화 매칭") {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(dragAndDropViewModel.firstMainItem.value!!.url)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(id = R.drawable.icon_edit),
-                                contentDescription = null,
-//                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.size(cardSize),
-                            )
-                        }
-//                    state.draggableComposable?.invoke()
-                    }
-                }
-            }
-        }
-    }
+//    val state = remember { DragTargetInfo() }
+//    CompositionLocalProvider(
+//        LocalDragTargetInfo provides state
+//    ) {
+//        Box(modifier = modifier.fillMaxSize())
+//        {
+//            content()
+//
+//            if (state.isDragging) {
+//                var targetSize by remember {
+//                    mutableStateOf(IntSize.Zero)
+//                }
+//                if(timerRestart.value){
+//
+//                } else{
+//                    Box(modifier = Modifier
+//                        .graphicsLayer {
+//                            val offset = (state.dragPosition + state.dragOffset)
+//                            scaleX = 1.0f
+//                            scaleY = 1.0f
+//                            alpha = if (targetSize == IntSize.Zero) 0f else .9f
+//                            translationX = offset.x.minus(targetSize.width / 2)
+//                            translationY = offset.y.minus(targetSize.height / 2)
+//                        }
+//                        .onGloballyPositioned {
+//                            targetSize = it.size
+//                        }
+//                    ) {
+//                        if(selectedLTO.game == "같은 사진 매칭"){
+//                            AsyncImage(
+//                                model = ImageRequest.Builder(LocalContext.current)
+//                                    .data(dragAndDropViewModel.mainItem.value!!.url)
+//                                    .crossfade(true)
+//                                    .build(),
+//                                placeholder = painterResource(id = R.drawable.icon_edit),
+//                                contentDescription = null,
+////                                contentScale = ContentScale.Crop,
+//                                modifier = Modifier.size(cardSize),
+//                            )
+//                        } else if(selectedLTO.game == "일반화 매칭") {
+//                            AsyncImage(
+//                                model = ImageRequest.Builder(LocalContext.current)
+//                                    .data(dragAndDropViewModel.firstMainItem.value!!.url)
+//                                    .crossfade(true)
+//                                    .build(),
+//                                placeholder = painterResource(id = R.drawable.icon_edit),
+//                                contentDescription = null,
+////                                contentScale = ContentScale.Crop,
+//                                modifier = Modifier.size(cardSize),
+//                            )
+//                        }
+////                    state.draggableComposable?.invoke()
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 
 @Composable

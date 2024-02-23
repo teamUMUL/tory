@@ -1217,7 +1217,7 @@ fun CenterSelector(
                         onClick = {
                             centerSelectViewModel.setTempSelectedCenter(item)
                             isExpanded = false
-                        }
+                        },
                     )
                 }
             }
@@ -1623,10 +1623,16 @@ fun NoChildSelect(
     val allCenters by centerSelectViewModel.allCenters.collectAsState()
     val _selectedCenter by centerSelectViewModel.tempSelectedCenter.collectAsState()
 
+    val allChildClasses by childClassSelectViewModel.allChildClasses.collectAsState()
 
     val _selectedChildClass by childClassSelectViewModel.tempSelectedChildClass.collectAsState()
 
     val _selectedChildInfo by childSelectViewModel.tempSelectedChildInfo.collectAsState()
+    val selectedChildInfo by childSelectViewModel.selectedChildInfo.collectAsState()
+
+    LaunchedEffect(Unit){
+        centerSelectViewModel.getAllCenters()
+    }
 
     Column(
         modifier = Modifier
