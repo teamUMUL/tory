@@ -106,8 +106,13 @@ fun NoticeItemTextField(
                     .padding(5.dp)
                     .focusRequester(focusRequester),
                 value = ltoComment,
-                onValueChange = {
-                    ltoComment = it
+                onValueChange = { newValue ->
+                    // 사용자 입력에 기반하여 TextFieldValue를 업데이트하되, 커서 위치를 직접 조정하지 않습니다.
+                    // 사용자가 입력한 새로운 값과 커서 위치를 포함한 새로운 TextFieldValue 객체를 생성합니다.
+                    ltoComment = newValue.copy(
+                        text = newValue.text,
+                        selection = newValue.selection
+                    )
                 },
                 readOnly = isLTOCommentReadOnly.value,
                 textStyle = TextStyle(
@@ -123,12 +128,12 @@ fun NoticeItemTextField(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Default
                 ),
-                onTextLayout = { textLayoutResult ->
-                    if (ltoComment.selection.collapsed && ltoComment.selection.start != textLayoutResult.lineCount) {
-                        // 커서를 텍스트의 끝으로 이동
-                        ltoComment = ltoComment.copy(selection = TextRange(ltoComment.text.length))
-                    }
-                }
+//                onTextLayout = { textLayoutResult ->
+//                    if (ltoComment.selection.collapsed && ltoComment.selection.start != textLayoutResult.lineCount) {
+//                        // 커서를 텍스트의 끝으로 이동
+//                        ltoComment = ltoComment.copy(selection = TextRange(ltoComment.text.length))
+//                    }
+//                }
             )
             if (isLTOCommentReadOnly.value) {
                 Box(

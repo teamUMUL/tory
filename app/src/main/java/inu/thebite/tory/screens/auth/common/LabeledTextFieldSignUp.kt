@@ -96,35 +96,35 @@ fun LabeledTextFieldSignUp(
             keyboardType = KeyboardType.Phone
         )
         Spacer(modifier = Modifier.height(5.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(30.dp)
-        ) {
-            RadioButton(
-                selected = (userIdentity.value.text == "센터장/소장"),
-                onClick = { userIdentity.value = TextFieldValue("센터장/소장") })
-            Text(
-                text = "센터장/소장",
-                style = TextStyle(
-                    fontFamily = fontFamily_Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp,
-                    color = Color.Black
-                )
-            )
-            RadioButton(
-                selected = (userIdentity.value.text == "센터 소속 교사"),
-                onClick = { userIdentity.value = TextFieldValue("센터 소속 교사") })
-            Text(
-                text = "센터 소속 교사",
-                style = TextStyle(
-                    fontFamily = fontFamily_Poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp,
-                    color = Color.Black
-                )
-            )
-        }
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.spacedBy(30.dp)
+//        ) {
+//            RadioButton(
+//                selected = (userIdentity.value.text == "센터장/소장"),
+//                onClick = { userIdentity.value = TextFieldValue("센터장/소장") })
+//            Text(
+//                text = "센터장/소장",
+//                style = TextStyle(
+//                    fontFamily = fontFamily_Poppins,
+//                    fontWeight = FontWeight.SemiBold,
+//                    fontSize = 12.sp,
+//                    color = Color.Black
+//                )
+//            )
+//            RadioButton(
+//                selected = (userIdentity.value.text == "센터 소속 교사"),
+//                onClick = { userIdentity.value = TextFieldValue("센터 소속 교사") })
+//            Text(
+//                text = "센터 소속 교사",
+//                style = TextStyle(
+//                    fontFamily = fontFamily_Poppins,
+//                    fontWeight = FontWeight.SemiBold,
+//                    fontSize = 12.sp,
+//                    color = Color.Black
+//                )
+//            )
+//        }
         if (userIdentity.value.text == "센터 소속 교사"){
             Spacer(modifier = Modifier.height(5.dp))
             //센터코드

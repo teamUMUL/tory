@@ -66,7 +66,7 @@ fun SignUpScreen(
     val password = remember { mutableStateOf(TextFieldValue()) }
     val userEmail = remember { mutableStateOf(TextFieldValue()) }
     val userPhoneNumber = remember { mutableStateOf(TextFieldValue()) }
-    val userIdentity = remember { mutableStateOf(TextFieldValue()) }
+    val userIdentity = remember { mutableStateOf(TextFieldValue("센터장/소장")) }
     val userCenterCode = remember { mutableStateOf(TextFieldValue()) }
 
 

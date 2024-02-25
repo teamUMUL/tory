@@ -1,5 +1,6 @@
 package inu.thebite.tory.screens.notice.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,6 +57,7 @@ import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Inter
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun NoticeItem(
@@ -79,6 +82,8 @@ fun NoticeItem(
     LaunchedEffect(Unit){
         todayComment = TextFieldValue(selectedNotice.comment)
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     val focusRequester = FocusRequester()
     Column(
@@ -196,8 +201,13 @@ fun NoticeItem(
                         .padding(5.dp)
                         .focusRequester(focusRequester),
                     value = todayComment,
-                    onValueChange = {
-                        todayComment = it
+                    onValueChange = {newValue ->
+                        // 사용자 입력에 기반하여 TextFieldValue를 업데이트하되, 커서 위치를 직접 조정하지 않습니다.
+                        // 사용자가 입력한 새로운 값과 커서 위치를 포함한 새로운 TextFieldValue 객체를 생성합니다.
+                        todayComment = newValue.copy(
+                            text = newValue.text,
+                            selection = newValue.selection
+                        )
                     },
                     readOnly = isTodayCommentReadOnly.value,
                     textStyle = TextStyle(
@@ -213,12 +223,12 @@ fun NoticeItem(
                         capitalization = KeyboardCapitalization.None,
                         autoCorrect = true, keyboardType = KeyboardType.Text, imeAction = ImeAction.Default
                     ),
-                    onTextLayout = {textLayoutResult ->
-                        if (todayComment.selection.collapsed && todayComment.selection.start != textLayoutResult.lineCount) {
-                            // 커서를 텍스트의 끝으로 이동
-                            todayComment = todayComment.copy(selection = TextRange(todayComment.text.length))
-                        }
-                    }
+//                    onTextLayout = {textLayoutResult ->
+//                        if (todayComment.selection.collapsed && todayComment.selection.start != textLayoutResult.lineCount) {
+//                            // 커서를 텍스트의 끝으로 이동
+//                            todayComment = todayComment.copy(selection = TextRange(todayComment.text.length))
+//                        }
+//                    }
                 )
                 if (isTodayCommentReadOnly.value){
                     Box(
@@ -239,8 +249,10 @@ fun NoticeItem(
                     Row {
                         Button(
                             onClick = {
-                                noticeViewModel.createMonthlyNoticeAutoComment(studentId = selectedChild.id, year = selectedNotice.year, month = selectedNotice.month, date = selectedNotice.date)
-                                todayComment = TextFieldValue(selectedNotice.comment)
+                                coroutineScope.launch {
+                                    noticeViewModel.createMonthlyNoticeAutoComment(studentId = selectedChild.id, year = selectedNotice.year, month = selectedNotice.month, date = selectedNotice.date)
+                                    todayComment = TextFieldValue(selectedNotice.comment)
+                                }
 
                             },
                             shape = RoundedCornerShape(10.dp),
