@@ -33,6 +33,8 @@ import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.screens.game.viewmodel.GameViewModel
+import inu.thebite.tory.screens.network.NetworkStatusChecker
+import inu.thebite.tory.screens.network.NoInternetConnectionScreen
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
@@ -50,10 +52,15 @@ import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     private lateinit var tokenManager: TokenManager
-    @OptIn(ExperimentalMaterial3Api::class)
+    private lateinit var networkStatusChecker: NetworkStatusChecker
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tokenManager = TokenManager(this)
+        networkStatusChecker = NetworkStatusChecker(this)
+
+        // 네트워크 상태 변화 감지 시작
+        networkStatusChecker.startNetworkCallback()
 
         setContent {
             ToryTheme {
@@ -64,11 +71,20 @@ class MainActivity : ComponentActivity() {
                     authViewModel.verifyToken(context = context)
                 }
 
+                val networkStatusChecker = NetworkStatusChecker(context)
+                val isConnected = networkStatusChecker.isNetworkAvailable.collectAsState(initial = false)
 
+                // 네트워크 상태 변화 감지 시작
+                networkStatusChecker.startNetworkCallback()
 
-                CompositionLocalProvider(LoginState provides authViewModel){
-                    ApplicationSwitcher(tokenManager = tokenManager)
+                if (isConnected.value){
+                    CompositionLocalProvider(LoginState provides authViewModel){
+                        ApplicationSwitcher(tokenManager = tokenManager)
+                    }
+                } else {
+                    NoInternetConnectionScreen()
                 }
+
             }
         }
     }
