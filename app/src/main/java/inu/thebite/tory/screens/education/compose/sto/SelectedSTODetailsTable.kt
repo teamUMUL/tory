@@ -194,7 +194,8 @@ fun SelectedSTODetailsTable(
                         stoViewModel.updateSTOLooseCannon(stoId = selectedSTO.id, etcRequest = EtcRequest(it))
                     }
                 },
-                selectedCells = selectedSTO.looseCannonList
+                selectedCells = selectedSTO.looseCannonList,
+                isScrollable = true
             )
             Text(
                 text = "스트레스 상태",
@@ -217,7 +218,8 @@ fun SelectedSTODetailsTable(
                         stoViewModel.updateSTOStressStatus(stoId = selectedSTO.id, etcRequest = EtcRequest(it))
                     }
                 },
-                selectedCell = selectedSTO.stressStatus
+                selectedCell = selectedSTO.stressStatus,
+                isScrollable = false
             )
             Text(
                 text = "집중도",
@@ -240,7 +242,8 @@ fun SelectedSTODetailsTable(
                         stoViewModel.updateSTOConcentration(stoId = selectedSTO.id, etcRequest = EtcRequest(it))
                     }
                 },
-                selectedCell = selectedSTO.concentration
+                selectedCell = selectedSTO.concentration,
+                isScrollable = false
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -360,12 +363,13 @@ fun STOStateButtonsLazyHorizontalGrid(
     stateList: List<String>,
     onClick : (String) -> Unit,
     selectedCell : String = "",
-    selectedCells : List<String> = listOf()
+    selectedCells : List<String> = listOf(),
+    isScrollable : Boolean
 ){
     LazyHorizontalGrid(
         rows = GridCells.Fixed(gridCells),
         modifier = modifier,
-        userScrollEnabled = false
+        userScrollEnabled = isScrollable
     ) {
         items(stateList) { stateItem ->
             Button(
