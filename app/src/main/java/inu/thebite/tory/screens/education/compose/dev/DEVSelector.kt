@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
+import inu.thebite.tory.screens.education.viewmodel.STOViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
@@ -43,6 +44,7 @@ fun DEVSelector(
     modifier : Modifier = Modifier,
     devViewModel: DEVViewModel,
     ltoViewModel: LTOViewModel,
+    stoViewModel: STOViewModel,
     selectedChild: StudentResponse
 ){
 
@@ -137,6 +139,8 @@ fun DEVSelector(
                             },
                             onClick = {
                                 devViewModel.setSelectedDEV(dev)
+                                stoViewModel.clearSelectedSTO()
+                                ltoViewModel.clearSelectedLTO()
                                 expandedState.value = false
 //                                ltoViewModel.getLTOsByDEV(dev)
                             }

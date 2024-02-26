@@ -1,4 +1,4 @@
-package inu.thebite.tory.schedule
+package inu.thebite.tory.todo
 
 import android.util.Log
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.todo.UpdateTodoList
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel

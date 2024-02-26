@@ -1,7 +1,7 @@
 package inu.thebite.tory
 
 
-import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.todo.TodoViewModel
 import inu.thebite.tory.screens.auth.AuthViewModel
 import inu.thebite.tory.screens.auth.TokenExpirationInterceptor
 import inu.thebite.tory.screens.auth.TokenManager

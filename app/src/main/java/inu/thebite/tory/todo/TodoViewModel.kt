@@ -1,4 +1,4 @@
-package inu.thebite.tory.schedule
+package inu.thebite.tory.todo
 
 import android.content.Context
 import android.util.Log
@@ -55,6 +55,9 @@ class TodoViewModel : ViewModel() {
     private val _recentTodosFilterState: MutableStateFlow<String?> = MutableStateFlow(null)
     val recentTodosFilterState = _recentTodosFilterState.asStateFlow()
 
+    private val _todoMode: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val todoMode = _todoMode.asStateFlow()
+
     init {
         observeTodoList()
         observeRecentTodoList()
@@ -67,6 +70,14 @@ class TodoViewModel : ViewModel() {
 //            }.collect()
 //        }
 //    }
+
+    fun onTodoMode(){
+        _todoMode.update { true }
+    }
+
+    fun offTodoMode(){
+        _todoMode.update { false }
+    }
 
     private fun observeRecentTodoList(){
         viewModelScope.launch {

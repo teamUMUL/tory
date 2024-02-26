@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -56,12 +55,10 @@ import es.dmoral.toasty.Toasty
 import inu.thebite.tory.model.center.CenterResponse
 import inu.thebite.tory.model.childClass.ChildClassResponse
 import inu.thebite.tory.model.student.StudentResponse
-import inu.thebite.tory.schedule.ScheduleTopBar
-import inu.thebite.tory.schedule.TodoViewModel
-import inu.thebite.tory.screens.auth.AuthViewModel
+import inu.thebite.tory.todo.ScheduleTopBar
+import inu.thebite.tory.todo.TodoViewModel
 import inu.thebite.tory.screens.auth.LoginState
 import inu.thebite.tory.screens.centerdashboardscreen.CenterDashboardScreen
-import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
 import inu.thebite.tory.screens.education.screen.NewEducationScreen
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel

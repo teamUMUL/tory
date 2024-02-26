@@ -9,25 +9,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import es.dmoral.toasty.Toasty
 import inu.thebite.tory.R
-import inu.thebite.tory.model.domain.DomainResponse
-import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.todo.TodoViewModel
 import inu.thebite.tory.screens.education.compose.dialog.dev.AddDEVDialog
 import inu.thebite.tory.screens.education.compose.dialog.dev.UpdateDEVDialog
 import inu.thebite.tory.screens.education.compose.dialog.lto.AddLTODialog
@@ -58,6 +52,8 @@ fun Sidebar(
     val selectedLTO by ltoViewModel.selectedLTO.collectAsState()
 
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
+
+    val todoMode by todoViewModel.todoMode.collectAsState()
 
     //    LaunchedEffect(Unit){
 //        devViewModel.setSelectedDEV(
@@ -329,13 +325,17 @@ fun Sidebar(
         }
         IconButton(
             onClick = {
-                setRecentTodoDialog(true)
+                if (todoMode){
+                    todoViewModel.offTodoMode()
+                } else {
+                    todoViewModel.onTodoMode()
+                }
             }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.icon_todo),
                 contentDescription = null,
-                tint = Color.Unspecified
+                tint = if (todoMode) Color.Unspecified else Color(0xFF8E8E8E)
             )
         }
     }

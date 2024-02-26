@@ -1,8 +1,6 @@
 package inu.thebite.tory.screens.education.screen
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,11 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,9 +33,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.student.StudentResponse
-import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.todo.TodoViewModel
 import inu.thebite.tory.screens.education.compose.LTOAndSTOSelector
 import inu.thebite.tory.screens.education.compose.SelectedLTOAndSTOInfo
+import inu.thebite.tory.screens.education.compose.TodoSelector
 import inu.thebite.tory.screens.education.compose.dev.DEVSelector
 import inu.thebite.tory.screens.education.compose.sidebar.Sidebar
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
@@ -81,6 +79,7 @@ fun NewEducationScreen(
     val hasFocus by stoViewModel.hasFocus.collectAsState()
 
     val todoList by todoViewModel.todoResponse.collectAsState()
+    val todoMode by todoViewModel.todoMode.collectAsState()
 
     val selectedChild by childSelectViewModel.selectedChildInfo.collectAsState()
 
@@ -99,17 +98,19 @@ fun NewEducationScreen(
                     studentId = selectedChild.id,
                     domainId = selectedDEV.id
                 )
-                stoViewModel.clearSelectedSTO()
-                ltoViewModel.clearSelectedLTO()
+
             }
         }
     }
-    LaunchedEffect(selectedChild){
+    LaunchedEffect(selectedChild) {
         selectedChild?.let { selectedChild ->
             ltoViewModel.getAllLTOs(studentId = selectedChild.id)
             stoViewModel.getAllSTOs(studentId = selectedChild.id)
-            selectedDEV?.let {selectedDEV ->
-                ltoViewModel.getLTOsByDomain(studentId = selectedChild.id, domainId = selectedDEV.id)
+            selectedDEV?.let { selectedDEV ->
+                ltoViewModel.getLTOsByDomain(
+                    studentId = selectedChild.id,
+                    domainId = selectedDEV.id
+                )
             }
         }
     }
@@ -154,33 +155,53 @@ fun NewEducationScreen(
                 modifier = Modifier
                     .weight(1.6f)
                     .fillMaxHeight()
+                    .background(Color(0xFFF3F3F3)),
             ) {
-                selectedChild?.let {selectedChild ->
-                    DEVSelector(
-                        modifier = Modifier
-                            .weight(0.5f),
-                        devViewModel = devViewModel,
-                        ltoViewModel = ltoViewModel,
-                        selectedChild = selectedChild
-                    )
-                }
-                Divider(thickness = 1.dp, color = Color.LightGray)
-                ltos?.let {
-                    selectedChild?.let { selectedChild ->
-                        LTOAndSTOSelector(
-                            modifier = Modifier
-                                .weight(9.5f),
+                if (todoMode) {
+                    selectedChild?.let {selectedChild ->
+                        TodoSelector(
+                            todoList = todoList,
                             selectedChild = selectedChild,
-                            selectedDEV = selectedDEV,
-                            selectedLTO = selectedLTO,
-                            selectedSTO = selectedSTO,
-                            ltos = it,
-                            ltoViewModel = ltoViewModel,
                             stoViewModel = stoViewModel,
-                            dragAndDropViewModel = dragAndDropViewModel
+                            ltoViewModel = ltoViewModel,
+                            devViewModel = devViewModel,
+                            todoViewModel = todoViewModel
                         )
                     }
-                } ?: LTOAndSTONull(modifier = Modifier.weight(9.5f).background(Color(0xFFF3F3F3)))
+
+                } else {
+                    selectedChild?.let { selectedChild ->
+                        DEVSelector(
+                            modifier = Modifier
+                                .weight(0.5f),
+                            devViewModel = devViewModel,
+                            ltoViewModel = ltoViewModel,
+                            stoViewModel = stoViewModel,
+                            selectedChild = selectedChild
+                        )
+                    }
+                    Divider(thickness = 1.dp, color = Color.LightGray)
+                    ltos?.let {
+                        selectedChild?.let { selectedChild ->
+                            LTOAndSTOSelector(
+                                modifier = Modifier
+                                    .weight(9.5f),
+                                selectedChild = selectedChild,
+                                selectedDEV = selectedDEV,
+                                selectedLTO = selectedLTO,
+                                selectedSTO = selectedSTO,
+                                ltos = it,
+                                ltoViewModel = ltoViewModel,
+                                stoViewModel = stoViewModel,
+                                dragAndDropViewModel = dragAndDropViewModel
+                            )
+                        }
+                    } ?: LTOAndSTONull(
+                        modifier = Modifier
+                            .weight(9.5f)
+                            .background(Color(0xFFF3F3F3))
+                    )
+                }
             }
             VerticalDivider()
             Column(
@@ -188,7 +209,7 @@ fun NewEducationScreen(
                     .weight(8f)
                     .fillMaxHeight()
             ) {
-                selectedChild?.let {selectedChild ->
+                selectedChild?.let { selectedChild ->
                     SelectedLTOAndSTOInfo(
                         allLTOs = allLTOs,
                         selectedChild = selectedChild,

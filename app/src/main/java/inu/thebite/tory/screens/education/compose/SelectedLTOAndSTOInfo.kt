@@ -9,10 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.model.sto.StoResponse
-import inu.thebite.tory.model.sto.StoSummaryResponse
 import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.model.todo.TodoResponse
-import inu.thebite.tory.schedule.TodoViewModel
+import inu.thebite.tory.todo.TodoViewModel
 import inu.thebite.tory.screens.education.compose.lto.SelectedLTORow
 import inu.thebite.tory.screens.education.compose.sto.SelectedSTOInfo
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
