@@ -8,8 +8,6 @@ import inu.thebite.tory.screens.auth.TokenManager
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
-import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
-import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.CenterSelectViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildClassSelectViewModel
@@ -56,12 +54,6 @@ val viewModelModule = module {
     }
     viewModel<ImageViewModel>{
         ImageViewModel()
-    }
-    viewModel<DragAndDropViewModel>{
-        DragAndDropViewModel()
-    }
-    viewModel<GameViewModel>{
-        GameViewModel()
     }
     viewModel<NoticeViewModel> {
         NoticeViewModel()

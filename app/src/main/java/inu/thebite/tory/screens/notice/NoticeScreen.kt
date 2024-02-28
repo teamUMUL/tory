@@ -122,7 +122,8 @@ fun NoticeScreen(
                     ),
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
-                        .fillMaxHeight()
+                        .fillMaxHeight(),
+                    containerColor = Color.White
                 )
             } else {
                 currentToast?.cancel()

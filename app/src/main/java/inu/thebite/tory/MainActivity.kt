@@ -28,8 +28,6 @@ import inu.thebite.tory.screens.auth.signup.SignUpScreen
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
-import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
-import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.network.NetworkStatusChecker
 import inu.thebite.tory.screens.network.NoInternetConnectionScreen
 import inu.thebite.tory.screens.notice.NoticeViewModel
@@ -104,8 +102,6 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
     val ltoViewModel : LTOViewModel = koinViewModel()
     val stoViewModel : STOViewModel = koinViewModel()
     val imageViewModel : ImageViewModel = koinViewModel()
-    val dragAndDropViewModel: DragAndDropViewModel = koinViewModel()
-    val gameViewModel : GameViewModel = koinViewModel()
     val noticeViewModel : NoticeViewModel = koinViewModel()
     val todoViewModel : TodoViewModel = koinViewModel()
     val authViewModel : AuthViewModel = koinViewModel()
@@ -142,8 +138,6 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
                 ltoViewModel = ltoViewModel,
                 stoViewModel = stoViewModel,
                 imageViewModel = imageViewModel,
-                dragAndDropViewModel = dragAndDropViewModel,
-                gameViewModel = gameViewModel,
                 noticeViewModel = noticeViewModel,
                 todoViewModel = todoViewModel,
             )
@@ -157,9 +151,6 @@ fun ApplicationSwitcher(tokenManager: TokenManager) {
             devViewModel.clearAll()
             ltoViewModel.clearAll()
             stoViewModel.clearAll()
-            dragAndDropViewModel.clearAll()
-            gameViewModel.clearAll()
-            gameViewModel.clearAll()
             noticeViewModel.resetAll()
             todoViewModel.clearAll()
             val navController = rememberNavController()

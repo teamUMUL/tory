@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,8 +40,6 @@ import inu.thebite.tory.screens.education.compose.sidebar.Sidebar
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
-import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
-import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 import inu.thebite.tory.screens.teachingboard.viewmodel.ChildSelectViewModel
@@ -57,8 +53,6 @@ fun NewEducationScreen(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
     imageViewModel: ImageViewModel,
-    gameViewModel: GameViewModel,
-    dragAndDropViewModel: DragAndDropViewModel,
     todoViewModel: TodoViewModel,
     noticeViewModel: NoticeViewModel,
     childSelectViewModel: ChildSelectViewModel
@@ -193,7 +187,6 @@ fun NewEducationScreen(
                                 ltos = it,
                                 ltoViewModel = ltoViewModel,
                                 stoViewModel = stoViewModel,
-                                dragAndDropViewModel = dragAndDropViewModel
                             )
                         }
                     } ?: LTOAndSTONull(
@@ -222,8 +215,6 @@ fun NewEducationScreen(
                         ltoViewModel = ltoViewModel,
                         todoViewModel = todoViewModel,
                         noticeViewModel = noticeViewModel,
-                        dragAndDropViewModel = dragAndDropViewModel,
-                        gameViewModel = gameViewModel
                     )
                 }
 

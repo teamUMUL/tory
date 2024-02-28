@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import inu.thebite.tory.model.lto.LtoResponse
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
-import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 
 
@@ -37,7 +36,6 @@ fun STOSelector(
     lto: LtoResponse,
     stoViewModel: STOViewModel,
     ltoViewModel: LTOViewModel,
-    dragAndDropViewModel: DragAndDropViewModel
 ) {
     val selectedSTO by stoViewModel.selectedSTO.collectAsState()
     val allSTOs by stoViewModel.allSTOs.collectAsState()
@@ -54,7 +52,6 @@ fun STOSelector(
                         indication = null
                     ) {
                         stoViewModel.setSelectedSTO(sto)
-                        dragAndDropViewModel.clearMainItem()
 
                         ltoViewModel.findLTOById(sto.ltoId)?.let { ltoViewModel.setSelectedLTO(it) }
                     }

@@ -16,8 +16,6 @@ import inu.thebite.tory.screens.education.compose.lto.SelectedLTORow
 import inu.thebite.tory.screens.education.compose.sto.SelectedSTOInfo
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
-import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
-import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.notice.NoticeViewModel
 import inu.thebite.tory.screens.ready.viewmodel.ImageViewModel
 
@@ -34,8 +32,6 @@ fun SelectedLTOAndSTOInfo(
     ltoViewModel: LTOViewModel,
     todoViewModel: TodoViewModel,
     noticeViewModel: NoticeViewModel,
-    dragAndDropViewModel: DragAndDropViewModel,
-    gameViewModel: GameViewModel
 ) {
     Column(
         modifier = Modifier
@@ -62,8 +58,6 @@ fun SelectedLTOAndSTOInfo(
             ltoViewModel = ltoViewModel,
             todoViewModel = todoViewModel,
             noticeViewModel = noticeViewModel,
-            dragAndDropViewModel = dragAndDropViewModel,
-            gameViewModel = gameViewModel
         )
     }
 }

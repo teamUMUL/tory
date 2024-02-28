@@ -45,7 +45,6 @@ import inu.thebite.tory.model.student.StudentResponse
 import inu.thebite.tory.screens.education.compose.sto.STOSelector
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
-import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
 import inu.thebite.tory.ui.theme.fontFamily_Lato
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -61,7 +60,6 @@ fun LTOAndSTOSelector(
     ltos: List<LtoResponse>,
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
-    dragAndDropViewModel: DragAndDropViewModel
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -167,7 +165,6 @@ fun LTOAndSTOSelector(
                             lto = lto,
                             stoViewModel = stoViewModel,
                             ltoViewModel = ltoViewModel,
-                            dragAndDropViewModel = dragAndDropViewModel
                         )
                     }
                 }

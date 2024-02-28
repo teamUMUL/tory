@@ -92,7 +92,7 @@ fun ChildClassRow(
     if (deleteChildClassDialog){
         selectedChildClass?.let { selectedChildClass ->
             AlertDialog(
-                title = {Text(text = "Class : ${selectedChildClass.name} 삭제하시겠습니까?")},
+                title = {Text(text = "반 : ${selectedChildClass.name} 삭제하시겠습니까?")},
                 onDismissRequest = {setDeleteChildClassDialog(false)},
                 confirmButton = { TextButton(onClick = {
                     childClassViewModel.deleteChildClass(selectedChildClass = selectedChildClass)

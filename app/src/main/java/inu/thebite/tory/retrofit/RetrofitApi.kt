@@ -45,3 +45,7 @@ object RetrofitApi : KoinComponent{
         retrofit.create(RetrofitService::class.java)
     }
 }
+
+
+
+

@@ -63,8 +63,6 @@ import inu.thebite.tory.screens.education.screen.NewEducationScreen
 import inu.thebite.tory.screens.education.viewmodel.DEVViewModel
 import inu.thebite.tory.screens.education.viewmodel.LTOViewModel
 import inu.thebite.tory.screens.education.viewmodel.STOViewModel
-import inu.thebite.tory.screens.game.viewmodel.DragAndDropViewModel
-import inu.thebite.tory.screens.game.viewmodel.GameViewModel
 import inu.thebite.tory.screens.management.ManagementScreen
 import inu.thebite.tory.screens.navigation.AllDestinations
 import inu.thebite.tory.screens.navigation.AppDrawer
@@ -103,8 +101,6 @@ fun MainCompose(
     ltoViewModel: LTOViewModel,
     stoViewModel: STOViewModel,
     imageViewModel: ImageViewModel,
-    dragAndDropViewModel: DragAndDropViewModel,
-    gameViewModel: GameViewModel,
     noticeViewModel: NoticeViewModel,
     todoViewModel: TodoViewModel,
 //    dragAndDropViewModel : DragAndDropViewModel,
@@ -790,8 +786,6 @@ fun MainCompose(
                             ltoViewModel = ltoViewModel,
                             stoViewModel = stoViewModel,
                             imageViewModel = imageViewModel,
-                            dragAndDropViewModel = dragAndDropViewModel,
-                            gameViewModel = gameViewModel,
                             todoViewModel = todoViewModel,
                             noticeViewModel = noticeViewModel,
                             childSelectViewModel = childSelectViewModel
@@ -1637,7 +1631,8 @@ fun NoChildSelect(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 

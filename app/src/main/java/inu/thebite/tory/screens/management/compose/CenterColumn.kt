@@ -95,7 +95,7 @@ fun CenterColumn(
     if (deleteCenterDialog){
         selectedCenter?.let { selectedCenter ->
             AlertDialog(
-                title = {Text(text = "Center : ${selectedCenter.name} 삭제하시겠습니까?")},
+                title = {Text(text = "센터 : ${selectedCenter.name} 삭제하시겠습니까?")},
                 onDismissRequest = {setDeleteCenterDialog(false)},
                 confirmButton = { TextButton(onClick = {
                     centerViewModel.deleteCenter(centerEntity = selectedCenter)

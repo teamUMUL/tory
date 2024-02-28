@@ -99,7 +99,7 @@ fun ChildInfoRow(
     if (deleteChilInfoDialog){
         selectedChildInfo?.let { selectedChildInfo ->
             AlertDialog(
-                title = {Text(text = "Student : ${selectedChildInfo.name} 삭제하시겠습니까?")},
+                title = {Text(text = "아이 : ${selectedChildInfo.name} 삭제하시겠습니까?")},
                 onDismissRequest = {setDeleteChildInfoDialog(false)},
                 confirmButton = { TextButton(onClick = {
                     childInfoViewModel.deleteChildInfo(selectedChildInfo = selectedChildInfo)

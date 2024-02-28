@@ -84,13 +84,6 @@ fun AddLTODialog(
     var ltoInputValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }
-    var isExpanded by remember {
-        mutableStateOf(false)
-    }
-    val rotationState by animateFloatAsState(
-        targetValue = if (isExpanded) 180f else 0f, label = ""
-    )
-
     val ltoMode = remember {
         mutableStateListOf<String>()
     }
